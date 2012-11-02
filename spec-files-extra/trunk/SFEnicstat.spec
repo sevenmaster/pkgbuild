@@ -7,7 +7,7 @@ IPS_Package_Name:	system/network/nicstat
 Summary:	tool for displaying network load similar to iostat/prstat
 Group:		Applications/System Utilities
 URL:		http://blogs.oracle.com/timc/entry/nicstat_the_solaris_network_monitoring
-Version:	1.90
+Version:	1.92
 Source:         %{sf_download}/nicstat/nicstat-%{version}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -46,6 +46,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 23 2012 - Thomas Wagner
+- bump to 1.92
 * Mon Dec 12 2011 - Thomas Wagner
 - merge with svn
 - IPS_package_name by jurikm 2011-12-11
