@@ -113,6 +113,12 @@ packagenamemacros: mysql_major_minor_version			%{mysql_major_minor_version}
 packagenamemacros: pnm_requires_java_runtime_default	%{pnm_requires_java_runtime_default}
 packagenamemacros: pnm_requires_java_runtime_default_32       %{pnm_requires_java_runtime_default_32}
 packagenamemacros: pnm_requires_java_runtime_default_64       %{pnm_requires_java_runtime_default_64}
+packagenamemacros: pnm_buildrequires_SUNWsmba                 %{pnm_buildrequires_SUNWsmba}
+packagenamemacros: pnm_buildrequires_SUNWsmbau                 %{pnm_buildrequires_SUNWsmbau}
+packagenamemacros: pnm_buildrequires_SUNWsmbar                 %{pnm_buildrequires_SUNWsmbar}
+packagenamemacros: pnm_requires_SUNWsmba                 %{pnm_requires_SUNWsmba}
+packagenamemacros: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
+packagenamemacros: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
 " >/dev/null
 
 
@@ -145,6 +151,8 @@ requesting package library/ncurses resolves on %{osdistrelname} build %{osbuild}
 
 
 %changelog
+* Fri Nov  2 2012 - Thomas Wagner
+- add pnm_buildrequires_SUNWsmba|SUNWsmbau|SUNWsmbar
 * Sun Apr 29 2012 - Thomas Wagner
 - add pnm_buildrequires_python_default / pnm_requires_python_default (note the special _default string)
 * Sat Mar 31 2012 - Thomas Wagner
