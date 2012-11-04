@@ -4,11 +4,17 @@
 # includes module(s): GNU libidn
 #
 %include Solaris.inc
+%include usr-gnu.inc
+
+#we want to override what usr-gnu.inc set
+#/usr/gnu/share/info
+%define _infodir %{_datadir}/info
+
 
 Name:                SFElibidn
 Summary:             GNU IDN conversion library
-Version:             1.5
-Source:              http://alpha.gnu.org/pub/gnu/libidn/libidn-%{version}.tar.gz
+Version:             1.19
+Source:              http://ftp.gnu.org/gnu/libidn/libidn-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -34,7 +40,7 @@ export LDFLAGS="%_ldflags"
 
 ./configure --prefix=%{_prefix}         \
            --mandir=%{_mandir}         \
-           --infodir=%{_infodir}       \
+           --datadir=%{_datadir}       \
            --disable-static
 
 make -j$CPUS
@@ -85,24 +91,34 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
+
+#/usr/gnu/share/locale is group "bin" sometimes
+%if %{_share_locale_group_changed}
+%dir %attr (0755, root, %{_share_locale_group}) %{_datadir}/locale
+%defattr (-, root, %{_share_locale_group})
+%else
 %dir %attr (0755, root, other) %{_datadir}/locale
-%{_datadir}/locale/rw/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/cs/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/fr/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/nl/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/pl/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/zh_CN/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/en@boldquot/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/ro/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/it/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/eo/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/sr/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/da/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/vi/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/de/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/ja/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/fi/LC_MESSAGES/libidn.mo
-%{_datadir}/locale/en@quot/LC_MESSAGES/libidn.mo
+%defattr (-, root, other)
+%endif
+#END if _share_locale_group_changed
+%{_datadir}/locale/*/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/cs/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/fr/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/nl/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/pl/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/zh_CN/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/en@boldquot/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/ro/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/it/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/eo/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/sr/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/da/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/vi/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/de/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/ja/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/fi/LC_MESSAGES/libidn.mo
+#%{_datadir}/locale/en@quot/LC_MESSAGES/libidn.mo
+%defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*.1
@@ -117,6 +133,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Jul  8 2012 - Thomas Wagner
+- Bump to 1.19
+- move to /usr/gnu, including info dir
+- new download URL
+- add switch to honour wrong group-id in /usr/gnu/share/locale
+- simplify %files for LC_MESSAGES
 * Tue Oct 14 2008 - michal.bielicki@halokwadrat.de
 - Why does everyone dislike .mo files ?
 * Thu Mar 06 2008 - nonsea@users.sourceforge.net
