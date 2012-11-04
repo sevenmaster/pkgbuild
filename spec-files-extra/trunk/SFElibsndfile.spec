@@ -4,7 +4,7 @@
 # includes module(s): libsndfile
 #
 %include Solaris.inc
-%include Solaris.inc
+%include usr-gnu.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libsndfile64 = libsndfile.spec
@@ -122,6 +122,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- relocate to /usr/gnu (pulseaudio needs >= 1.0.20 and dist has 1.0.17)
+  (version is now 1.0.25 see base-specs/libsndfile.spec)
+* Sun Feb 05 2012 - Brian Cameron
+- Bump to 1.0.25.
 * Wed Mar 23 2011 - Thomas Wagner
 - bump to 1.0.24
 * Sat May 09 2009 - Thomas Wagner
