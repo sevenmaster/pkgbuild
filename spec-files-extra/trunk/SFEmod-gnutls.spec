@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -30,9 +31,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:	SUNWgawk
 BuildRequires:	SUNWgnome-common-devel
-BuildRequires:	SUNWapch22u
+BuildRequires:	%{pnm_buildrequires_SUNWapch22_devel}
 BuildRequires:	SUNWgnutls-devel
-Requires:	SUNWapch22u
+Requires:	%{pnm_buildrequires_SUNWapch22}
 Requires:	SUNWgnutls
 
 %description
@@ -99,5 +100,7 @@ rm -rf %{buildroot}
 %{_localstatedir}/cache/mod_gnutls
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWapch22}, %include packagenamacros.inc
 * Mon Oct 25 2010 - Milan Jurik
 - initial spec based on Fedora
