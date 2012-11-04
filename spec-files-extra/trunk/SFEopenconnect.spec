@@ -11,7 +11,8 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	3.99
+Version:	4.07
+IPS_Component_Version: 4.7
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -24,7 +25,7 @@ BuildRequires:	SFEtun
 Requires:	SFEtun
 
 %description
-This package provides a client for Cisco's "AnyConnect" VPN, which uses
+This package provides a client for Cisco's AnyConnect VPN, which uses
 HTTPS and DTLS protocols.
 
 %package devel
@@ -45,18 +46,22 @@ Requires:	%{name}
 
 %build
 
+#note: all variables are on the same line with the "configure" call
+#therefore *no* export
+LD=`which ld-wrapper` \
 CFLAGS="%{optflags} -D__sun__" LDFLAGS="%{_ldflags}" \
 ZLIB_CFLAGS="-I/usr/include" ZLIB_LIBS=-lz \
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
 	--docdir=%{_docdir}/openconnect \
-	--disable-static --enable-shared \
+	--disable-static \
+        --enable-shared \
 	--with-vpnc-script=/etc/vpnc/vpnc-script
 
-make
+gmake
 
 %install
 rm -rf %{buildroot}
-make install DESTDIR=%{buildroot}
+gmake install DESTDIR=%{buildroot}
 for i in %{buildroot}%{_datadir}/man/*/*
 do
   sed 's/(8)/(1M)/g' $i | sed '/^\.TH/s/ \"8\" / \"1M\" /g' > $i.new
@@ -100,6 +105,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- bump to 4.07
+- add IPS_Component_Version 4.7
 * Sun Jun 17 2012 - Milan Jurik
 - bump to 3.99
 * Thu Oct 06 2011 - Milan Jurik
