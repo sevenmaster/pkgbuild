@@ -1,5 +1,37 @@
 #!/usr/bin/perl
 
+#http://cpansearch.perl.org/src/NIERLEIN/Monitoring-Generator-TestConfig-0.42/META.yml
+# ---
+# abstract: 'generate monitoring configurations (nagios/icinga/shinken)'
+# author:
+#   - 'Sven Nierlein, <nierlein@cpan.org>'
+# build_requires:
+#   ExtUtils::MakeMaker: 6.42
+#   Test::More: 0.87
+# configure_requires:
+#   ExtUtils::MakeMaker: 6.42
+# distribution_type: module
+# generated_by: 'Module::Install version 1.01'
+# license: gpl3
+# meta-spec:
+#   url: http://module-build.sourceforge.net/META-spec-v1.4.html
+#   version: 1.4
+# name: Monitoring-Generator-TestConfig
+# no_index:
+#   directory:
+#     - inc
+#     - t
+# requires:
+#   File::Which: 0
+#   perl: 5.005
+# resources:
+#   bugtracker: https://github.com/sni/Monitoring-Generator-TestConfig/issues
+#   homepage: https://github.com/sni/Monitoring-Generator-TestConfig
+#   license: http://opensource.org/licenses/gpl-3.0.html
+#   repository: https://github.com/sni/Monitoring-Generator-TestConfig
+# version: 0.42
+# 
+
 use strict;
 use warnings;
 
@@ -100,6 +132,35 @@ $cpan_file=~s/$version/\%\{tarball_version\}/;
 my $license_url="http://search.cpan.org/src/".$mod->{RO}->{CPAN_USERID}."/".$module_name."-".$mod->{RO}->{CPAN_VERSION}."/LICENSE";
 system("wget -O copyright/SFEperl-$pkg.copyright $license_url");
 
+# work around for empty description (might depend on older CPAN module version!)
+#Summary:	$mod->{RO}->{description}
+
+#  DB<3> use CPAN;
+#  DB<4> $mod = CPAN::Shell->expand('Module', "IO:Socket:SSL");
+#Always commit changes to config variables to disk? [no]
+#
+#  DB<<5>> $mod = CPAN::Shell->expand('Module', "IO:Socket:SSL");
+#CPAN: Storable loaded ok (v2.18)
+#  DB<<6>> print $mod->id . "\n";
+#IO::Socket::SSL
+#  DB<<7>> print $mod->description . "\n";
+#
+#  DB<<8>> use Data::Dumper
+#  DB<<9>> print Dumper $mod;
+#$VAR1 = bless( {
+#                 'ID' => 'IO::Socket::SSL',
+#                 'RO' => {
+#                           'CPAN_FILE' => 'S/SU/SULLR/IO-Socket-SSL-1.77.tar.gz',
+#                           'CPAN_USERID' => 'SULLR',
+#                           'CPAN_VERSION' => '1.77'
+#                         }
+#               }, 'CPAN::Module' );
+#
+
+#temporary solution is to just place the module name into spec files Summary and %description
+$mod->{RO}->{description} = $mod->{ID} unless defined $mod->{RO}->{description};
+ 
+
 # out spec files
 open (OUT,">SFEperl-$pkg.spec") or die ("cannot write SFEperl-$pkg.spec");
 
@@ -131,8 +192,8 @@ SUNW_Basedir:	\%{_basedir}
 SUNW_Copyright: \%{name}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/$cpan_file
 
-BuildRequires:	%pnm_buildrequires_perl_default
-Requires:	%pnm_requires_perl_default
+BuildRequires:	\%{pnm_buildrequires_perl_default}
+Requires:	\%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin\@justplayer.com>
 Meta(info.upstream):            $vendor
@@ -141,32 +202,47 @@ Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 \%description
 $mod->{RO}->{description}
+
 \%prep
 \%setup -q -n \%{tarball_name}-\%{tarball_version}
 
 \%build
-perl Makefile.PL PREFIX=\%{_prefix} DESTDIR=\$RPM_BUILD_ROOT LIB=%{_prefix}/%{perl_path_vendor_perl_version}
-make
+perl Makefile.PL \\
+    PREFIX=\$RPM_BUILD_ROOT\%{_prefix} \\
+    LIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
+    INSTALLSITELIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
+    INSTALLSITEARCH=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version}/\%{perl_dir} \\
+    INSTALLSITEMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
+    INSTALLSITEMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3 \\
+    INSTALLMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
+    INSTALLMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3
+make CC=\$CC CCCDLFLAGS="\%picflags" OPTIMIZE="\%optflags" LD=\$CC
+
 
 \%install
 rm -rf \$RPM_BUILD_ROOT
-make pure_install
-mkdir -p \$RPM_BUILD_ROOT\%{_datadir}
-mv \$RPM_BUILD_ROOT\%{_prefix}/man \$RPM_BUILD_ROOT\%{_datadir}
-mv \$RPM_BUILD_ROOT\%{_datadir}/man/man3 \$RPM_BUILD_ROOT\%{_datadir}/man/man3perl
+make install
+
+find \$RPM_BUILD_ROOT -name .packlist -exec \%{__rm} {} \\; -o -name perllocal.pod  -exec \%{__rm} {} \\;
 
 \%clean
 rm -rf \$RPM_BUILD_ROOT
 
 \%files
 \%defattr(-,root,bin)
-\%{_prefix}/perl%{perl_major_version}
-\%dir \%attr(0755,root,sys) \%{_datadir}
-\%{_mandir}
+\%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
+\%{_prefix}/%{perl_path_vendor_perl_version}/*
 \#\%dir \%attr(0755,root,bin) \%{_bindir}
 \#\%{_bindir}/*
+\%dir \%attr(0755,root,sys) \%{_datadir}
+\%dir %attr(0755, root, bin) %{_mandir}
+\%dir %attr(0755, root, bin) %{_mandir}/man1
+\%{_mandir}/man1/*
+\%dir %attr(0755, root, bin) %{_mandir}/man3
+\%{_mandir}/man3/*
 
 \%changelog
+##TODO##
 _END
 
 close(OUT);
@@ -175,10 +251,19 @@ print "1st, check SFEperl-$pkg.spec and copyright/SFEperl-$pkg.copyright.\n";
 print "License parameter is always Artistic. You'll have to check it and change\n";
 print "to the right copyright string and file in case this module uses other licensing.\n";
 print "2nd,\n../bin/specbuild.sh SFEperl-$pkg.spec\n";
+print "3nd,\nremove or add lines form the \%files section\n";
 
 
 __DATA__
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- add workaround to place module ID into description unless defined : Summary %description
+* Wed Oct 24 2012 - Thomas Wagner
+- add removal for .packlist and perllocal.pod
+* Tue Aug 14 2012 - Thomas Wagner
+  add  LIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
+* Sat Aug 11 2012 - Thomas Wagner
+- adapt to the current standards used for updates perl modules in sfe
 * Wed Jul 20 2011 - Thomas Wagner
 - use pnm_macros, prepare for perl versions other then 5.8.4
 - adujst notes at the end
