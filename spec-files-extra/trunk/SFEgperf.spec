@@ -4,11 +4,13 @@
 # includes module(s): gperf
 #
 %include Solaris.inc
+%include usr-gnu.inc
+%include base.inc
 
 Name:                    SFEgperf
 Summary:                 gperf - GNU perfect hash function generator
-Version:                 3.0.3
-Source:			         http://mirrors.kernel.org/gnu/gperf/gperf-%{version}.tar.gz
+Version:                 3.0.4
+Source:			 http://ftp.gnu.org/pub/gnu/gperf/gperf-%{version}.tar.gz
 URL:                     http://www.gnu.org/software/gperf
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -54,6 +56,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Mon Sep 19 2011 - Thomas Wagner
+- bump to 3.0.4
 * Wed Sep 3 2008 - <pradhap (at) gmail (dot) com>
 - fixed link
 * Thu Aug 30 2007 - laca@sun.com
