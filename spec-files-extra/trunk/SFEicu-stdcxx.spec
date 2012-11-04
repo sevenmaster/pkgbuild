@@ -13,6 +13,7 @@
 
 %define _basedir /usr/stdcxx
 %include Solaris.inc
+%include packagenamemacros.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use icu_64 = icu.spec
@@ -30,8 +31,8 @@ SUNW_Copyright:		icu.copyright
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:		SUNWlibstdcxx4
-Requires:		SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 %package devel
 Summary:		%{summary} - development files
@@ -130,6 +131,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
 - added License and SUNW_Copyright tags
 * Mon Apr 11 2011 - Alex Viskovatoff

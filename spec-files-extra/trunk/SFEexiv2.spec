@@ -6,6 +6,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 %include stdcxx.inc
 
 
@@ -32,8 +33,8 @@ Requires: SUNWjpg
 BuildRequires: SUNWjpg-devel
 Requires: SUNWgnome-libs
 BuildRequires: SUNWgnome-libs-devel
-Requires: SUNWlibstdcxx4
-BuildRequires: SUNWlibstdcxx4
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
 Requires: SUNWlexpt
 BuildRequires: SUNWlexpt
 BuildRequires: SUNWgnome-common-devel
@@ -126,6 +127,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Fri Jul 09 2010 - Milan Jurik
 - fix build deps
 * Wed Jun 30 2010 - Milan Jurik
