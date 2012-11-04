@@ -11,9 +11,9 @@
 %define srcname libebml
 
 Name:		SFElibebml-gpp
-IPS_package_name: library/g++/libebml
+IPS_package_name: library/g++/ebml
 License:	LGPL
-Summary:	Extensible Binary Meta Language
+Summary:	Extensible Binary Meta Language (g++-built)
 Group:		System Environment/Libraries
 URL:		http://ebml.sourceforge.net
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
@@ -79,13 +79,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Jul 24 2012 - Thomas Wagner
+- change IPS_package_name: library/g++/ebml
 * Sun Jul 29 2012 - Milan Jurik
 - bump to 1.2.2
 * Fri Jun 22 2012 - Logan Bruns <logan@gedanken.org>
 - Accept either SFEcoreutils or SUNWgnu-coreutils for buildrequires.
 * Fri Dec  2 2011 - Thomas Wagner 
 - Add IPS package name
-- copy SFElibebml.spec to SFElibebml-gpp.spec
+- fork SFElibebml.spec to SFElibebml-gpp.spec
 - move to gcc/g++ and relocate to prefix /usr/g++
 * Sat Feb  5 2011 - Alex Viskovatoff
 - Update to 1.2.0, adding one patch
