@@ -548,6 +548,19 @@
 %define pnm_requires_sndm				SUNWsndmu
 
 
+#gnu SUNWgnu-gettex
+#older OS (e.g. Solaris 10) would use un-archived archive/SUNWgnu-gettext.spec
+%define pnm_buildrequires_SUNWgnu_gettext_devel		SUNWgnu-gettext
+%define pnm_buildrequires_SUNWgnu_gettext		SUNWgnu-gettext
+%define pnm_requires_SUNWgnu_gettext			SUNWgnu-gettext
+%define pnm_buildrequires_developer_gnome_gettext	SUNWgnu-gettext
+%define pnm_requires_developer_gnome_gettext		SUNWgnu-gettext
+%define pnm_buildrequires_text_gnu_gettext		SUNWgnu-gettext
+%define pnm_requires_text_gnu_gettext			SUNWgnu-gettext
+%define pnm_buildrequires_gnu_gettext			SUNWgnu-gettext
+%define pnm_requires_gnu_gettext			SUNWgnu-gettext
+
+
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
 
@@ -1323,6 +1336,184 @@
 #
 #END setting java, all builds, evaluated paths  - Part 3 of 3
 
+
+
+#START setting apache2, defaults  - Part 1 of 3
+#define apache2 defaults, primarily shared settings and default version, paths
+#for older osbuilds/osdistros like OpenSolaris 134, SXCE/Nevada, Solaris 10
+#STRONG NOTE: locate *below* the osdistro and osbuild sections, there is *another*
+#section evaluating the resulting paths on the disk, those are specific
+#to the apache2 version in use. We hope, that we do not need to handle special
+#cases there, e.g. this would be an odd distro deciding to relocate to 
+#another path layout on disk....
+##TODO## Solaris 10's apache2 versions *not yet* complete here
+#there was a mess with directories named /usr/apache2/ and later /usr/apache2/2.2/
+
+#from SXCE on we have this:
+#apache2 2.2
+%define apache2_version 2.2
+%define apache2_major_version 2
+%define apache2_major_minor_version 2.2
+##not defined %define apache2_major_minor_micro_version 2.2.X.X.X
+%define apache2_version_package_string 22
+
+%define pnm_buildrequires_apache2_default		%{pnm_buildrequires_SUNWapch22u}
+%define pnm_requires_apache2_default			%{pnm_requires_SUNWapch22u}
+
+#END setting apache2, defaults  - Part 1 of 3
+
+#START setting apache2, changes with specific builds and distros  - Part 2 of 3
+#set apache2 for Solaris11(Express) or OpenIndiana or OpenSolaris
+%if %{os2nnn}
+#older IPS systems
+#use the default from before (e.g. SUNWj6rt and SUNWj6rtx
+%if %( expr %{osbuild} '>=' 133 )
+#from build 133 and up we have
+#no changes yet!
+#expect that to change soon, as apache2 2.4 is in preparation as additional
+#version to apache2 2.2 (will dissapear with future OS versions)
+%endif
+#END >= 133
+%endif
+#END os2nnn
+#END setting apache2, changes with specific builds and distros  - Part 2 of 3
+
+#START setting apache2, all builds, evaluated paths  - Part 3 of 3
+# this is the section noted above which evaluates the resulting paths on the
+# disk for the defaults for apache2 or the distro specific changed values e.g.
+# if a more fresh apache2 version stores files somewehre else
+
+#set handy partial paths to default locations where important apache2 files
+#are stored
+#note: simplyfication: %{_prefix} must be prepended by the spec file itself
+
+#include files for apache2
+#CFLAGS="-I%{_prefix}/%{apache2_default_includedir}"
+#more information: #include "libpq-fe.h" -->> /usr/apache2/2.2/include/libpq-fe.h 
+#more information: #include "server/libpq.h" -->> /usr/apache2/2.2/include/server/libpq.h 
+%define apache2_default_includedir	apache2/%{apache2_major_minor_version}/include
+
+
+##TODO##
+##NOTE## below: subject to change. want a more clever way to auto-set the variables
+#        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
+#        the same variable to define the right library search path for current %_arch*...
+
+#the apache2 libs would be found with 
+#LDFLAGS and/or CFLAGS="-L%{_prefix}/%{apache2_default_libdir} -R%{_prefix}/%{apache2_default_libdir}"
+#you might need to keep an eye on 32-/64-bit locations of apache2 libs
+#NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{apache2_default_libdir}/%{_arch64}"
+#more information: /usr/apache2/2.2/lib /usr/apache2/2.2/lib/amd64 /usr/apache2/2.2/lib/sparcv9
+#here go e.g. perl modules
+%define apache2_default_libdir	apache2/%{apache2_major_minor_version}/lib
+#here go the apache loadable modules!
+%define apache2_default_libexecdir	apache2/%{apache2_major_minor_version}/libexec
+
+
+#the magic apxs utility. NOTE: for 64-bit version use temporary, subject to change
+#variable apache2_default_apxs_64
+
+%define apache2_default_apxs	apache2/%{apache2_major_minor_version}/bin/apxs
+##TODO## want more clever 32-bit / 64-bit handling!
+##TODO## does it work at all? maybe _arch is getting evaluated too late!
+#%define apache2_default_apxs_64	apache2/%{apache2_major_minor_version}/bin/%{_arch64}/apxs
+#there is no nice workaround to get switched form 32- to 64-bits
+%define apache2_default_apxs_64	apache2/%{apache2_major_minor_version}/bin/64/apxs
+
+#END setting apache2, all builds, evaluated paths  - Part 3 of 3
+
+
+#START setting postgres, defaults  - Part 1 of 3
+#define postgres defaults, primarily shared settings and default version, paths
+#for older osbuilds/osdistros like OpenSolaris 134, SXCE/Nevada, Solaris 10
+#STRONG NOTE: located *below* the osdistro and osbuild sections, there is *another*
+#section evaluating the resulting paths on the disk, those are specific
+#to the postgres version in use. We hope, that we do not need to handle special
+#cases there, e.g. this would be an odd distro deciding to relocate to 
+#another path layout on disk....
+##TODO## Solaris 10's postgres versions *not yet* covered here
+
+##TODO## we might want to select the postgres versions maintained in SFE itself
+##TODO## to cover the 9.x series. This would need a *LOCAL* overright on your
+##TODO## system. Ideas on how to solve that are welcome! email me tom68@....
+
+#from SXCE on we have this:
+%define postgres_version 8.4
+%define postgres_major_version 8
+%define postgres_major_minor_version 8.4
+##not defined %define postgres_major_minor_micro_version 8.4.X
+
+#we simplify the variants for postgres, we try to use only the newer one
+#for *all* consuming spec files. Please not that in the future  we might
+#override on the local system with a much newer SFEpostgres version!
+#include files:
+#/usr/postgres/8.4/include/libpq-fe.h
+#/usr/postgres/8.4/include/server/libpq/libpq.h
+%define pnm_buildrequires_postgres_default	SUNWpostgr-84-devel
+%define pnm_requires_postgres_default		SUNWpostgr-84-libs
+
+#END setting postgres, defaults  - Part 1 of 3
+
+#START setting postgres, changes with specific builds and distros  - Part 2 of 3
+#set postgres for Solaris11Express or OpenIndiana or OpenSolaris
+%if %{os2nnn}
+#older IPS systems
+%define pnm_buildrequires_postgres_default	SUNWpostgr-84-devel
+%define pnm_requires_postgres_default		SUNWpostgr-84-libs
+%if %( expr %{osbuild} '>=' 133 )
+#from build 133 and up we have
+#database/postgres-51
+%define pnm_buildrequires_postgres_default	service/database/postgres-84
+%define pnm_requires_postgres_default		service/database/postgres-84
+%endif
+#END >= 133
+%endif
+#END os2nnn
+
+#add more distro here
+
+#END setting postgres, changes with specific builds and distros  - Part 2 of 3
+
+#START setting postgres, all builds, evaluated paths  - Part 3 of 3
+# this is the section noted above which evaluates the resulting paths on the
+# disk for the defaults for postgres or the distro specific changed values e.g.
+# if a more fresh postgres version stores files somewehre else
+
+#set handy partial paths to default locations where important postgres files
+#are stored
+#note: simplyfication: %{_prefix} must be prepended by the spec file itself
+
+#default install directory of postgresql
+%define postgres_default_prefix	postgres/%{postgres_major_minor_version}
+
+#example:
+#the libpq/libpg.h or libpq-fe.h file would be found with 
+#CFLAGS="-I%{_prefix}/%{postgres_default_includedir}"
+#more information: #include "libpq-fe.h" -->> /usr/postgres/8.4/include/libpq-fe.h 
+#more information: #include "server/libpq.h" -->> /usr/postgres/8.4/include/server/libpq.h 
+%define postgres_default_includedir	postgres/%{postgres_major_minor_version}/include
+
+##TODO##
+##NOTE## below: subject to change. want a more clever way to auto-set the variables
+#        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
+#        the same variable to define the right library search path for current %_arch*...
+
+#the postgres libs would be found with 
+#LDFLAGS and/or CFLAGS="-L%{_prefix}/%{postgres_default_libdir} -R%{_prefix}/%{postgres_default_libdir}"
+#you might need to keep an eye on 32-/64-bit locations of postgres libs
+#NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{postgres_default_libdir}/%{_arch64}"
+#more information: /usr/postgres/8.4/lib /usr/postgres/8.4/lib/amd64 /usr/postgres/8.4/lib/sparcv9
+%define postgres_default_libdir	postgres/%{postgres_major_minor_version}/lib
+
+#pg_config to tell consuming programs how that postgresql version is configured
+##TODO## want more clever 32-bit / 64-bit handling!
+#there is no nice workaround to get switched form 32- to 64-bits
+%define postgres_default_pg_config	postgres/%{postgres_major_minor_version}/bin/pg_config
+%define postgres_default_pg_config_64	postgres/%{postgres_major_minor_version}/bin/64/pg_config
+
+#END setting postgres, all builds, evaluated paths  - Part 3 of 3
+
+
 ##TODO## below: dumping place to collect examples to be integrated later
 
 #handle /var/sadm/pkg/SUNWruby18r /var/sadm/pkg/SUNWruby18u
@@ -1445,6 +1636,13 @@
 # 
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- handle special macro name pnm_buildrequires_apache2_default pnm_requires_apache2_default
+  and macros for apache2 version.
+- handle special macro name pnm_buildrequires_postgres_default pnm_requires_postgres_default
+  and macros for postgres version.
+* Sun Nov  4 2012 - Thomas Wagner
+- handle SUNWgnu-gettext developer_gnome_gettext text_gnu_gettext gnu_gettext
 * Thu Oct 18 2012 - Thomas Wagner
 - handle SUNW*plugin/php52* meta packages not detectable on IPS systems (use /module/php52 instead)
   web/server/apache-22/plugin/plugin-php52 -->> web/server/apache-22/module/apache-php5
