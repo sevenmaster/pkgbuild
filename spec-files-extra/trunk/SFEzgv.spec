@@ -4,6 +4,7 @@
 # includes module(s): zgv
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define	src_name zgv
 %define	src_url	ftp://metalab.unc.edu/pub/Linux/apps/graphics/viewers/svga
@@ -23,8 +24,8 @@ BuildRequires: SUNWjpg-devel
 Requires: SUNWjpg
 BuildRequires: SUNWTiff-devel
 Requires: SUNWTiff
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 BuildRequires: SUNWgawk
 BuildRequires: SUNWtexi
 
@@ -91,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}, %include packagenamacros.inc
 * Tue Sep 14 2010 - Milan Jurik
 - fix SFEgawk dependency
 * Mon Jul 30 2007 - dougs@truemail.co.th

@@ -4,6 +4,7 @@
 # includes module(s): ioquake3
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc       1
 
@@ -20,8 +21,8 @@ Patch1:                 ioquake3-01-solaris.diff
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 %ifarch i386 amd64
 BuildRequires: SUNWxorg-mesa
 %endif
@@ -108,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ioquake3
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}, %include packagenamacros.inc
 * Sun May 16 2010 - Milan Jurik
 - fix typo
 * Mon May 03 2010 - Albert Lee <trisk@opensolaris.org>

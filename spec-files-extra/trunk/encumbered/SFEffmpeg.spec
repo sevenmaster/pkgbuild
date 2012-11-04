@@ -53,8 +53,8 @@ BuildRequires: %pnm_buildrequires_perl_default
 BuildRequires: SUNWxwinc
 Requires: SUNWxwrtl
 Requires: SUNWzlib
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 BuildRequires: SFElibgsm-devel
 Requires: SFElibgsm
 BuildRequires: SFExvid-devel
@@ -181,6 +181,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Sep 30 2012 - Milan Jurik
 - bump to 1.0
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}
 * Sun May 27 2012 - Milan Jurik
 - bump to 0.11
 * Sun Apr 29 2012 - Pavel Heimlich

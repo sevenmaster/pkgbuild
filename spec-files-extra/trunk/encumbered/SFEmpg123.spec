@@ -19,7 +19,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:       %{pnm_buildrequires_SUNWltdl}
 Requires:       %{pnm_requires_SUNWltdl}
-Requires:       SUNWlibsdl
+BuildRequires:  %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:       %{pnm_requires_SUNWlibsdl}
 Requires:       SUNWlibms
 BuildRequires:	SUNWaudh
 BuildRequires:	SUNWgnome-common-devel
@@ -94,6 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libmpg123.so
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}
 * Sat Jun 23 2012 - Thomas Wagner
 - change (Build)Requires: to %{pnm_buildrequires_SUNWltdl}, %include packagenamemacros.inc
 * Sun Apr 29 2012 - Pavel Heimlich
