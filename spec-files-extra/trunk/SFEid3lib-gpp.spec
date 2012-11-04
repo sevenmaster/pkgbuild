@@ -48,7 +48,8 @@ export ACLOCAL_FLAGS="-I %{_std_datadir}/aclocal"
 export CC=gcc
 export CFLAGS="%{gcc_optflags}"
 export CXX=g++
-export CXXFLAGS="%{gcc_cxx_optflags}"
+#oi151a4 g++ 4.6.3 needs -fpermissiv, s11 doesn't (can't tell why)
+export CXXFLAGS="%{gcc_cxx_optflags} -fpermissive"
 export LDFLAGS="%{_ldflags}"
 export LD_OPTIONS="-i -L%{_libdir} -R%{_libdir}"
 
@@ -87,6 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- add -fpermissive to CXXFLAGS, oi151a4 g++ 4.6.3 needs -fpermissiv, s11 doesn't (can't tell why)
 * Sat Apr 21 2012 - Thomas Wagner
 - %include usr-g++.inc to relocate out from /usr/gnu to --prefix=/usr/g++
 - use _std_datadir in ACLOCAL_FLAGS
