@@ -11,7 +11,7 @@ Name:                    SFEscons
 IPS_Package_Name:	developer/build/scons
 Summary:                 SCons - a software construction tool (make replacement)
 Group:		Development/Distribution Tools
-Version:                 2.1.0
+Version:                 2.2.0
 URL:                     http://www.scons.org/
 License:                 MIT
 SUNW_copyright:          scons.copyright
@@ -22,6 +22,14 @@ Requires: 	         %{pnm_requires_python_default}
 BuildRequires: 	         %{pnm_buildrequires_python_default}
 
 %include default-depend.inc
+
+%description
+SCons is an Open Source software construction tool that is,
+a next-generation build tool. Think of SCons as an improved,
+cross-platform substitute for the classic Make utility with
+integrated functionality similar to autoconf/automake and
+compiler caches such as ccache. In short, SCons is an easier,
+more reliable and faster way to build software.
 
 %prep
 %setup -q -n scons-%version
@@ -54,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man*/*
 
 %changelog
+* Fri Nov  2 2012 - Thomas Wagner
+- add description
+- bump to 2.2.0
 * Tue Sep 27 2011 - Alex Viskovatoff
 - bump to 2.1.0; add SUNW_copyright
 * Thu Nov 04 2010 - Milan Jurik
