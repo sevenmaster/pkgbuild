@@ -10,6 +10,7 @@
 Name:                    SFEgperf
 Summary:                 gperf - GNU perfect hash function generator
 Version:                 3.0.4
+IPS_Package_Name:	library/gperf
 Source:			 http://ftp.gnu.org/pub/gnu/gperf/gperf-%{version}.tar.gz
 URL:                     http://www.gnu.org/software/gperf
 SUNW_BaseDir:            %{_basedir}
@@ -58,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Sep 19 2011 - Thomas Wagner
 - bump to 3.0.4
+- add IPS_Package_Name
 * Wed Sep 3 2008 - <pradhap (at) gmail (dot) com>
 - fixed link
 * Thu Aug 30 2007 - laca@sun.com
