@@ -23,7 +23,6 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:            %{_basedir}
 
 %description
-
 LightDM is a cross-desktop display manager that aims to be the standard display
 manager for the X.org X server. The motivation for this project is there have
 been many new display managers written since XDM (often based on the XDM
