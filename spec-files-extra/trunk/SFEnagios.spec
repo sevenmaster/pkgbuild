@@ -7,9 +7,10 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:		SFEnagios
-Version:	3.2.3
+Version:	3.4.1
 Summary:	Host/service/network monitoring program
 Group:		Applications/System
 License:	GPLv2
@@ -21,13 +22,13 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
 
-BuildRequires:	SUNWsndmu
-Requires:	SUNWsndmu
+BuildRequires:	%{pnm_buildrequires_SUNWsndm_devel}
+Requires:	%{pnm_requires_SUNWsndm}
 BuildRequires:	SUNWjpg-devel
 Requires:	SUNWjpg
 BuildRequires:	SUNWgd2
 Requires:	SUNWgd2
-Requires:	SUNWapch22u
+Requires:	%{pnm_requires_SUNWapch22}
 
 Requires:	%{name}-common
 
@@ -211,6 +212,10 @@ user ftpuser=false gcos-field="Nagios Reserved UID" username="nagios" password=N
 %{_includedir}/nagios
 
 %changelog
+* Sat Aug  4 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWSUNWsndm_devel}, %{pnm_requires_SUNWapch22}, %include packagenamemacros.inc
+* Sat Aug  4 2012 - Thomas Wagner
+- bump to 3.4.1
 * Sun Mar 06 2011 - Milan Jurik
 - fix config issues
 * Sat Mar 05 2011 - Milan Jurik
