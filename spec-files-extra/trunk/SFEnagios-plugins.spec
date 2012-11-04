@@ -7,9 +7,10 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:		SFEnagios-plugins
-Version:	1.4.15
+Version:	1.4.16
 Summary:	Nagios plugins
 Group:		Applications/System
 License:	GPLv2
@@ -19,20 +20,20 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
 
-BuildRequires:	SUNWsndmu
-Requires:	SUNWsndmu
+BuildRequires:	%{pnm_buildrequires_SUNWsndm_devel}
+Requires:	%{pnm_requires_SUNWsndm}
 BuildRequires:	SFEnagios-devel
 Requires:	SFEnagios
-BuildRequires:	SUNWntpu
-Requires:	SUNWntpu
+BuildRequires:	%{pnm_buildrequires_SUNWntp_devel}
+Requires:	%{pnm_requires_SUNWntp}
 BuildRequires:	SUNWbip
 Requires:	SUNWbip
 BuildRequires:	SUNWbindc
 Requires:	SUNWbindc
 BuildRequires:	SUNWnet-snmp-utils
 Requires:	SUNWnet-snmp-utils
-BuildRequires:	SUNWsmbau
-Requires:	SUNWsmbau
+BuildRequires:	%{pnm_buildrequires_SUNWsmba_devel}
+Requires:	%{pnm_requires_SUNWsmbau}
 BuildRequires:	SFEperl-net-snmp
 Requires:	SFEperl-net-snmp
 
@@ -79,6 +80,8 @@ rm -rf %{buildroot}
 %{_libdir}
 
 %changelog
+* Sat Aug  4 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWsndm_devel}, %{pnm_buildrequires_SUNWntp_devel}, %{pnm_buildrequires_SUNWsmba_devel}, %include packagenamemacros.inc
 * Sun Mar 06 2011 - Milan Jurik
 - fix Solaris build
 * Sat Mar 05 2011 - Milan Jurik
