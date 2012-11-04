@@ -212,6 +212,31 @@
 %define pnm_buildrequires_sqlite3			database/sqlite-3
 %define pnm_requires_sqlite3				database/sqlite-3
 
+
+#kerberos
+%define pnm_buildrequires_service_security_kerberos_5  system/security/kerberos-5
+%define pnm_requires_service_security_kerberos_5       system/security/kerberos-5
+
+%define pnm_buildrequires_SUNWkrb 		system/security/kerberos-5
+%define pnm_buildrequires_SUNWkrbr		system/security/kerberos-5
+%define pnm_buildrequires_SUNWkrbu		system/security/kerberos-5
+%define pnm_requires_SUNWkrb                    system/security/kerberos-5
+%define pnm_requires_SUNWkrbr 			system/security/kerberos-5
+%define pnm_requires_SUNWkrbu 			system/security/kerberos-5
+
+#plugin-php52 itself can't be checked for being installed (on IPS it is only
+#a meta package!), use module instead.
+#this overwrites content from packagenames.define-133.inc
+#maybe could be moved to special cases packagenames.define-specialcases-133.inc ?
+#web/server/apache-22/plugin/plugin-php52 -->> web/server/apache-22/module/apache-php5
+%define pnm_buildrequires_web_server_apache_22_plugin_plugin_php52	web/server/apache-22/module/apache-php5
+%define pnm_requires_web_server_apache_22_plugin_plugin_php52	web/server/apache-22/module/apache-php5
+%define pnm_buildrequires_SUNWapch22m_php52_devel	web/server/apache-22/module/apache-php5
+%define pnm_buildrequires_SUNWapch22m_php52	web/server/apache-22/module/apache-php5
+%define pnm_requires_SUNWapch22m_php52		web/server/apache-22/module/apache-php5
+%define pnm_buildrequires_apch22m_php52		web/server/apache-22/module/apache-php5
+%define pnm_requires_apch22m_php52		web/server/apache-22/module/apache-php5
+
 #>=133
 %endif
 #os2nnn
@@ -1420,6 +1445,11 @@
 # 
 
 %changelog
+* Thu Oct 18 2012 - Thomas Wagner
+- handle SUNW*plugin/php52* meta packages not detectable on IPS systems (use /module/php52 instead)
+  web/server/apache-22/plugin/plugin-php52 -->> web/server/apache-22/module/apache-php5
+* Mon Sep 17 2012 - Thomas Wagner
+- handle SUNWkrb -> system/security/kerberos-5 (>=133)
 * Thu Aug 16 2012 - Thomas Wagner
 - fix %if {?$perl_dir} for case when already present, use {?$perl_dir:1}. perl_dir is a string
 * Thu Aug  9 2012 - Thomas Wagner
