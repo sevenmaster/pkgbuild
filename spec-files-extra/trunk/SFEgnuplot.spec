@@ -4,11 +4,13 @@
 # includes module(s): gnuplot
 #
 %include Solaris.inc
+%include usr-gnu.inc
+%include base.inc
 
 Name:                    SFEgnuplot
 IPS_Package_Name:	 sfe/image/gnuplot
 Summary:                 gnuplot
-Version:                 4.6.0
+Version:                 4.6.1
 Source:			 http://downloads.sourceforge.net/%{summary}/%{summary}-%{version}.tar.gz
 URL:                     http://www.gnuplot.info
 SUNW_BaseDir:            %{_basedir}
@@ -111,6 +113,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- move to /usr/gnu (allow parallel inst with OS provided gnuplot)
+- Bumped to 4.6.1
 * Mon Apr 30 2012 - Logan Bruns <logan@gedanken.org>
 - Bumped to 4.6.0
 - Added an IPS package name
