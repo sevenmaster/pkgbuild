@@ -24,7 +24,7 @@ Version:                 %{handbrake.version}
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SFEgcc
+Requires: SFEgcc-runtime
 Requires: SFEfaad2
 Requires: SFElibx264
 Requires: SFElibmad
@@ -82,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 30 2012 - Thomas Wagner
+- change Requires to SFEgcc-runtime
 * Thu Feb 25 2011 - jchoi42@pha.jhu.edu
 - migrate SFE/SUNW detection to packagenamemacros.inc format
 * Sat Feb 05 2011 - jchoi42@pha.jhu.edu
