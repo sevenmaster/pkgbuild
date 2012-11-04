@@ -27,6 +27,7 @@ BuildRequires: SUNWgnome-desktop-prefs-devel
 BuildRequires: SUNWgnome-libs-devel
 
 %description
+gnome desklets, see URL
 
 %prep
 rm -rf %name-%version
