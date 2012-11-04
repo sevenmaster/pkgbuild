@@ -31,8 +31,9 @@ BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 BuildRequires: SFEicu-stdcxx-devel
 BuildRequires: %{pnm_buildrequires_python_default}
-Requires: SFEicu-stdcxx
-Requires: SUNWlibstdcxx4
+Requires:      SFEicu-stdcxx
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 %package -n %name-devel
 IPS_package_name:	system/library/stdcxx/boost/header-boost
@@ -101,6 +102,8 @@ rm -rf %{buildroot}
 %{_docdir}/boost-%{version}
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}
 * Sun Apr 29 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_python_default}, %include packagenamacros.inc
 * Sat Jan 14 2012 - Milan Jurik

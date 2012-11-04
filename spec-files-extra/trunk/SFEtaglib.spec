@@ -5,6 +5,7 @@
 #
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %include stdcxx.inc
 
 Name:		SFEtaglib
@@ -20,8 +21,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:	SFEcmake
-BuildRequires: SUNWlibstdcxx4
-Requires: SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 %package devel
 Summary:	%{summary} - development files
@@ -71,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Sun Oct 23 2011 - Milan Jurik
 - bump top 1.7
 * Mon Jul 25 2011 - N.B.Prashanth

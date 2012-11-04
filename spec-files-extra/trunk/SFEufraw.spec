@@ -52,8 +52,8 @@ BuildRequires: SUNWesu
 # pod2man:
 BuildRequires: %pnm_buildrequires_perl_default
 BuildRequires: SUNWgnome-common-devel
-Requires: SUNWlibstdcxx4
-BuildRequires: SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 %if %build_l10n
 %package l10n
@@ -134,6 +134,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Mon Jul 25 2011 - N.B.Prashanth
 - add SUNW_Copyright
 * Tue Mar 01 2011 - Milan Jurik

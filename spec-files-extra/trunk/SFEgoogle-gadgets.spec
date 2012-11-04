@@ -4,6 +4,7 @@
 # includes module(s): google-gadgets
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                    SFEgoogle-gadgets
 Summary:                 Google Gadgets - a platform for running desktop gadgets.
@@ -25,7 +26,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWfirefox
-Requires: SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 Requires: SUNWzlib
 Requires: SUNWmlib
 Requires: SUNWdbus-libs
@@ -99,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Thu Jun 25 2009 - alfred.peng@sun.com
 - Bump to 0.11.0.
   Add patch to build with Firefox 3.5.

@@ -6,12 +6,13 @@
 
 %define _basedir /usr/stdcxx
 %include Solaris.inc
+%include packagenamemacros.inc
 %define srcname libebml
 
 Name:		SFElibebml
 IPS_package_name:	library/stdcxx/libebml
 License:	LGPL
-Summary:	Extensible Binary Meta Language
+Summary:	Extensible Binary Meta Language (stdcxx4-built)
 Group:		System Environment/Libraries
 URL:		http://ebml.sourceforge.net
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
@@ -31,8 +32,8 @@ BuildRequires:	SUNWgnu-coreutils
 %endif
 BuildRequires:	SUNWloc
 
-BuildRequires:	SUNWlibstdcxx4
-Requires:	SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 %package devel
 Summary:	%{summary} - development files
@@ -77,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Sun Jul 29 2012 - Milan Jurik
 - bump to 1.2.2
 * Fri Jun 22 2012 - Logan Bruns <logan@gedanken.org>
