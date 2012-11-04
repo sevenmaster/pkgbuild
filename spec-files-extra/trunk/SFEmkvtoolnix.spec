@@ -47,7 +47,6 @@ BuildRequires: SFEwxwidgets-gpp-devel
 Requires: SFEwxwidgets-gpp
 
 %description
-
 MKVToolnix is a set of tools to create, alter and inspect Matroska files under
 Linux, other Unices and Windows. They do for Matroska what the OGMtools do for
 the OGM format and then some.
