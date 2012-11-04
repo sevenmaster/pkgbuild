@@ -8,7 +8,7 @@
 
 Name:			SFEsdl-gfx
 Summary: 		Graphics library for SDL
-Version:		2.0.22
+Version:		2.0.24
 URL:			http://www.ferzkopp.net/Software/SDL_gfx-2.0/
 License:		LGPL
 Source: 		http://www.ferzkopp.net/Software/%{src_name}-2.0/%{src_name}-%{version}.tar.gz
@@ -44,6 +44,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Nov  2 2012 - Thomas Wagner
+- bump to 2.0.24
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl}, %include packagenamemacros.inc
 * Wed Jan 05 2011 - Milan Jurik
 - bump to 2.0.22
 * Sun Apr 11 2010 - Milan Jurik

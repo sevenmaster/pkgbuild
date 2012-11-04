@@ -4,6 +4,7 @@
 # includes module(s): SDL
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %define mmx_option --disable-mmx
@@ -21,8 +22,6 @@
 %define mmx_option --disable-mmx
 %use sdl = sdl-gfx.spec
 
-%define SFEsdl	%(/usr/bin/pkginfo -q SFEsdl && echo 1 || echo 0)
-
 Name:			SFEsdl-gfx
 IPS_Package_Name:	library/graphics/sdl-gfx
 Summary: 		%{sdl.summary}
@@ -32,19 +31,18 @@ License:		%{sdl.license}
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-%if %SFEsdl
-BuildRequires: SFEsdl-devel
-Requires: SFEsdl
-%else
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
-%endif
+
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %{name}
+
+%description
+empty
 
 %prep
 rm -rf %name-%version
@@ -116,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov  2 2012 - Thomas Wagner
+- bump to 2.0.24
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl}, %include packagenamemacros.inc
 * Mon Oct 17 2011 - Milan Jurik
 - add IPS package name
 * Sun Apr 11 2010 - Milan Jurik
