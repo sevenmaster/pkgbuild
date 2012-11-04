@@ -39,7 +39,6 @@ Requires:     SUNWgnome-python-desktop  SUNWgnome-python-libs SUNWpython-imaging
 #BuildRequires:
 
 %description 
-
 Wallpapoz enables automatic changing of Gnome desktop wallpapers based on timer, workspace.
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
