@@ -35,6 +35,9 @@ Meta(info.upstream_url):        http://search.cpan.org/~king/%{tarball_name}-%{t
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
+Clipboard - Copy and paste with any OS
+Who doesn't remember the first time they learned to copy and paste, and generated an exponentially growing text document? Yes, that's right, clipboards are magical.
+With Clipboard.pm, this magic is now trivial to access, in a cross-platform-consistent API, from your Perl code.
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -62,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- add description
 * Sat Jun 18 2011 - Thomas Wagner
 - comment Copyright. need a general solution to point to perl license.
 * Fri Jun 17 2011 - Thomas Wagner
