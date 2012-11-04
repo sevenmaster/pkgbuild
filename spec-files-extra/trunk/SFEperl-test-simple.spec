@@ -55,6 +55,10 @@ make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 rm -rf $RPM_BUILD_ROOT
 make install
 
+#remove $RPM_BUILD_ROOT/usr/perl5/vendor_perl/5.8.4/i86pc-solaris-64int/auto/File/Which/.packlist
+#..../i86pc-solaris-64int/perllocal.pod
+rm -r $RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -72,5 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Nov  2 2012 - Thomas Wagner
+- remove unused directory %{perl_dir}
 * Tue Aug 14 2012 - Thomas Wagner
 - initial spec
