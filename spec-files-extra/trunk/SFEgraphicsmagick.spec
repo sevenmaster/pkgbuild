@@ -24,7 +24,7 @@ Source:                 %{sf_download}/graphicsmagick/GraphicsMagick-%{version}.
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-#%include perl-depend.inc
+%include perl-depend.inc
 
 # JPEG-2000 library
 BuildRequires:		SFEjasper-devel
@@ -34,10 +34,14 @@ Requires:		SFEjasper
 # Stand-alone program. Not really a compile/link requirement
 BuildRequires:		SUNWdcraw
 Requires:		SUNWdcraw
+BuildRequires:		SUNWgnome-img-editor-devel
+Requires:		SUNWgnome-img-editor
+BuildRequires:		%{pnm_buildrequires_SUNWsane_backend_devel}
+Requires:		%{pnm_requires_SUNWsane_backend}
 
 # FreeType2 font handling library and rendering engine
-BuildRequires:		SUNWfreetype2
-Requires:		SUNWfreetype2
+BuildRequires:		%{pnm_buildrequires_SUNWfreetype2_devel}
+Requires:		%{pnm_requires_SUNWfreetype2}
 
 # The Zip compression library
 BuildRequires:		SUNWzlib
@@ -159,6 +163,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWsane_backend_devel}, %{pnm_buildrequires_SUNWfreetype2_devel}
+- add (Build)Requires SUNWgnome-img-editor(-devel)
+- use perl-depend.inc for defaults
 * Mon Oct 15 2012 - Ken Mays <kmays2000@gmail.com>
 - update to 1.3.17
 * Sun Aug 12 2012 - Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
@@ -179,8 +187,8 @@ rm -rf $RPM_BUILD_ROOT
 - add SUNW_copyright and IPS_package_name
 * Tue Feb  3 2011 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWsane_backend}
--  Requires to %{pnm_requires_SUNWsane_backend}
--  %include packagenamemacros.inc
+  Requires to %{pnm_requires_SUNWsane_backend}
+  %include packagenamemacros.inc
 * Sun Nov 07 2010 - Milan Jurik
 - bump to 1.3.12, add Jasper to deps, disable PerlMagic because build is broken
 * Tue Nov 17 2009 - bfriesen@simple.dallas.tx.us
