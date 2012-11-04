@@ -114,8 +114,8 @@ SUNW_Copyright:      qt.copyright
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-BuildRequires: SUNWlibstdcxx4
-Requires: SUNWlibstdcxx4
+BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
+Requires:      %{pnm_requires_SUNWlibstdcxx4}
 
 # Guarantee X/freetype environment concisely (hopefully):
 BuildRequires: SUNWgtk2
@@ -284,6 +284,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}
 * Sat Jan 07 2012 - Milan Jurik
 - bump to 4.7.4 (with help from KDE specs)
 - rename to SFEqt-stdcxx
