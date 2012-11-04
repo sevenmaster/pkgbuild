@@ -6,6 +6,7 @@
 # of me must work or not needed. Gilles Dauphin
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 
@@ -31,7 +32,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires: SFEcmake
 BuildRequires: SUNWlibms
 Requires: SUNWlibms
-BuildRequires: SUNWaudh
+BuildRequires: %{pnm_buildrequires_SUNWaudh}
 
 %if %with_libaudioio
 BuildRequires: SFElibaudioio-devel
@@ -61,6 +62,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export CC=gcc
+export CFLAGS="%{optflags}"
+export LDFLAGS="%{_ldflags}"
 
 cd %{src_name}-%{version}
 cd build
@@ -91,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Aug 19 2012 - Thomas Wagner
+- change to BuildRequires to %{pnm_buildrequires_SUNWaudh}, %include packagenamacros.inc
+- add standard CFLAGS, LDFLAGS
 * Sun Aug 19 2012 - Milan Jurik
 - bump to 1.14
 - use gcc because atomicity support
