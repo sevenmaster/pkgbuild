@@ -76,6 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov  4 2012 - Thomas Wagner
+- archive/retire SFEblas.spec and change consuming spec files to use SFElapack (contains *blas) instead
 * Sun Apr 29 2012 - Pavel Heimlich
 - added shared library
 * Fri Jul 22 2011 - Guido Berhoerster <gber@openindiana.org>
