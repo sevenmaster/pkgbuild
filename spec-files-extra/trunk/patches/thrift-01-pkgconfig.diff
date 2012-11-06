@@ -1,0 +1,10 @@
+--- thrift-0.9.0/lib/cpp/thrift.pc.in	2012-10-11 17:58:06.000000000 -0700
++++ thrift-0.9.0-patched/lib/cpp/thrift.pc.in	2012-11-05 19:15:08.455207743 -0800
+@@ -25,5 +25,5 @@
+ Name: Thrift
+ Description: Thrift C++ API
+ Version: @VERSION@
+-Libs: -L${libdir} -lthrift
+-Cflags: -I${includedir}/thrift
++Libs: -L${libdir} -R${libdir} -lthrift
++Cflags: -I${includedir}/thrift -I${includedir}
