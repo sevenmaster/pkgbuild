@@ -1,3 +1,9 @@
+2012-11-05  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEthrift-gpp.spec: initial spec.
+	* copyright/SFEthrift-gpp.copyright
+	* patches/thrift-01-pkgconfig.diff
+
 2012-10-30 Ken Mays  <kmays2000@gmail.com>
 
 	* experimental/SFEsamba4.spec: bump to 4.0.0rc4
