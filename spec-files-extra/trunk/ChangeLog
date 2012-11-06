@@ -1,5 +1,7 @@
 2012-11-05  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEasterisk.spec: bump to 1.8.17.0
+
 	* SFEthrift-gpp.spec: initial spec.
 	* copyright/SFEthrift-gpp.copyright
 	* patches/thrift-01-pkgconfig.diff
