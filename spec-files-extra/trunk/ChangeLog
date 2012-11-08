@@ -1,3 +1,8 @@
+2012-11-08  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEsage.spec: bump to 5.2, switch to external atlas, update for
+	newer gcc runtime path and update website url.
+
 2012-11-07 Ken Mays  <kmays2000@gmail.com>
 
 	* SFEfuse-exfat.spec: bump to 0.9.8
