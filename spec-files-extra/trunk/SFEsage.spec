@@ -20,14 +20,18 @@ Name:                    SFEsage
 IPS_Package_Name:	 sfe/math/sage
 Summary:                 SAGE - a free open-source mathematics software system
 Group:                   Utility
-Version:                 5.0
-URL:		         http://sagemath.info
+Version:                 5.2
+URL:		         http://www.sagemath.org
 Source:		         http://www.sagemath.org/src-old/sage-%{version}.tar
 License: 		 GPL
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+BuildRequires:      SFEgcc
+Requires:           SFEgccruntime
+BuildRequires:      SFEatlas
+Requires:           SFEatlas
 
 %description
 Sage is free, open-source math software that supports research and
@@ -53,6 +57,8 @@ export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags"
 export LD=/usr/ccs/bin/ld
+export LDFLAGS="-L/usr/gnu/lib -R/usr/gnu/lib"
+export SAGE_ATLAS_LIB=/usr/lib/atlas
 
 #make MAKE="make -j$CPUS"
 make -j$CPUS
@@ -81,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/sage/*
 
 %changelog
+* Thu Nov 8 2012 - Logan Bruns <logan@gedanken.org>
+- Bump to 5.2, switch to external atlas, update for newer gcc runtime
+  path and update website url.
 * Tue Jun 19 2012 - Logan Bruns <logan@gedanken.org>
 - Fixed download URL (avoid mirror which changed.)
 * Thu Jun 7 2012 - Logan Bruns <logan@gedanken.org>
