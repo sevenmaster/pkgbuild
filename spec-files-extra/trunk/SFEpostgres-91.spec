@@ -11,7 +11,7 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.1.5
+%define tarball_version  9.1.6
 %define major_version	 9.1
 
 %define _basedir         %{_prefix}/%{major_version}
@@ -912,6 +912,8 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %{_prefix}/%{major_version}/bin/amd64/vacuumlo
 
 %changelog
+* Thu Nov 08 2012 - Milan Jurik
+- bump to 9.1.6
 * Sun Aug 19 2012 - Milan Jurik
 - fix packaging, bump to 9.1.5
 * Thu Feb  9 JST 2011 TAKI, Yasushi <taki@justplayer.com>
