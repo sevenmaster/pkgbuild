@@ -6,12 +6,12 @@
 %include Solaris.inc
 
 %define src_name libxfce4ui
-%define src_url http://archive.xfce.org/src/xfce/libxfce4ui/4.8
+%define src_url http://archive.xfce.org/src/xfce/libxfce4ui/4.10
 
 Name:		SFElibxfce4ui
 IPS_Package_Name:	library/xfce/libxfceui
 Summary: 	Widgets library for the Xfce desktop environment
-Version: 	4.8.1
+Version: 	4.10.0
 License:	LGPLv2+
 SUNW_Copyright:	libxfce4ui.copyright
 URL: 		http://www.xfce.org/
@@ -125,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Tue Jan 17 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 4.8.1
 * Sat Jul 23 2011 - Alex Viskovatoff

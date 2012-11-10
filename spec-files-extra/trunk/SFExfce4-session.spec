@@ -7,16 +7,16 @@
 %include Solaris.inc
 
 %define src_name xfce4-session
-%define src_url http://archive.xfce.org/src/xfce/xfce4-session/4.8/
+%define src_url http://archive.xfce.org/src/xfce/xfce4-session/4.10/
 
 Name:		SFExfce4-session
 IPS_Package_Name:	xfce/xfce-session
 Summary:	Xfce Session manager
-Version:	4.8.3
+Version:	4.10.0
 URL:		http://www.xfce.org/
 License:	GPLv2
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
-Patch1:		xfce4-session-01-rbac.diff
+#Patch1:		xfce4-session-01-rbac.diff
 Group:		Desktop (GNOME)/Sessions
 SUNW_Copyright:	xfce4-session.copyright
 SUNW_BaseDir:	%{_basedir}
@@ -82,7 +82,7 @@ Requires:	%{name}
 
 %prep
 %setup -q -n %{src_name}-%{version}
-%patch1 -p1
+#%patch1 -p1
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
@@ -190,6 +190,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Thu Aug 23 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.8.3
 * Fri Sep 30 2011 - Ken Mays <kmays2000@gmail.com>

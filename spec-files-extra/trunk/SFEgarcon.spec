@@ -6,11 +6,11 @@
 %include Solaris.inc
 
 %define src_name garcon
-%define src_url http://archive.xfce.org/src/xfce/%{src_name}/0.1/
+%define src_url http://archive.xfce.org/src/xfce/%{src_name}/0.2/
 
 Name:		SFEgarcon
 IPS_Package_Name:	library/desktop/garcon
-Version:	0.1.12
+Version:	0.2.0
 Summary:	Implementation of the freedesktop.org menu specification
 License:	LGPLv2+ and GFDLv1.1
 SUNW_Copyright:	garcon.copyright
@@ -117,6 +117,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 0.2.0
 * Thu Aug 23 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 0.1.12
 * Wed Sep 14 2011 - Ken Mays <kmays2000@gmail.com>

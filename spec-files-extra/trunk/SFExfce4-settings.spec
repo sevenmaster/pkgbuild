@@ -7,12 +7,12 @@
 %include Solaris.inc
 
 %define src_name xfce4-settings
-%define src_url http://archive.xfce.org/src/xfce/xfce4-settings/4.8/
+%define src_url http://archive.xfce.org/src/xfce/xfce4-settings/4.10/
 
 Name:		SFExfce4-settings
 IPS_Package_Name:	xfce/config/xfce-settings
 Summary:	Various gtk widgets for xfce
-Version:	4.8.3
+Version:	4.10.0
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 License:	GPLv2
@@ -108,6 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Sat Sep 24 2011 - Ken Mays <kmays2000@gmail.com>
 - Backed to 4.8.3
 * Tue Jul 26 2011 - N.B.Prashanth
