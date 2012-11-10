@@ -7,12 +7,12 @@
 %include Solaris.inc
 
 %define src_name xfwm4
-%define src_url http://archive.xfce.org/src/xfce/xfwm4/4.8/
+%define src_url http://archive.xfce.org/src/xfce/xfwm4/4.10/
 
 Name:		SFExfwm4
 IPS_Package_Name:	xfce/window-manager
 Summary:	Next generation window manager for Xfce
-Version:	4.8.3
+Version:	4.10.0
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 License:	GPLv2
@@ -127,6 +127,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Tue Jan 17 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 4.8.3
 * Sun Oct  2 2011 - Alex Viskovatoff

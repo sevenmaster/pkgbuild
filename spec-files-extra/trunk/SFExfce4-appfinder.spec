@@ -7,12 +7,12 @@
 %include Solaris.inc
 
 %define src_name xfce4-appfinder
-%define src_url http://archive.xfce.org/xfce/4.8/src/
+%define src_url http://archive.xfce.org/src/xfce/xfce4-appfinder/4.10
 
 Name:		SFExfce4-appfinder
 IPS_Package_Name:	xfce/xfce-appfinder
 Summary:	Appfinder for the Xfce Desktop Environment
-Version:	4.8.0
+Version:	4.10.0
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		Applications/Accessories
@@ -115,6 +115,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Mon Jul 25 2011 - N.B.Prashanth
 - Added SUNW_Copyright
 * Sat Mar 26 2011 - Milan Jurik

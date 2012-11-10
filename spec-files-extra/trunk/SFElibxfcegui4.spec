@@ -7,14 +7,14 @@
 %include Solaris.inc
 
 %define src_name libxfcegui4
-%define src_url http://archive.xfce.org/src/xfce/libxfcegui4/4.8/
+%define src_url http://archive.xfce.org/src/archive/libxfcegui4/4.10
 
 Name:		SFElibxfcegui4
 IPS_Package_Name:	library/desktop/libxfcegui
 Summary:	Various gtk widgets for xfce
 License:	LGPLv2+
 SUNW_Copyright:	libxfcegui4.copyright
-Version:	4.8.1
+Version:	4.10.0
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		Desktop (GNOME)/Libraries
@@ -120,6 +120,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.0
 * Sat Jul 23 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Thu Apr 21 2011 - Ken Mays <kmays2000@gmail.com>
