@@ -16,7 +16,7 @@
 Name:		SFEcmake
 IPS_Package_Name:	sfe/developer/build/cmake 
 Summary:	Cross platform make system
-Version:	2.8.8
+Version:	2.8.10
 License:	BSD3c
 SUNW_Copyright:	cmake.copyright
 Source:		http://www.cmake.org/files/v2.8/cmake-%{version}.tar.gz
@@ -68,11 +68,13 @@ rm -rf %{buildroot}
 %{_docdir}/cmake
 
 %changelog
+* Sun Nov 11 2012 - Logan Bruns <logan@gedanken.org>
+- bump to 2.8.10
 * Sun Jun 17 2012 - Thomas Wagner
 - fix permissions %dir %attr (0755,root,other) %{_datadir}/aclocal/*
 * Wed May 16 2012 - Thomas Wagner
 - fix permissions %dir %attr (0755,root,other) %{_datadir}/aclocal
-* Fri Apr 20 2011 - Logan Bruns <logan@gedanken.org>
+* Fri Apr 20 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 2.8.8 and enable parallel build.
 * Sat Feb 11 2012 - Milan Jurik
 - bump to 2.8.7
