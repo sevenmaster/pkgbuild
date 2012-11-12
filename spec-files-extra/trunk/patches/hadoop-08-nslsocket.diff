@@ -1,0 +1,18 @@
+--- hadoop-2.0.2-alpha-src/hadoop-tools/hadoop-pipes/src/CMakeLists.txt	2012-09-25 16:54:14.000000000 -0700
++++ hadoop-2.0.2-alpha-src-patched/hadoop-tools/hadoop-pipes/src/CMakeLists.txt	2012-11-11 08:16:01.371931774 -0800
+@@ -58,7 +58,7 @@
+ output_directory(wordcount-nopipe examples)
+ 
+ add_executable(pipes-sort main/native/examples/impl/sort.cc)
+-target_link_libraries(pipes-sort hadooppipes hadooputils)
++target_link_libraries(pipes-sort hadooppipes hadooputils nsl socket)
+ output_directory(pipes-sort examples)
+ 
+ add_library(hadooputils STATIC
+@@ -72,4 +72,6 @@
+ target_link_libraries(hadooppipes
+     ${OPENSSL_LIBRARIES}
+     pthread
++    nsl
++    socket
+ )

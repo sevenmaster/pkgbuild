@@ -1,0 +1,15 @@
+--- hadoop-2.0.2-alpha-src/hadoop-common-project/hadoop-common/src/main/native/src/org/apache/hadoop/io/nativeio/NativeIO.c	2012-09-25 16:53:34.000000000 -0700
++++ hadoop-2.0.2-alpha-src-patched/hadoop-common-project/hadoop-common/src/main/native/src/org/apache/hadoop/io/nativeio/NativeIO.c	2012-11-09 17:10:42.890880346 -0800
+@@ -371,11 +371,7 @@
+   char message[80];
+   jstring jstr_message;
+ 
+-  if ((errnum >= 0) && (errnum < sys_nerr)) {
+-    snprintf(message, sizeof(message), "%s", sys_errlist[errnum]);
+-  } else {
+-    snprintf(message, sizeof(message), "Unknown error %d", errnum);
+-  }
++  snprintf(message, sizeof(message), "%s", strerror(errnum));
+ 
+   jobject errno_obj = errno_to_enum(env, errnum);
+ 

@@ -1,0 +1,10 @@
+--- hadoop-2.0.2-alpha-src/hadoop-hdfs-project/hadoop-hdfs/src/main/native/util/posix_util.c	2012-09-25 16:52:55.000000000 -0700
++++ hadoop-2.0.2-alpha-src-patched/hadoop-hdfs-project/hadoop-hdfs/src/main/native/util/posix_util.c	2012-11-09 17:27:12.944495568 -0800
+@@ -27,6 +27,7 @@
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <unistd.h>
++#include <limits.h>
+ 
+ static pthread_mutex_t gTempdirLock = PTHREAD_MUTEX_INITIALIZER;
+ 
