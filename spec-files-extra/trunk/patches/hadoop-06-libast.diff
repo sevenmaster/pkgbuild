@@ -1,0 +1,25 @@
+--- hadoop-2.0.2-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/CMakeLists.txt	2012-09-25 16:54:02.000000000 -0700
++++ hadoop-2.0.2-alpha-src-patched/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/CMakeLists.txt	2012-11-10 14:33:08.106546090 -0800
+@@ -32,6 +32,7 @@
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -O2 -D_GNU_SOURCE")
+ # note: can't enable -D_LARGEFILE: see MAPREDUCE-4258
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_REENTRANT")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/usr/include/ast")
+ 
+ include_directories(
+     ${CMAKE_CURRENT_SOURCE_DIR}
+@@ -51,6 +52,7 @@
+ )
+ target_link_libraries(container-executor
+     container
++    /usr/lib/libast.so.1
+ )
+ output_directory(container-executor target/usr/local/bin)
+ 
+@@ -59,5 +61,6 @@
+ )
+ target_link_libraries(test-container-executor
+     container
++    /usr/lib/libast.so.1
+ )
+ output_directory(test-container-executor target/usr/local/bin)

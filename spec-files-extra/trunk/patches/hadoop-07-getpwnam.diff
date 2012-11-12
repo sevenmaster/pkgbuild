@@ -1,0 +1,17 @@
+--- hadoop-2.0.2-alpha-src/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/native/container-executor/impl/container-executor.c	2012-09-25 16:54:02.000000000 -0700
++++ hadoop-2.0.2-alpha-src-patched/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/native/container-executor/impl/container-executor.c	2012-11-10 13:52:27.458231931 -0800
+@@ -442,9 +442,14 @@
+ static struct passwd* get_user_info(const char* user) {
+   int string_size = sysconf(_SC_GETPW_R_SIZE_MAX);
+   void* buffer = malloc(string_size + sizeof(struct passwd));
++#ifndef __sun
+   struct passwd *result = NULL;
+   if (getpwnam_r(user, buffer, buffer + sizeof(struct passwd), string_size,
+ 		 &result) != 0) {
++#else
++  struct passwd *result = buffer;
++  if (getpwnam_r(user, buffer, buffer + sizeof(struct passwd), string_size) != 0) {
++#endif
+     free(buffer);
+     fprintf(LOGFILE, "Can't get user information %s - %s\n", user,
+ 	    strerror(errno));

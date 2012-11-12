@@ -1,5 +1,8 @@
 2012-11-11  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEhadoop.spec: bumped to 2.0.2-alpha. Updated patches,
+	dependencies and packaging rules.
+
 	* SFEcmake.spec: bump to 2.8.10
 
 2012-11-10 Ken Mays  <kmays2000@gmail.com>
