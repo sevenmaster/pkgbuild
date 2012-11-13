@@ -10,9 +10,9 @@
 Name:                    SFEsugar-artwork
 Summary:                 Sugar Artwork
 URL:                     http://www.sugarlabs.org/
-Version:                 0.94.0
+Version:                 0.96.5
 Source:                  http://download.sugarlabs.org/sources/sucrose/glucose/sugar-artwork/sugar-artwork-%{version}.tar.bz2
-Patch1:                  sugar-artwork-01-wall.diff
+#Patch1:                  sugar-artwork-01-wall.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -26,7 +26,7 @@ BuildRequires:           SUNWicon-naming-utils
 
 %prep
 %setup -q -n sugar-artwork-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 export PYTHON=/usr/bin/python%{pythonver}
@@ -60,6 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/themes/sugar-72
 
 %changelog
+* Tue Nov 13 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.96.5
 * Sat Nov 19 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.94.0
 * Tue Sep 27 2011 - Ken Mays <kmays2000@gmail.com>

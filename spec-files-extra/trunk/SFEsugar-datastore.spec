@@ -10,9 +10,9 @@
 Name:                    SFEsugar-datastore
 Summary:                 Sugar Datastore
 URL:                     http://www.sugarlabs.org/
-Version:                 0.94.0
+Version:                 0.96.0
 Source:                  http://download.sugarlabs.org/sources/sucrose/glucose/sugar-datastore/sugar-datastore-%{version}.tar.bz2
-Patch1:                  sugar-datastore-01-python.diff
+#Patch1:                  sugar-datastore-01-python.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -26,7 +26,7 @@ BuildRequires:           SFExapian-bindings
 
 %prep
 %setup -q -n sugar-datastore-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 export PYTHON=/usr/bin/python%{pythonver}
@@ -67,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/services
 
 %changelog
+* Tue Nov 13 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.96.0
 * Sat Nov 19 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.94.0
 * Tue Sep 27 2011 - Ken Mays <kmays2000@gmail.com>

@@ -10,9 +10,9 @@
 Name:                    SFEsugar-toolkit
 Summary:                 Sugar Learning Platform Toolkit
 URL:                     http://www.sugarlabs.org/
-Version:                 0.94.0
+Version:                 0.96.3
 Source:                  http://download.sugarlabs.org/sources/sucrose/glucose/sugar-toolkit/sugar-toolkit-%{version}.tar.bz2
-Patch1:                  sugar-toolkit-01-noalsa.diff
+#Patch1:                  sugar-toolkit-01-noalsa.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -38,7 +38,7 @@ Requires:     %{name}
 
 %prep
 %setup -q -n sugar-toolkit-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 export PYTHON=/usr/bin/python%{pythonver}
@@ -97,6 +97,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Nov 13 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.96.3
 * Sat Nov 19 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.94.0
 * Tue Sep 27 2011 - Ken Mays <kmays2000@gmail.com>
