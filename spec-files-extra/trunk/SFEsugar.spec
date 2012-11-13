@@ -10,10 +10,10 @@
 Name:                    SFEsugar
 Summary:                 Sugar Learning Platform
 URL:                     http://www.sugarlabs.org/
-Version:                 0.94.1
+Version:                 0.96.3
 Source:                  http://download.sugarlabs.org/sources/sucrose/glucose/sugar/sugar-%{version}.tar.bz2
 Source1:                 sugar.desktop
-Patch1:                  sugar-01-python.diff
+#Patch1:                  sugar-01-python.diff
 #Patch2:                  sugar-02-mouse.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -51,7 +51,7 @@ Requires:     %{name}
 
 %prep
 %setup -q -n sugar-%version
-%patch1 -p1
+#%patch1 -p1
 #%patch2 -p1
 
 %build
@@ -125,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Nov 13 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.96.3
 * Sat Nov 19 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.94.1
 * Tue Sep 27 2011 - Ken Mays <kmays2000@gmail.com>
