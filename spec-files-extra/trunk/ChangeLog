@@ -1,3 +1,8 @@
+2012-11-14  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEhbase.spec: bumped to 0.94.2 and enabled hadoop2
+	compatibility.
+
 2012-11-13 Ken Mays  <kmays2000@gmail.com>
 
 	* Bump to Sugar 0.96.3

@@ -16,13 +16,13 @@
 %define runusergroup other
 
 #set to 1 if patched and requires a rebuild before packaging
-%define is_patched 0
+%define is_patched 1
 
 Name:                    SFEhbase
 IPS_Package_Name:	 developer/distributed/hbase
 Summary:                 HBase - The Hadoop database
 Group:                   Utility
-Version:                 0.94.1
+Version:                 0.94.2
 URL:		         http://hbase.apache.org
 Source:		         http://www.us.apache.org/dist/hbase/hbase-%{version}/hbase-%{version}.tar.gz
 Source2:                 hbase.xml
@@ -63,8 +63,7 @@ cp %{SOURCE2} hbase.xml
 %build
 
 %if %is_patched
-mvn site install assembly:single -Dmaven.test.skip.exec
-cp target/hbase-%{version}.jar .
+mvn site install assembly:single -DskipTests -Dhadoop.profile=2.0
 %endif
 
 %install
@@ -74,6 +73,10 @@ mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp hbase.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 mkdir -p $RPM_BUILD_ROOT/var/log/hbase
 mkdir -p $RPM_BUILD_ROOT/var/lib/hbase
+
+%if %is_patched
+cd target/hbase-%{version}/hbase-%{version}
+%endif
 
 mkdir -p $RPM_BUILD_ROOT/etc
 mv conf $RPM_BUILD_ROOT/etc/hbase
@@ -137,6 +140,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/hbase.xml
 
 %changelog
+* Wed Nov 14 2012 - Logan Bruns <logan@gedanken.org>
+- bumped to 0.94.2 and enabled hadoop2 compatibility
 * Sat Oct 6 2012 - Logan Bruns <logan@gedanken.org>
 - bumped to 0.94.1 and removed a no longer needed patch 
 * Mon Jun 25 2012 - Logan Bruns <logan@gedanken.org>
