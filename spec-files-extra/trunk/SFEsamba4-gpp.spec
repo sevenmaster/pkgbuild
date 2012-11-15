@@ -5,9 +5,11 @@
 #
 # PASSED: samba4a11 on oi_151a/SS 12.1 - 10/30/2012 - Ken Mays
 # PASSED: samba4rc4 on oi_151a/GCC 4.6.2 10/31/2012 - Ken Mays
+# PASSED: samba4rc5 on oi_151a/GCC 4.6.2 11/15/2012 - Ken Mays
 #
 %include Solaris.inc
-%define source_name 	samba-4.0.0rc4 
+%define source_name 	samba-4.0.0rc5 
+%define cc_is_gcc 1 
 
 Name:                SFEsamba4
 Summary:             samba - CIFS Server and Domain Controller v4
@@ -32,14 +34,17 @@ rm -rf %name-%version
 
 
 %build
+export CC=gcc
+export CXX=g++
+export CPP=cpp
 
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export CFLAGS="-g -mt %optflags"
-export LDFLAGS="-z ignore %_ldflags"
+#export CFLAGS="-g -mt %optflags"
+#export LDFLAGS="-z ignore %_ldflags"
 
 cd %{source_name}
 ./configure \
@@ -87,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/*.so*
 %{_libdir}/python2.6
-%{_libdir}/5.8.4
+%{_libdir}/5.10.0
 %{_libdir}/i86pc-solaris-64int
 %{_libdir}/samba
 %dir %attr (0755, root, bin) %{_includedir}
@@ -110,8 +115,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0775, root, sys) /var/log/samba
 
 %changelog
+* Thu Nov 15 2012 - Ken Mays <kmays2000@gmail.com>
+- bumped to 4.0.0rc5
 * Wed Oct 31 2012 - Ken Mays <kmays2000@gmail.com>
-- updating to 4.0.0rc4
+- bumped to 4.0.0rc4
+- added --enable-socket-wrapper
 - Tested samba 4.0.0rc4 build on oi_151a/GCC 4.6.2 successfully [3776/3776]
 * Tue Oct 30 2012 - Ken Mays <kmays2000@gmail.com>
 - Added --enable-nss-wrapper to fix native build
