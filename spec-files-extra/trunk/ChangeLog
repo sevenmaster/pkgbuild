@@ -1,3 +1,7 @@
+2012-11-15 Ken Mays  <kmays2000@gmail.com>
+
+	* SFEsamba4-gpp.spec: Revised spec based on GCC build
+
 2012-11-14  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEhbase.spec: bumped to 0.94.2 and enabled hadoop2
