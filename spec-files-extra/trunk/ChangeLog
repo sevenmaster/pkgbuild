@@ -1,3 +1,7 @@
+2012-11-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* experimental/SFEkatta.spec: updated for hadoop2 compatibility.
+
 2012-11-15 Ken Mays  <kmays2000@gmail.com>
 
 	* SFEsamba4-gpp.spec: Revised spec based on GCC build
