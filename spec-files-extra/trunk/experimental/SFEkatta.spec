@@ -89,7 +89,7 @@ cp $RPM_BUILD_ROOT/usr/share/katta/bin/katta-config.sh-new $RPM_BUILD_ROOT/usr/s
 rm $RPM_BUILD_ROOT/usr/share/katta/bin/katta-config.sh-new
 echo "export JAVA_HOME=/usr/java" >> $RPM_BUILD_ROOT/etc/katta/katta-env.sh
 echo "export KATTA_LOG_DIR=/var/log/katta" >> $RPM_BUILD_ROOT/etc/katta/katta-env.sh
-echo "export KATTA_CLASSPATH=/usr/share/hadoop/hadoop-core-1.0.3.jar:/usr/share/hadoop/lib/commons-configuration-1.6.jar:/usr/share/hadoop/lib/commons-codec-1.4.jar:/usr/share/hadoop/lib/commons-lang-2.4.jar" >> $RPM_BUILD_ROOT/etc/katta/katta-env.sh
+echo "export KATTA_CLASSPATH=/usr/share/hadoop/share/hadoop/common/hadoop-common-2.0.2-alpha.jar:/usr/share/hadoop/share/hadoop/common/lib/commons-configuration-1.6.jar:/usr/share/hadoop/share/hadoop/common/lib/commons-codec-1.4.jar:/usr/share/hadoop/share/hadoop/common/lib/commons-lang-2.5.jar:/usr/share/hadoop/share/hadoop/common/lib/hadoop-auth-2.0.2-alpha.jar:/usr/share/hadoop/share/hadoop/common/lib/slf4j-api-1.6.1.jar:/usr/share/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.6.1.jar:/usr/share/hadoop/share/hadoop/common/lib/protobuf-java-2.4.0a.jar" >> $RPM_BUILD_ROOT/etc/katta/katta-env.sh
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
@@ -135,6 +135,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/katta.xml
 
 %changelog
+* Thu Nov 15 2012 - Logan Bruns <logan@gedanken.org>
+- Updated for hadoop2 compatibility.
 * Thu July 12 2012 - Logan Bruns <logan@gedanken.org>
 - Replaced hadoop client library with reference to more recent hadoop
   from hadoop pkg.
