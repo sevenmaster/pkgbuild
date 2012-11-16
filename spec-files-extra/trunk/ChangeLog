@@ -1,5 +1,7 @@
 2012-11-16  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEgerrit.spec: bump to 2.5.
+
 	* SFEjenkins.spec: bump to 1.490.
 
 2012-11-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
