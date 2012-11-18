@@ -1,3 +1,12 @@
+#Support:
+  #LCMS:          yes
+  #Exiv2:         no
+  #Lirc:          no
+  #Libchamplain:         disabled
+  #Libchamplain-gtk:     disabled
+
+
+
 #
 #
 # spec file for package SFEgeeqie 
@@ -8,12 +17,13 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-# Owner: jouby
 
 %include Solaris.inc
 %use geeqie = geeqie.spec
 Name:                    SFEgeeqie 
+IPS_Package_Name:        image/viewer/geeqie
 Summary:                 Geeqie - Image browser forked from gqview
+Group:                   Applications/Graphics and Imaging
 URL:                     http://geeqie.sourceforge.net/
 Version:                 %{geeqie.version}
 Source:                  http://sourceforge.net/projects/geeqie/files/geeqie/geeqie-%{version}/geeqie-%{version}.tar.gz/download 
@@ -25,6 +35,8 @@ Requires: SUNWuiu8
 Requires: SUNWgtk2
 BuildRequires: SUNWgtk2-devel
 BuildRequires: SUNWgnome-common-devel
+BuildRequires: SUNWdoxygen
+
 
 %if %build_l10n
 %package l10n
@@ -89,6 +101,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 18 2012 - Thomas Wagner
+- fix %install for html doc
+- remove owner
+- add BuildRequires: SUNWdoxygen
+- add IPS_Package_Name, add Group
+- bump to 1.1
 * Mon Aug 24 2009 - yuntong.jin@sun.com 
 - Initial build.
-

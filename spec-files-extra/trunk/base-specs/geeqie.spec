@@ -10,7 +10,7 @@
 
 Summary: Graphics file browser utility.
 Name: geeqie 
-Version: 1.0 
+Version: 1.1 
 Release: 0
 License: GPL
 Group: Applications/Multimedia
@@ -38,8 +38,12 @@ fi
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} --datadir=%{_datadir} 
 make -j$CPUS 
 
+cd doc
+make html
+cd ..
 mkdir html
-cp doc/*.html doc/*.txt html/.
+#cp doc/html/*.html doc/*.txt html/.
+cp doc/html/*.html html/
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -54,5 +58,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 18 2012 - Thomas Wagner
+- fix %install for html doc
+- remove owner
+- add BuildRequires: SUNWdoxygen
+- add IPS_Package_Name, add Group
+- bump to 1.1
 * Mon Aug 24 2009 - yuntong.jin@sun.com
 - Initial build.
