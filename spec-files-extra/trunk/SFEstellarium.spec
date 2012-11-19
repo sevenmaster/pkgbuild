@@ -12,7 +12,7 @@
 
 Name:		SFEstellarium
 IPS_Package_Name:	image/stellarium
-Version:	0.11.4a
+Version:	0.11.3
 Summary:	Photo-realistic nightsky renderer
 Group:		Scientific/Astronomy
 License:	GPLv2+
@@ -111,8 +111,6 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
-* Wed Sep 5 2012 - Ken Mays <kmays2000@gmail.com>
-- Bumped to 0.11.4
 * Sun Jul 29 2012 - Milan Jurik
 - bump to 0.11.3
 * Sun Jan 08 2012 - Milan Jurik
