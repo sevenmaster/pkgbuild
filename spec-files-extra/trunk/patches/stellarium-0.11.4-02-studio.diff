@@ -1,0 +1,394 @@
+--- stellarium-0.11.4-patch/src/core/modules/ConstellationMgr.cpp.old	2012-11-22 02:59:11.735441825 +0000
++++ stellarium-0.11.4-patch/src/core/modules/ConstellationMgr.cpp	2012-11-22 03:05:22.394000500 +0000
+@@ -42,7 +42,7 @@
+ #include "StelPainter.hpp"
+ #include "StelSkyDrawer.hpp"
+ 
+-using namespace std;
++// using namespace std;
+ 
+ // constructor which loads all data from appropriate files
+ ConstellationMgr::ConstellationMgr(StarMgr *_hip_stars)
+@@ -60,14 +60,14 @@
+ 
+ ConstellationMgr::~ConstellationMgr()
+ {
+-	std::vector<Constellation *>::iterator iter;
++	std::std::vector<Constellation *>::iterator iter;
+ 
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++)
+ 	{
+ 		delete(*iter);
+ 	}
+ 
+-	vector<vector<Vec3f> *>::iterator iter1;
++	std::vector<vector<Vec3f> *>::iterator iter1;
+ 	for (iter1 = allBoundarySegments.begin(); iter1 != allBoundarySegments.end(); ++iter1)
+ 	{
+ 		delete (*iter1);
+@@ -318,7 +318,7 @@
+ 	in.seek(0);
+ 
+ 	// delete existing data, if any
+-	vector < Constellation * >::iterator iter;
++	std::vector < Constellation * >::iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 		delete(*iter);
+ 
+@@ -529,7 +529,7 @@
+ 	glEnable(GL_BLEND);
+ 	glEnable(GL_CULL_FACE);
+ 
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	SphericalRegionP region = sPainter.getProjector()->getViewportConvexPolygon();
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+@@ -546,7 +546,7 @@
+ 	glEnable(GL_BLEND);
+ 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 	const SphericalCap& viewportHalfspace = sPainter.getProjector()->getBoundingCap();
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		(*iter)->drawOptim(sPainter, core, viewportHalfspace);
+@@ -559,7 +559,7 @@
+ 	glEnable(GL_BLEND);
+ 	sPainter.enableTexture2d(true);
+ 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++)
+ 	{
+ 		// Check if in the field of view
+@@ -570,7 +570,7 @@
+ 
+ Constellation *ConstellationMgr::isStarIn(const StelObject* s) const
+ {
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		// Check if the star is in one of the constellation
+@@ -587,7 +587,7 @@
+ 	// search in uppercase only
+ 	QString tname = abbreviation.toUpper();
+ 
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		if ((*iter)->abbreviation == tname)
+@@ -608,7 +608,7 @@
+ 	if (asterisms.empty()) return;
+ 
+ 	// clear previous names
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		(*iter)->englishName.clear();
+@@ -677,7 +677,7 @@
+ void ConstellationMgr::updateI18n()
+ {
+ 	StelTranslator trans = StelApp::getInstance().getLocaleMgr().getSkyTranslator();
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		(*iter)->nameI18 = trans.qtranslate((*iter)->englishName);
+@@ -687,7 +687,7 @@
+ // update faders
+ void ConstellationMgr::update(double deltaTime)
+ {
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	const int delta = (int)(deltaTime*1000);
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+@@ -700,7 +700,7 @@
+ 	if (artIntensity != intensity)
+ 	{
+ 		artIntensity = intensity;
+-		vector < Constellation * >::const_iterator iter;
++		std::vector < Constellation * >::const_iterator iter;
+ 		for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 		{
+ 			(*iter)->artFader.setMaxValue(artIntensity);
+@@ -719,7 +719,7 @@
+ 	if(artFadeDuration != duration)
+ 	{
+ 		artFadeDuration = duration;
+-		vector < Constellation * >::const_iterator iter;
++		std::vector < Constellation * >::const_iterator iter;
+ 		for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 		{
+ 			(*iter)->artFader.setDuration((int) (duration * 1000.f));
+@@ -740,7 +740,7 @@
+ 		linesDisplayed = displayed;
+ 		if (selected.begin() != selected.end()  && isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = selected.begin(); iter != selected.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagLines(linesDisplayed);
+@@ -748,7 +748,7 @@
+ 		}
+ 		else
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagLines(linesDisplayed);
+@@ -770,7 +770,7 @@
+ 		boundariesDisplayed = displayed;
+ 		if (selected.begin() != selected.end() && isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = selected.begin(); iter != selected.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagBoundaries(boundariesDisplayed);
+@@ -778,7 +778,7 @@
+ 		}
+ 		else
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagBoundaries(boundariesDisplayed);
+@@ -800,7 +800,7 @@
+ 		artDisplayed = displayed;
+ 		if (selected.begin() != selected.end() && isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = selected.begin(); iter != selected.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagArt(artDisplayed);
+@@ -808,7 +808,7 @@
+ 		}
+ 		else
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagArt(artDisplayed);
+@@ -830,13 +830,13 @@
+ 		namesDisplayed = displayed;
+ 		if (selected.begin() != selected.end() && isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = selected.begin(); iter != selected.end(); ++iter)
+ 				(*iter)->setFlagLabels(namesDisplayed);
+ 		}
+ 		else
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 				(*iter)->setFlagLabels(namesDisplayed);
+ 		}
+@@ -858,7 +858,7 @@
+ 		// when turning off isolated selection mode, clear exisiting isolated selections.
+ 		if (!isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 			{
+ 				(*iter)->setFlagLines(getFlagLines());
+@@ -912,12 +912,12 @@
+ 
+ 		if (isolateSelected)
+ 		{
+-			vector < Constellation * >::const_iterator iter;
++			std::vector < Constellation * >::const_iterator iter;
+ 			for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 			{
+ 
+ 				bool match = 0;
+-				vector < Constellation * >::const_iterator s_iter;
++				std::vector < Constellation * >::const_iterator s_iter;
+ 				for (s_iter = selected.begin(); s_iter != selected.end(); ++s_iter)
+ 				{
+ 					if( (*iter)==(*s_iter) )
+@@ -946,7 +946,7 @@
+ 		if (selected.begin() == selected.end()) return;
+ 
+ 		// Otherwise apply standard flags to all constellations
+-		vector < Constellation * >::const_iterator iter;
++		std::vector < Constellation * >::const_iterator iter;
+ 		for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 		{
+ 			(*iter)->setFlagLines(getFlagLines());
+@@ -968,7 +968,7 @@
+ 	if (c != NULL)
+ 	{
+ 
+-		vector < Constellation * >::const_iterator iter;
++		std::vector < Constellation * >::const_iterator iter;
+ 		int n=0;
+ 		for (iter = selected.begin(); iter != selected.end(); ++iter)
+ 		{
+@@ -1017,7 +1017,7 @@
+ 	unsigned int i, j;
+ 
+ 	// delete existing boundaries if any exist
+-	vector<vector<Vec3f> *>::iterator iter;
++	std::vector<vector<Vec3f> *>::iterator iter;
+ 	for (iter = allBoundarySegments.begin(); iter != allBoundarySegments.end(); ++iter)
+ 	{
+ 		delete (*iter);
+@@ -1039,12 +1039,12 @@
+ 	float DE, RA;
+ 	Vec3f XYZ;
+ 	unsigned num, numc;
+-	vector<Vec3f> *points = NULL;
++	std::vector<Vec3f> *points = NULL;
+ 	QString consname;
+ 	i = 0;
+ 	while (!istr.atEnd())
+ 	{
+-		points = new vector<Vec3f>;
++		points = new std::vector<Vec3f>;
+ 
+ 		num = 0;
+ 		istr >> num;
+@@ -1100,7 +1100,7 @@
+ 	glLineStipple(2, 0x3333);
+ 	glEnable(GL_LINE_STIPPLE);
+ #endif
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		(*iter)->drawBoundaryOptim(sPainter);
+@@ -1114,7 +1114,7 @@
+ {
+ 	QString objw = nameI18n.toUpper();
+ 
+-	vector <Constellation*>::const_iterator iter;
++	std::vector <Constellation*>::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		QString objwcap = (*iter)->nameI18.toUpper();
+@@ -1126,7 +1126,7 @@
+ StelObjectP ConstellationMgr::searchByName(const QString& name) const
+ {
+ 	QString objw = name.toUpper();
+-	vector <Constellation*>::const_iterator iter;
++	std::vector <Constellation*>::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		QString objwcap = (*iter)->englishName.toUpper();
+@@ -1145,7 +1145,7 @@
+ 
+ 	QString objw = objPrefix.toUpper();
+ 
+-	vector < Constellation * >::const_iterator iter;
++	std::vector < Constellation * >::const_iterator iter;
+ 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
+ 	{
+ 		QString constw = (*iter)->getNameI18n().mid(0, objw.size()).toUpper();
+--- stellarium-0.11.4-patch/plugins/Oculars/src/gui/PropertyBasedTableModel.cpp.old	2012-11-22 03:27:19.356850742 +0000
++++ stellarium-0.11.4-patch/plugins/Oculars/src/gui/PropertyBasedTableModel.cpp	2012-11-22 03:30:25.983740487 +0000
+@@ -57,7 +57,7 @@
+ 		 && index.column() < mappings.size()
+ 		 && index.column() >= 0){
+ 			QObject *object = content->at(index.row());
+-			data = object->property(mappings[index.column()].toStdString().c_str());
++			data = object->property(mappings[index.column()].toLocal8Bit().data());
+   }
+ 	return data;
+ }
+@@ -95,7 +95,7 @@
+ 	bool changeMade = false;
+ 	if (index.isValid() && role == Qt::EditRole && index.column() < mappings.size()) {
+ 		QObject* object = content->at(index.row());
+-		object->setProperty(mappings[index.column()].toStdString().c_str(), value);
++		object->setProperty(mappings[index.column()].toLocal8Bit().data(), value);
+ 		emit(QAbstractItemModel::dataChanged(index, index));
+ 
+ 		changeMade = true;
+--- stellarium-0.11.4-patch/plugins/Satellites/src/CMakeLists.txt.old	2012-11-22 03:08:27.103942956 +0000
++++ stellarium-0.11.4-patch/plugins/Satellites/src/CMakeLists.txt	2012-11-22 03:10:32.652403341 +0000
+@@ -82,7 +82,7 @@
+ 	# The library target "Satellites-static" has a default OUTPUT_NAME of "Satellites-static", so change it.
+ 	SET_TARGET_PROPERTIES(Satellites-static PROPERTIES OUTPUT_NAME "Satellites")
+ 	TARGET_LINK_LIBRARIES(Satellites-static ${StelMain} ${extLinkerOption})
+-        SET_TARGET_PROPERTIES(Satellites-static PROPERTIES COMPILE_FLAGS "-DQT_STATICPLUGIN -Wno-unused-parameter")
++        SET_TARGET_PROPERTIES(Satellites-static PROPERTIES COMPILE_FLAGS "-DQT_STATICPLUGIN")
+ 	ADD_DEPENDENCIES(AllStaticPlugins Satellites-static)
+ ENDIF()
+ 
+--- stellarium-0.11.4-patch/src/core/StelUtils.cpp.old	2012-11-22 03:13:00.801883089 +0000
++++ stellarium-0.11.4-patch/src/core/StelUtils.cpp	2012-11-22 03:23:14.105843287 +0000
+@@ -328,8 +328,8 @@
+ 
+ void spheToRect(double lng, double lat, Vec3d& v)
+ {
+-	const double cosLat = cos(lat);
+-	v.set(cos(lng) * cosLat, sin(lng) * cosLat, sin(lat));
++	const double cosLat = std::cos(lat);
++	v.set(cos(lng) * cosLat, std::sin(lng) * cosLat, std::sin(lat));
+ }
+ 
+ void spheToRect(float lng, float lat, Vec3f& v)
+@@ -341,15 +341,15 @@
+ void rectToSphe(double *lng, double *lat, const Vec3d& v)
+ {
+ 	double r = v.length();
+-	*lat = asin(v[2]/r);
+-	*lng = atan2(v[1],v[0]);
++	*lat = std::asin(v[2]/r);
++	*lng = std::atan2(v[1],v[0]);
+ }
+ 
+ void rectToSphe(float *lng, float *lat, const Vec3d& v)
+ {
+ 	double r = v.length();
+-	*lat = asin(v[2]/r);
+-	*lng = atan2(v[1],v[0]);
++	*lat = std::asin(v[2]/r);
++	*lng = std::atan2(v[1],v[0]);
+ }
+ 
+ void rectToSphe(float *lng, float *lat, const Vec3f& v)
+@@ -465,7 +465,7 @@
+ 	static const int JB_MAX_WITHOUT_OVERFLOW = 107374182;
+ 	long julian;
+ 
+-	julian = (long)floor(jd + 0.5);
++	julian = (long)std::floor(jd + 0.5);
+ 
+ 	long ta, jalpha, tb, tc, td, te;
+ 
+@@ -515,8 +515,8 @@
+ 
+ void getTimeFromJulianDay(double julianDay, int *hour, int *minute, int *second)
+ {
+-	double frac = julianDay - (floor(julianDay));
+-	int s = (int)floor((frac * 24.0 * 60.0 * 60.0) + 0.0001);  // add constant to fix floating-point truncation error
++	double frac = julianDay - (std::floor(julianDay));
++	int s = (int)std::floor((frac * 24.0 * 60.0 * 60.0) + 0.0001);  // add constant to fix floating-point truncation error
+ 
+ 	*hour = ((s / (60 * 60))+12)%24;
+ 	*minute = (s/(60))%60;
+@@ -797,8 +797,8 @@
+ {
+ 	double extra = (100.0* y) + m - 190002.5;
+ 	double rjd = 367.0 * y;
+-	rjd -= floor(7.0*(y+floor((m+9.0)/12.0))/4.0);
+-	rjd += floor(275.0*m/9.0) ;
++	rjd -= std::floor(7.0*(y+floor((m+9.0)/12.0))/4.0);
++	rjd += std::floor(275.0*m/9.0) ;
+ 	rjd += d;
+ 	rjd += (h + (min + s/60.0)/60.)/24.0;
+ 	rjd += 1721013.5;

@@ -12,26 +12,27 @@
 
 Name:		SFEstellarium
 IPS_Package_Name:	image/stellarium
-Version:	0.11.3
+Version:	0.11.4a
 Summary:	Photo-realistic nightsky renderer
 Group:		Scientific/Astronomy
 License:	GPLv2+
 URL:		http://stellarium.free.fr/
 Source:		%{sf_download}/stellarium/stellarium-%{version}.tar.gz
-Patch1:		stellarium-01-studio.diff
+Patch1:		stellarium-0.11.4-01-studio.diff
+Patch2:		stellarium-0.11.4-02-studio.diff
 SUNW_Copyright:	stellarium.copyright
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SFEsdl-mixer-devel
-Requires: SFEsdl-mixer
-BuildRequires: SUNWimagick
-BuildRequires: SFEcmake
-BuildRequires: SFEqt-stdcxx-devel
-Requires: SFEqt-stdcxx
-BuildRequires: SUNWgnome-config-devel
-Requires: SUNWgnome-config
+#BuildRequires: SFEsdl-mixer-devel
+#Requires: SFEsdl-mixer
+#BuildRequires: SUNWimagick
+#BuildRequires: SFEcmake
+#BuildRequires: SFEqt-stdcxx-devel
+#Requires: SFEqt-stdcxx
+#BuildRequires: SUNWgnome-config-devel
+#Requires: SUNWgnome-config
 
 %description
 Stellarium is a real-time 3D photo-realistic nightsky renderer. It can
@@ -48,8 +49,9 @@ Requires:	%{name}
 %endif
 
 %prep
-%setup -q -n stellarium-%{version}
+%setup -q -n stellarium-0.11.4
 %patch1 -p1
+%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -111,6 +113,10 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Wed Nov 21 2012 - Ken Mays <kmays2000@gmail.com>
+- Bumped to 0.11.4
+- Added stellarium-0.11.4-01-studio.diff
+- Added stellarium-0.11.4-02-studio.diff
 * Sun Jul 29 2012 - Milan Jurik
 - bump to 0.11.3
 * Sun Jan 08 2012 - Milan Jurik
