@@ -1,3 +1,9 @@
+2012-11-21 Ken Mays  <kmays2000@gmail.com>
+
+	* SFEstellarium.spec: bump to 0.11.4
+	* patches/stellarium-0.11.4-01-studio.diff
+	* patches/stellarium-0.11.4-02-studio.diff
+
 2012-11-19  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEnmh.spec: initial spec.
@@ -161,7 +167,6 @@
 2012-09-05 Ken Mays  <kmays2000@gmail.com>
 
 	* SFEsamba4.spec: bump to 4.0.0beta8
-	* SFEstellarium.spec: bump to 0.11.4
 
 2012-08-31 Milan Jurik <sfnet@xylab.cz>
 
