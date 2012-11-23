@@ -1,5 +1,6 @@
 2012-11-21 Ken Mays  <kmays2000@gmail.com>
-
+	* SFExfce4-mixer.spec: bump to 4.10.0
+	* SFExfce4-ristretto: bump to 0.6.3
 	* SFEstellarium.spec: bump to 0.11.4
 	* patches/stellarium-0.11.4-01-studio.diff
 	* patches/stellarium-0.11.4-02-studio.diff
