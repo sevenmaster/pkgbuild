@@ -17,7 +17,7 @@ Name:                    SFEbitlbee
 IPS_Package_Name:	 network/chat/bitlbee
 Summary:                 BitlBee - An IRC to other chat networks gateway
 Group:                   Utility
-Version:                 3.0.5
+Version:                 3.0.6
 URL:		         http://www.bitlbee.org
 Source:		         http://get.bitlbee.org/src/bitlbee-%version.tar.gz
 Source2:                 bitlbee.xml
@@ -26,7 +26,6 @@ Patch1:                  bitlbee-01-ipc.diff
 Patch2:                  bitlbee-02-irc_im.diff
 Patch3:                  bitlbee-03-irc_commands.diff
 Patch4:                  bitlbee-04-irc_user.diff
-Patch5:                  bitlbee-05-makefile.diff
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -52,7 +51,6 @@ rm -rf %name-%version
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 #bitlbee manifest
 cp -p %{SOURCE2} bitlbee.xml
@@ -69,7 +67,7 @@ export LDFLAGS="%_ldflags"
             --ssl=openssl                       \
             --otr=1
 
-make -j$CPUS
+make -j$CPUS LDFLAGS_BITLBEE="-lgcrypt"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -111,6 +109,8 @@ user ftpuser=false gcos-field="BitlBee Reserved UID" username="bitlbee" password
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/bitlbee.xml
 
 %changelog
+* Sun Nov 5 2012 - Logan Bruns <logan@gedanken.org>
+- Updated to 3.0.6 and removed a patch.
 * Sat May 12 2012 - Logan Bruns <logan@gedanken.org>
 - Made some more permissions explicit.
 * Sat Apr 28 2012 - Logan Bruns <logan@gedanken.org>
