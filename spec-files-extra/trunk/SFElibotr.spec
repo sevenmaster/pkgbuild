@@ -14,7 +14,7 @@ Name:                    SFElibotr
 IPS_Package_Name:	 library/security/libotr
 Summary:                 libotr - Off-the-Record Messaging Library and Toolkit
 Group:                   Utility
-Version:                 3.2.0
+Version:                 3.2.1
 URL:		         http://www.cypherpunks.ca/otr/
 Source:		         http://www.cypherpunks.ca/otr/libotr-%version.tar.gz
 License: 		 LGPL
@@ -84,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/libotr.m4
 
 %changelog
+* Sun Nov 5 2012 - Logan Bruns <logan@gedanken.org>
+- Updated to 3.2.1.
 * Tue Apr 17 2012 - Logan Bruns <logan@gedanken.org>
 - Fixed some permissions.
 * Thu Mar 1 2012- Logan Bruns <logan@gedanken.org>
