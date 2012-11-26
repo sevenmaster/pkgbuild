@@ -1,3 +1,7 @@
+2012-11-25  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFElibotr.spec: updated to 3.2.1.
+
 2012-11-21 Ken Mays  <kmays2000@gmail.com>
 	* SFExfce4-mixer.spec: bump to 4.10.0
 	* SFExfce4-ristretto: bump to 0.6.3
