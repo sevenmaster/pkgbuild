@@ -20,7 +20,7 @@ Name:                    SFEsage
 IPS_Package_Name:	 sfe/math/sage
 Summary:                 SAGE - a free open-source mathematics software system
 Group:                   Utility
-Version:                 5.2
+Version:                 5.4
 URL:		         http://www.sagemath.org
 Source:		         http://www.sagemath.org/src-old/sage-%{version}.tar
 License: 		 GPL
@@ -87,6 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/sage/*
 
 %changelog
+* Mon Nov 26 2012 - Logan Bruns <logan@gedanken.org>
+- Updated to 5.4
 * Thu Nov 8 2012 - Logan Bruns <logan@gedanken.org>
 - Bump to 5.2, switch to external atlas, update for newer gcc runtime
   path and update website url.
