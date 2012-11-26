@@ -18,7 +18,7 @@ Name:                    SFEr-atlas
 IPS_Package_Name:	 math/r-atlas
 Summary:                 R - GNU S
 Group:                   Utility
-Version:                 2.15.1
+Version:                 2.15.2
 URL:		         http://www.r-project.org
 Source:		         http://cran.cnr.berkeley.edu/src/base/R-2/%{srcname}-%{version}.tar.gz
 License: 		 GPL
@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Sun Nov 5 2012 - Logan Bruns <logan@gedanken.org>
+- Updated to 2.15.2
 * Mon Oct 29 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 2.15.1, update depends, permissions and use shared atlas.
 * Sat Apr 14 2012 - Logan Bruns <logan@gedanken.org>
