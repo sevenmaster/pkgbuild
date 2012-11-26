@@ -24,6 +24,12 @@
 
 	* SFEjenkins.spec: bump to 1.490.
 
+2012-11-16  Aurélien Larcher <aurelien.larcher@gmail.com>
+
+	* SFEatlas.spec: Add support for 32/64 build and move cblas.h,
+	clapack.h to include/atlas to avoid conflict.
+	* base-specs/atlas.spec
+
 2012-11-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* experimental/SFEkatta.spec: updated for hadoop2 compatibility.
