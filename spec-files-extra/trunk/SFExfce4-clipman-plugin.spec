@@ -8,9 +8,9 @@
 
 Name:			SFExfce4-clipman-plugin
 Summary:		Clipboard plugin for Xfce
-Version:		1.1.3
+Version:		1.2.3
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-clipman-plugin
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-clipman-plugin/1.1/xfce4-clipman-plugin-%{version}.tar.bz2
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-clipman-plugin/1.2/xfce4-clipman-plugin-%{version}.tar.bz2
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -95,5 +95,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_sysconfdir}/xdg/*
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.2.3
 * Wed Oct 5 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version (v1.1.3)

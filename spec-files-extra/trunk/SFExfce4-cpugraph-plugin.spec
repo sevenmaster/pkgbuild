@@ -5,14 +5,14 @@
 
 %include Solaris.inc
 
-%define xfce_version 4.4.0
+%define xfce_version 4.8.0
 
 %define _localedir %{_libdir}/locale
 
 %define src_name xfce4-cpugraph-plugin
 Name:			SFExfce4-cpugraph-plugin
 Summary:		CPU Graph Plugin
-Version:		1.0.1
+Version:		1.0.5
 URL:			http://www.xfce.org/
 Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-cpugraph-plugin/1.0/xfce4-cpugraph-plugin-%{version}.tar.bz2
 Group:			User Interface/Desktops
@@ -83,8 +83,10 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %dir %attr (0755, root, sys) %{_datadir}
 %{_libdir}/xfce4
 %{_datadir}/xfce4
-%changelog
 
+%changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.0.5
 * Thu Oct 6 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.0.1
 * Thu Nov 22 2007 - Petr Sobotka sobotkap@centrum.cz

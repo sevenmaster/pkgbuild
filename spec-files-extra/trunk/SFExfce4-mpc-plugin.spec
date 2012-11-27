@@ -7,9 +7,9 @@
 
 Name:			SFExfce4-mpc-plugin
 Summary:		Plugin for controling mpd deamon from the Xfce panel
-Version:		0.3.6
+Version:		0.4.4
 URL:			http://www.xfce.org/
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-mpc-plugin/0.3/xfce4-mpc-plugin-%{version}.tar.bz2		
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-mpc-plugin/0.4/xfce4-mpc-plugin-%{version}.tar.bz2		
 #Patch1:			xfce4-mpc-plugin-01-libnsl.diff
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
@@ -81,6 +81,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/locale*
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.4.4
 * Fri Oct 7 2011 - Ken Mays <kmays2000@gmail.com>
 - Bumped to 0.3.6
 * Mon Apr 11 2007 - sobotkap@students.zcu.cz

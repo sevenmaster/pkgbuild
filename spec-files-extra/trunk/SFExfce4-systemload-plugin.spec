@@ -8,10 +8,10 @@
 
 Name:			SFExfce4-systemload-plugin
 Summary:		System load plugin for Xfce
-Version:		1.0.0
+Version:		1.1.1
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-systemload-plugin
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-systemload-plugin/1.0/xfce4-systemload-plugin-%{version}.tar.bz2
-Patch1:			xfce4-systemload-plugin-01-solaris.diff
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-systemload-plugin/1.1/xfce4-systemload-plugin-%{version}.tar.bz2
+#Patch1:			xfce4-systemload-plugin-01-solaris.diff
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -31,7 +31,7 @@ Requires:		SUNWpostrun
 
 %prep
 %setup -q -n xfce4-systemload-plugin-%{version}
-%patch1 -p1
+#%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`

@@ -8,11 +8,11 @@
 %include Solaris.inc
 
 %define src_name xfce4-screenshooter
-%define src_url http://archive.xfce.org/src/apps/xfce4-screenshooter/1.7/
+%define src_url http://archive.xfce.org/src/apps/xfce4-screenshooter/1.8/
 
 Name:           SFExfce4-screenshooter
 Summary:        An application to take screenshots
-Version:        1.7.9
+Version:        1.8.1
 URL:            http://www.xfce.org/
 Source:         %{src_url}/%{src_name}-%{version}.tar.bz2
 SUNW_BaseDir:   %{_basedir}
@@ -89,5 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/xfce4/panel-plugins/screenshooter.desktop 
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.8.1
 * Fri Jun 10 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial spec for Xfce4-screenshooter 

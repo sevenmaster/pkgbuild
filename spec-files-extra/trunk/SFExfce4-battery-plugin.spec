@@ -7,7 +7,7 @@
 %define src_name xfce4-battery-plugin
 
 Name:       		SFExfce4-battery-plugin
-Version:    		1.0.0
+Version:    		1.0.5
 Summary:    		Battery monitor for the Xfce panel
 Group:      		User Interface/Desktops
 License:    		GPLv2+
@@ -70,5 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.0.5
 * Fri Oct 7 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version

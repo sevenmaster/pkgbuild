@@ -9,10 +9,10 @@
 
 Name:			SFExfce4-diskperf-plugin
 Summary:		Disk performance plugin for Xfce
-Version:		2.3.0
+Version:		2.5.4
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-diskperf-plugin
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-diskperf-plugin/2.3/xfce4-diskperf-plugin-%{version}.tar.bz2
-Patch1:			xfce4-diskperf-plugin-01-solaris.diff
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-diskperf-plugin/2.5/xfce4-diskperf-plugin-%{version}.tar.bz2
+#Patch1:			xfce4-diskperf-plugin-01-solaris.diff
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/xfce4-diskperf-plugin-%{version}-build
@@ -32,7 +32,7 @@ Requires:		SUNWpostrun
 
 %prep
 %setup -q -n xfce4-diskperf-plugin-%{version}
-%patch1 -p1
+#%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -84,5 +84,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/locale
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.5.4
 * Wed Oct 5 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version (v2.3.0)
