@@ -9,9 +9,9 @@
 
 Name:			SFExfce4-netload-plugin
 Summary:		Network load applet for Xfce
-Version:		1.0.0
+Version:		1.2.0
 URL:			http://www.xfce.org/
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-netload-plugin/1.0/xfce4-netload-plugin-%{version}.tar.bz2
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-netload-plugin/1.2/xfce4-netload-plugin-%{version}.tar.bz2
 Patch1:			xfce4-netload-plugin-01-libnsl.diff
 Patch2:			xfce4-netload-plugin-02-os-def.diff
 #Patch3:			xfce4-netload-plugin-03-localedir.diff
@@ -89,6 +89,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/locale
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.2.0
 * Wed Oct 5 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.0.0
 * Sun Mar 2 2007 - dougs@truemail.co.th

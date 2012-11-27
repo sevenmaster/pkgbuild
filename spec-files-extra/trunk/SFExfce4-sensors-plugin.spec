@@ -9,7 +9,7 @@
 
 Name:			SFExfce4-sensors-plugin
 Summary:		Hardware sensors plugin for the Xfce panel
-Version:		1.2.3
+Version:		1.2.5
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin
 Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-sensors-plugin/1.2/xfce4-sensors-plugin-%{version}.tar.bz2		
 Group:			User Interface/Desktops
@@ -88,5 +88,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/locale*
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.2.5
 * Fri Oct 7 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version

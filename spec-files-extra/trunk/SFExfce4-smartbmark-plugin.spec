@@ -7,7 +7,7 @@
 
 Name:			SFExfce4-smartbmark-plugin
 Summary:		Smark Bookmark Plugin for Xfce
-Version:		0.4.2
+Version:		0.4.4
 URL:			http://goodies.xfce.org/projects/panel-plugins/smartbookmark-plugin
 Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-smartbookmark-plugin/0.4/xfce4-smartbookmark-plugin-%{version}.tar.gz
 Group:			User Interface/Desktops
@@ -78,5 +78,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.4.4
 * Sat Oct 8 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version (0.4.2)

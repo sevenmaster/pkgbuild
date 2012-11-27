@@ -8,9 +8,9 @@
 %define src_name xfce4-notes-plugin
 Name:			SFExfce4-notes-plugin
 Summary:		Sticky Notes Plugin
-Version:		1.6.4
+Version:		1.7.7
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-notes-plugin
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-notes-plugin/1.6/xfce4-notes-plugin-%{version}.tar.bz2
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-notes-plugin/1.7/xfce4-notes-plugin-%{version}.tar.bz2
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build

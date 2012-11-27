@@ -7,7 +7,7 @@
 
 Name:			SFExfce4-time-out-plugin
 Summary:		Time Out Plugin for Xfce
-Version:		1.0.0
+Version:		1.0.1
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-time-out-plugin
 Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-time-out-plugin/1.0/xfce4-time-out-plugin-1.0.0.tar.bz2
 Group:			User Interface/Desktops
@@ -78,5 +78,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}
 
 %changelog
+* Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.0.1
 * Sat Oct 8 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version (1.0.0)
