@@ -3,6 +3,15 @@ usage: no ChangeLog for this TODO file needed. Just edit and commit with a very 
 *YOU* do this:  svn up TODO, make your changes, then immediately commit with 
     echo "TODO: added 67) headsup-mini-description" | svn commit -F - TODO
 
+
+
+*Is is you* who can pick up an issue and think on a good solution for them.
+
+Some are low hanging fruit, some not. You may choose to read from bottom up.
+
+
+
+
 1)
 SFEhplip.spec: pnm_macros for SFEcups/SUNWcups, SFEsane-backends/SUNWsanebackends/SUNWsanebackendu, eventually python version macro 2.4/2.6
 
@@ -24,9 +33,9 @@ for package in openssl gnu-dbm gdbm pigment libmikmod fftw4 sane-backend system/
   done
 notes: with perl5 you might need to change other paths in the spec as well
 
-5)
-write pnm_macros to get perl584 or perl510 or other future versions properly (Build)Required or paths like /usr/perl5/vendor_perl/5[.8.4|.10|...) properly setup
-20110618 update: basic functionality is now there, please test your personal SFEperl-<module> now (Osol134, OI, S11Express)
+##DONE##5)
+##DONE##write pnm_macros to get perl584 or perl510 or other future versions properly (Build)Required or paths like /usr/perl5/vendor_perl/5[.8.4|.10|...) properly setup
+##DONE##20110618 update: basic functionality is now there, please test your personal SFEperl-<module> now (Osol134, OI, S11Express)
 
 6)
 #updated once Solaris 11 Express build is out delivering a new perl version, check + adjust
@@ -47,6 +56,22 @@ always the same combined license file of current perl version (artitisc combined
 e.g. copyright/perl-license.copyright.
 Some modules simply write smth like "same license as perl", keyword is "perl" in e.g. Makefile.PL
 
+8c)
+experimental/make_perl_cpan_settings.pl find in META.yml which other perl modules
+are required to run this module, find out package names and add this to
+(Build)Requires. May exclude those perl modules delivered on exactly that OS revision.
+Might need special handling if OS revisions differ in number of delivered perl modules -> 
+ may need adding pnm_macros or other solution
+gegrep -iA7 quire BUILD/SFEperl-razor-agents-5.10.0.2.84/razor-agents-2.84/META.yml
+requires:
+    Digest::SHA1:                  0
+    File::Copy:                    0
+    File::Spec:                    0
+    Getopt::Long:                  0
+    MIME::Base64:                  0
+    Test::More:                    0
+    Time::HiRes:                   0
+
 9)
 lengthy+high_quality description: http://gcc.gnu.org/ml/gcc-patches/2010-01/msg01300.html
 and maybe
@@ -56,10 +81,10 @@ see if SFEgcc can avoid forcing the linker to be the gnu ld. suggested by richlo
 this would enable sun ld even on OI147.
 check if this fix is already in the %version of gcc we have now (4.5.3).
 
-10)
-think on _default macro to point to Python 2.4 or 2.6 or whatever future version is in a Distribution
-pnm_buildrequires_perl_default requires_perl_default      (early stage, testing)
-pnm_buildrequires_python_default requires_python_default  (not yet there, which other parameters needed)
+##DONE##10)
+##DONE##think on _default macro to point to Python 2.4 or 2.6 or whatever future version is in a Distribution
+##DONE##pnm_buildrequires_perl_default requires_perl_default      (early stage, testing)
+##DONE##pnm_buildrequires_python_default requires_python_default  (not yet there, which other parameters needed)
 
 11)
 SFEstellarium-gpp.spec ### NOTE ### (Alex Viskovatoff>
@@ -101,6 +126,10 @@ collect topics here:
   recommended: use in all FLAGS the macros:  CFLAGS="%{_optflags}" LDFLAGS=...  CXXFLAGS=... (reason: a lot)
 
   deprecated: use of build specifiy package names. recommended: use of packagenamemacros.inc (reason: perl-584/perl-510/SUNWperl584core -> different directories vendor_perl/<5.8.4|5.10|5.12.3>
+Note 20121128: currently we use CC=gcc, but this might miss adding 
+the package dependency on the _correct_ runtime library package.
+So occationally it is gcc-3 or gcc-4 from SFE and the corresponding
+runtime libs which is needed.
 
 17)
 SFEqt47-gpp.spec:
@@ -275,7 +304,7 @@ zzpackage                      zzcategory
 SMF service fuer samba swat
 
 
-
+47) find the correct header package
 DUMP
 s11175 sfe ~/spec-files-extra-s11 sudo pkg search SUNWaudh       
 INDEX       ACTION VALUE                           PACKAGE
@@ -306,6 +335,12 @@ Packaging Date: Sun Apr 10 08:58:04 2011
 
 
 
+48) duplicate files on more recent OS revisions
+decide if the libs should more be moved to /usr/gnu/ _or_ if
+a pnm_macro should be used to select the currently to be used
+lib from the OS or from SFE. Examples in pnm_macro could be
+SUNWgnu_dbm  versus SFEgdbm in include/packagenames.define.allbuilds.inc
+
 pkg install: The following packages all deliver file actions to usr/lib/libmikmod.so.3.0.0:
 
   pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
@@ -313,40 +348,9 @@ pkg install: The following packages all deliver file actions to usr/lib/libmikmo
 
 These packages may not be installed together. Any non-conflicting set may
 be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/share/man/man1/libmikmod-config.1:
-
-  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
-  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/include/mikmod.h:
-
-  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
-  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/bin/libmikmod-config:
-
-  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
-  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/share/aclocal/libmikmod.m4:
-
-  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
-  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
+[.....]
                        SFElibmng |      FAILED |
+
 pkg install: The following packages all deliver file actions to usr/lib/libmng.so.1.0.0:
 
   pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
@@ -354,45 +358,15 @@ pkg install: The following packages all deliver file actions to usr/lib/libmng.s
 
 These packages may not be installed together. Any non-conflicting set may
 be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/share/man/man3/libmng.3:
-
-  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
-  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/share/man/man5/jng.5:
-
-  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
-  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/lib/amd64/libmng.so.1.0.0:
-
-  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
-  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-
-The following packages all deliver file actions to usr/share/man/man5/mng.5:
-
-  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
-  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
-
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
+[.....]
 
 
-xx)
+
+49)
 change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from
 outdated older libfuse or the S11 provided libfuse (might not work)
 
-xx)
+50)
 change existing /usr/gnu/ spec files to place xchat.desktop files *not* in
 /usr/gnu/share/applications/ where is doesn't get the restart_fmri=svc:/application/desktop-cache/desktop-mime-cache:default
 and it maybe doesn't read the file at all, so it is missing on the menu then!
@@ -400,7 +374,7 @@ Solution should be then to relocate that file and rename it as well to avoid
 filename conflicts if the OS itself provides that file also
 SFExchat.spec
 
-xx)
+51)
 remove SFEsdl and custom code to distinguish SFEsdl and SUNWlibsdl
  grep -i "quires.*SFEsdl" *spec encumbered/*spec | egrep -v -- ßdl-" | less
 SFEdangerdeep.spec:Requires: SFEsdl
