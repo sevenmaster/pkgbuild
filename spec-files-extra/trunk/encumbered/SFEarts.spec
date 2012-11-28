@@ -5,12 +5,12 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEarts
 Summary:             Software to simulate a modular analog synthesizer
-Version:             1.5.8
-Source:              http://kde.mirrors.tds.net/pub/kde/stable/%{kde_version}/src/arts-%{version}.tar.bz2
+Version:             1.5.10
+Source:              http://mirrors.isc.org/pub/kde/stable/%{kde_version}/src/arts-%{version}.tar.bz2
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -94,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 1.5.10
 * Tue Feb 12 2008 <pradhap (at) gmail.com>
 - Fixed links
 * Sun Jan 20 2008 - moinak.ghosh@sun.com

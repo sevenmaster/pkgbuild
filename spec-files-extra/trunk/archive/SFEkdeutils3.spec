@@ -5,15 +5,14 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 %define broken_netsnmp %([ -f %{sfw_lib}/libnetsnmp.la ] && echo 1 || echo 0)
 Name:                SFEkdeutils3
 Summary:             A collection of useful utilities in official KDE
 Version:             %{kde_version}
 Source:              http://mirrors.isc.org/pub/kde/stable/%{kde_version}/src/kdeutils-%{version}.tar.bz2
-Patch1:              kdeutils-01-khexedit.diff
-Patch2:              kdeutils-02-superkaramba.diff
+Patch1:              kdeutils-02-superkaramba.diff
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -44,7 +43,6 @@ Requires: SFExmms1-devel
 %prep
 %setup -q -n kdeutils-%version
 %patch1 -p1
-%patch2 -p1
 
 if [ "x`basename $CC`" != xgcc ]
 then
@@ -144,5 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Thu Jan 24 2008 - moinak.ghosh@sun.com
 - Initial spec.

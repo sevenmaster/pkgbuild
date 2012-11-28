@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEkdeaddons3
 Summary:             Additional plugins and scripts for some KDE applications.
@@ -101,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Tue Jan 22 2008 - moinak.ghosh@sun.com
 - Fixed typo in configure options.
 * Sun Jan 20 2008 - moinak.ghosh@sun.com

@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEkdeaccessibility3
 Summary:             Accessibility Aids For KDE in the official release
@@ -101,5 +101,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Tue Jan 22 2008 - moinak.ghosh@sun.com
 - Initial spec.

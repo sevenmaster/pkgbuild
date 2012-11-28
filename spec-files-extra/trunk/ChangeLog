@@ -1,3 +1,43 @@
+2012-11-27 Ken Mays  <kmays2000@gmail.com>
+
+	* Bump SFEkde to KDE 3.5.10:
+	* encumbered/SFEkdemultimedia3.spec
+	* encumbered/SFEarts.spec
+	* archive/SFEkdeaccessibility3.spec  
+	* archive/SFEkdelibs3.spec
+	* archive/SFEkdeaddons3.spec         
+	* archive/SFEkdenetwork3.spec
+	* archive/SFEkdeadmin3.spec          
+	* archive/SFEkdepim3.spec
+	* archive/SFEkdeartwork3.spec        
+	* archive/SFEkdesdk3.spec
+	* archive/SFEkdebase3.spec           
+	* archive/SFEkdetoys3.spec
+	* archive/SFEkdeedu3.spec            
+	* archive/SFEkdeutils3.spec
+	* archive/SFEkdegames3.spec          
+	* archive/SFEkdevelop3.spec
+	* archive/SFEkdegraphics3.spec       
+	* archive/SFEkdewebdev3.spec
+	* patches/kdeartwork-01-libart.diff        
+	* patches/kdebase-01-startkde.diff        
+	* patches/kdemultimedia-01-mpeglib.diff
+	* patches/kdeedu-01-kmplot.diff            
+	* patches/kdeedu-02-kstars.diff 
+	* patches/kdelibs-01-doxygen.diff
+	* patches/kdelibs-02-libart.diff
+	* patches/kdelibs-03-makefile.diff
+	* patches/kdelibs-04-kmenuapps.diff        
+	* patches/kdelibs-05-kdeinit-wrapper.diff 
+	* patches/kdelibs-06-ktimezones.diff           
+	* patches/kdenetwork-01-kopete.diff
+	* patches/kdenetwork-02-oscar.diff
+	* patches/kdepim-01-kalarm.diff
+	* patches/kdesdk-01-kbabel.diff
+	* patches/kdeutils-01-khexedit.diff
+	* patches/kdeutils-02-superkaramba.diff
+	* patches/kdevelop-01-getline.diff
+
 2012-11-26 Ken Mays  <kmays2000@gmail.com>
 
 	* Bumped XFCE 4.10.0 plugins to current versions:	

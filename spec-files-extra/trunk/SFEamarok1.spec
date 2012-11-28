@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 %define ruby_bin /usr/ruby/1.8/bin
 
 Name:                SFEamarok1
