@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEkdeedu3
 Summary:             Educational software from official KDE release
@@ -122,5 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Sat Jan 26 2008 - moinak.ghosh@sun.com
 - Initial spec.

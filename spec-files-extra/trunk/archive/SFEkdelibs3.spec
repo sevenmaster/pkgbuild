@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEkdelibs3
 Summary:             Base KDE3 libraries
@@ -97,9 +97,9 @@ Requires: oss
 %setup -q -n kdelibs-%version
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
-%patch5 -p1
+#%patch5 -p1
 %patch6 -p1
 
 if [ "x`basename $CC`" != xgcc ]
@@ -211,6 +211,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Fri Feb 01 2008 - moinak.ghosh@sun.com
 - Add patch to fix timezone handing on Solaris.
 * Thu Jan 24 2008 - moinak.ghosh@sun.com

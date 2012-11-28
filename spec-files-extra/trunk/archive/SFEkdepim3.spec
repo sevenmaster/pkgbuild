@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define kde_version 3.5.8
+%define kde_version 3.5.10
 
 Name:                SFEkdepim3
 Summary:             Personal Imformation Management tool from official KDE release
@@ -140,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Nov 27 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.5.10
 * Thu Jan 24 2008 - moinak.ghosh@sun.com
 - Use perl-depend definitions
 - Use predefined macros instead of hardcoding pathnames
