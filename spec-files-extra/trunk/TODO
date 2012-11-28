@@ -40,6 +40,13 @@ need one general license file for "perl" licensed packages. all specs can point 
 add to SFEperl-* modules hierarchical package names as well. maintain old short SVR4 name as package alias.
 see experimental/make_perl_cpan_settings.pl to get an idea about what the hierarchical package name might be.
 
+8b)
+let experimental/make_perl_cpan_settings.pl find licenses in various places (Makefile.PL, website, cpan,...)
+and add copyright files to copyright/ . In case license is same as with perl, we might point to
+always the same combined license file of current perl version (artitisc combined with the gpl(n) license),
+e.g. copyright/perl-license.copyright.
+Some modules simply write smth like "same license as perl", keyword is "perl" in e.g. Makefile.PL
+
 9)
 lengthy+high_quality description: http://gcc.gnu.org/ml/gcc-patches/2010-01/msg01300.html
 and maybe
@@ -121,6 +128,7 @@ make usage note on the wiki and enter wiki url into the include file
 22)
 package wish list
 SFEmpack (see spec-files-jucr/specs/mpack.spec, clear dependencies)  #easy-jucr
+SFEcalibre.spec or SFECoolReader.spec  (herzen?)
 
 23)
 check dependencies on mysql for SFEfreeradius.spec (pnm_macros? somthing like pnm_mysql_default)
@@ -165,10 +173,14 @@ check for identical/alias packages in SFE which have similar *new* packages in
 SUNW, create pnm_macro rules for them. 
 Those packages below are known to have a good replacement in the distro: 
 (else: relocate ours to /usr/gnu. "not:" to collect replacements not usable for SFE)
+#osdistro number to be included here if known!
 SFEaalib (1.4.0 1.4rc5) SUNWaalib library/aalib@1.4.5
 
 not: OI gcc 4.4  (missing LINK_LIBGCC_SPEC, not versioned package and directory layout)
 not: S11 gcc 4.x (missing LINK_LIBGCC_SPEC, not versioned package and directory layout)
+
+#some osdistro have editline, some don't. Use SFEeditline.spec if necessary
+editline
 
 33)
 pkgbuild.wiki: Review lonely pages in draft status and enhance them, link them:
@@ -223,6 +235,10 @@ to still find those packages in the new location:
 SFEwxwidgets: The following packages all deliver file actions to usr/include/wx-2.8/wx/dir.h:
   pkg://localhost/SFEwxwidgets@2.8.10,5.11-0.170:20110921T212701Z
   pkg://solaris/library/graphics/wxwidgets@2.8.12,5.11-0.172:20110815T100013Z
+SFEpython-wx.spec:  Requires:  SFEwxwidgets    (gnu or g++)
+SFEscorched3d.spec: Requires:  SFEwxwidgets    (gnu or g++)
+SFEwxSVG.spec:      Requires:  SFEwxwidgets    (gnu or g++)
+
 
 42)
 need a better method for AMD/Intel specific instructions, generic binary repos can't build
@@ -254,3 +270,148 @@ package name                   category
 xypackage                      xycategory-first
 xypackage                      xycategory-second
 zzpackage                      zzcategory
+
+
+SMF service fuer samba swat
+
+
+
+DUMP
+s11175 sfe ~/spec-files-extra-s11 sudo pkg search SUNWaudh       
+INDEX       ACTION VALUE                           PACKAGE
+incorporate depend pkg:/SUNWaudh@0.5.11,5.11-0.133 pkg:/consolidation/osnet/osnet-incorporation@0.5.11-0.175.0.0.0.2.1
+legacy_pkg  legacy SUNWaudh                        pkg:/system/header@0.5.11-0.175.0.0.0.2.1
+pkg.fmri    set    solaris/SUNWaudh                pkg:/SUNWaudh@0.5.11-0.133
+s11175 sfe ~/spec-files-extra-s11 sudo pkg search header-audio
+INDEX      ACTION VALUE                              PACKAGE
+pkg.fmri   set    solaris/system/header/header-audio pkg:/system/header/header-audio@0.5.11-0.163
+s11175 sfe ~/spec-files-extra-s11 pkg info system/header/header-audio
+pkg: info: no packages matching the following patterns you specified are
+installed on the system.  Try specifying -r to query remotely:
+
+        system/header/header-audio
+s11175 sfe ~/spec-files-extra-s11 pkg info -r system/header/header-audio
+          Name: system/header/header-audio
+       Summary: 
+         State: Not installed (Renamed)
+    Renamed to: consolidation/osnet/osnet-incorporation
+                pkg:/system/header@0.5.11,5.11-0.163
+     Publisher: solaris
+       Version: 0.5.11
+ Build Release: 5.11
+        Branch: 0.163
+Packaging Date: Sun Apr 10 08:58:04 2011
+          Size: 0.00 B
+          FMRI: pkg://solaris/system/header/header-audio@0.5.11,5.11-0.163:20110410T085804Z
+
+
+
+pkg install: The following packages all deliver file actions to usr/lib/libmikmod.so.3.0.0:
+
+  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
+  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/share/man/man1/libmikmod-config.1:
+
+  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
+  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/include/mikmod.h:
+
+  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
+  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/bin/libmikmod-config:
+
+  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
+  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/share/aclocal/libmikmod.m4:
+
+  pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
+  pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+                       SFElibmng |      FAILED |
+pkg install: The following packages all deliver file actions to usr/lib/libmng.so.1.0.0:
+
+  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/share/man/man3/libmng.3:
+
+  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/share/man/man5/jng.5:
+
+  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/lib/amd64/libmng.so.1.0.0:
+
+  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+The following packages all deliver file actions to usr/share/man/man5/mng.5:
+
+  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+
+These packages may not be installed together. Any non-conflicting set may
+be, or the packages must be corrected before they can be installed.
+
+
+xx)
+change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from
+outdated older libfuse or the S11 provided libfuse (might not work)
+
+xx)
+change existing /usr/gnu/ spec files to place xchat.desktop files *not* in
+/usr/gnu/share/applications/ where is doesn't get the restart_fmri=svc:/application/desktop-cache/desktop-mime-cache:default
+and it maybe doesn't read the file at all, so it is missing on the menu then!
+Solution should be then to relocate that file and rename it as well to avoid
+filename conflicts if the OS itself provides that file also
+SFExchat.spec
+
+xx)
+remove SFEsdl and custom code to distinguish SFEsdl and SUNWlibsdl
+ grep -i "quires.*SFEsdl" *spec encumbered/*spec | egrep -v -- ßdl-" | less
+SFEdangerdeep.spec:Requires: SFEsdl
+SFEdosbox.spec:Requires: SFEsdl
+SFEextremetuxracer.spec:Requires: SFEsdl
+SFEfireflies.spec:Requires: SFEsdl
+SFEopenarena.spec:Requires: SFEsdl
+SFEscourge.spec:Requires: SFEsdl
+SFEvdrift.spec:Requires: SFEsdl
+#obsoloete, should go to archive/ SFEwxwidgets.spec:Requires:      SFEsdl
+SFExpilot-ng.spec:Requires: SFEsdl
+encumbered/SFEffmpeg-sse2-only.spec:Requires: SFEsdl
+encumbered/SFEvlc.spec:Requires:       SFEsdl
+
