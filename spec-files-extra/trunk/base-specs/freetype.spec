@@ -8,13 +8,13 @@
 
 Name:                freetype
 Summary:             Freetype
-Version:             2.3.5
+Version:             2.4.10
 Source:              %{src_url}/%{src_name}-%{version}.tar.bz2
 Patch1:		     freetype-01-options.diff
 
 %prep
 %setup -q -n %{src_name}-%{version}
-%patch1 -p1
+#%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -26,7 +26,7 @@ export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 
-bash ./autogen.sh
+#bash ./autogen.sh
 ./configure --prefix=%{_prefix}			\
 	    --bindir=%{_bindir}			\
 	    --libdir=%{_libdir}			\
@@ -49,6 +49,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Nov 28 2012 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.4.10
 * Wed Aug 15 2007 - trisk@acm.jhu.edu
 - Bump to 2.3.5
 * Tue Jun  5 2007 - Doug Scott
