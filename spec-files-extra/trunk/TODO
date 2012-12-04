@@ -5,7 +5,7 @@ usage: no ChangeLog for this TODO file needed. Just edit and commit with a very 
 
 
 
-*Is is you* who can pick up an issue and think on a good solution for them.
+*Is this you* whom can pick up an issue and think on a good solution for them.
 
 Some are low hanging fruit, some not. You may choose to read from bottom up.
 
@@ -20,9 +20,12 @@ SFErsnapshot.spec: pnm_macros for SUNWsshu
 SFEsmf-grey.spec:  pnm_macros for SUNWsndm* / sendmail
 SFEwine.spec: pnm_macros for audio headers
 
-3)
-SFEp7zip.spec: check saprc build, especially enianness (old patch p7zip-01-makefile.diff)
-
+#
+#3)
+#SFEp7zip.spec: check SPARC build, especially enianness (old patch p7zip-01-makefile.diff)
+#
+# DONE: Fixed for 7-Zip v9.20.1
+# 
 
 4)
 all spec files using renamed / removed / added packages: search for packages
@@ -269,11 +272,15 @@ SFEscorched3d.spec: Requires:  SFEwxwidgets    (gnu or g++)
 SFEwxSVG.spec:      Requires:  SFEwxwidgets    (gnu or g++)
 
 
-42)
-need a better method for AMD/Intel specific instructions, generic binary repos can't build
-binariy with instructions specific to the local CPU used for building the package.
-Check if it is necessary/usefull to make AMD/Intel specific distinction at all (who can tell).
-SFEffmpeg.spec, SFEmplayer2.spec
+
+#DONE: 42)
+#need a better method for AMD/Intel specific instructions, generic binary repos can't
+#build binaries with instructions specific to the local CPU used for building the package. 
+#Check if it is necessary/useful to make AMD/Intel specific distinction at all (
+who can tell). - SFEffmpeg.spec, SFEmplayer2.spec
+#DONE: http://gcc.gnu.org/ml/gcc-patches/2010-07/msg00775.html
+#DONE:	Avoid use of global builds using SSE/MMX by default
+#DONE:  Use isainfo -x
 
 43)
 make css a dependency in vlc
@@ -304,36 +311,12 @@ zzpackage                      zzcategory
 SMF service fuer samba swat
 
 
-47) find the correct header package
-DUMP
-s11175 sfe ~/spec-files-extra-s11 sudo pkg search SUNWaudh       
-INDEX       ACTION VALUE                           PACKAGE
-incorporate depend pkg:/SUNWaudh@0.5.11,5.11-0.133 pkg:/consolidation/osnet/osnet-incorporation@0.5.11-0.175.0.0.0.2.1
-legacy_pkg  legacy SUNWaudh                        pkg:/system/header@0.5.11-0.175.0.0.0.2.1
-pkg.fmri    set    solaris/SUNWaudh                pkg:/SUNWaudh@0.5.11-0.133
-s11175 sfe ~/spec-files-extra-s11 sudo pkg search header-audio
-INDEX      ACTION VALUE                              PACKAGE
-pkg.fmri   set    solaris/system/header/header-audio pkg:/system/header/header-audio@0.5.11-0.163
-s11175 sfe ~/spec-files-extra-s11 pkg info system/header/header-audio
-pkg: info: no packages matching the following patterns you specified are
-installed on the system.  Try specifying -r to query remotely:
-
-        system/header/header-audio
-s11175 sfe ~/spec-files-extra-s11 pkg info -r system/header/header-audio
-          Name: system/header/header-audio
-       Summary: 
-         State: Not installed (Renamed)
-    Renamed to: consolidation/osnet/osnet-incorporation
-                pkg:/system/header@0.5.11,5.11-0.163
-     Publisher: solaris
-       Version: 0.5.11
- Build Release: 5.11
-        Branch: 0.163
-Packaging Date: Sun Apr 10 08:58:04 2011
-          Size: 0.00 B
-          FMRI: pkg://solaris/system/header/header-audio@0.5.11,5.11-0.163:20110410T085804Z
-
-
+# 47) find the correct audio header package
+#
+#DONE	Legacy:  SUNWaudh
+#DONE	Current: system/header/header-audio
+#DONE   Part of: consolidation/osnet/osnet-incorporation
+#
 
 48) duplicate files on more recent OS revisions
 decide if the libs should more be moved to /usr/gnu/ _or_ if
