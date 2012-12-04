@@ -1,5 +1,5 @@
 #
-# Copyright 2007 Sun Microsystems, Inc.
+# Copyright (c) 2012 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -11,7 +11,7 @@
 %define python_version 2.6
 
 %define src_name exo
-%define src_url http://archive.xfce.org/src/xfce/exo/0.8/
+%define src_url http://archive.xfce.org/src/xfce/exo/0.9/
 
 Name:		SFElibexo
 IPS_Package_Name:	library/xfce/libexo
@@ -19,7 +19,7 @@ Summary:	Application library for the Xfce desktop environment
 Group:		Desktop (GNOME)/Libraries
 License:	GPLv2
 SUNW_Copyright:	libexo.copyright
-Version:	0.8.0
+Version:	0.9.0
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 
@@ -75,9 +75,9 @@ export LDFLAGS="%_ldflags -lpython%{python_version}"
 	--mandir=%{_mandir}		\
 	--sysconfdir=%{_sysconfdir}	\
 	--enable-gtk-doc		\
-	--disable-static		\
-	--enable-python
-
+	--enable-gio-unix		\
+	--disable-static		
+	
 make -j $CPUS
 
 %install
@@ -159,6 +159,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Dec 04 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 0.9.0
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 0.8.0
 * Mon Aug 29 2011 - Milan Jurik
