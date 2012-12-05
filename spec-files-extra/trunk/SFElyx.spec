@@ -31,7 +31,7 @@ URL:		http://www.lyx.org
 License:	GPLv2
 Group:		Applications/Office
 SUNW_Copyright:	lyx.copyright
-Version:	2.0.4
+Version:	2.0.5
 Source:		ftp://ftp.lyx.org/pub/lyx/stable/2.0.x/%srcname-%version.tar.gz
 Source1:	%srcname.desktop
 SUNW_BaseDir:	%_basedir
@@ -116,6 +116,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Dec  5 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 2.0.5
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 2.0.4
 * Sat Jun 23 2012 - Thomas Wagner
