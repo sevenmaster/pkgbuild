@@ -20,15 +20,15 @@ Name:                SFEqt-gpp
 IPS_Package_Name:	library/desktop/g++/qt
 Summary:             Cross-platform development framework/toolkit
 Group:               Desktop (GNOME)/Libraries
-URL:                 http://trolltech.com/products/qt
+URL:                 http://qt-project.org
 License:             LGPLv2
-Version:             4.7.4
-Source:              ftp://ftp.trolltech.com/qt/source/%srcname-%version.tar.gz
+Version:             4.8.4
+Source:              http://releases.qt-project.org/qt4/source/%srcname-%version.tar.gz
 
 # These were obtained from http://solaris.bionicmutton.org/hg/kde4-specs-470/file/db0a8c7904f6/specs/gcc/patches/qt
 # patches only got new names on Aug  2 2011 and moved out of subdirectory patches/qt-gpp/
 Patch1:		qt-gpp-01-gc-sections.diff
-Patch2:		qt-gpp-02-MathExtras.diff
+#Patch2:		qt-gpp-02-MathExtras.diff
 # For Patch3, we use our own, which sets the SFE /usr/g++ paths
 # see pkgbuild.wiki.osurceforce.net for the directory layout (g++)
 Patch3:		qt-gpp-03-qmake.SFE.diff
@@ -43,9 +43,12 @@ Patch5:		qt-gpp-05-auto-tests-qhttpnetworkconnection.diff
 # (gcc 4.5.3 *or* 4.6.1 works, never both)
 # our fix enables both. 
 Patch6:		qt-gpp-06-isnan.diff
-Patch7:		qt-gpp-07-471-shm.diff
-Patch8:		qt-gpp-08-QPixmap-warning.diff
+#Patch7:		qt-gpp-07-471-shm.diff
+#Patch8:		qt-gpp-08-QPixmap-warning.diff
 Patch9:		qt-gpp-09-qdbus.patch
+Patch10:		qt-gpp-10-yield.diff
+Patch11:		qt-gpp-11-pthread_getattr.diff
+Patch12:		qt-gpp-12-plt.diff
 
 
 SUNW_Copyright:	     qt.copyright
@@ -93,13 +96,13 @@ tar xzf %{SOURCE1}
 
 # Don't pass --fuzz=0 to patch
 %define _patch_options --unified
-%patch1
-%patch2
+%patch1 -p1
 %patch3
-%patch6
-%patch7
-%patch8 -p1
+%patch6 -p1
 %patch9
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
 %if %{run_autotests}
 %patch4
 %patch5
@@ -114,8 +117,6 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-export LD=/usr/gnu/bin/ld
-#export CFLAGS="%optflags"
 export CFLAGS="%optflags -fPIC"
 export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
 
@@ -126,7 +127,6 @@ export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
 
 #export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads -fPIC"
-
 
 # Assume i386 CPU is not higher than Pentium 4
 # This can be changed locally if your CPU is newer
@@ -192,6 +192,9 @@ rm -rf %buildroot
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
 rm %buildroot%_libdir/lib*.la
+rm -rf %buildroot%_prefix/examples
+rm -rf %buildroot%_prefix/demos
+rm -rf %buildroot%_prefix/tests
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -231,6 +234,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec  5 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 4.8.4.
 * Mon Jul  9 2012 - Thomas Wagner
 - fix finding a spec providing e.g. SFEqt-gpp-devel (remove %name- from %package)
 - force mysql inclusion as plugin -plugin-sql-mysql and add trailing "/mysql" to

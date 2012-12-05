@@ -1,0 +1,11 @@
+--- qt-everywhere-opensource-src-4.8.1/src/3rdparty/webkit/Source/JavaScriptCore/jit/JITStubs.cpp	2012-03-14 07:01:26.000000000 -0700
++++ qt-everywhere-opensource-src-4.8.1-patched/src/3rdparty/webkit/Source/JavaScriptCore/jit/JITStubs.cpp	2012-12-04 23:52:15.262421467 -0800
+@@ -79,7 +79,7 @@
+ #define THUMB_FUNC_PARAM(name)
+ #endif
+ 
+-#if (OS(LINUX) || OS(FREEBSD)) && CPU(X86_64)
++#if ((OS(LINUX) || OS(FREEBSD)) && CPU(X86_64)) || OS(SOLARIS)
+ #define SYMBOL_STRING_RELOCATION(name) #name "@plt"
+ #elif OS(DARWIN) || (CPU(X86_64) && COMPILER(MINGW) && !GCC_VERSION_AT_LEAST(4, 5, 0))
+ #define SYMBOL_STRING_RELOCATION(name) "_" #name
