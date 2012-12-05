@@ -1,0 +1,29 @@
+--- qt-everywhere-opensource-src-4.8.1/src/3rdparty/webkit/Source/JavaScriptCore/heap/MachineStackMarker.cpp	2012-03-14 07:01:26.000000000 -0700
++++ qt-everywhere-opensource-src-4.8.1-patched/src/3rdparty/webkit/Source/JavaScriptCore/heap/MachineStackMarker.cpp	2012-12-02 12:51:42.048015889 -0800
+@@ -384,7 +384,7 @@
+     pthread_attr_get_np(platformThread, &regs);
+ #else
+     // FIXME: this function is non-portable; other POSIX systems may have different np alternatives
+-    pthread_getattr_np(platformThread, &regs);
++    //pthread_getattr_np(platformThread, &regs);
+ #endif
+     return 0;
+ #else
+@@ -476,6 +476,7 @@
+     gatherFromCurrentThread(conservativeRoots, stackCurrent);
+ 
+ #if ENABLE(JSC_MULTIPLE_THREADS)
++#error The stack base doesn't currently work on solaris.
+ 
+     if (m_threadSpecific) {
+ 
+--- qt-everywhere-opensource-src-4.8.1/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h	2012-03-14 07:01:26.000000000 -0700
++++ qt-everywhere-opensource-src-4.8.1-patched/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h	2012-12-02 13:38:36.315068058 -0800
+@@ -445,6 +445,7 @@
+ /* OS(SOLARIS) - Solaris */
+ #if defined(sun) || defined(__sun)
+ #define WTF_OS_SOLARIS 1
++#define ENABLE_JSC_MULTIPLE_THREADS 0
+ #endif
+ 
+ /* OS(WINCE) - Windows CE; note that for this platform OS(WINDOWS) is also defined */

@@ -1,11 +1,11 @@
---- src/3rdparty/webkit/WebCore/WebCore.pro.orig	Tue May  3 20:58:26 2011
-+++ src/3rdparty/webkit/WebCore/WebCore.pro	Tue May  3 20:40:41 2011
-@@ -90,7 +90,7 @@
+--- qt-everywhere-opensource-src-4.8.1/src/3rdparty/webkit/Source/WebCore/WebCore.pri	2012-03-14 07:01:24.000000000 -0700
++++ qt-everywhere-opensource-src-4.8.1-patched/src/3rdparty/webkit/Source/WebCore/WebCore.pri	2012-12-02 15:43:29.068546455 -0800
+@@ -326,7 +326,7 @@
  }
  
- unix:!mac:*-g++*:QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections 
+ unix:!mac:*-g++*:QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections
 -unix:!mac:*-g++*:QMAKE_LFLAGS += -Wl,--gc-sections
 +unix:!mac:!solaris-*:*-g++*:QMAKE_LFLAGS += -Wl,--gc-sections
  linux*-g++*:QMAKE_LFLAGS += $$QMAKE_LFLAGS_NOUNDEF
  
- CONFIG(release):!CONFIG(standalone_package) {
+ unix|win32-g++*:QMAKE_PKGCONFIG_REQUIRES = QtCore QtGui QtNetwork
