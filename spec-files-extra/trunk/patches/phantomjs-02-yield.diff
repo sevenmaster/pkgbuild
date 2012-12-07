@@ -1,0 +1,10 @@
+--- phantomjs-1.7.0/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Threading.h	2012-09-22 21:37:28.000000000 -0700
++++ phantomjs-1.7.0-patched/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Threading.h	2012-12-05 10:04:51.717176784 -0800
+@@ -113,6 +113,6 @@
+ using WTF::currentThread;
+ using WTF::detachThread;
+ using WTF::waitForThreadCompletion;
+-using WTF::yield;
++//using WTF::yield;
+ 
+ #endif // Threading_h
