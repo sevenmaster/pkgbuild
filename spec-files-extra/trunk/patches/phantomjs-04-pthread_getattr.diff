@@ -1,0 +1,21 @@
+--- phantomjs-1.7.0/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/heap/MachineStackMarker.cpp	2012-09-22 21:37:28.000000000 -0700
++++ phantomjs-1.7.0-patched/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/heap/MachineStackMarker.cpp	2012-12-05 10:33:12.084474867 -0800
+@@ -381,7 +381,7 @@
+     pthread_attr_init(&regs);
+ #if HAVE(PTHREAD_NP_H) || OS(NETBSD)
+     // e.g. on FreeBSD 5.4, neundorf@kde.org
+-    pthread_attr_get_np(platformThread, &regs);
++    //pthread_attr_get_np(platformThread, &regs);
+ #else
+     // FIXME: this function is non-portable; other POSIX systems may have different np alternatives
+     pthread_getattr_np(platformThread, &regs);
+--- phantomjs-1.7.0/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h	2012-09-22 21:37:28.000000000 -0700
++++ phantomjs-1.7.0-patched/src/qt/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h	2012-12-05 11:27:06.037817908 -0800
+@@ -445,6 +445,7 @@
+ /* OS(SOLARIS) - Solaris */
+ #if defined(sun) || defined(__sun)
+ #define WTF_OS_SOLARIS 1
++#define ENABLE_JSC_MULTIPLE_THREADS 0
+ #endif
+ 
+ /* OS(WINCE) - Windows CE; note that for this platform OS(WINDOWS) is also defined */
