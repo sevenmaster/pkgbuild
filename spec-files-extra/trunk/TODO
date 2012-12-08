@@ -278,8 +278,11 @@ SFEwxSVG.spec:      Requires:  SFEwxwidgets    (gnu or g++)
 #build binaries with instructions specific to the local CPU used for building the package. 
 #Check if it is necessary/useful to make AMD/Intel specific distinction at all (
 who can tell). - SFEffmpeg.spec, SFEmplayer2.spec
+# Answer: http://en.wikipedia.org/wiki/X86-64#Differences_between_AMD64_and_Intel_64
 #DONE: http://gcc.gnu.org/ml/gcc-patches/2010-07/msg00775.html
-#DONE:	Avoid use of global builds using SSE/MMX by default
+#DONE: See differences in X86-64 wikipedia info. Basically, do Intel 64 compatible builds.
+#DONE:	Stick with generic 64-bit builds - Intel 64 compatible as baseline! 
+#DONE:  'CCFLAGS=-Wall -m64 -march=i686 -Os'
 #DONE:  Use isainfo -x
 
 43)
@@ -372,3 +375,4 @@ SFExpilot-ng.spec:Requires: SFEsdl
 encumbered/SFEffmpeg-sse2-only.spec:Requires: SFEsdl
 encumbered/SFEvlc.spec:Requires:       SFEsdl
 
+52) Note spec builds requiring DocBook XSL Stylesheets >1.69.1
