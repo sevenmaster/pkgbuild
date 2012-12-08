@@ -8,9 +8,10 @@
 %define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 
 Name:           SFEoctave
+IPS_Package_Name:	math/octave
 Summary:        octave High-level language, intended for numerical computations
 Group:		Math
-Version:        3.6.1
+Version:        3.6.3
 Source:		ftp://ftp.gnu.org/gnu/octave/octave-%{version}.tar.bz2
 Patch5:		octave-configure03.diff
 SUNW_BaseDir:   %{_basedir}
@@ -67,6 +68,10 @@ cd octave-%{version}
 %patch5 -p0
 
 %build
+CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
+if test "x$CPUS" = "x" -o $CPUS = 0; then
+  CPUS=1
+fi
 
 %define enable64 no
 #export CFLAGS="%optflags"
@@ -96,18 +101,7 @@ cd octave-%{version}
 	--enable-docs=no
 #(do not enable docs as Solaris makeinfo is ages old and does not work with octave docs
 
-make
-
-
-#libtoolize --copy --force
-#glib-gettextize --copy --force
-#intltoolize --copy --force --automake
-#aclocal
-#autoconf -f
-#automake -a -c -f
-#./configure --prefix=%{_prefix}         \
-#            $nls
-#
+make -j$CPUS
 
 %install
 
@@ -150,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Sat Dec 08 2012 - Milan Jurik
+- bump to 3.6.3
 * May 06 2012 - Pavel Heimlich
 - octave 3.6.1
 * Feb 28 2010 - Gilles Dauphin
