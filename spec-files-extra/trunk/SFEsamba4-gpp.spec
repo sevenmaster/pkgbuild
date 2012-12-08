@@ -8,7 +8,7 @@
 # PASSED: samba4rc5 on oi_151a/GCC 4.6.2 11/15/2012 - Ken Mays
 #
 %include Solaris.inc
-%define source_name 	samba-4.0.0rc5 
+%define source_name 	samba-4.0.0rc6 
 %define cc_is_gcc 1 
 
 Name:                SFEsamba4
@@ -115,6 +115,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0775, root, sys) /var/log/samba
 
 %changelog
+* Thu Dec 7 2012 - Ken Mays <kmays2000@gmail.com>
+- bumped to 4.0.0rc6
 * Thu Nov 15 2012 - Ken Mays <kmays2000@gmail.com>
 - bumped to 4.0.0rc5
 * Wed Oct 31 2012 - Ken Mays <kmays2000@gmail.com>
