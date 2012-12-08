@@ -79,6 +79,8 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.0.21
 * Thu Nov 17 2011 - Milan Jurik
 - multiarch support
 - IPS package name
