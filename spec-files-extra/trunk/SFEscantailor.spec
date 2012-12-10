@@ -22,6 +22,7 @@ BuildRequires:	SFEboost-gpp-devel
 Requires:	SFEboost-gpp
 BuildRequires:	SFEqt-gpp-devel
 Requires:	SFEqt-gpp
+BuildRequires:	SFEcmake
 
 %description
 Scan Tailor is an interactive post-processing tool for scanned pages. It performs operations such as page splitting, deskewing, adding/removing borders, and others. You give it raw scans, and you get pages ready to be printed or assembled into a PDF or DJVU file. Scanning, optical character recognition, and assembling multi-page documents are out of scope of this project.
@@ -44,7 +45,7 @@ export PATH=/usr/g++/bin:$PATH
 
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=0 -DCMAKE_INSTALL_RPATH=/usr/g++/lib
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=0 -DCMAKE_INSTALL_RPATH=/usr/g++/lib -DCMAKE_INCLUDE_PATH=/usr/g++/include
 
 make -j$CPUS
 
@@ -64,5 +65,7 @@ rm -rf %{buildroot}
 %{_datadir}/%{src_name}
 
 %changelog
+* Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
+- Fixed an boost include and added a build requires for cmake.
 * Sun Apr 15 2012 - Milan Jurik
 - Initial spec
