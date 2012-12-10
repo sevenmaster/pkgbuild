@@ -1,5 +1,8 @@
 2012-12-10  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEscribus.spec: updated to 1.4.1. explicitly force cmake to use
+	python2.6 since it python3.x fails.
+
 	* SFEscantailor.spec: fixed an boost include and added a build
 	requires for cmake.
 
