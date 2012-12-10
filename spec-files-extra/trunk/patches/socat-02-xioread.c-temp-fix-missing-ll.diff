@@ -1,0 +1,21 @@
+Temporary fix until it is known if we need on Solaris checking this packet type
+from.ll <- ll seems to be unknown on Solaris
+
+
+--- socat-1.7.2.1/xioread.c.orig	2012-12-10 15:39:26.632830027 +0100
++++ socat-1.7.2.1/xioread.c	2012-12-10 15:39:34.001949406 +0100
+@@ -146,14 +146,6 @@
+       }
+       /* on packet type we also receive outgoing packets, this is not desired
+        */
+-#if defined(PF_PACKET) && defined(PACKET_OUTGOING)
+-      if (from.soa.sa_family == PF_PACKET) {
+-	 if ((from.ll.sll_pkttype & PACKET_OUTGOING)
+-	    == 0) {
+-	    errno = EAGAIN;  return -1;
+-	 }
+-      }
+-#endif /* defined(PF_PACKET) && defined(PACKET_OUTGOING) */
+ 	    
+       Notice2("received packet with "F_Zu" bytes from %s",
+ 	      bytes,
