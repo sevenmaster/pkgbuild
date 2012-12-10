@@ -1,0 +1,36 @@
+thanks to OpenCSW for 0001-Escape-nested-double-quotes.patch 
+
+
+--- socat-1.7.2.1/test.sh.orig	2012-12-10 13:22:59.754169256 +0100
++++ socat-1.7.2.1/test.sh	2012-12-10 13:25:26.379233328 +0100
+@@ -6170,7 +6170,7 @@
+ # active?
+ while read PROTOV MAJADDR MINADDR; do
+ if [ -z "$PROTOV" ] || [[ "$PROTOV" == \#* ]]; then continue; fi
+-protov="$(echo "$PROTOV" |tr A-Z a-z)"
++protov="$(echo \"$PROTOV\" |tr A-Z a-z)"
+ proto="${protov%%[0-9]}"
+ NAME=${PROTOV}LISTENFORK
+ case "$TESTS" in
+@@ -9306,8 +9306,8 @@
+ do
+ if [ -z "$PF" ] || [[ "$PF" == \#* ]]; then continue; fi
+ #
+-pf="$(echo "$PF" |tr A-Z a-z)"
+-proto="$(echo "$KEYW" |tr A-Z a-z)"
++pf="$(echo \"$PF\" |tr A-Z a-z)"
++proto="$(echo \"$KEYW\" |tr A-Z a-z)"
+ NAME=${KEYW}SCM_$SCM_TYPE
+ case "$TESTS" in
+ *%functions%*|*%$pf%*|*%dgram%*|*%udp%*|*%$proto%*|*%recv%*|*%ancillary%*|*%$ROOT%*|*%$NAME%*)
+@@ -9548,8 +9548,8 @@
+ do
+ if [ -z "$PF" ] || [[ "$PF" == \#* ]]; then continue; fi
+ #
+-pf="$(echo "$PF" |tr A-Z a-z)"
+-proto="$(echo "$KEYW" |tr A-Z a-z)"
++pf="$(echo \"$PF\" |tr A-Z a-z)"
++proto="$(echo \"$KEYW\" |tr A-Z a-z)"
+ NAME=${KEYW}ENV_$SCM_ENVNAME
+ case "$TESTS" in
+ *%functions%*|*%$pf%*|*%dgram%*|*%udp%*|*%$proto%*|*%recv%*|*%ancillary%*|*%envvar%*|*%$ROOT%*|*%$NAME%*)

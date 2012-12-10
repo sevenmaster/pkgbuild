@@ -1,0 +1,13 @@
+We need one more parameter on Solaris
+
+--- socat-1.7.2.1/xio-socket.c.orig	2011-12-06 08:45:03.000000000 +0100
++++ socat-1.7.2.1/xio-socket.c	2012-12-10 18:41:20.919249794 +0100
+@@ -1841,7 +1841,7 @@
+ 	    ;
+       cmsgname = "timestamp";
+       cmsgenvn = "TIMESTAMP";
+-      { time_t t = tv->tv_sec; ctime_r(&t, valbuff); }
++      { time_t t = tv->tv_sec; ctime_r(&t, valbuff, sizeof(valbuff)); }
+       sprintf(strchr(valbuff, '\0')-1/*del \n*/, ", %06ld usecs", (long)tv->tv_usec);
+       break;
+ #endif /* defined(SO_TIMESTAMP) */
