@@ -9,11 +9,13 @@
 %include base.inc
 
 %define src_name	ImageMagick
-#%define src_url		ftp://ftp.imagemagick.org/pub/ImageMagick
-#upstream does not keep old versions, provide alternate url:
-%define src_url                http://ftp.sunet.se/pub/multimedia/graphics/ImageMagick
-%define major		6.7.6
+%define major		6.7.9
 %define minor		10
+
+# Note: we purposely take the latest version from legacy since these
+# are stable (permanent) links whereas the absolute latest version is
+# placed one directory up but only temporarily while it is new.
+%define src_url		ftp://ftp.imagemagick.org/pub/ImageMagick/legacy
 
 Name:                   SFElibmagick-gpp
 IPS_Package_Name:	image/library/g++/imagemagick
@@ -92,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 6.7.9-10
+- synced src url with SFEimagemagick
 * Sat Jun 23 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 6.7.6-10
 - switched buildrequires from SUNWimagick to SFEimagemagick
