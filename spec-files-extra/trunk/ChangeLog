@@ -1,5 +1,8 @@
 2012-12-10  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEarora.spec: accept either SFEcoreutils or SUNWgnu-coreutils
+	for buildrequires.
+
 	* SFEscribus.spec: updated to 1.4.1. explicitly force cmake to use
 	python2.6 since it python3.x fails.
 
