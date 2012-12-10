@@ -14,7 +14,7 @@ IPS_Package_Name:	desktop/publishing/scribus
 Summary:        Graphical desktop publishing (DTP) application
 URL:		http://www.scribus.net/canvas/Scribus
 Group:		Applications/Office
-Version:        1.4.0
+Version:        1.4.1
 Source:		%{sf_download}/%{src_name}/%{version}/%src_name-%version.tar.bz2
 License:	GPLv2
 Patch1:		scribus-01-math_c99.diff
@@ -43,13 +43,14 @@ Scribus is a GUI desktop publishing (DTP) application for Unix/Linux.
 
 
 %prep
-%setup -q -n %src_name-%version
+%setup -q -c -n %src_name-%version
+cd Scribus
 %patch1 -p1
-mkdir builddir
+mkdir -p builddir
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
-cd builddir
+cd Scribus/builddir
 # Don't even think about trying to build this with Solaris Studio
 export CC=gcc
 export CXX=g++
@@ -64,19 +65,19 @@ export PATH=/usr/g++/bin:$PATH
 export QMAKESPEC=solaris-g++
 
 # Use Qt Arthur, because library/desktop/cairo links to libpng12
-cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DPNG_PNG_INCLUDE_DIR:PATH=/usr/include/libpng14 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DWANT_QTARTHUR=1 -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 ..
+cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DPNG_PNG_INCLUDE_DIR:PATH=/usr/include/libpng14 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DWANT_QTARTHUR=1 -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python2.6 -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.6 -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.6.so ..
 make -j$CPUS
 
 %install
 rm -rf %buildroot
-cd builddir
+cd Scribus/builddir
 make install DESTDIR=%buildroot INSTALL="%_bindir/ginstall -c -p"
 cd ..
 mkdir %buildroot%_datadir/applications
 cp %src_name.desktop %buildroot%_datadir/applications
 
 # Fix spaces in filenames
-cd %buildroot%{_libdir}/scribus/swatches
+cd %buildroot%{_datadir}/scribus/swatches
 for i in *' '*; do mv "$i" "`echo $i | sed -e 's/ /_/g'`"; done
 
 %clean
@@ -112,6 +113,9 @@ rm -rf %buildroot
 
 
 %changelog
+* Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 1.4.1
+- explicitly force cmake to use python2.6 since it python3.x fails
 * Sat Jun 23 2012 - Thomas Wagner
 - make (Build)Requires SUNWcups SUNWlcms
 * Sun Jan 08 2012 - Milan Jurik
