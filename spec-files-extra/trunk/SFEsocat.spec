@@ -7,7 +7,7 @@
 %include base.inc
 
 Name:		SFEsocat
-IPS_Package_Name:	socat
+IPS_Package_Name:	network/socat
 Summary:	A multipurpose relay (SOcket CAT)
 Group:		Applications/Internet
 URL:		http://www.dest-unreach.org/socat
