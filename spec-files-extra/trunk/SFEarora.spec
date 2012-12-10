@@ -23,7 +23,11 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires: SUNWgmake
-BuildRequires: SUNWgnu-coreutils
+%if %(/usr/bin/pkginfo -q SFEcoreutils 2>/dev/null  && echo 1 || echo 0)
+BuildRequires:	SFEcoreutils
+%else
+BuildRequires:	SUNWgnu-coreutils
+%endif
 BuildRequires: SUNWgtar
 BuildRequires: SFEqt-gpp-devel
 
@@ -106,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
+- Accept either SFEcoreutils or SUNWgnu-coreutils for buildrequires.
 * Fri Jul 29 2011 - Alex Viskovatoff
 - Build with gcc (to avoid building a second Qt); add SUNW_Copyright
 * Thu Jan 27 2011 - Alex Viskovatoff
