@@ -12,12 +12,16 @@
 %define pythonlibdir lib/python2.6/site-packages/wesnoth
 %define abs_pythonlibdir %{_basedir}/%{pythonlibdir}
 
-%define src_version 1.6.5
+%define src_version 1.10.5
+
+#
+# Wesnoth 1.10.5 builds with CMake/GCC 4.6.2 with minimal patches. - Ken Mays
+#
 
 Name:                    	SFEwesnoth
 IPS_Package_Name:	games/wesnoth
 Summary:                 	Battle for Wesnoth is a fantasy turn-based strategy game
-Version:                 	1.6.5
+Version:                 	1.10.5
 License:			GPLv2
 URL:				http://www.wesnoth.org
 Meta(info.upstream):            David White
@@ -27,24 +31,17 @@ Meta(info.maintainer):		Petr Sobotka sobotkap@gmail.com
 SUNW_BaseDir:			%{_basedir}
 SUNW_Copyright:			wesnoth.copyright
 Source:                  	%{sf_download}/wesnoth/wesnoth-%{src_version}.tar.bz2
-Patch2:			        wesnoth-02-fixusleep.diff
-Patch3:			        wesnoth-03-fixtolower.diff
-Patch4:			        wesnoth-04-fixatoi.diff
-Patch5:			        wesnoth-05-fixround.diff
-Patch6: 		        wesnoth-06-fixreturn.diff
-Patch8:			        wesnoth-08-fixscons.diff
-Patch9:			        wesnoth-09-fixrand.diff
-Patch10:		        wesnoth-10-fixstd.diff
 
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
 BuildRequires: SUNWlibsdl-devel
 Requires: SUNWlibsdl
 BuildRequires:		SFEsdl-mixer-devel
 BuildRequires:		SFEsdl-ttf-devel
 BuildRequires:		SFEsdl-net-devel
 BuildRequires:		SFEsdl-image-devel
-BuildRequires:		SFEscons
+BuildRequires:		SFEcmake
 BuildRequires:          SUNWgnome-common-devel
 BuildRequires:          SUNWgnu-gettext
 Requires:	        SFEsdl-mixer
@@ -56,34 +53,25 @@ Requires:	        SUNWPython26
 
 %prep
 %setup -q -n wesnoth-%{src_version}
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
+# Setup G++ for Solaris
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+mkdir build
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
-
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export MSGFMT=/usr/gnu/bin/msgfmt
+cd build
+cmake ..
+gmake -j $CPUS
 
-scons -j $CPUS default_targets=wesnoth prefix=%{_basedir} 	\
-	python_site_packages_dir=%{pythonlibdir}
 
 %install
 rm -rf %{buildroot}
 
-scons install prefix=%{_basedir} python_site_packages_dir=%{pythonlibdir} \
-	mandir=%{_mandir} destdir=$RPM_BUILD_ROOT
+cd build
+gmake install DESTDIR=%buildroot INSTALL="%_bindir/ginstall -c -p"
 
-scons install-pytools prefix=%{_basedir} 		\
-	python_site_packages_dir=%{pythonlibdir} destdir=$RPM_BUILD_ROOT
 
 %clean
 rm -rf %{buildroot}
@@ -104,6 +92,8 @@ rm -rf %{buildroot}
 %{abs_pythonlibdir}/*
 
 %changelog
+* Tue Dec 11 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 1.10.5, converted to cmake/GCC4 build
 * Mon Feb 21 2011 - Milan Jurik
 - fix packaging
 * Sat Sep 12 2009 - Petr Sobotka sobotkap@gmail.com
