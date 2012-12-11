@@ -9,7 +9,7 @@
 
 Name:			sdl-ttf
 Summary: 		True Type Font library for SDL
-Version:		2.0.10
+Version:		2.0.11
 Source: 		%{src_url}/%{src_name}-%{version}.tar.gz
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 
@@ -38,6 +38,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 08 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.0.11
 * Wed Jan 05 2011 - Milan Jurik
 - bump to 2.0.10
 * Wed Aug 15 2007 - trisk@acm.jhu.edu
