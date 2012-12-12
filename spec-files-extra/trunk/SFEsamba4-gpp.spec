@@ -8,13 +8,13 @@
 # PASSED: samba4rc5 on oi_151a/GCC 4.6.2 11/15/2012 - Ken Mays
 #
 %include Solaris.inc
-%define source_name 	samba-4.0.0rc6 
+%define source_name 	samba-4.0.0 
 %define cc_is_gcc 1 
 
 Name:                SFEsamba4
 Summary:             samba - CIFS Server and Domain Controller v4
 Version:             4.0.0
-Source:              ftp://ftp.samba.org/pub/samba/rc/%{source_name}.tar.gz
+Source:              ftp://ftp.samba.org/pub/samba/stable/%{source_name}.tar.gz
 
 
 SUNW_BaseDir:        %{_basedir}
@@ -115,6 +115,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0775, root, sys) /var/log/samba
 
 %changelog
+* Wed Dec 12 2012 - Ken Mays <kmays2000@gmail.com>
+- bumped to 4.0.0
 * Thu Dec 7 2012 - Ken Mays <kmays2000@gmail.com>
 - bumped to 4.0.0rc6
 * Thu Nov 15 2012 - Ken Mays <kmays2000@gmail.com>
