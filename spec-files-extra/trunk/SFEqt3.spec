@@ -55,12 +55,12 @@ BuildRequires: SUNWxorg-headers
 BuildRequires: SUNWxorg-mesa
 # The above also pulls in SUNWfreetype2
 Requires: SFEcups
-Requires: SFElibmng
+Requires: SUNWlibmng
 BuildRequires: SFEcups-devel
 BuildRequires: SUNWsqlite3
 BuildRequires: SUNWsfwhea
 BuildRequires: SUNWpostgr-82-devel
-BuildRequires: SFElibmng-devel
+BuildRequires: SUNWlibmng-devel
 
 %package devel
 Summary:        %{summary} - development files
@@ -355,6 +355,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to SUNWlibmng(-devel)
 * Tue Apr 29 2008 - moinakg@gmail.com
 - Changes to build 32Bit and 64Bit Qt. Derived from Thomas Wagner's changes.
 - Add new doc package.
