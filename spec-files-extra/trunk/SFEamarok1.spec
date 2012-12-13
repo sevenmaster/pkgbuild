@@ -4,6 +4,7 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define kde_version 3.5.10
 %define ruby_bin /usr/ruby/1.8/bin
@@ -38,8 +39,8 @@ Requires: SFEgraphviz
 BuildRequires: SFEgraphviz-devel
 Requires: SUNWsqlite3
 BuildRequires: SUNWsqlite3
-Requires: SFElibmusicbrainz3
-BuildRequires: SFElibmusicbrainz3-devel
+Requires:      %{pnm_requires_SUNWmusicbrainz}
+BuildRequires: %{pnm_buildrequires_SUNWmusicbrainz_devel}
 Requires: SFElibtunepimp
 BuildRequires: SFElibtunepimp-devel
 BuildRequires: SFElibnjb
@@ -181,6 +182,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWmusicbrainz_devel}, %include packagenamemacros.inc
 * Tue Jan 29 2008 - moinak.ghosh@sun.com
 - Added dependency to libvisual and libvisual-plugins.
 * Sat Jan 26 2008 - moinak.ghosh@sun.com
