@@ -34,8 +34,8 @@ BuildRequires: SUNWogg-vorbis-devel
 %endif
 Requires: SUNWflac
 BuildRequires: SUNWflac-devel
-Requires: SFElibmng
-BuildRequires: SFElibmng-devel
+Requires: SUNWlibmng
+BuildRequires: SUNWlibmng-devel
 Requires: SUNWmkcd
 Requires: SUNWdvdrw
 Requires: SUNWzlib
@@ -88,6 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to SUNWlibmng(-devel)
 * Thu Oct 11 2007 - ananth@sun.com
 - Fixed attributes in the files section
 * Sat Oct 06 2007 - ananth@sun.com
