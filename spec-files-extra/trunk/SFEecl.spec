@@ -12,7 +12,7 @@
 %include base.inc
 
 %define srcname ecl
-%define major 12.7
+%define major 12.12
 %define minor 1
 
 Name:                    SFEecl
@@ -21,7 +21,7 @@ Summary:                 ECL - Embeddable Common-Lisp
 Group:                   Utility
 Version:                 %{major}.%{minor}
 URL:		         http://ecls.sourceforge.net
-Source:		         %{sf_download}/project/ecls/ecls/%{major}/%{srcname}-%{major}.%{minor}.tar.gz
+Source:		         %{sf_download}/project/ecls/ecls/%{major}/%{srcname}-%{major}.%{minor}.tgz
 License: 		 LGPL or GPL
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
@@ -106,6 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Wed Dec 12 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 12.12.1
 * Mon Jul 30 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 12.7.1.
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
