@@ -6,6 +6,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFEkipi-plugins
 License:             LGPL
@@ -22,8 +23,8 @@ Requires: SFElibkipi
 BuildRequires: SFElibkipi-devel
 Requires: SUNWgnome-libs
 BuildRequires: SUNWgnome-libs-devel
-BuildRequires: SFEdoxygen
 BuildRequires: SFEgraphviz
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %if %build_l10n
 %package l10n
@@ -111,5 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Wed Jan 30 2008 - moinak.ghosh@sun.com
 - Initial spec.

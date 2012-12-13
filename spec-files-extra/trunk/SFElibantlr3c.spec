@@ -4,11 +4,11 @@
 # includes module(s): libantlr3c
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	libantlr3c
 %define src_url		http://www.antlr.org/download/C
 
-%define SFEdoxygen      %(/usr/bin/pkginfo -q SFEdoxygen && echo 1 || echo 0)
 %define FOSSgraphviz    %(/usr/bin/pkginfo -q FOSSgraphviz && echo 1 || echo 0)
 
 Name:                   SFElibantlr3c
@@ -33,18 +33,16 @@ build with a spec file.  This issue may be fixed eventually
 in ANTLR v4, as the intention is to drop the maven build system and
 go back to ANT.
 
-%if %SFEdoxygen
 %package doc
 Summary:                 %{summary} - Documentation
 SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
 Requires:      %name
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 %if %{FOSSgraphviz}
 BuildRequires: FOSSgraphviz
 %else
 BuildRequires: SFEgraphviz
-%endif
 %endif
 
 %prep
@@ -153,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- remove conditional use of doxygen, always build doc
 * Sun May 02 2010 - markwright@internode.on.net
 - Compile with gcc
 * Mon Apr 26 2010 - markwright@internode.on.net

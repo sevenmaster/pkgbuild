@@ -2,6 +2,7 @@
 #                    Spec File for Geany
 # =========================================================================== 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 # Software specific variable definitions
@@ -36,7 +37,7 @@ Packager:     	Anil Gulecha
 BuildRoot:		%{_tmppath}/%{src_name}-%{version}-build
 SUNW_BaseDir:	%{_prefix}
 
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %description 
 libnjb is a C library and API for communicating with the Creative Nomad JukeBox
@@ -88,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Sun Jun 29 2008 - river@wikimedia.org
 - BuildRequires: SFEdoxygen
 * Fri Jan 25 2008 - moinak.ghosh@sun.com

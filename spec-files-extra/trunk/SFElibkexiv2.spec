@@ -6,6 +6,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFElibkexiv2
 License:             LGPL
@@ -22,7 +23,6 @@ Requires: SFEarts
 BuildRequires: SFEarts-devel
 Requires: SUNWgnome-libs
 BuildRequires: SUNWgnome-libs-devel
-BuildRequires: SFEdoxygen
 BuildRequires: SFEgraphviz
 
 %package devel
@@ -95,5 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Wed Jan 30 2008 - moinak.ghosh@sun.com
 - Initial spec.
