@@ -560,6 +560,25 @@
 %define pnm_buildrequires_gnu_gettext			SUNWgnu-gettext
 %define pnm_requires_gnu_gettext			SUNWgnu-gettext
 
+#libdiscid
+#note for S10: add SFElibdiscid if necessary
+%define pnm_buildrequires_library_musicbrainz_libdiscid SUNWlibdiscidlibdiscid-devel
+%define pnm_requires_library_musicbrainz_libdiscid	SUNWlibdiscidlibdiscid
+%define pnm_buildrequires_SUNWlibdiscid_devel		SUNWlibdiscidlibdiscid-devel
+%define pnm_buildrequires_SUNWlibdiscid			SUNWlibdiscidlibdiscid-devel
+%define pnm_requires_SUNWlibdiscid			SUNWlibdiscidlibdiscid
+%define pnm_buildrequires_libdiscid			SUNWlibdiscidlibdiscid-devel
+%define pnm_requires_libdiscid				SUNWlibdiscidlibdiscid
+
+#libmusicbrainz
+%define pnm_buildrequires_library_musicbrainz_libmusicbrainz	SUNWmusicbrainz-devel
+%define pnm_requires_library_musicbrainz_libmusicbrainz		SUNWmusicbrainz
+%define pnm_buildrequires_SUNWmusicbrainz_devel		SUNWmusicbrainz-devel
+%define pnm_buildrequires_SUNWmusicbrainz		SUNWmusicbrainz-devel
+%define pnm_requires_SUNWmusicbrainz			SUNWmusicbrainz
+%define pnm_buildrequires_musicbrainz			SUNWmusicbrainz-devel
+%define pnm_requires_musicbrainz			SUNWmusicbrainz
+
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -1636,6 +1655,9 @@
 # 
 
 %changelog
+* Sun Dec  9 2012 - Thomas Wagner
+- handle SUNWlibdiscid /library/musicbrainz/libdiscid
+- handle SUNWmusicbrainz /library/musicbrainz/libmusicbrainz
 * Sun Nov  4 2012 - Thomas Wagner
 - handle special macro name pnm_buildrequires_apache2_default pnm_requires_apache2_default
   and macros for apache2 version.
