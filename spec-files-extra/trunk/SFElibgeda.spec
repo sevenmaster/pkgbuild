@@ -4,6 +4,7 @@
 # includes module(s): libgeda
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define	src_ver 20070526
 %define	src_name libgeda
@@ -16,8 +17,8 @@ License:	GPL
 Source:		%{src_url}/%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
-BuildRequires:	SFEdoxygen
 BuildRequires:	SFEindent
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 BuildRequires:	SFEguile-devel
 Requires:	SFEguile
 BuildRequires:	SFElibgdgeda-devel
@@ -86,5 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Sun Jul 29 2007 - dougs@truemail.co.th
 - Initial spec

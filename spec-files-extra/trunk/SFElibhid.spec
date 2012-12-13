@@ -4,6 +4,7 @@
 # includes module(s): libhid
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define python_version 2.4
 
@@ -21,7 +22,7 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 BuildRequires: SUNWPython-devel
 BuildRequires: SUNWPython
 BuildRequires: SUNWswig
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -99,6 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Mon Oct 20 2008 - halton.huo@sun.com
 - swig integrate into snv_100, rename SFEswig to SUNWswig
 * Mon Aug 20 2007 - trisk@acm.jhu.edu

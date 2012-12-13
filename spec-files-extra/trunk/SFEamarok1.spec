@@ -34,7 +34,7 @@ BuildRequires: SUNWpostgr-devel
 Requires: SUNWgnome-media
 BuildRequires: SUNWgnome-media-devel
 BuildRequires: SUNWgnome-common-devel
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 Requires: SFEgraphviz
 BuildRequires: SFEgraphviz-devel
 Requires: SUNWsqlite3
@@ -184,6 +184,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Dec 13 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWmusicbrainz_devel}, %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}
 * Tue Jan 29 2008 - moinak.ghosh@sun.com
 - Added dependency to libvisual and libvisual-plugins.
 * Sat Jan 26 2008 - moinak.ghosh@sun.com

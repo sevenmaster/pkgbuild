@@ -4,6 +4,8 @@
 # includes module(s): jack
 #
 %include Solaris.inc
+%include packagenamemacros.inc
+
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use jack64 = jack.spec
@@ -12,7 +14,6 @@
 %include base.inc
 %use jack = jack.spec
 
-%define SFEdoxygen      %(/usr/bin/pkginfo -q SFEdoxygen && echo 1 || echo 0)
 %define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 
 Name:		SFEjack
@@ -28,6 +29,7 @@ Requires:	SFElibsndfile
 BuildRequires:	SUNWlibsndfile
 Requires:	SUNWlibsndfile
 %endif
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %package devel
 Summary:         %{summary} - development files
@@ -35,13 +37,11 @@ SUNW_BaseDir:    %{_basedir}
 %include default-depend.inc
 Requires: %name
 
-%if %SFEdoxygen
 %package doc
 Summary:                 %{summary} - Documentation
 SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
 Requires: %name
-%endif
 
 %prep
 rm -rf %name-%version
@@ -69,12 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %jack.install -d %name-%version/%{base_arch}
 
-%if %SFEdoxygen
-  mkdir -p $RPM_BUILD_ROOT%{_docdir}    
-  mv $RPM_BUILD_ROOT%{_datadir}/jack-audio-connection-kit $RPM_BUILD_ROOT%{_docdir}
-%else
-  rm -rf $RPM_BUILD_ROOT%{_datadir}/jack-audio-connection-kit
-%endif
+mkdir -p $RPM_BUILD_ROOT%{_docdir}    
+mv $RPM_BUILD_ROOT%{_datadir}/jack-audio-connection-kit $RPM_BUILD_ROOT%{_docdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -108,15 +104,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{_arch64}/pkgconfig/*
 %endif
 
-%if %SFEdoxygen
 %files doc
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
 %{_datadir}/doc/*
-%endif
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- remove conditional use of doxygen, always build doc
 * Tue Sep 08 2009 - Milan Jurik
 - remove oss package dependency
 * Tue Feb 17 2009 - Thomas Wagner

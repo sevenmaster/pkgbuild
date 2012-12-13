@@ -4,8 +4,10 @@
 # includes module(s): Xerces-C++
 #
 
-%define _basedir /usr/g++
 %include Solaris.inc
+%include usr-g++.inc
+%include base.inc
+%include packagenamemacros.inc
 
 # don't build the sample code, it's built in the no-gpp spec file
 %define no_samples 1
@@ -33,7 +35,7 @@ SUNW_Copyright: SFExerces-c.copyright
 SUNW_BaseDir: %{_basedir}
 Autoreqprov:  on
 %include default-depend.inc
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 #BuildRequires: SFEfindutils
 BuildRequires: SUNWgnu-coreutils
 
@@ -108,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/xerces-c/samples
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- use include file usr-g++.inc instead %define _basedir /usr/g++
 * Sun Jul  3 2010 - Alex Viskovatoff
 - use CC=/usr/gnu/bin/cc; create devel package
 * Sun Feb 17 2008 - laca@sun.com

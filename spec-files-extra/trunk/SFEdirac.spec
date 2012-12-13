@@ -4,6 +4,7 @@
 # includes module(s): dirac
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	dirac
 %define src_url		http://nchc.dl.sourceforge.net/sourceforge/dirac
@@ -27,7 +28,7 @@ Summary:                 %{summary} - Documentation
 SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
 Requires: %name
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %prep
 %setup -q -n %{src_name}-%{version}
@@ -92,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Tue Jul 31 2007 - dougs@truemail.co.th
 - Added doc package and SFEdoxygen build Requirement
 * Mon Jul 16 2007 - markwright@interndode.on.net

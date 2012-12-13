@@ -4,14 +4,13 @@
 # includes module(s): libmtp
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 # There is no 64bit libusb :(
 
 %define cc_is_gcc 1
 %include base.inc
 
 %use libmtp = libmtp.spec
-
-%define SFEdoxygen      %(/usr/bin/pkginfo -q SFEdoxygen && echo 1 || echo 0)
 
 Name:		SFElibmtp
 Summary:	%{libmtp.summary}
@@ -21,6 +20,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SFElibiconv
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %package devel
 Summary:         %{summary} - development files
@@ -33,13 +33,11 @@ Summary:         %{summary} - system files
 SUNW_BaseDir:    /
 %include default-depend.inc
 
-#%if %SFEdoxygen
-#%package doc
-#Summary:                 %{summary} - Documentation
-#SUNW_BaseDir:            %{_prefix}
-#%include default-depend.inc
-#Requires: %name
-#%endif
+%package doc
+Summary:                 %{summary} - Documentation
+SUNW_BaseDir:            %{_prefix}
+%include default-depend.inc
+Requires: %name
 
 %prep
 rm -rf %name-%version
@@ -67,11 +65,6 @@ install -p -m 644 %{_builddir}/%name-%version/i386/libmtp-%version/libmtp.fdi $R
 rm -rf $RPM_BUILD_ROOT%{_docdir}/libmtp-%{version}/html
 rm -rf $RPM_BUILD_ROOT%{_datadir}
 
-#%if %SFEdoxygen
-#%else
-#rm -rf $RPM_BUILD_ROOT%{_datadir}
-#%endif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -94,15 +87,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_cxx_libdir}/pkgconfig
 %{_cxx_libdir}/pkgconfig/*
 
-#%if %SFEdoxygen
-#%files doc
-#%defattr (-, root, bin)
-#%dir %attr (0755, root, sys) %{_datadir}
-#%dir %attr (0755, root, other) %{_datadir}/doc
-#%{_datadir}/doc/*
-#%endif
+%files doc
+%defattr (-, root, bin)
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_datadir}/doc
+%{_datadir}/doc/*
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- re-enable building doc, unconditionally
 * Fri Oct 23 2009 - jchoi42@pha.jhu.edu
 - modified libdir locations, build prefix
 - add root pkg for hal fdi, commented out doc pkg due to doxygen instability

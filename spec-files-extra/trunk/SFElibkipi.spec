@@ -6,6 +6,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFElibkipi
 License:             LGPL
@@ -20,7 +21,7 @@ Requires: SFEkdebase3
 BuildRequires: SFEkdebase3-devel
 Requires: SFEarts
 BuildRequires: SFEarts-devel
-BuildRequires: SFEdoxygen
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -118,5 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Wed jan 30 2008 - moinak.ghosh@sun.com
 - Initial spec.
