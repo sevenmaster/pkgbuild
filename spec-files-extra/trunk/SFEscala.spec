@@ -12,7 +12,7 @@
 %define srcname scala
 
 Name:                    SFEscala
-IPS_Package_Name:	 runtime/scala
+IPS_Package_Name:	 runtime/java/scala
 Summary:                 Scala - The Scala Programming Language
 Group:                   Development/Scala
 Version:                 2.9.2
@@ -66,5 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Sun Dec 16 2012 - Logan Bruns <logan@gedanken.org>
+- Changed IPS package name from runtime/scala to runtime/java/scala.
 * Sat Dec 15 2012 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
