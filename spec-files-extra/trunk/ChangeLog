@@ -1,3 +1,8 @@
+2012-12-16  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEscala.spec: Changed IPS package name from runtime/scala to
+	runtime/java/scala. Added missing copyright file.
+
 2012-12-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEscala.spec: initial spec.
