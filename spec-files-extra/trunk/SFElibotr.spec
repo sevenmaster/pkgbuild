@@ -7,11 +7,14 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
+%include usr-gnu.inc
+%include base.inc
 
 %define srcname libotr
 
 Name:                    SFElibotr
-IPS_Package_Name:	 library/security/libotr
+IPS_Package_Name:	 library/security/gnu/libotr
 Summary:                 libotr - Off-the-Record Messaging Library and Toolkit
 Group:                   Utility
 Version:                 3.2.1
@@ -22,7 +25,9 @@ SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: system/library/security/libgcrypt
+BuildRequires:           %{pnm_buildrequires_SUNWlibgcrypt_devel}
+Requires:                %{pnm_buildrequires_SUNWlibgcrypt}
+
 
 %description
 This is a library and toolkit which implements Off-the-Record (OTR) Messaging.
@@ -67,12 +72,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # we do they should be in a separate package.)
 rm -rf $RPM_BUILD_ROOT/usr/share/man
 rm -rf $RPM_BUILD_ROOT/usr/bin
+rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
+%dir %attr (0755, root, bin) %{_bindir}
+%{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/libotr.*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
@@ -80,11 +88,20 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_includedir}/libotr
 %{_includedir}/libotr/*.h
 %dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*
 %dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/libotr.m4
 
+
 %changelog
-* Sun Nov 5 2012 - Logan Bruns <logan@gedanken.org>
+* Sun Dec 16 2012 - Thomas Wagner
+- move to /usr/gnu by %include usr-gnu.inc (interferes with files from solaris/communication/im/pidgin)
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibgcrypt_devel}, %include packagenamemacros.inc
+- change IPS_Package_Name to library/security/gnu/libotr
+- remove static files, add %{_bindir} and %{_mandir}/man1 to %files
+* Sun Nov  5 2012 - Logan Bruns <logan@gedanken.org>
 - Updated to 3.2.1.
 * Tue Apr 17 2012 - Logan Bruns <logan@gedanken.org>
 - Fixed some permissions.
