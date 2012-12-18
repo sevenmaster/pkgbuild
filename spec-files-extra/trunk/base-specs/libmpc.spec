@@ -11,7 +11,7 @@
 %define _infodir	%{_datadir}/info
 
 Name:		mpc
-Version:	1.0
+Version:	1.0.1
 Summary:	C library for for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result
 URL:		http://www.multiprecision.org/mpc/
 Source:		http://www.multiprecision.org/mpc/download/mpc-%{version}.tar.gz
@@ -60,6 +60,8 @@ rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Dec 17 2012 - Logan Bruns <logan@gedanken.org>
+- bump to 1.0.1
 * Sun Jul 22 2012 - Milan Jurik
 - bump to 1.0
 * Mon Oct 10 2011 - Milan Jurik
