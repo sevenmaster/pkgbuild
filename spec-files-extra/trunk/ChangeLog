@@ -1,3 +1,8 @@
+2012-12-17  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFElibmpc.spec: bump to 1.0.1
+	* base-specs/libmpc.spec
+
 2012-12-16  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEscala.spec: Changed IPS package name from runtime/scala to
