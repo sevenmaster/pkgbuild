@@ -1,5 +1,7 @@
 2012-12-18  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEgocr.spec: added ips name
+
 	* SFEtmux.spec: updated to 1.7, added ips name and updated patches
 	* patches/tmux-02-locking.diff
 	* patches/tmux-03-avoid-cfmakeraw.diff

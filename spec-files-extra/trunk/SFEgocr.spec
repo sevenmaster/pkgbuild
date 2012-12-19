@@ -5,6 +5,7 @@
 %include Solaris.inc
 
 Name:		SFEgocr
+IPS_Package_Name:	sfe/image/gocr
 Summary:	GOCR Optical Character Recognition package.
 Version:	0.49
 URL:		http://jocr.sourceforge.net/
@@ -59,6 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
+- added ips name
 * Tue Nov 30 2010 - Milan Jurik
 - bump to 0.49
 * Sat Feb 2 2008 - pradhap (at) gmail.com
