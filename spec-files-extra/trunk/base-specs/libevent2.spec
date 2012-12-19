@@ -6,7 +6,7 @@
 Name:		libevent2
 Summary:	An event notification library for event-driven network servers.
 Version:	2.0.21
-Source:		%sf_download/levent/libevent/libevent-2.0/libevent-%version-stable.tar.gz
+Source:		http://github.com/downloads/libevent/libevent/libevent-%version-stable.tar.gz
 URL:		http://monkey.org/~provos/libevent/
 Group:		System/Libraries
 
@@ -38,6 +38,10 @@ rm $RPM_BUILD_ROOT%{_libdir}/libevent*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
+- updated download url
+* Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.0.21
 * Sat Feb 11 2012 - Milan Jurik
 - bump to 2.0.17
 * Thu Nov 17 2011 - Milan Jurik
