@@ -11,15 +11,17 @@
 %define _pkg_docdir %_docdir/%srcname
 
 Name:           SFE%srcname
+IPS_Package_Name:	terminal/tmux
 Summary:        Terminal multiplexer
-Version:        1.5
+Version:        1.7
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.sourceforge.net/
 Source:         %{sf_download}/tmux/%{srcname}-%{version}.tar.gz
 # owner:gber date:2010-10-06 type:bug
 # include netdb.h which defines MAXHOSTNAMELEN
 Patch1:         tmux-01-include-netdb.h.diff
-Patch2:         tmux-02-u-for-process-group.patch
+Patch2:         tmux-02-locking.diff
+Patch3:         tmux-03-avoid-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -52,6 +54,7 @@ to (display and accept keyboard input from) multiple clients.
 %setup -q -n %{srcname}-%{version}
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -86,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 1.7, added ips name and updated patches
 * Mon Oct 31 2011 - Alex Viskovatoff
 - Add patch fixing window name updates in statusbar for debug OS builds
 * Sun Oct  2 2011 - Alex Viskovatoff
