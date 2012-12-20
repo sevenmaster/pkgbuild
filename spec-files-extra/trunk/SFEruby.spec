@@ -10,11 +10,14 @@
 %include Solaris.inc
 
 Name:         SFEruby
+IPS_Package_Name:	runtime/ruby-19
 Summary:      ruby - object oriented scripting language
 URL:          http://www.ruby-lang.org/
 Version:      1.9.3
-%define tarball_version %{version}-rc1
+%define tarball_version %{version}-p327
 Source:	      http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-%{tarball_version}.tar.bz2
+Patch1:       ruby-01-endian.diff
+Patch2:       ruby-02-small-files-for-libelf.diff
 SUNW_BaseDir: %{_basedir}
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -25,6 +28,8 @@ Conflicts:    SUNWruby18u
 
 %prep
 %setup -q -n ruby-%{tarball_version}
+%patch1 -p1
+%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -55,15 +60,24 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/*
+%{_libdir}/*.*
+%{_libdir}/ruby/*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/ri
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/ruby
 %dir %attr (0755, root, bin) %{_mandir}
 %{_mandir}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 
 %changelog
+* Thu Dec 20 2012 - Logan Bruns <logan@gedanken.org>
+- bump to 1.9.3-p327
+- added ips name
+- fixed some permissions
 * Sun Sep 25 2011 - Thomas Wagner
 - bump to 1.9.3
 * Thu Jan 24 2008 - nonsea@users.sourceforge.net

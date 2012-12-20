@@ -1,3 +1,10 @@
+2012-12-20  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEruby.spec: bump to 1.9.3-p327, added an ips name and fixed
+	some permissions.
+	* patches/ruby-01-endian.diff
+	* patches/ruby-02-small-files-for-libelf.diff
+
 2012-12-18  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEgocr.spec: added ips name
