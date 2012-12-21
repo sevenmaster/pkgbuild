@@ -25,6 +25,8 @@ Requires:     SUNWlibmsr
 Requires:     SUNWopenssl-libraries
 Requires:     SUNWzlib
 Conflicts:    SUNWruby18u
+BuildRequires:     SFElibyaml
+Requires:     SFElibyaml
 
 %prep
 %setup -q -n ruby-%{tarball_version}
@@ -74,6 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
+- added (build)requires libyaml.
 * Thu Dec 20 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 1.9.3-p327
 - added ips name

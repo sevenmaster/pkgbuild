@@ -1,5 +1,7 @@
 2012-12-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEruby.spec: added (build)requires libyaml.
+
 	* SFElibyaml.spec: fixed some permissions.
 
 2012-12-20  Logan O'Sullivan Bruns  <logan@gedanken.org>
