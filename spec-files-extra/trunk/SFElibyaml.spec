@@ -85,14 +85,22 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
+%defattr (-, root, other)
 %dir %attr(0755, root, sys) %{_prefix}
-%dir %attr(0755, root, bin) %{_prefix}/lib
-%dir %attr(0755, root, bin) %{_prefix}/include
-%{_prefix}/lib/*
-%{_prefix}/include/*
+%dir %attr (0755, root, bin) %{_libdir}
+%{_libdir}/*.*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/*
+%endif
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
+%dir %attr (0755, root, bin) %{_includedir}
+%{_includedir}/*
 
 %changelog
+* Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
+- fixed some permissions.
 * Sat Jun 25 JST 2011 TAKI, Yasushi <taki@justplayer.com>
 - Initial Revision
 
