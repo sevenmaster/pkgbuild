@@ -4,8 +4,11 @@
 # includes module(s): bzr
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define python_version 2.6
+
+%define bzr_major_version 2.5
 
 Name:		SFEbzr
 IPS_Package_Name:	developer/versioning/bzr
@@ -14,14 +17,15 @@ License:	GPLv2+
 SUNW_Copyright:	bzr.copyright
 Group:		Development/Source Code Management
 Version:	2.5.1
-Source:		http://launchpad.net/bzr/2.5/%{version}/+download/bzr-%{version}.tar.gz
+Source:		http://launchpad.net/bzr/%{bzr_major_version}/%{version}/+download/bzr-%{version}.tar.gz
 URL:		http://bazaar-vcs.org
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:	%{_prefix}
-Requires: SUNWPython26
-%include default-depend.inc
-BuildRequires: SUNWPython26-devel
 
+#Requires: SUNWPython26
+Requires: %{pnm_requires_SUNWPython26}
+#BuildRequires: SUNWPython26-devel
+BuildRequires: %{pnm_buildrequires_SUNWPython26_devel}
 
 %description
 Bazaar source code management system.
@@ -76,11 +80,14 @@ rm -rf $RPM_BUILD_ROOT
 %if %build_l10n
 %files l10n
 %defattr (-, root, bin)
-%dir %attr (0755, root, sys) %{_datadir}
-%attr (-, root, other) %{_datadir}/locale
+%dir %attr (0755, root, bin) %{_localedir}
+%{_localedir}/*
 %endif
 
 %changelog
+* Sun Dec 23 2012 - TAKI,Yasushi <taki@justplayer.com>
+- use packagenamemacros.inc.
+- use _localedir for /usr/local/locale
 * Mon Jul 23 2012 - Milan Jurik
 - bump to 2.5.1
 * Wed Mar 28 2012 - knut.hatlen@oracle.com
