@@ -1,3 +1,9 @@
+2012-12-23  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFElibpqxx-gpp.spec: forked from sunstudio version, updated to
+	4.0, allowed SFEpostgres-91(-devel) instead of just
+	SUNWpostgr(-devel) and added IPS name.
+
 2012-12-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEruby.spec: added (build)requires libyaml.
