@@ -1,3 +1,7 @@
+2012-12-25 Milan Jurik <sfnet@xylab.cz>
+
+	* SFEparcellite.spec: bump to 1.0.2rc5
+
 2012-12-23  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFElibpqxx-gpp.spec: forked from sunstudio version, updated to

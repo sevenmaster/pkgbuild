@@ -11,9 +11,11 @@
 %include Solaris.inc
 
 Name:                    SFEparcellite
+IPS_Package_Name:	desktop/clipboard/parcellite
 Summary:                 The lightweight GTK+ clipboard manager.
 Group:                   System/GUI/GNOME
-Version:                 0.8
+Version:                 1.0.2rc5
+IPS_Component_Version:	1.0.2.0.5
 Source:                  %{sf_download}/parcellite/parcellite-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -30,13 +32,11 @@ Summary:                 %{summary} - / filesystem
 SUNW_BaseDir:            /
 %include default-depend.inc
 
-%if %build_l10n
 %package l10n
 Summary:                 %{summary} - l10n files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires:                %{name}
-%endif
 
 %prep
 rm -rf %name_%version
@@ -69,12 +69,6 @@ make -j$CPUS
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if %build_l10n
-%else
-# REMOVE l10n FILES
-rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
-%endif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -88,13 +82,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
+%dir %attr (0755, root, other) %{_datadir}/pixmaps
+%{_datadir}/pixmaps/*
 
-%if %build_l10n
 %files l10n
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{_datadir}
 %attr (-, root, other) %{_datadir}/locale
-%endif
 
 %files root
 %defattr(-, root, sys)
