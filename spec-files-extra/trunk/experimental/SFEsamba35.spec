@@ -20,7 +20,7 @@ Name:                    SFEsamba35
 IPS_package_name:	 sfe/service/network/samba35
 Summary:                 samba - CIFS Server and Domain Controller
 URL:                     http://samba.org/
-Version:                 3.5.15
+Version:                 3.5.20
 Copyright:               GPL
 Url:                     http://www.samba.org
 #Source:                  http://samba.org/samba/ftp/stable/samba-%{version}.tar.gz
@@ -77,6 +77,8 @@ SUNW_BaseDir:            /
 %include default-depend.inc
 
 %description
+Samba SMB/CIFS server with network file and print services
+to SMB/CIFS clients
 
 
 %prep
@@ -245,7 +247,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 #for doc section from above
 %dir %attr (0755, root, sys) %{_datadir}
+%if %{_share_locale_group_changed}
+%dir %attr (0755, root, %{_share_locale_group}) %{_datadir}/locale
+%defattr (-, root, %{_share_locale_group})
+%else
 %dir %attr (0755, root, other) %{_datadir}/locale
+%defattr (-, root, other)
+%endif
 %{_datadir}/locale/*
 %dir %attr (0755, root, other) %{_docdir}
 #%dir %attr (0755, root, other) %{_docdir}/%{src_name}
@@ -288,6 +296,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 27 2012 - Thomas Wagner
+- bump to 3.5.20
+- use auto-switch for changing group owner of /usr/gnu/share/locale
+- add package description
 * Sun Oct  7 2012 - Thomas Wagner
 - use separate names f/e daemon in SMF dependent group
 * Fri Jun 15 2012 - Thomas Wagner
