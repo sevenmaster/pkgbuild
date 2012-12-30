@@ -13,7 +13,7 @@
 Summary:	Asynchronous JavaScript Engine  
 Name:		SFEnodejs  
 IPS_Package_Name:	runtime/javascript/nodejs
-Version:	0.8.8
+Version:	0.8.16
 License:	BSD  
 Group:		System/Libraries  
 URL:		http://nodejs.org/  
@@ -89,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/node  
 
 %changelog  
+* Sun Dex 30 2012 - Thomas Wagner
+- bump to 0.8.16
 * Thu Aug 30 2012 - Milan Jurik
 - bump to 0.8.8
 * Fri Jul 27 2012 - Milan Jurik
