@@ -13,11 +13,13 @@
 Name:                    SFEntfs-3g
 IPS_Package_Name:	system/file-system/ntfs-3g
 Summary:                 NTFS-3G Stable Read/Write Driver
-Version:                 2011.1.15
+Version:	2012.1.15AR.8
+IPS_Component_Version:	2012.1.15.0.8
 License:                 GPLv2
+Source:		http://jp-andre.pagesperso-orange.fr/ntfs-3g_ntfsprogs-%{version}.tgz
 #Source:			 http://www.tuxera.com/opensource/ntfs-3g-%{version}.tgz
 #temporary download location (tuxera does not keep old versions):
-Source:                  http://pkgs.fedoraproject.org/repo/pkgs/ntfs-3g/ntfs-3g-2011.1.15.tgz/15a5cf5752012269fa168c24191f00e2/ntfs-3g-2011.1.15.tgz
+#Source:                  http://pkgs.fedoraproject.org/repo/pkgs/ntfs-3g/ntfs-3g-2011.1.15.tgz/15a5cf5752012269fa168c24191f00e2/ntfs-3g-2011.1.15.tgz
 Url:                     http://www.tuxera.com/community/ntfs-3g-download/
 Group:		System/File System
 SUNW_BaseDir:            %{_basedir}
@@ -45,7 +47,7 @@ BuildRequires:	SFElibfuse-devel
 Requires:	SFElibfuse
 
 %prep
-%setup -q -n ntfs-3g-%version
+%setup -q -n ntfs-3g_ntfsprogs-%version
 
 cat <<_EOF > fstyp
 #!/bin/sh
@@ -81,6 +83,7 @@ export FUSE_MODULE_LIBS="%{gnu_lib_path} -pthread -lfuse"
             --sysconfdir=%{_sysconfdir}         \
 	    --datadir=%{_datadir}               \
             --bindir=%{_bindir}                 \
+            --sbindir=%{_sbindir}               \
             --includedir=%{_includedir}         \
             --exec-prefix=%{_execprefix}	\
 	    --with-fuse=external
@@ -91,19 +94,22 @@ gmake -j $CPUS
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
-rm -r $RPM_BUILD_ROOT%{_prefix}/sbin
+rm -f $RPM_BUILD_ROOT%{_sbindir}/*
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g
 cp fstyp $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/fstyp
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/fstyp
 ln -s %{_bindir}/ntfs-3g $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/mount
+
+mv $RPM_BUILD_ROOT/sbin/mkfs.ntfs $RPM_BUILD_ROOT%{_sbindir}
+rmdir $RPM_BUILD_ROOT/sbin
+ln -s %{_sbindir}/mkfs.ntfs $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/mkfs
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
-%dir %attr (0755, root, bin) %{_libdir}
+%{_bindir}
 %{_libdir}/libntfs-3g.so*
 %dir %attr (0755, root, sys) %{_libdir}/fs
 %dir %attr (0755, root, sys) %{_libdir}/fs/ntfs-3g
@@ -114,6 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/*
+%{_sbindir}
 
 %files devel
 %defattr (-, root, bin)
@@ -124,6 +131,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 04 2013 - Milan Jurik
+- bump to 2012.1.15AR.8
 * Sat Mar 31 2012 - Pavel Heimlich
 - fix download location
 * Sat Jan 28 2012 - Thomas Wagner
