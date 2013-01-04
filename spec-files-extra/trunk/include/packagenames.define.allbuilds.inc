@@ -1508,7 +1508,7 @@
 %if %( expr %{osbuild} '>=' 133 )
 #from build 133 and up we have
 #database/postgres-51
-%define pnm_buildrequires_postgres_default	service/database/postgres-84
+%define pnm_buildrequires_postgres_default	service/database/postgres-84/developer
 %define pnm_requires_postgres_default		service/database/postgres-84
 %endif
 #END >= 133
@@ -1527,7 +1527,7 @@
 %define postgres_major_minor_version 9.1
 ##not defined %define postgres_major_minor_micro_version 9.1.X
 
-%define pnm_buildrequires_postgres_default	service/database/postgres-91
+%define pnm_buildrequires_postgres_default	service/database/postgres-91/developer
 %define pnm_requires_postgres_default		service/database/postgres-91
 %endif
 #END >= 147
@@ -1703,6 +1703,8 @@
 - handle special macro name pnm_buildrequires_postgres_default 
   pnm_requires_postgres_default (>=147 S11) and macros for postgres version.
   Default here to service/database/postgres-91. Updated version macros.
+- correct pnm_buildrequires_postgres_default to ask for service/database/postgres-84/developer
+  and service/database/postgres-91/developer
 - handle SFEfreeglut x11/library/freeglut pnm_buildrequires_x11_library_freeglut (>151 S11)
 - partial support for SUNWapch22u pnm_buildrequires_apache2_default (>=133)
 * Sun Dec  9 2012 - Thomas Wagner
