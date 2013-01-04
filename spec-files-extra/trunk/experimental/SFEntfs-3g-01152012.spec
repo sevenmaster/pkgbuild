@@ -16,6 +16,7 @@ Name:                    SFEntfs-3g
 IPS_Package_Name:	 system/file-system/ntfs-3g
 Summary:                 NTFS-3G Stable Read/Write Driver
 Version:                 2012.1.15AR.8
+IPS_Component_Version:   2012.1.15.0.8
 License:                 GPLv2
 #
 # Latest tested source for OpenIndiana version. 
@@ -112,9 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
-%dir %attr (0755, root, bin) %{_libdir}
+%{_bindir}
 %{_libdir}/libntfs-3g.so*
 %dir %attr (0755, root, sys) %{_libdir}/fs
 %dir %attr (0755, root, sys) %{_libdir}/fs/ntfs-3g
@@ -125,14 +124,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/*
+%{_sbindir}
 
 %files devel
 %defattr (-, root, bin)
 %{_includedir}
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
-
-
 
 %changelog
 * Thu Jan 3 2013 - Ken Mays <kmays2000@gmail.com>

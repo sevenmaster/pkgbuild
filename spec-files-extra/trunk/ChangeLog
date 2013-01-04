@@ -1,3 +1,11 @@
+2013-01-04 Ken Mays  <kmays2000@gmail.com>
+
+	* SFEwine.spec: bump to 1.5.20
+
+2013-01-04 Milan Jurik <sfnet@xylab.cz>
+
+	* SFEntfs-3g.spec: bump to 2012.1.15AR.8
+
 2013-01-03 Ken Mays  <kmays2000@gmail.com>
 
 	* experimental/SFEntfs-3g-01152012.spec: bump to 2012.1.15AR.8

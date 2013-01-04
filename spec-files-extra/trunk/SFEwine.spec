@@ -38,7 +38,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.4.1
+Version:                1.5.20
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -48,8 +48,8 @@ Source:                 http://downloads.sourceforge.net/project/wine/Source/win
 # See http://wiki.winehq.org/Gecko for which version to use.
 #
 Source1:		http://winetricks.org/winetricks
-Source2:                %{src_url}/%{sname}_gecko-1.4-x86.msi
-Source3:		%{src_url}/%{sname}_gecko-1.4-x86_64.msi
+Source2:                %{src_url}/%{sname}_gecko-1.8-x86.msi
+Source3:		%{src_url}/%{sname}_gecko-1.8-x86_64.msi
 Source4:    		http://kegel.com/wine/wisotool
 Source100:              wine.directory
 Source101:              winetricks.desktop
@@ -269,6 +269,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Jan 4 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.5.20
 * Sat Jun 16 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.4.1
 * Wed Mar 7 2012 - Ken Mays <kmays2000@gmail.com>
