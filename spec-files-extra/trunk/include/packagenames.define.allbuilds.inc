@@ -965,6 +965,30 @@
 %endif
 #END openindiana
 
+
+#-----------------------------------------------------------------
+#special cases, set defaults first
+%define pnm_buildrequires_SFEfreeglut		SFEfreeglut
+%define pnm_requires_SFEfreeglut		SFEfreeglut
+%define pnm_buildrequires_x11_library_freeglut	SFEfreeglut
+%define pnm_requires_x11_library_freeglut	SFEfreeglut
+#-----------------------------------------------------------------
+#changes the defaults from above, in case the build is newer.
+#this is for Solaris (Express) 11 builds (above excluding 151)
+#which now includes freeglut
+%if %{solaris11express}
+%if %( expr %{osbuild} '>' 151 )
+%define pnm_buildrequires_SFEfreeglut		x11/library/freeglut
+%define pnm_requires_SFEfreeglut		x11/library/freeglut
+%define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
+%define pnm_requires_x11_library_freeglut	x11/library/freeglut
+%endif
+#END > 151
+%endif
+#END solaris11express
+
+
+
 #-----------------------------------------------------------------
 #packages no longer available, we could bail out or just require a core package
 #to continue for now, we just set a already existing package name, the spec file 
@@ -1385,10 +1409,12 @@
 #set apache2 for Solaris11(Express) or OpenIndiana or OpenSolaris
 %if %{os2nnn}
 #older IPS systems
-#use the default from before (e.g. SUNWj6rt and SUNWj6rtx
+#use the default from before
 %if %( expr %{osbuild} '>=' 133 )
 #from build 133 and up we have
-#no changes yet!
+#note: currently explicitly defined only for SXCE and for >=133
+%define pnm_buildrequires_apache2_default		SUNWapch22u
+%define pnm_requires_apache2_default			SUNWapch22u
 #expect that to change soon, as apache2 2.4 is in preparation as additional
 #version to apache2 2.2 (will dissapear with future OS versions)
 %endif
@@ -1456,7 +1482,7 @@
 ##TODO## to cover the 9.x series. This would need a *LOCAL* overright on your
 ##TODO## system. Ideas on how to solve that are welcome! email me tom68@....
 
-#from SXCE on we have this:
+#from SXCE on we have this: (mind the execptions below!)
 %define postgres_version 8.4
 %define postgres_major_version 8
 %define postgres_major_minor_version 8.4
@@ -1488,6 +1514,24 @@
 #END >= 133
 %endif
 #END os2nnn
+
+
+#for better readability repeat. This time special switch for Solaris build >= 147
+%if %{os2nnn}
+%if %( expr %{osbuild} '>=' 147 )
+#from build 147 and up we have postgres no longer in the Solaris repo
+#database/postgres-91 - we default to the latest SFE postgres we know that is working fine
+
+%define postgres_version 9.1
+%define postgres_major_version 9
+%define postgres_major_minor_version 9.1
+##not defined %define postgres_major_minor_micro_version 9.1.X
+
+%define pnm_buildrequires_postgres_default	service/database/postgres-91
+%define pnm_requires_postgres_default		service/database/postgres-91
+%endif
+#END >= 147
+%endif
 
 #add more distro here
 
@@ -1655,6 +1699,12 @@
 # 
 
 %changelog
+* Fri Jan  4 2013 - Thomas Wagner
+- handle special macro name pnm_buildrequires_postgres_default 
+  pnm_requires_postgres_default (>=147 S11) and macros for postgres version.
+  Default here to service/database/postgres-91. Updated version macros.
+- handle SFEfreeglut x11/library/freeglut pnm_buildrequires_x11_library_freeglut (>151 S11)
+- partial support for SUNWapch22u pnm_buildrequires_apache2_default (>=133)
 * Sun Dec  9 2012 - Thomas Wagner
 - handle SUNWlibdiscid /library/musicbrainz/libdiscid
 - handle SUNWmusicbrainz /library/musicbrainz/libmusicbrainz
