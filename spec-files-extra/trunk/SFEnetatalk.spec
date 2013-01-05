@@ -134,8 +134,10 @@ rm -rf %name-%version
 %defattr (-, root, sys)
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %attr (0755, root, sys) %dir %{_sysconfdir}/init.d
+%attr (0755, root, sys) %dir %{_sysconfdir}/pam.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/netatalk/*
 %{_sysconfdir}/init.d/netatalk
+%{_sysconfdir}/pam.d/netatalk
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{_localstatedir}
 %dir %attr (0755, root, bin) %{_localstatedir}/spool
@@ -143,6 +145,8 @@ rm -rf %name-%version
 
 
 %changelog
+* Sun Jan  6 2013 - TAKI, Yasushi 
+- add /etc/pam.d directory.
 * Mon Jul 23 2012 - Milan Jurik
 - bump to 2.2.3
 - fix rpath for /usr/gnu/lib
