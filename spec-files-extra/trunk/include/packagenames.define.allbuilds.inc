@@ -714,13 +714,13 @@
 #sunw
 %define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-devel
 %define pnm_buildrequires_SUNWlibgpg_error		SFElibgpg-error-devel
-%define pnm_requires_SUNWlibgpg-error			SUNWlibggpg-error
+%define pnm_requires_SUNWlibgpg_error			SUNWlibggpg-error
 %define pnm_buildrequires_library_security_libgpg_error	SFElibgpg-error-devel
 %define pnm_requires_library_security_libgpg_error	SFElibgpg-error
 #sfe
 %define pnm_buildrequires_SFElibgpg_error_devel	SFElibgpg-error-devel
 %define pnm_buildrequires_SFElibgpg_error		SFElibgpg-error-devel
-%define pnm_requires_SFElibgpg-error			SFElibgpg-error
+%define pnm_requires_SFElibgpg_error			SFElibgpg-error
 %define pnm_buildrequires_sfe_library_security_libgpg_error	SFElibgpg-error-devel
 %define pnm_requires_sfe_library_security_libgpg_error	SFElibgpg-error
 %endif
@@ -1508,8 +1508,8 @@
 %if %( expr %{osbuild} '>=' 133 )
 #from build 133 and up we have
 #database/postgres-51
-%define pnm_buildrequires_postgres_default	service/database/postgres-84/developer
-%define pnm_requires_postgres_default		service/database/postgres-84
+%define pnm_buildrequires_postgres_default	database/postgres-84/developer
+%define pnm_requires_postgres_default		database/postgres-84
 %endif
 #END >= 133
 %endif
@@ -1527,8 +1527,8 @@
 %define postgres_major_minor_version 9.1
 ##not defined %define postgres_major_minor_micro_version 9.1.X
 
-%define pnm_buildrequires_postgres_default	service/database/postgres-91/developer
-%define pnm_requires_postgres_default		service/database/postgres-91
+%define pnm_buildrequires_postgres_default	database/postgres-91/developer
+%define pnm_requires_postgres_default		database/postgres-91
 %endif
 #END >= 147
 %endif
@@ -1699,6 +1699,9 @@
 # 
 
 %changelog
+* Sat Jan  5 2013 - Thomas Wagner
+- typo in variable name SUNWlibgpg_error / SFElibgpg_error
+- rename service/database/postgres-91 to database/postgres-91.
 * Fri Jan  4 2013 - Thomas Wagner
 - handle special macro name pnm_buildrequires_postgres_default 
   pnm_requires_postgres_default (>=147 S11) and macros for postgres version.
