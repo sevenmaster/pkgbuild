@@ -69,56 +69,74 @@ NOTE:                library/security/openssl -> SUNWopenssl or openssl or libra
 
 %prep
 echo "
-packagenamemacros: osbuild 		%{osbuild}
-packagenamemacros: SXCE 		%{SXCE}
-packagenamemacros: os2nnn 		%{os2nnn}
-packagenamemacros: solaris11express	%{solaris11express} Solaris 11 Express yes/no
-packagenamemacros: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g. 166)
-packagenamemacros: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
-packagenamemacros: openindiana		%{openindiana} OpenIndiana yes/no
-packagenamemacros: oi201100 		%{oi201100} OpenIndiana 151, experimental reworked
-packagenamemacros: oi201009 		%{oi201009} OpenIndiana 147/148, experimental reworked
-packagenamemacros: os201005 		%{os201005} not yet released, name might eventually change?
-packagenamemacros: os201003 		%{os201003} deprecared, this release name was never used, will be removed
-packagenamemacros: os200906 		%{os200906}
-packagenamemacros: os200902 		%{os200902}
-packagenamemacros: os200811 		%{os200811}
-packagenamemacros: osdistrelnumber 	%{osdistrelnumber}
-packagenamemacros: osdistrelname   	%{osdistrelname}
-packagenamemacros: osdet299999 		%{osdet299999}
-packagenamemacros: pnm_buildrequires_perl_default: 		%{pnm_buildrequires_perl_default}
-packagenamemacros: pnm_requires_perl_default: 			%{pnm_requires_perl_default}
-packagenamemacros: perl_version number is:       		%{perl_version}
-packagenamemacros: perl_major_version number is: 		%{perl_major_version}
-packagenamemacros: perl_major_minor_version number is: 		%{perl_major_minor_version}
-packagenamemacros: perl_major_minor_micro_version number is: 	%{perl_major_minor_micro_version}
-packagenamemacros: _prefix/perl_path_vendor_perl	 	%{_prefix}/%{perl_path_vendor_perl}
-packagenamemacros: _prefix/perl_path_vendor_perl_version 	%{_prefix}/%{perl_path_vendor_perl_version}
-packagenamemacros: _prefix/perl_path_site_perl 			%{_prefix}/%{perl_path_site_perl}
-packagenamemacros: _prefix/perl_path_site_perl_version 		%{_prefix}/%{perl_path_site_perl_version}
-packagenamemacros: pnm_buildrequires_python_default: 		%{pnm_buildrequires_python_default}
-packagenamemacros: pnm_requires_python_default: 		%{pnm_requires_python_default}
-packagenamemacros: python_version number is:       		%{python_version}
-packagenamemacros: python_major_version number is: 		%{python_major_version}
-packagenamemacros: python_major_minor_version number is: 	%{python_major_minor_version}
-packagenamemacros: python_major_minor_micro_version number is: 	%{python_major_minor_micro_version}
-packagenamemacros: python_package_string: 			%{python_version_package_string}
-packagenamemacros: pnm_buildrequires_mysql_default		%{pnm_buildrequires_mysql_default}
-packagenamemacros: pnm_requires_mysql_default			%{pnm_requires_mysql_default}
-packagenamemacros: _prefix/mysql_default_includedir		%{_prefix}/%{mysql_default_includedir}
-packagenamemacros: _prefix/mysql_default_libdir			%{_prefix}/%{mysql_default_libdir}
-packagenamemacros: mysql_version				%{mysql_version}
-packagenamemacros: mysql_major_version				%{mysql_major_version}
-packagenamemacros: mysql_major_minor_version			%{mysql_major_minor_version}
-packagenamemacros: pnm_requires_java_runtime_default	%{pnm_requires_java_runtime_default}
-packagenamemacros: pnm_requires_java_runtime_default_32       %{pnm_requires_java_runtime_default_32}
-packagenamemacros: pnm_requires_java_runtime_default_64       %{pnm_requires_java_runtime_default_64}
-packagenamemacros: pnm_buildrequires_SUNWsmba                 %{pnm_buildrequires_SUNWsmba}
-packagenamemacros: pnm_buildrequires_SUNWsmbau                 %{pnm_buildrequires_SUNWsmbau}
-packagenamemacros: pnm_buildrequires_SUNWsmbar                 %{pnm_buildrequires_SUNWsmbar}
-packagenamemacros: pnm_requires_SUNWsmba                 %{pnm_requires_SUNWsmba}
-packagenamemacros: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
-packagenamemacros: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
+pnm: osbuild 		%{osbuild}
+pnm: SXCE 		%{SXCE}
+pnm: os2nnn 		%{os2nnn}
+pnm: solaris111111	%{solaris111111} Solaris 11 11/11 (beta setting, see also solaris11express)
+pnm: solaris11express	%{solaris11express} Solaris 11 Express yes/no
+pnm: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g. 166)
+pnm: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
+pnm: openindiana		%{openindiana} OpenIndiana yes/no
+pnm: oi201100 		%{oi201100} OpenIndiana 151, experimental reworked
+pnm: oi201009 		%{oi201009} OpenIndiana 147/148, experimental reworked
+pnm: os201005 		%{os201005} not yet released, name might eventually change?
+pnm: os201003 		%{os201003} deprecared, this release name was never used, will be removed
+pnm: os200906 		%{os200906}
+pnm: os200902 		%{os200902}
+pnm: os200811 		%{os200811}
+pnm: osdistrelnumber 	%{osdistrelnumber}
+pnm: osdistrelname   	%{osdistrelname}
+pnm: osdet299999 		%{osdet299999}
+pnm: pnm_buildrequires_perl_default: 		%{pnm_buildrequires_perl_default}
+pnm: pnm_requires_perl_default: 			%{pnm_requires_perl_default}
+pnm: perl_version number is:       		%{perl_version}
+pnm: perl_major_version number is: 		%{perl_major_version}
+pnm: perl_major_minor_version number is: 		%{perl_major_minor_version}
+pnm: perl_major_minor_micro_version number is: 	%{perl_major_minor_micro_version}
+pnm: _prefix/perl_path_vendor_perl	 	%{_prefix}/%{perl_path_vendor_perl}
+pnm: _prefix/perl_path_vendor_perl_version 	%{_prefix}/%{perl_path_vendor_perl_version}
+pnm: _prefix/perl_path_site_perl 			%{_prefix}/%{perl_path_site_perl}
+pnm: _prefix/perl_path_site_perl_version 		%{_prefix}/%{perl_path_site_perl_version}
+
+pnm: pnm_buildrequires_python_default: 		%{pnm_buildrequires_python_default}
+pnm: pnm_requires_python_default: 		%{pnm_requires_python_default}
+pnm: python_version number is:       		%{python_version}
+pnm: python_major_version number is: 		%{python_major_version}
+pnm: python_major_minor_version number is: 	%{python_major_minor_version}
+pnm: python_major_minor_micro_version number is: 	%{python_major_minor_micro_version}
+pnm: python_package_string: 			%{python_version_package_string}
+
+pnm: pnm_buildrequires_mysql_default		%{pnm_buildrequires_mysql_default}
+pnm: pnm_requires_mysql_default			%{pnm_requires_mysql_default}
+pnm: _prefix/mysql_default_includedir		%{_prefix}/%{mysql_default_includedir}
+pnm: _prefix/mysql_default_libdir			%{_prefix}/%{mysql_default_libdir}
+pnm: mysql_version				%{mysql_version}
+pnm: mysql_major_version				%{mysql_major_version}
+pnm: mysql_major_minor_version			%{mysql_major_minor_version}
+
+see include/packagenames.define.allbuilds.inc for detailed usage instructions!
+pnm: pnm_buildrequires_postgres_default		%{pnm_buildrequires_postgres_default}
+pnm: pnm_requires_postgres_default		%{pnm_requires_postgres_default}
+pnm: _prefix/ . postgres/ . postgres_default_prefix	%{_prefix}/postgres/%{postgres_major_minor_version}
+pnm: CFLAGS="-I%%{_prefix}/%%{postgres_default_includedir}" -I%{_prefix}/%{postgres_default_includedir}
+pnm: LDFLAGS and CFLAGS="-L%%{_prefix}/%%{postgres_default_libdir} -R%%{_prefix}/%%{postgres_default_libdir}"	-L%{_prefix}/%{postgres_default_libdir} -R%{_prefix}/%{postgres_default_libdir}
+pnm: _prefix/ . postgres/ . postgres_default_includedir . /include			%{_prefix}/postgres/%{postgres_major_minor_version}/include
+pnm: _prefix/ . postgres/ . define postgres_default_libdir	. /lib			%{_prefix}/postgres/%{postgres_major_minor_version}/lib
+pnm: _prefix/ . postgres/ . postgres_default_pg_config . /bin/pg_config		%{_prefix}/postgres/%{postgres_major_minor_version}/bin/pg_config
+pnm: _prefix/ . postgres/ . postgres_default_pg_config_64 . /bin/64/pg_config	%{_prefix}/postgres/%{postgres_major_minor_version}/bin/64/pg_config
+pnm: postgres_version				%{postgres_version}
+pnm: postgres_major_version			%{postgres_major_version}
+pnm: postgres_major_minor_version			%{postgres_major_minor_version}
+
+pnm: pnm_requires_java_runtime_default	%{pnm_requires_java_runtime_default}
+pnm: pnm_requires_java_runtime_default_32       %{pnm_requires_java_runtime_default_32}
+pnm: pnm_requires_java_runtime_default_64       %{pnm_requires_java_runtime_default_64}
+pnm: pnm_buildrequires_SUNWsmba                 %{pnm_buildrequires_SUNWsmba}
+pnm: pnm_buildrequires_SUNWsmbau                 %{pnm_buildrequires_SUNWsmbau}
+pnm: pnm_buildrequires_SUNWsmbar                 %{pnm_buildrequires_SUNWsmbar}
+pnm: pnm_requires_SUNWsmba                 %{pnm_requires_SUNWsmba}
+pnm: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
+pnm: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
 " >/dev/null
 
 
@@ -151,6 +169,9 @@ requesting package library/ncurses resolves on %{osdistrelname} build %{osbuild}
 
 
 %changelog
+* Sat Jan  5 2013 - Thomas Wagner
+- add postgres examples
+- add (incomplete) Solaris 11 11/11 examples
 * Fri Nov  2 2012 - Thomas Wagner
 - add pnm_buildrequires_SUNWsmba|SUNWsmbau|SUNWsmbar
 * Sun Apr 29 2012 - Thomas Wagner

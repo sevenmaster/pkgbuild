@@ -8,14 +8,43 @@
 
 # TODO: add copyright (CDDL?)
 
+# TODO: add more fine granularity version/branch of entire@ in IPS
+
 
 ## READ ## place newer build simulation right here
+
+#simulate a OS distro - Solaris 11 11/11 build 175
+%define osdistro 1
+%define osbuild 175
+%define SXCE 0
+%define os2nnn 1
+##TODO## new
+%define solaris111111 1
+##TODO## once osdistro distinguished between express and GA release, then set to zero
+%define solaris11express 1
+%define s11ex201100 0
+%define s11ex201011 0
+%define openindiana 0
+%define oi201100 0
+%define oi201009 0
+%define os201005 0
+%define os201003 0
+%define os200906 0
+%define os200902 0
+%define os200811 0
+%define osdistrelnumber 175
+%define osdistrelname   Solaris 11
+%define osdet299999 1
+
+%use packagenamemacross1120111111 = packagenamemacros.spec
 
 #simulate a OS distro - Solaris 11 Express build 166
 %define osdistro 1
 %define osbuild 166
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 1
 %define s11ex201100 1
 %define s11ex201011 0
@@ -38,6 +67,8 @@
 %define osbuild 151
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 1
 %define s11ex201100 0
 %define s11ex201011 1
@@ -60,6 +91,8 @@
 %define osbuild 151
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -82,6 +115,8 @@
 %define osbuild 147
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -104,6 +139,8 @@
 %define osbuild 134
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -126,6 +163,8 @@
 %define osbuild 111
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -148,6 +187,8 @@
 %define osbuild 99
 %define SXCE 0
 %define os2nnn 1
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -170,6 +211,8 @@
 %define osbuild 130
 %define SXCE 1
 %define os2nnn 0
+##TODO## new
+%define solaris111111 0
 %define solaris11express 0
 %define s11ex201100 0
 %define s11ex201011 0
@@ -198,6 +241,7 @@ Demo the packagenamemacros.inc use for (see filename which OS and osbuild is sim
 
 %prep
 
+%packagenamemacross1120111111.prep
 %packagenamemacross11ex201100.prep
 %packagenamemacross11ex201011.prep
 %packagenamemacrosoi201100.prep
@@ -208,6 +252,8 @@ Demo the packagenamemacros.inc use for (see filename which OS and osbuild is sim
 %packagenamemacros130sxce.prep
 
 %changelog
+* Sat Jan  5 2011 - Thomas Wagner
+- add (beta support for) Solaris 11 11/11
 * Fri Jun 17 2011 - Thomas Wagner
 - adjust changed names for osdistro variables (osdistro.inc)
 - add example to Solaris 11 Express, reformatted to highlight interesting settings
