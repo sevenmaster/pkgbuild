@@ -22,13 +22,15 @@ BuildRoot:                %{_tmppath}/%{name}-%{version}-build
 SUNW_Copyright:		  sylpheed.copyright
 %include default-depend.inc
 
-#what is the build-req. for SUNWlibmsr?? BuildRequires: 
 BuildRequires: SUNWgnome-base-libs-devel
 BuildRequires: SUNWopenssl-include
+BuildRequires: SUNWgtkspell
+BuildRequires: SUNWgnupg
 Requires: SUNWlibmsr
 Requires: SUNWgnome-base-libs
 Requires: SUNWopenssl-libraries
-
+Requires: SUNWgtkspell
+Requires: SUNWgnupg
 
 #descriton taken from original sylpheed.spec file:
 %description
@@ -77,7 +79,6 @@ export LDFLAGS="%_ldflags"
             --datadir=%{_datadir}       \
             --libexecdir=%{_libexecdir} \
             --sysconfdir=%{_sysconfdir} \
-            --disable-gtkspell		\
             --enable-shared             \
             --disable-static
 
@@ -88,7 +89,7 @@ make -j $CPUS
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/pixmaps
-install -m 644 *.png ${RPM_BUILD_ROOT}%{_datadir}/pixmaps
+#install -m 644 *.png ${RPM_BUILD_ROOT}%{_datadir}/pixmaps
 
 %if %build_l10n
 %else
@@ -125,6 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Jan 04 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.3.0
+- Added GnuPG and GTKspell
 * Sat Aug 25 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.2.0
 * Tue Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
