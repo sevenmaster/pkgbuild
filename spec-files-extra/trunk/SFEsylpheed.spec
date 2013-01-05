@@ -6,19 +6,19 @@
 
 %define src_name        sylpheed
 #note: download path changes with beta versions
-%define src_url         http://sylpheed.sraoss.jp/sylpheed/v3.2
+%define src_url         http://sylpheed.sraoss.jp/sylpheed/v3.3/
 
 
 Name:                     SFEsylpheed
-IPS_Package_Name:	mail/sylpheed
+IPS_Package_Name:  	  mail/sylpheed
 Summary:                  A GTK+ based, lightweight, and fast e-mail client
-Version:                  3.2.0
-Group:		Applications/Internet
+Version:                  3.3.0
+Group:		          Applications/Internet
 Source:                   %{src_url}/%{src_name}-%{version}.tar.bz2
 License:                  GPLv2+ with openSSL exception
 URL:                      http://sylpheed.sraoss.jp/
-SUNW_BaseDir:  %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
+SUNW_BaseDir:             %{_basedir}
+BuildRoot:                %{_tmppath}/%{name}-%{version}-build
 SUNW_Copyright:		  sylpheed.copyright
 %include default-depend.inc
 
@@ -123,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jan 04 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.3.0
 * Sat Aug 25 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.2.0
 * Tue Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
