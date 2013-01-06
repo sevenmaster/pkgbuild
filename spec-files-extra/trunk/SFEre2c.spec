@@ -20,13 +20,8 @@ SUNW_Copyright:		 re2c.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
-%if %( expr %{osbuild} '=' 175 )
-BuildRequires: developer/gcc-45
-Requires:      system/library/gcc-45-runtime
-%else
 BuildRequires: SFEgcc
 Requires:      SFEgccruntime
-%endif
 
 %include default-depend.inc
 
@@ -71,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan  7 2013 - TAKI,Yasushi <taki@justplayer.com>
+- revert about using gcc-45 when Solaris 11
 * Sun Jan  6 2013 - TAKI,Yasushi <taki@justplayer.com>
 - merge jposug fork version.
 - When using Solaris 11, use gcc-45.
