@@ -36,8 +36,8 @@ Requires:      %{pnm_requires_SUNWgnu_gettext}
 BuildRequires: %{pnm_buildrequires_postgres_default}
 #fetch SUNWpostgr-84-libs
 Requires:      %{pnm_requires_postgres_default}
-BuildRequires: SFElxml-gnu.spec
-Requires:      SFElxml-gnu.spec
+BuildRequires: SFElxml-gnu
+Requires:      SFElxml-gnu
 
 
 %package root
