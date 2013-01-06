@@ -36,6 +36,8 @@ Requires:      %{pnm_requires_SUNWgnu_gettext}
 BuildRequires: %{pnm_buildrequires_postgres_default}
 #fetch SUNWpostgr-84-libs
 Requires:      %{pnm_requires_postgres_default}
+BuildRequires: SFElxml-gnu.spec
+Requires:      SFElxml-gnu.spec
 
 
 %package root
@@ -48,6 +50,9 @@ SUNW_BaseDir:            /
 %setup -q -c -n php-%version
 cp -pr php-%version php-%{version}-fastcgi
 
+#do not run apxs with -a (it would try to install/activate the module instantly)
+gsed -i.bak1 -e 's#APXS -i -a -n php5#APXS -i -n php5#' php-%version*/configure
+
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
@@ -57,6 +62,10 @@ fi
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:$PKG_CONFIG_PATH
 export CFLAGS="%optflags -I %{gnu_inc}"
 export LDFLAGS="%{_ldflags} %{gnu_lib_path}"
+
+#from OS Makefile (php5.2)
+export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xnorunpath -xO4 -xalias_level=basic -xipo=0"
+export CFLAGS="$CFLAGS -xlibmopt -xprefetch_level=1 -xprefetch=auto -xstrconst -zlazyload"
 
 #	PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 #	PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -73,6 +82,7 @@ PEAR_DIR=/var/php/${PHP_REL}/pear
 SAMPLES_DIR=%{_prefix}/php/%{php_major_minor_version}/samples
 
 cd php-%{version}-fastcgi
+
 #NOTE: the following variables are ENV variables to configure
 PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -113,6 +123,7 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-pcre \
 	    --with-pcre-regex \
 	    --with-png \
+            --with-libxml-dir=/usr/gnu/%{base_isa} \
 	    --with-xmlrpc \
 	    --with-xpm \
 	    --with-xsl \
@@ -175,6 +186,7 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-pcre \
 	    --with-pcre-regex \
 	    --with-png \
+            --with-libxml-dir=/usr/gnu/%{base_isa} \
 	    --with-xmlrpc \
 	    --with-xpm \
 	    --with-xsl \
@@ -231,6 +243,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/
 cp php.ini-production $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/php.ini
 
 mkdir -p $RPM_BUILD_ROOT/%{_localstatedir}/php/%{php_major_minor_version}/sessions
+mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/
 
 # Remove the dummy line and rename the file.
 awk '!/dummy/ {print}' ${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd.conf > ${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd-php.conf
@@ -274,20 +287,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/php
 
 %changelog
+changelog incomplete, under development, stay tuned
+open: missing addons needed for openid in drupal
+popen: check imap client
+open: modify lib name libphp5.so and make it mod_php5.4.so
+open: add notes in description for how to activate this php5.4 in apache2
+* Sun Jan  6 2013 - Thomas Wagner
 
-/var/sadm/pkg/SUNWphp52d/save/pspool/SUNWphp52d/pkgmap:1 d none usr 0755 root sys
-/var/sadm/pkg/SUNWphp52d/save/pspool/SUNWphp52d/pkgmap:1 d none usr/php 0755 root bin
-/var/sadm/pkg/SUNWphp52d/save/pspool/SUNWphp52d/pkgmap:1 d none usr/php/5.2 0755 root bin
-/var/sadm/pkg/SUNWphp52d/save/pspool/SUNWphp52d/pkgmap:1 d none usr/php/5.2/doc 0755 root bin
-/var/sadm/pkg/SUNWphp52d/save/pspool/SUNWphp52d/pkgmap:1 d none usr/php/5.2/doc/html 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none etc 0755 root sys
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none etc/php 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none etc/php/5.2 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none etc/php/5.2/conf.d 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none var 0755 root sys
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none var/php 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none var/php/5.2 0755 root bin
-/var/sadm/pkg/SUNWphp52r/save/pspool/SUNWphp52r/pkgmap:1 d none var/php/5.2/sessions 0750 webservd bin
 
                               /usr/php/5.2/bin/php-config
 Usage: /usr/php/5.2/bin/php-config [OPTION]
