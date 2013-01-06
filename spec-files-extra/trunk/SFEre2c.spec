@@ -3,6 +3,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %define _gpp g++
 %include base.inc
@@ -19,8 +20,13 @@ SUNW_Copyright:		 re2c.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
+%if %( expr %{osbuild} '=' 175 )
+BuildRequires: developer/gcc-45
+Requires:      system/library/gcc-45-runtime
+%else
 BuildRequires: SFEgcc
 Requires:      SFEgccruntime
+%endif
 
 %include default-depend.inc
 
@@ -29,8 +35,8 @@ Requires:      SFEgccruntime
 
 %build
 
-export CC=/usr/gnu/bin/gcc
-export CXX=/usr/gnu/bin/g++
+export CC=gcc
+export CXX=g++
 export CFLAGS="%optflags -I%{gnu_inc} %{gnu_lib_path}"
 export CXXFLAGS="%cxx_optflags -I%{gnu_inc} %{gnu_lib_path}"
 export LDFLAGS="%_ldflags %gnu_lib_path"
@@ -65,6 +71,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan  6 2013 - TAKI,Yasushi <taki@justplayer.com>
+- merge jposug fork version.
+- When using Solaris 11, use gcc-45.
+* Wed Jun 13 2012 - Osamu Tabata <cantimerny.g@gmail.com>
+- Support for Solaris11
 * Mon Jul 25 2011 - N.B.Prashanth
 - Add SUNW_Copyright
 * Thr Aug 06 2009  - Thomas Wagner
