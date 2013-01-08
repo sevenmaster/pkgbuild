@@ -14,6 +14,9 @@
 %define php_major_minor_version   5.4
 %define php_major_minor_micro_version 5.4.10
 
+#1 use xml2 from gnu location in new version, 0 use system supplied xml2
+%define usexml2gnu 1
+
 
 Name:                    SFEphp54
 IPS_package_name:	 web/php-54
@@ -36,8 +39,12 @@ Requires:      %{pnm_requires_SUNWgnu_gettext}
 BuildRequires: %{pnm_buildrequires_postgres_default}
 #fetch SUNWpostgr-84-libs
 Requires:      %{pnm_requires_postgres_default}
+%if %{usexml2gnu}
 BuildRequires: SFElxml-gnu
 Requires:      SFElxml-gnu
+%endif
+BuildRequires: SFEgmp
+Requires:      SFEgmp
 
 
 %package root
@@ -60,8 +67,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:$PKG_CONFIG_PATH
-export CFLAGS="%optflags -I %{gnu_inc}"
-export LDFLAGS="%{_ldflags} %{gnu_lib_path}"
+export CFLAGS="%optflags"
+export LDFLAGS="%{_ldflags}"
+export CFLAGS="$CFLAGS -I %{gnu_inc}"
+export LDFLAGS="$LDFLAGS %{gnu_lib_path} -liconv -lxml2"
 
 #from OS Makefile (php5.2)
 export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xnorunpath -xO4 -xalias_level=basic -xipo=0"
@@ -89,7 +98,9 @@ PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
 PHP_PEAR_EXTENSION_DIR=/var/php/${PHP_REL}/modules \
 PHP_PEAR_INSTALL_DIR=/var/php/${PHP_REL}/pear \
 PHP_PEAR_SIG_BIN=/usr/gnu/bin/gpg \
+%if %{usexml2gnu}
 PHP_LIBXML_DIR=/usr/gnu \
+%endif
 ./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
 	    --bindir=%{_prefix}/php/%{php_major_minor_version}/bin \
 	    --sbindir=%{_prefix}/php/%{php_major_minor_version}/sbin \
@@ -123,7 +134,10 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-pcre \
 	    --with-pcre-regex \
 	    --with-png \
+%if %{usexml2gnu}
             --with-libxml-dir=/usr/gnu/%{base_isa} \
+%endif
+            --with-libxml \
 	    --with-xmlrpc \
 	    --with-xpm \
 	    --with-xsl \
@@ -133,7 +147,10 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-curlwrappers \
 	    --with-gd=shared \
 	    --with-iconv \
+	    --with-iconv-dir=/usr/gnu \
 	    --with-ldap=shared \
+            --enable-bcmath \
+            --with-gmp=/usr/gnu \
 
 #	    --datadir=%{_datadir}		\
 #	    --mandir=%{_mandir}			\
@@ -151,7 +168,9 @@ PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
 PHP_PEAR_EXTENSION_DIR=/var/php/${PHP_REL}/modules \
 PHP_PEAR_INSTALL_DIR=/var/php/${PHP_REL}/pear \
 PHP_PEAR_SIG_BIN=/usr/gnu/bin/gpg \
+%if %{usexml2gnu}
 PHP_LIBXML_DIR=/usr/gnu \
+%endif
 ./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
 	    --bindir=%{_prefix}/php/%{php_major_minor_version}/bin \
 	    --sbindir=%{_prefix}/php/%{php_major_minor_version}/sbin \
@@ -186,7 +205,10 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-pcre \
 	    --with-pcre-regex \
 	    --with-png \
+%if %{usexml2gnu}
             --with-libxml-dir=/usr/gnu/%{base_isa} \
+%endif
+            --with-libxml \
 	    --with-xmlrpc \
 	    --with-xpm \
 	    --with-xsl \
@@ -196,7 +218,11 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-curlwrappers \
 	    --with-gd=shared \
 	    --with-iconv \
+	    --with-iconv-dir=/usr/gnu \
 	    --with-ldap=shared \
+            --enable-bcmath \
+            --with-gmp=/usr/gnu \
+
 
 
 ##TODO##	    ## --with-imap \ --with-imap=shared,/builds2/sfwnv-gate/usr/src/cmd/php5/imap-2007e --with-imap-ssl=shared,/builds2/sfwnv-gate/proto/root_i386/usr
