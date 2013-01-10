@@ -42,8 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %{_mandir}
 
-
 %changelog
+* Wed Jan 9 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.8.3
 * Thu Feb 23 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.6.1
 * Thu Jul 28 2011 - Alex Viskovatoff
