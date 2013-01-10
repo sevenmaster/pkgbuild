@@ -21,7 +21,7 @@
 
 Name:                SFEfreetype
 Summary:             Freetype
-Version:             2.4.10
+Version:             2.4.11
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
@@ -116,6 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jan 9 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.4.11
 * Thu Nov 28 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 2.4.10
 * Tue Jun  5 2007 - Doug Scott
