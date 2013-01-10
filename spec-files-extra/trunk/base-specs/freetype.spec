@@ -8,7 +8,7 @@
 
 Name:                freetype
 Summary:             Freetype
-Version:             2.4.10
+Version:             2.4.11
 Source:              %{src_url}/%{src_name}-%{version}.tar.bz2
 Patch1:		     freetype-01-options.diff
 
@@ -49,6 +49,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Jan 9 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.4.11
 * Thu Nov 28 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 2.4.10
 * Wed Aug 15 2007 - trisk@acm.jhu.edu
