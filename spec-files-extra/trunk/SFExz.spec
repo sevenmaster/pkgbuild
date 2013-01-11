@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include usr-gnu.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use xz_64 = xz.spec
@@ -14,9 +15,9 @@
 %use xz = xz.spec
 
 
-Name:		SFExz
+Name:		SFExz-gnu
 Name:                    %{xz.name}
-IPS_Package_Name:	compress/xz
+IPS_Package_Name:	compress/gnu/xz
 Summary:    	         %{xz.summary}
 Version:                 %{xz.version}
 URL:			 %{xz.url}
@@ -147,6 +148,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %endif
 
 %changelog
+* Fri Jan 11 2013 - Thomas Wagner
+- move to usr-gnu.inc to avoid conflict with S11 175.1 (same package name)
+  consumers should use pnm_macro to find the right "xz" package
 * Thu Sep 20 2012 - Thomas Wagner
 - now really fix multiarch with %hard keyword
 * Tue Sep 18 2012 - Thomas Wagner
