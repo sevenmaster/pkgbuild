@@ -932,16 +932,16 @@
 #set defaults for SFExz | compress/xz, in case the build is newer,
 #overwrite them
 #this is for S11 (all builds) and (OI < 151)
-%define pnm_buildrequires_SFExz			SFExz
-%define pnm_requires_SFExz			SFExz
-%define pnm_buildrequires_compress_xz		SFExz
-%define pnm_requires_compress_xz		SFExz
+%define pnm_buildrequires_SFExz_gnu		SFExz-gnu
+%define pnm_requires_SFExz_gnu			SFExz-gnu
+%define pnm_buildrequires_compress_xz		SFExz-gnu
+%define pnm_requires_compress_xz		SFExz-gnu
 
 #cases >= 151 && OpenIndiana
 %if %{openindiana}
 %if %( expr %{osbuild} '>=' 151 )
-%define pnm_buildrequires_SFExz			compress/xz
-%define pnm_requires_SFExz			compress/xz
+%define pnm_buildrequires_SFExz_gnu		compress/xz
+%define pnm_requires_SFExz_gnu			compress/xz
 %define pnm_buildrequires_compress_xz		compress/xz
 %define pnm_requires_compress_xz		compress/xz
 %endif
@@ -1699,6 +1699,9 @@
 # 
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- rename (add _gnu) pnm_buildrequires_SFExz_gnu SFExz-gnu compress/xz
+  and change known consumer spec files
 * Sat Jan  5 2013 - Thomas Wagner
 - typo in variable name SUNWlibgpg_error / SFElibgpg_error
 - rename service/database/postgres-91 to database/postgres-91.

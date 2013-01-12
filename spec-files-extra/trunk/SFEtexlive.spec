@@ -34,7 +34,7 @@ BuildRequires:	SUNWncurses
 BuildRequires:	SUNWzlib
 BuildRequires:	SUNWpng
 BuildRequires:	SUNWgd2
-BuildRequires:	%{pnm_buildrequires_SFExz}
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 Requires:	SFEtexlive-texmf
 
 %description
@@ -134,6 +134,8 @@ exit 0		# johny be good
 %{_texmf_dir}/*
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
 - change to (Build)Requires pnm_buildrequires_SFExz (solves SFExz conflict w/ compress/xz), %include packagenamemacros.inc
 * Thu Mar 15 2012 - Logan Bruns <logan@gedanken.org>

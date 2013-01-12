@@ -113,7 +113,7 @@ BuildRequires: SUNWesu
 BuildRequires: %{pnm_buildrequires_SUNWlibmng_devel}
 BuildRequires: SFElzo-devel
 %if %with_constant_tarball
-BuildRequires: %{pnm_buildrequires_SFExz}
+BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 %endif
 
 %if %SFElibsndfile
@@ -292,6 +292,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
 - change to (Build)Requires pnm_requires_SFExz (solves SFExz conflict w/ compress/xz)
 * Mon Dec 12 2012 - Thomas Wagner

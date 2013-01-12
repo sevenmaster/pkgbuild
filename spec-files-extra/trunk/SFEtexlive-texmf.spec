@@ -29,7 +29,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires:	SUNWzlib
 BuildRequires:	SUNWpng
-BuildRequires:	%{pnm_buildrequires_SFExz}
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 
 %description
 TeXLive is an implementation of TeX for Linux or UNIX systems. TeX takes
@@ -184,6 +184,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_texmf_dir}/*
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
 - change to (Build)Requires pnm_buildrequires_SFExz (solves SFExz conflict w/ compress/xz), %include packagenamemacros.inc
 * Thu Mar 15 2012 - Logan Bruns <logan@gedanken.org>

@@ -57,14 +57,13 @@ Haskell home page at http://haskell.org/.
 
 %define SFEgmp          %(/usr/bin/pkginfo -q SUNWgnu-mp && echo 0 || echo 1)
 %define SFEmpfr         %(/usr/bin/pkginfo -q SUNWgnu-mpfr && echo 0 || echo 1)
-%define SFEreadline     %(/usr/bin/pkginfo -q SUNWgnu-readline && echo 0 || echo 1)
 %define SFEncurses      %(/usr/bin/pkginfo -q SUNWncurses && echo 0 || echo 1)
 
 %include default-depend.inc
 
 BuildRequires: 	SUNWgcc
 BuildRequires:	SUNWgsed
-BuildRequires:	%{pnm_buildrequires_SFExz}
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 Requires: 	SUNWgcc
 
 %if %SFEgmp
@@ -85,11 +84,8 @@ Requires: SUNWgnu-mpfr
 
 BuildRequires: SUNWesu
 
-%if %SFEreadline
-Requires: SFEreadline
-%else
-Requires: SUNWgnu-readline
-%endif
+BuildRequires:  %{pnm_requires_library_readline}
+Requires:  %{pnm_requires_library_readline}
 
 %if %SFEncurses
 BuildRequires: SFEncurses
@@ -203,6 +199,10 @@ rm -rf /var/tmp/ghc-%bootstrap-bin
 
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}
 * Sat Jun 23 2012 - Thomas Wagner
 - change to (Build)Requires pnm_buildrequires_SFExz (solves SFExz conflict w/ compress/xz), %include packagenamemacros.inc
 * Fri Jan 13 2012 - Alex Viskovatoff
