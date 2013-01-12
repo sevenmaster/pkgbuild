@@ -1,5 +1,5 @@
 #
-# spec file for package SFExslt (libxslt)
+# spec file for package SFElxsl-gnu (libxslt)
 #
 
 # owner: tom68
@@ -20,7 +20,7 @@
 %define src_name libxslt
 
 
-Name:                    SFExslt-gnu
+Name:                    SFElxsl-gnu
 IPS_package_name:	 library/gnu/libxslt
 Summary:                 %{xslt.summary}
 Version:                 %{xslt.version}
@@ -147,5 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- fix Name: SFExslt-gnu -> SFElxsl-gnu
+* Thu Jan 10 2013 - Thomas Wagner
+- rename SVR4 package from SFElxslt-gnu to SFElxsl-gnu
 * Mon Jan  8 2013 - Thomas Wagner
 - initial spec, copied from libxml2
