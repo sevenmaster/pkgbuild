@@ -59,5 +59,9 @@ find $RPM_BUILD_ROOT%{_libdir}/ -name "*.a" -exec rm {} \; -print -o -name  "*.l
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- fix Name: SFExslt-gnu -> SFElxsl-gnu
+* Thu Jan 10 2013 - Thomas Wagner
+- rename SVR4 package from SFExslt-gnu to SFElxsl-gnu
 * Mon Jan  8 2013 - Thomas Wagner
 - initial spec, copied from libxml2 (lxml.spec)
