@@ -86,7 +86,7 @@
 %define SFEsdl      %(/usr/bin/pkginfo -q SFEsdl && echo 1 || echo 0)
 
 #new with 2.x.x source comes compressed in xz
-BuildRequires:	%{pnm_buildrequires_SFExz}
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 
 #we have new X-org with x11-xcb CR 6667057
 ##TODO## check if other solarish OS do have same x11-xcb integrated with build 153
@@ -569,6 +569,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
 * Sun Aug  6 2012 - Thomas Wagner
 - make vlc work with xz compressed source tarball, tested with pkgbuild 1.3.103 + 1.3.104
 * Sat Aug  4 2012 - Thomas Wagner

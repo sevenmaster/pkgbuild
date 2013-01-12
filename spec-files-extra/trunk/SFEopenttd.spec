@@ -41,8 +41,8 @@ Requires:  SUNWfreetype2
 BuildRequires: SUNWdoxygen
 Requires: SFElzo
 BuildRequires: SFElzo
-Requires: 	%{pnm_requires_SFExz}
-BuildRequires:	%{pnm_buildrequires_SFExz}
+Requires: 	%{pnm_requires_SFExz_gnu}
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 BuildRequires:	SUNWgsed
 BuildRequires:	SUNWgnome-desktop-prefs
 
@@ -155,6 +155,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %{_datadir}/openttd/*
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
 - change to (Build)Requires pnm_requires_SFExz (solves SFExz conflict w/ compress/xz), %include packagenamemacros.inc
 * Fri Apr 13 2012 - Milan Jurik
