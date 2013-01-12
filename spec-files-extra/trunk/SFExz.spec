@@ -15,7 +15,6 @@
 %use xz = xz.spec
 
 
-Name:		SFExz-gnu
 Name:                    %{xz.name}
 IPS_Package_Name:	compress/gnu/xz
 Summary:    	         %{xz.summary}
@@ -148,6 +147,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %endif
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- fix package name
 * Fri Jan 11 2013 - Thomas Wagner
 - move to usr-gnu.inc to avoid conflict with S11 175.1 (same package name)
   consumers should use pnm_macro to find the right "xz" package

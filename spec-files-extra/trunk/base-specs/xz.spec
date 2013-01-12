@@ -1,7 +1,7 @@
 # base-specs/xz.spec for SFExl.spec
 
 
-Name:		SFExz (gnu)
+Name:		SFExz-gnu
 Version:	5.0.4
 Summary:	LZMA utils
 URL:		http://tukaani.org/xz
@@ -46,6 +46,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- fix package name
 * Fri Jan 11 2013 - Thomas Wagner
 - move to usr-gnu.inc to avoid conflict with S11 175.1 (same package name)
   consumers should use pnm_macro to find the right "xz" package
