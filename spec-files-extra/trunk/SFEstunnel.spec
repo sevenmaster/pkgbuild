@@ -4,20 +4,30 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
+%define cc_is_gcc 1
+%include base.inc
+
+%define srcname stunnel
+%define runuser stunnel
+#use random number by userid tool %define runuserid stunnel
+%define runusergroup other
 
 Name:                SFEstunnel
+IPS_Package_Name:    sfe/service/security/stunnel
 Summary:             An SSL client/server encryption wrapper
-Version:             4.22
-Source:              http://www.stunnel.org/download/stunnel/src/stunnel-%{version}.tar.gz
+Version:             4.54
+Source:              http://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
+Source2:             stunnel.xml
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 
-BuildRequires: SUNWopenssl-libraries
-Requires: SUNWopenssl-libraries
-Requires: SUNWgccruntime
+BuildRequires:          %{pnm_buildrequires_SUNWopenssl_include}
+Requires:               %{pnm_requires_SUNWopenssl_libraries}
 
 Requires: %name-root
 %package root
@@ -27,6 +37,7 @@ SUNW_BaseDir:            /
 
 %prep
 %setup -q -n stunnel-%version
+cp %{SOURCE2} stunnel.xml
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -35,7 +46,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 # This source is gcc-centric, therefore...
-export CC=/usr/sfw/bin/gcc
+export CC=gcc
+export CXX=g++
 export CFLAGS="-O4 -fPIC -DPIC -Xlinker -i -fno-omit-frame-pointer"
 export LDFLAGS="%_ldflags"
 export LIBS="/usr/lib/values-xpg4.o"
@@ -44,7 +56,7 @@ export CPPFLAGS="-D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
 ./configure --prefix=%{_prefix} \
             --mandir=%{_mandir} \
             --sysconfdir=%{_sysconfdir} \
-	    --with-ssl=/usr/sfw
+	    --with-ssl=/usr
 
 make -j$CPUS
 
@@ -54,10 +66,33 @@ rm -rf $RPM_BUILD_ROOT
 install -D src/stunnel $RPM_BUILD_ROOT%{_sbindir}/stunnel
 install -D src/.libs/libstunnel.so $RPM_BUILD_ROOT%{_libdir}/libstunnel.so
 install -D doc/stunnel.8 $RPM_BUILD_ROOT%{_mandir}/man8/stunnel.8
-install -D tools/stunnel.conf-sample $RPM_BUILD_ROOT%{_sysconfdir}/stunnel/stunnel.conf-sample
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/stunnel
+sed -e 's|/usr/|/|g' -e 's|nobody|stunnel|g' tools/stunnel.conf-sample > $RPM_BUILD_ROOT%{_sysconfdir}/stunnel/stunnel.conf-sample
+
+mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp stunnel.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
+mkdir -p ${RPM_BUILD_ROOT}/var/lib/stunnel
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%actions
+#you my at the top of the file %define runuserid (numeric) and add here: uid=%{runuserid}
+user ftpuser=false gcos-field="Stunnel Reserved UID" username="%{runuser}" password=NP group="other" home-dir="/var/lib/stunnel"
+
+
+%pre root
+test -x $BASEDIR/var/lib/postrun/postrun || exit 0
+( echo 'PATH=/usr/bin:/usr/sbin; export PATH' ;
+  echo 'retval=0';
+  echo '/usr/bin/getent passwd %{runuser} >/dev/null || {';
+#  echo 'echo "Adding %{runuser} user with numeric id %{runuserid} to system (for stunnel)"';
+#  echo '/usr/sbin/useradd -u %{runuserid} -g %{runusergroup} -G mail -d %{_localstatedir}/lib/stunnel %{runuser}';
+  echo 'echo "Adding %{runuser} user to system (for stunnel)"';
+  echo '/usr/sbin/useradd -g %{runusergroup} -G mail -d %{_localstatedir}/lib/stunnel %{runuser}';
+  echo '}';
+  echo 'exit $retval' ) | $BASEDIR/var/lib/postrun/postrun -c STUNNEL
 
 %files
 %defattr (-, root, bin)
@@ -75,8 +110,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_sysconfdir}
 %dir %attr (0755, root, bin) %{_sysconfdir}/stunnel
 %{_sysconfdir}/stunnel/stunnel.conf-sample
+%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/stunnel.xml
+%dir %attr(0755, root, other) /var/lib
+%dir %attr(0755, stunnel, other) /var/lib/stunnel
 
 %changelog
+* Sat Jan 12 2013 - Logan Bruns <logan@gedanken.org>
+- bump to 4.54
+- added IPS name
+- added smf service and stunnel user
 * Sat May  3 2008 - river@wikimedia.org
 - 4.22
 - change source location to stunnel.org

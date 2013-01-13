@@ -1,5 +1,8 @@
 2013-01-12  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEstunnel.spec: bumped to 4.54, added IPS name, added smf
+	service and stunnel user.
+
 	* SFEfetchmail.spec: bumped to 6.3.24, added IPS name and removed
 	patch.
 
