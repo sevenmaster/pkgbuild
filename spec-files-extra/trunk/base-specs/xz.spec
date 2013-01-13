@@ -46,6 +46,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- fix isaexec
 * Sat Jan 12 2013 - Thomas Wagner
 - fix package name
 * Fri Jan 11 2013 - Thomas Wagner
