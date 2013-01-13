@@ -61,6 +61,10 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jan 13 2013 - Thomas Wagner
 - fix Name: SFExslt-gnu -> SFElxsl-gnu
+- fix isaexec (hardlink)
+- fix %hard %files %_bindir for multiarch
+- add (Build)Requires: SFElxml-gnu(-devel) SUNWzlib
+- add dependencies
 * Thu Jan 10 2013 - Thomas Wagner
 - rename SVR4 package from SFExslt-gnu to SFElxsl-gnu
 * Mon Jan  8 2013 - Thomas Wagner
