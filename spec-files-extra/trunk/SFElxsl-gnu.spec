@@ -33,6 +33,17 @@ SUNW_BaseDir:            %{_prefix}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+BuildRequires: SFElxml-gnu-devel
+Requires:      SFElxml-gnu
+BuildRequires: %{pnm_buildrequires_SFElibgpg_error_devel}
+Requires:      %{pnm_buildrequires_SFElibgpg_error}
+BuildRequires: %{pnm_buildrequires_SUNWlibgcrypt_devel}
+Requires:      %{pnm_buildrequires_SUNWlibgcrypt}
+BuildRequires: %{pnm_buildrequires_SUNWzlib_devel}
+Requires:      %{pnm_buildrequires_SUNWzlib}
+
+
+
 %package python
 Summary:                 Python bindings for libxslt (32-bit only)
 SUNW_BaseDir:            %{_prefix}
@@ -98,11 +109,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
-%hard %{_bindir}/xmlcatalog
-%hard %{_bindir}/xmllint
+%ifarch amd64 sparcv9
 %hard %{_bindir}/xsltproc 
-
+%{_bindir}/%{base_isa}/*
+%{_bindir}/%{_arch64}/*
+%else
+%{_bindir}/*
+%endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %{_libdir}/libxslt-plugins
@@ -154,6 +167,9 @@ rm -rf $RPM_BUILD_ROOT
 * Sun Jan 13 2013 - Thomas Wagner
 - fix Name: SFExslt-gnu -> SFElxsl-gnu
 - fix isaexec (hardlink)
+- fix %hard %files %_bindir for multiarch
+- add (Build)Requires: SFElxml-gnu(-devel) SUNWzlib
+- add dependencies
 * Thu Jan 10 2013 - Thomas Wagner
 - rename SVR4 package from SFElxslt-gnu to SFElxsl-gnu
 * Mon Jan  8 2013 - Thomas Wagner
