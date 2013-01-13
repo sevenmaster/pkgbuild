@@ -1,5 +1,8 @@
 2013-01-12  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEfetchmail.spec: bumped to 6.3.24, added IPS name and removed
+	patch.
+
 	* SFEgit.spec: bump to 1.8.1
 
 2013-01-10 Ken Mays  <kmays2000@gmail.com>

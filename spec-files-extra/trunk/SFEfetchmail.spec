@@ -4,17 +4,20 @@
 # includes module(s): fetchmail
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                    SFEfetchmail
+IPS_Package_Name:	 sfe/mail/fetchmail
 Summary:                 Fetchmail
 Group:                   utilities/email
-Version:                 6.3.6
+Version:                 6.3.24
 Source:                  http://download.berlios.de/fetchmail/fetchmail-%{version}.tar.bz2
-Patch1:                  fetchmail-01-gettext.diff
 URL:                     http://fetchmail.berlios.de/
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+BuildRequires:          %{pnm_buildrequires_SUNWopenssl_include}
+Requires:               %{pnm_requires_SUNWopenssl_libraries}
 
 %if %build_l10n
 %package l10n
@@ -26,7 +29,6 @@ Requires:                %{name}
 
 %prep
 %setup -q -n fetchmail-%version
-%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -36,16 +38,7 @@ fi
 export CFLAGS="%optflags -I/usr/sfw/include -DANSICPP"
 export RPM_OPT_FLAGS="$CFLAGS"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal -I m4-local"
-export CPPFLAGS="-I/usr/sfw/include"
-export LDFLAGS="-L/usr/sfw/lib -R/usr/sfw/lib"
 export MSGFMT="/usr/bin/msgfmt"
-
-glib-gettextize -f 
-libtoolize --copy --force
-aclocal $ACLOCAL_FLAGS
-autoheader
-automake --add-missing
-autoconf
 
 ./configure --prefix=%{_prefix}			\
 	    --mandir=%{_mandir}			\
@@ -54,7 +47,7 @@ autoconf
             --sysconfdir=%{_sysconfdir}		\
 	    --enable-POP3 --enable-IMAP		\
 	    --enable-NTLM              		\
-            --with-ssl-dir=/usr/sfw             \
+            --with-ssl                          \
 	    --disable-nls
 
 make -j$CPUS 
@@ -94,6 +87,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 12 2013 - Logan Bruns <logan@gedanken.org>
+- bump to 6.3.24
+- added IPS name
+- removed patch
 * Mon Jan 19 2009 - Thomas Wagner
 - --enable-NTLM (untested)
 * Mon Dec 15 2008 - halton.huo@sun.com
