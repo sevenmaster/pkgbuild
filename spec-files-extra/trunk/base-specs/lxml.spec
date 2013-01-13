@@ -2,24 +2,19 @@
 
 # owner: tom68
 
-#%define downloadversion  2.9.0-rc2
-%define downloadversion  2.8.0
-# NO UNTESTED VERSION BUMPS PLEASE
-%define downloadversionstripped  %( echo %downloadversion | sed -e 's/-rc.*//' )
 
-
-Name:                    SFElxml
+Name:                    SFElxml-gnu
+Version:                 2.9.0
 Summary:                 The XML library (gnu)
-Version:                 %{downloadversion}
-Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
-URL:			 http://xmlsoft.org
-
+#Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
+Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
+Patch1:                  libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
+URL:                     http://xmlsoft.org
 
 %prep
-%setup -q -n libxml2-%version
-echo "pwd: "
-pwd
+%setup -q -n %{src_name}-%{version}
 
+%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -30,7 +25,7 @@ fi
 export CFLAGS="%{optflags} -I%{gnu_inc}"
 export CXXFLAGS="%{cxx_optflags} -I%{gnu_inc}"
 ##TODO is this right/needed at all? -llzma
-export LDFLAGS="%{_ldflags} -llzma %{gnu_lib_path}"
+export LDFLAGS="%{_ldflags} %{gnu_lib_path} -llzma"
 
 ./configure --prefix=%{_prefix} \
                                     --sysconfdir=%{_sysconfdir} \
@@ -55,6 +50,15 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/xml2Conf.sh
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- fix isaexec (hardlink)
+- fix %hard %files %_bindir for multiarch
+- add patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff 
+- bump to 2.9.0 / 2.9.0.1 (IPS)
+- add dependencies
+* Mon Jan  7 2013 - Thomas Wagner
+- fix package Name: SFElxml-gnu (not SUNWlxml-gnu), fix deps for sub packages
+- Use http mirror for download
 * Sun Sep  9 2012 - Thomas Wagner
 - fix build
 * Sat Sep  8 2012 - Thomas Wagner
