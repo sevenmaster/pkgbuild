@@ -99,6 +99,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
+%hard %{_bindir}/xmlcatalog
+%hard %{_bindir}/xmllint
+%hard %{_bindir}/xsltproc 
+
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %{_libdir}/libxslt-plugins
@@ -149,6 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jan 13 2013 - Thomas Wagner
 - fix Name: SFExslt-gnu -> SFElxsl-gnu
+- fix isaexec (hardlink)
 * Thu Jan 10 2013 - Thomas Wagner
 - rename SVR4 package from SFElxslt-gnu to SFElxsl-gnu
 * Mon Jan  8 2013 - Thomas Wagner
