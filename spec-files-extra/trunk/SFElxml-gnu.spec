@@ -17,23 +17,35 @@
 
 %include packagenamemacros.inc
 
-Name:                    %{lxml.name}
+%define src_name libxml2
+
+
+Name:                    SFElxml-gnu
 IPS_package_name:	 library/gnu/libxml2
-Summary:    	         %{lxml.summary}
+Summary:                 %{lxml.summary}
 Version:                 %{lxml.version}
-#2.8.0-rc2 -> 2.8.0.0.2   2.8.0 -> after release make it 2.8.0.1
+#2.9.0-rc2 -> 2.9.0.0.2   2.9.0 -> after release make it 2.9.0.1
 IPS_component_version:   %( echo %{version} | sed  -e '/\.[0-9][0-9]*$/ s/$/.1/' -e '/-rc[0-9][0-9]*/ s/-rc/.0./' )
-Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
-URL:			 %{lxml.url}
+#Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
+Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
+Patch1:                  libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
+URL:                     %{lxml.url}
 SUNW_BaseDir:            %{_prefix}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
+BuildRequires: %{pnm_buildrequires_SUNWzlib_devel}
+Requires:      %{pnm_buildrequires_SUNWzlib}
+BuildRequires: %{pnm_buildrequires_SFExz_gnu}
+Requires:      %{pnm_buildrequires_SFExz_gnu}
+BuildRequires: SFElibiconv
+Requires:      SFElibiconv
 
 %package python
 Summary:                 Python bindings for libxml2 (32-bit only)
 SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
-Requires: SFElxml
+Requires: 		 %{name}
 BuildRequires:           %{pnm_buildrequires_python_default}
 Requires:                %{pnm_requires_python_default}
 
@@ -42,11 +54,12 @@ Requires:                %{pnm_requires_python_default}
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
-Requires: SFElxml
+Requires: 		 %{name}
 Requires:                %{pnm_requires_python_default}
 
 %prep
 rm -rf %{name}-%{version}
+mkdir %name-%version
 
 %ifarch amd64 sparcv9
 mkdir -p %{name}-%{version}/%_arch64
@@ -55,6 +68,7 @@ mkdir -p %{name}-%{version}/%_arch64
 
 mkdir -p %{name}-%{version}/%base_arch
 %lxml.prep -d %{name}-%{version}/%base_arch
+
 
 
 %build
@@ -92,7 +106,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
+%ifarch amd64 sparcv9
+%hard %{_bindir}/xmlcatalog
+%hard %{_bindir}/xmllint
+%{_bindir}/%{base_isa}/*
+%{_bindir}/%{_arch64}/*
+%else
 %{_bindir}/*
+%endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
@@ -130,6 +151,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- fix isaexec (hardlink)
+- fix %hard %files %_bindir for multiarch
+- add patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff 
+- bump to 2.9.0 / 2.9.0.1 (IPS)
+- add dependencies
+* Mon Jan  7 2013 - Thomas Wagner
+- fix package Name: SFElxml-gnu (not SUNWlxml-gnu), fix deps for sub packages
+- Use http mirror for download
+# not - bump to 2.9.0 / 2.9.0.1 (IPS)
 * Sat Sep  8 2012 - Thomas Wagner
 - move to /usr/gnu
 - bump to 2.8.0 / 2.8.0.1 (IPS)
