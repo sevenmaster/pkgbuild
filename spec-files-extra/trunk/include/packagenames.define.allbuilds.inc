@@ -579,6 +579,11 @@
 %define pnm_buildrequires_musicbrainz			SUNWmusicbrainz-devel
 %define pnm_requires_musicbrainz			SUNWmusicbrainz
 
+#zlib
+%define pnm_buildrequires_SUNWzlib_devel		SUNWzlib
+%define pnm_buildrequires_SUNWzlib			SUNWzlib
+%define pnm_requires_SUNWzlib				SUNWzlib
+
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -1699,6 +1704,8 @@
 # 
 
 %changelog
+* Sun Jan 13 2013 - Thomas Wagner
+- add SVR4 package names for pnm_buildrequires_SUNWzlib_devel SUNWzlib (S10, SXCE)
 * Sat Jan 12 2013 - Thomas Wagner
 - rename (add _gnu) pnm_buildrequires_SFExz_gnu SFExz-gnu compress/xz
   and change known consumer spec files
