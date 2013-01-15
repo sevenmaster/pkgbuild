@@ -1,3 +1,7 @@
+2013-01-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEclamav.spec: added smf services for clamd and clamav-milter.
+
 2013-01-12  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEstunnel.spec: bumped to 4.54, added IPS name, added smf
