@@ -16,6 +16,8 @@ SUNW_Copyright:      clamav.copyright
 Version:             0.97.6
 URL:                 http://www.clamav.net/
 Source:              %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
+Source2:             clamav.xml
+Source3:             clamav-milter.xml
 Group:               Applications/System Utilities
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -44,6 +46,8 @@ Requires: %name
 
 %prep
 %setup -q -n %{src_name}-%version
+cp %{SOURCE2} clamav.xml
+cp %{SOURCE3} clamav-milter.xml
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -76,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/clamav
+mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp clamav.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp clamav-milter.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -116,6 +123,8 @@ user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=N
 %defattr (-, root, sys)
 %{_sysconfdir}
 %dir %attr (0775, clamav, clamav) %{_localstatedir}/clamav
+%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/clamav.xml
+%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/clamav-milter.xml
 
 %files doc
 %defattr (-, root, bin)
@@ -125,6 +134,8 @@ user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=N
 %dir %attr (0755, root, other) %{_docdir}
 
 %changelog
+* Tue Jan 15 2012 - Logan Bruns <logan@gedanken.org>
+- added smf services for clamd and clamav-milter
 * Mon Oct 01 2012 - Milan Jurik
 - bump to 0.97.6
 * Sun Jul 29 2012 - Milan Jurik
