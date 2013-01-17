@@ -1,3 +1,9 @@
+2013-01-17  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* experimental/SFEfunambol.spec: initial spec.
+	* ext-sources/funambol.xml
+	* copyright/SFEfunambol.copyright
+
 2013-01-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEclamav.spec: added smf services for clamd and clamav-milter.
