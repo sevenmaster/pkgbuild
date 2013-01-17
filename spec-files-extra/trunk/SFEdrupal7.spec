@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.18
+Version:             7.19
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -104,6 +104,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 17 2013 - Thomas Wagner
+- bump to 7.19 - DRUPAL-SA-CORE-2013-001 - Drupal core - Multiple vulnerabilities:
+  Cross-site scripting, Access bypass Book module, Access bypass Image module
+  Security risk: Highly critical
 * Wed Dec 19 2012 - Thomas Wagner
 - bump to 7.18 - DRUPAL-SA-CORE-2012-004 - Drupal core - Multiple vulnerabilities:
   Access bypass (User module search - Drupal 6 and 7)
