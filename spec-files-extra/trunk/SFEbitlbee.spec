@@ -16,7 +16,7 @@
 #inspired by http://slackbuilds.org/uid_gid.txt
 ##TODO## check if this id is a good choice in Solaris
 %define  daemonuid   250
-%define  daemongcosfield 'BitlBee Reserved UID'
+%define  daemongcosfield BitlBee Reserved UID
 %define  daemongroup other
 %define  daemongid   1
 
@@ -98,8 +98,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 make install-etc DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/var/lib/bitlbee/
 
-mkdir -p $RPM_BUILD_ROOT/%{_docdir}/%{srcname}
-mv $RPM_BUILD_ROOT/%{_datadir}/%{srcname} $RPM_BUILD_ROOT/%{_docdir}/%{srcname}
+#mkdir -p $RPM_BUILD_ROOT/%{_docdir}/%{srcname}
+#mv $RPM_BUILD_ROOT/%{_datadir}/%{srcname} $RPM_BUILD_ROOT/%{_docdir}/%{srcname}
 
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp bitlbee.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
@@ -139,14 +139,15 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 %dir %attr (0755, root, bin) %{_sbindir}
 %{_sbindir}/*
 %dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/%{srcname}/*
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man5
 %{_mandir}/man5/*
 %dir %attr (0755, root, bin) %{_mandir}/man8
 %{_mandir}/man8/*
-%dir %attr (0755, root, other) %{_docdir}
-%dir %attr (0755, root, sys) %{_docdir}/%{srcname}
-%{_docdir}/%{srcname}/*
+#%dir %attr (0755, root, other) %{_docdir}
+#%dir %attr (0755, root, sys) %{_docdir}/%{srcname}
+#%{_docdir}/%{srcname}/*
 
 %dir %attr(0755, root, sys) %{_localstatedir}
 %dir %attr(0755, root, other) %{_localstatedir}/lib
@@ -163,6 +164,10 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 /etc/bitlbee/*
 
 %changelog
+* Thu Jan 17 2013 - Thomas Wagner
+- remove too much quotes from daemongcosfield
+- leave help.txt in /usr/share/bitlbee for online help
+##TODO## consider adding the user-guide as well
 * Sat Dec 15 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWopenssl_include}, 
   %{pnm_buildrequires_SUNWglib2_devel}, %include packagenamemacros.inc
