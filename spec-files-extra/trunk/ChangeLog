@@ -1,5 +1,7 @@
 2013-01-17  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEbitlbee.spec: updated to 3.2
+
 	* SFEasterisk.spec: bump to 1.8.20.0
 
 	* experimental/SFEfunambol.spec: initial spec.

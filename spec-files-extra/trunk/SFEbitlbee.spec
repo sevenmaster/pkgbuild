@@ -24,7 +24,7 @@ Name:                    SFEbitlbee
 IPS_Package_Name:	 network/chat/bitlbee
 Summary:                 BitlBee - An IRC to other chat networks gateway
 Group:                   Utility
-Version:                 3.0.6
+Version:                 3.2
 URL:		         http://www.bitlbee.org
 Source:		         http://get.bitlbee.org/src/bitlbee-%version.tar.gz
 Source2:                 bitlbee.xml
@@ -164,6 +164,8 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 /etc/bitlbee/*
 
 %changelog
+* Thu Jan 17 2013- Logan Bruns <logan@gedanken.org>
+- Updated to 3.2
 * Thu Jan 17 2013 - Thomas Wagner
 - remove too much quotes from daemongcosfield
 - leave help.txt in /usr/share/bitlbee for online help
