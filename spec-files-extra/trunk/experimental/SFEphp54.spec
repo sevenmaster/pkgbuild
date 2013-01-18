@@ -4,6 +4,7 @@
 # includes module(s): php
 #
 
+
 # SFE-webstack
 
 %include Solaris.inc
@@ -12,7 +13,7 @@
 %define php_version   5.4
 ##not defined%define php_major_version   5
 %define php_major_minor_version   5.4
-%define php_major_minor_micro_version 5.4.10
+%define php_major_minor_micro_version 5.4.11
 
 #1 use xml2 from gnu location in new version, 0 use system supplied xml2
 %define usexml2gnu 1
@@ -92,6 +93,10 @@ SAMPLES_DIR=%{_prefix}/php/%{php_major_minor_version}/samples
 
 cd php-%{version}-fastcgi
 
+
+###TODO### check obsolete/misspelled/wrong options:
+#configure: WARNING: unrecognized options: --enable-fastcgi, --with-sqlite, --enable-sqlite-utf8, --with-freetype, --with-jpeg, --with-pcre, --with-png, --with-libxml, --with-xpm, --enable-discard-path
+
 #NOTE: the following variables are ENV variables to configure
 PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -149,6 +154,7 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-iconv \
 	    --with-iconv-dir=/usr/gnu \
 	    --with-ldap=shared \
+            --with-openssl=shared \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
 
@@ -220,6 +226,7 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --with-iconv \
 	    --with-iconv-dir=/usr/gnu \
 	    --with-ldap=shared \
+            --with-openssl=shared \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
 
@@ -318,6 +325,10 @@ open: missing addons needed for openid in drupal
 popen: check imap client
 open: modify lib name libphp5.so and make it mod_php5.4.so
 open: add notes in description for how to activate this php5.4 in apache2
+* Fri Jan 18 2013 - Thomas Wagner
+- bump to 5.4.11
+* Thu Jan 10 2013 - Thomas Wagner
+- add --with-openssl=shared to get smtp encrypted transfers
 * Sun Jan  6 2013 - Thomas Wagner
 
 
