@@ -11,10 +11,10 @@
 %include packagenamemacros.inc
 
 Name:		SFEicinga
-Version:	1.7.1
+Version:	1.8.1
 Summary:	Host/service/network monitoring program (icinga)
 Group:		Applications/System
-License:	GPLv2
+License:	GPLv3+
 URL:		http://www.icinga.org/
 Source:		%{sf_download}/icinga/%{version}/icinga-%{version}.tar.gz
 Source1:	icinga.xml
@@ -429,5 +429,7 @@ pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEicinga-1.7.1-build/us
 pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEicinga-1.7.1-build/usr/lib/icinga/cgi-bin/*cgi
 ERROR: SFEicinga FAILED
 Would you like to continue? (yes/no) [yes]
+* Thu Nov  1 2012 - Thomas Wagner
+- bump to 1.8.1
 * Thu Aug  9 2012 - Thomas Wagner
-- initial spec (copy of SFEnagios.spec
+- initial spec (copy of SFEnagios.spec), version 1.7.1
