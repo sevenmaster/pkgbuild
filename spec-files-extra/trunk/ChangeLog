@@ -1,3 +1,8 @@
+2013-01-18  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEerlang.spec: Updated to R15B03. Added IPS name.
+	* base-specs/erlang.spec
+
 2013-01-17  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEbitlbee.spec: updated to 3.2
