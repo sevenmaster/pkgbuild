@@ -22,44 +22,34 @@
 
 %define pkg_src_name     otp_src
 %define src_name         erlang
-%define src_ver          R13B04
+%define src_ver          R15B03
+%define major            15
+%define minor            3
 
-Name:                    SFEerlang 
+Name:                    SFEerlang
+IPS_package_name:	 sfe/runtime/erlang
 Summary:                 erlang - Erlang programming language and OTP libraries (g++-built)
-Version:                 %{src_ver}
+Version:                 %{major}.%{minor}
 Release:                 1
 License:                 ERLANG PUBLIC LICENSE
 Group:                   Development/Languages/Erlang
 Distribution:            Java Desktop System
 Vendor:                  Sun Microsystems, Inc.
 URL:                     http://www.erlang.org
-Source:                  http://erlang.org/download/%{pkg_src_name}_%{src_ver}.tar.gz
+Source:                  http://erlang.org/download/%{pkg_src_name}_%{src_ver}-1.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{src_name}_%{src_ver}
 
-%define SFEgd            %(/usr/bin/pkginfo -q SUNWgd && echo 0 || echo 1)
+%define SFEgd            %(/usr/bin/pkginfo -q SUNWgd2 && echo 0 || echo 1)
 %define SFEunixodbc      %(/usr/bin/pkginfo -q SUNWunixodbc && echo 0 || echo 1)
 
 %include default-depend.inc
 
-%define src2_name crypto_lib_makefile.patch
-%define src3_name erts_configure.patch
-%define src4_name inet_drv.c.patch
-%define src5_name libs_makefile.patch64
-%define src6_name orber_lib_makefile.patch
-%define src7_name ssl_examples_makefile.patch
+BuildRequires: 	SFEgcc
+Requires: 	SFEgccruntime
 
-Source2:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src2_name}
-Source3:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src3_name}
-Source4:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src4_name}
-Source5:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src5_name}
-Source6:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src6_name}
-Source7:                 http://src.opensolaris.org/source/raw/sfw/usr/src/cmd/erlang/Patches/%{src7_name}
-
-Requires: 	SFEgcc
-
-Requires:       SFEwxwidgets-gnu
 BuildRequires:  SFEwxwidgets-gnu-devel
+Requires:       SFEwxwidgets-gnu
 
 %if %SFEgd
 BuildRequires: SFEgd-devel
@@ -119,11 +109,6 @@ rm -rf $RPM_BUILD_ROOT
 cd %{_builddir}/%{name}-%{version}
 touch SFEerlang-all.files
 
-find $RPM_BUILD_ROOT%{_prefix} \( -type f -o -type l \) -name "*" > SFEerlang-all.files
-sort SFEerlang-all.files > SFEerlang-all-sort.files
-# Clean up syntax for %files section
-sed -i -e 's:'"$RPM_BUILD_ROOT"'::' SFEerlang-all-sort.files
-
 %clean
 %ifarch amd64 sparcv9
 %define is64 1
@@ -133,52 +118,35 @@ sed -i -e 's:'"$RPM_BUILD_ROOT"'::' SFEerlang-all-sort.files
 %define is64 0
 %erlang.clean -d %{name}-%{version}/%{base_arch}
 
-%files -f SFEerlang-all-sort.files
+%files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
-%dir %attr (0755, root, bin) %{_libdir}
+%{_bindir}/ct_run
+%{_bindir}/dialyzer
+%{_bindir}/epmd
+%{_bindir}/*erl*
+%{_bindir}/escript
+%{_bindir}/run_test
+%{_bindir}/typer
 
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_bindir}/%{_arch64}
+%{_bindir}/%{_arch64}/*
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %endif
 
 %ifarch amd64 sparcv9
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/erts-5.7.5/man
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/erts-5.7.5/doc
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/kernel-2.13.5/examples/uds_dist/ebin
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/kernel-2.13.5/examples/uds_dist/priv
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/erl_interface-3.6.5/src/auxdir
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/inets-5.3/examples/server_root/htdocs/secret/top_secret
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/inets-5.3/examples/server_root/htdocs/mnesia_secret/top_secret
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/inets-5.3/examples/server_root/logs
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/mnesia-4.4.13/include
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/ssl-3.10.8/examples/certs/etc/otpCA/certs
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/ssl-3.10.8/examples/certs/etc/otpCA/crl
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/ssl-3.10.8/examples/certs/etc/erlangCA/crl
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/ssl-3.10.8/examples/certs/etc/erlangCA/certs
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/common_test-1.4.7/priv/bin
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/percept-0.8.4/priv/logs
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang/lib/odbc-2.10.7/priv/obj
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}/erlang
+%{_libdir}/%{_arch64}/erlang/*
 %endif
 
-%dir %attr (0755, root, bin) %{_libdir}/erlang/erts-5.7.5/man
-%dir %attr (0755, root, bin) %{_libdir}/erlang/erts-5.7.5/doc
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/kernel-2.13.5/examples/uds_dist/priv
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/kernel-2.13.5/examples/uds_dist/ebin
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/erl_interface-3.6.5/src/auxdir
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/inets-5.3/examples/server_root/htdocs/secret/top_secret
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/inets-5.3/examples/server_root/htdocs/mnesia_secret/top_secret
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/inets-5.3/examples/server_root/logs
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/mnesia-4.4.13/include
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/ssl-3.10.8/examples/certs/etc/erlangCA/crl
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/ssl-3.10.8/examples/certs/etc/erlangCA/certs
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/ssl-3.10.8/examples/certs/etc/otpCA/crl
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/ssl-3.10.8/examples/certs/etc/otpCA/certs
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/common_test-1.4.7/priv/bin
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/percept-0.8.4/priv/logs
-%dir %attr (0755, root, bin) %{_libdir}/erlang/lib/odbc-2.10.7/priv/obj
+%dir %attr (0755, root, bin) %{_libdir}
+%dir %attr (0755, root, bin) %{_libdir}/erlang
+%{_libdir}/erlang/*
 
 %changelog
+* Fri Jan 18 2013- Logan Bruns <logan@gedanken.org>
+- Updated to R15B03
+- Added IPS name
 * Sun Jun 6 2010 - markwright@internode.on.net
 - Initial spec
