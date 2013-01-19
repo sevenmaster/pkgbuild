@@ -1,3 +1,7 @@
+2013-01-13 Ken Mays  <kmays2000@gmail.com>
+
+	* SFEwine.spec: bump to 1.5.22
+
 2013-01-18  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEerlang.spec: Updated to R15B03. Added IPS name.
