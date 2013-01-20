@@ -18,7 +18,7 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define srcname mpd
+%define src_name mpd
 
 Name:                SFEmpd
 IPS_Package_Name:    media/mpd
@@ -26,8 +26,8 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.17.1
-Source:              http://downloads.sourceforge.net/musicpd/%version/%srcname-%version.tar.bz2
+Version:             0.17.3
+Source:              %{sf_download}/project/musicpd/%{src_name}/%{version}/%{src_name}-%{version}.tar.bz2
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -88,7 +88,7 @@ auto-network SFEpulseaudio ( via pulseaudio, libao (sun|pulse) ).
 
 
 %prep
-%setup -q -n %srcname-%version
+%setup -q -n %src_name-%version
 
 %build
 
@@ -158,6 +158,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Sun Jan 20 2013 - Thomas Wagner
+- bump to 0.17.3
+- use %{sf_download} macro for Source
+* Sat Oct 13 2012 - Thomas Wagner
+- bump to 0.17.2
 * Thu Aug 19 2012 - Thomas Wagner
 - bump to 0.17.1
 - make configure use bash
