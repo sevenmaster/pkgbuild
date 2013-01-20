@@ -12,7 +12,7 @@ IPS_Package_Name:	library/audio/libmpdclient
 Summary:	Asynchronous API library for interfacing to MPD
 URL:		http://mpd.wikia.com/wiki/ClientLib:libmpdclient
 Meta(info.upstream):	Max Kellermann <max@duempel.org>
-Version:	2.4
+Version:	2.7
 License:	BSD
 Group:		System/Multimedia Libraries
 SUNW_Copyright:	libmpdclient.copyright
@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 17 2012 - Thomas Wagner
+- bump to 2.7
 * Thu Jul 21 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Tue Jan 18 2011 - Alex Viskovatoff
