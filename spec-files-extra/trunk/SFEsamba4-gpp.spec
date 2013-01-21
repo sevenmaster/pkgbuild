@@ -13,7 +13,7 @@
 
 Name:                SFEsamba4
 Summary:             samba - CIFS Server and Domain Controller v4
-Version:             4.0.0
+Version:             4.0.1
 Source:              ftp://ftp.samba.org/pub/samba/stable/%{source_name}.tar.gz
 
 
@@ -115,6 +115,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0775, root, sys) /var/log/samba
 
 %changelog
+* Tue Jan 15 2013 - Ken Mays <kmays2000@gmail.com>
+- bumped to 4.0.1
 * Wed Dec 12 2012 - Ken Mays <kmays2000@gmail.com>
 - bumped to 4.0.0
 * Thu Dec 7 2012 - Ken Mays <kmays2000@gmail.com>
