@@ -8,7 +8,7 @@
 Name:		SFEbogofilter
 IPS_Package_Name:	mail/bogofilter
 Summary:	A Bayesian spam filter
-Version:	1.2.2
+Version:	1.2.3
 Source:		%{sf_download}/bogofilter/bogofilter-%{version}.tar.bz2
 URL:		http://bogofilter.sourceforge.net/
 License:	GPLv2+
@@ -72,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/bogofilter.cf.example
 
 %changelog
+* Tue Jan 22 2012 - Milan Jurik
+- bump to 1.2.3
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
 - added License and SUNW_Copyright tags
 * Wed Dec 01 2010 - Milan Jurik
