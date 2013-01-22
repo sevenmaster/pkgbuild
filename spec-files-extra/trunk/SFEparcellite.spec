@@ -63,6 +63,9 @@ autoconf -f
             --sysconfdir=%{_sysconfdir} \
             --datadir=%{_datadir} \
 
+sed -i.orig -e 's/pl_PL/pl/' po/Makefile
+mv po/pl_PL.po po/pl.po
+
 make -j$CPUS
 
 %install
@@ -97,5 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr (-, root, sys) %{_sysconfdir}/xdg/autostart/*
 
 %changelog
+* Mon Jan 21 2013 - Luca De Pandis (lucadepandis@gmail.com)
+- Fixed conflict with pkg:/gnome/locale/pl
 * Mon Oct 27 2008 - Andras Barna (andras.barna@gmail.com)
 - Initial spec
