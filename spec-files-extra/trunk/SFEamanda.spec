@@ -9,11 +9,11 @@
 %define amanda_indexserver	amandahost
 %define amanda_tapeserver	%{indexserver}
 
-%define perl_version	5.8.4
+%define perl_version	5.10.0
 
 Name:		SFEamanda
 Summary:	A network-capable tape backup solution
-Version:	3.2.1
+Version:	3.2.3
 Source:		%{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
 License:	BSD
 Group:		Applications/System
@@ -27,8 +27,8 @@ Buildrequires:	SUNWgnu-readline
 Requires:	SUNWgnuplot
 Requires:	SUNWgnu-readline
 #Requires:	SUNWmtx
-BuildRequires:	SUNWperl584usr
-Requires:	SUNWperl584usr
+BuildRequires:	SUNWperl510usr
+Requires:	SUNWperl510usr
 
 %description 
 AMANDA, the Advanced Maryland Automatic Network Disk Archiver, is a
@@ -341,6 +341,8 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 
 
 %changelog
+* Sat Jan 26 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.2.3, migrated to Perl 5.10.0 usage
 * Sat Dec 25 2010 - Milan Jurik
 - bump to 3.2.1
 * Sat Nov 27 2010 - Milan Jurik
