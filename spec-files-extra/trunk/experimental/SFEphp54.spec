@@ -81,6 +81,8 @@ export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xO4 -xalias_level=basic -xipo=0"
 export CFLAGS="$CFLAGS -xlibmopt -xprefetch_level=1 -xprefetch=auto -xstrconst -zlazyload"
 export LDFLAGS="$LDFLAGS -xlibmopt -xprefetch_level=1 -xprefetch=auto -xstrconst -zlazyload -liconv"
 
+#maybe not necessary to find the mysql libs? export LDFLAGS="$LDFLAGS -L%{_prefix}/%{mysql_default_libdir}"
+
 #	PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 #	PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
 #	PHP_PEAR_EXTENSION_DIR=/var/php/$(PHP_REL)/modules \
@@ -131,7 +133,11 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --enable-mbstring                   \
 	    --with-gettext=/usr/gnu             \
 	    --with-layout=PHP \
+	    --with-mysql=shared,%{_prefix}/%{mysql_default_prefix} \
+	    --with-mysql-sock=/tmp/mysql.sock \
+	    --with-mysqli=shared,%{_prefix}/%{mysql_default_prefix}/bin/mysql_config \
 	    --with-pear=${PEAR_DIR} \
+	    --with-pdo-mysql=shared,%{_prefix}/%{mysql_default_prefix} \
             --with-pdo-pgsql=shared,%{_prefix}/%{postgres_default_prefix} \
             --with-pgsql=shared,%{_prefix}/%{postgres_default_prefix} \
 	    --with-sqlite=shared \
@@ -200,7 +206,11 @@ PHP_LIBXML_DIR=/usr/gnu \
 	    --enable-mbstring                   \
 	    --with-gettext=/usr/gnu             \
 	    --with-layout=PHP \
-	--with-pear=${PEAR_DIR} \
+	    --with-mysql=shared,%{_prefix}/%{mysql_default_prefix} \
+	    --with-mysql-sock=/tmp/mysql.sock \
+	    --with-mysqli=shared,%{_prefix}/%{mysql_default_prefix}/bin/mysql_config \
+	    --with-pear=${PEAR_DIR} \
+	    --with-pdo-mysql=shared,%{_prefix}/%{mysql_default_prefix} \
             --with-pdo-pgsql=shared,%{_prefix}/%{postgres_default_prefix} \
             --with-pgsql=shared,%{_prefix}/%{postgres_default_prefix} \
 	    --with-sqlite=shared \
@@ -352,6 +362,7 @@ open: add notes in description for how to activate this php5.4 in apache2
 - make PATH search for libtool in our build directory (not find OS provided libtool on OI)
 - generate /etc/php/5.4/conf.g/<modulename>.ini and by default enable all modules compiled
   fixed finding modules
+- add mysql
 * Fri Jan 18 2013 - Thomas Wagner
 - bump to 5.4.11
 * Thu Jan 10 2013 - Thomas Wagner
