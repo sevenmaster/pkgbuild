@@ -1,3 +1,9 @@
+2013-01-26  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEruby-18.spec: forked from 1.9 back to 1.8 series to get newer
+	patched version of 1.8.7. Switched to gcc. Added back in
+	libruby-static.
+
 2013-01-26 Ken Mays  <kmays2000@gmail.com>
 
 	* SFEamanda.spec: bump to 3.2.3
