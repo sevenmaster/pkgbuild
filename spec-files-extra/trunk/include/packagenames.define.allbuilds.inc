@@ -1307,6 +1307,9 @@
 #are stored
 #note: simplyfication: %{_prefix} must be prepended by the spec file itself
 
+#default install directory of mysql
+%define mysql_default_prefix	mysql/%{mysql_major_minor_version}
+
 #example:
 #the mysql.h file would be found with CFLAGS="-I%{_prefix}/%{mysql_default_includedir}/mysql"
 #or
@@ -1704,6 +1707,8 @@
 # 
 
 %changelog
+* Sat Jan 26 2013 - Thomas Wagner
+- add mysql_default_prefix (e.g. %{prefix}%{mysql_default_prefix} = /usr/mysql/5.1 )
 * Sun Jan 13 2013 - Thomas Wagner
 - add SVR4 package names for pnm_buildrequires_SUNWzlib_devel SUNWzlib (S10, SXCE)
 * Sat Jan 12 2013 - Thomas Wagner
