@@ -2,14 +2,13 @@
 # spec file for package SFEamanda
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	amanda
 
 %define amanda_user	amandabackup
 %define amanda_indexserver	amandahost
 %define amanda_tapeserver	%{indexserver}
-
-%define perl_version	5.10.0
 
 Name:		SFEamanda
 Summary:	A network-capable tape backup solution
@@ -21,14 +20,12 @@ URL:		http://www.amanda.org
 SUNW_BaseDir:	/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
-BuildRequires:	SUNWgnome-common-devel
-Buildrequires:	SUNWgnu-readline
-
-Requires:	SUNWgnuplot
-Requires:	SUNWgnu-readline
-#Requires:	SUNWmtx
-BuildRequires:	SUNWperl510usr
-Requires:	SUNWperl510usr
+BuildRequires:  SUNWgnome-common-devel
+Buildrequires:  SUNWgnu-readline
+BuildRequires:  %pnm_buildrequires_perl_default
+Requires:       SUNWgnuplot
+Requires:       SUNWgnu-readline
+Requires:       %pnm_requires_perl_default
 
 %description 
 AMANDA, the Advanced Maryland Automatic Network Disk Archiver, is a
@@ -106,7 +103,7 @@ fi
 	--with-gnuplot=/usr/bin/gnuplot	\
 	--with-index-server=%{amanda_indexserver}	\
 	--with-tape-server=%{amanda_tapeserver}	\
-	--with-amperldir=%{_prefix}/perl5/vendor_perl/%{perl_version} \
+	--with-amperldir=%{_prefix}/%{perl_path_vendor_perl_version} \
 	--with-bsdtcp-security		\
 	--with-bsdudp-security		\
 	--with-rsh-security		\
@@ -153,8 +150,8 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %dir %attr (0755, root, sys) %{_prefix}
 %attr(-,%amanda_user, sys)	%{_libdir}/amanda/lib*-*.so
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/amanda-sh-lib.sh
-%attr(-,%amanda_user, sys)	%{_prefix}/perl5/vendor_perl/%{perl_version}/auto/Amanda/
-%attr(-,%amanda_user, sys)	%{_prefix}/perl5/vendor_perl/%{perl_version}/Amanda/
+%attr(-,%amanda_user, sys)	%{_prefix}/%{perl_path_vendor_perl_version}/auto/Amanda/
+%attr(-,%amanda_user, sys)	%{_prefix}/%{perl_path_vendor_perl_version}/Amanda/
 %attr(-,%amanda_user, sys)	%{_sbindir}/amrestore
 %attr(-,%amanda_user, sys)	%{_sbindir}/amarchiver
 %{_mandir}/man8/amrestore.8
@@ -342,7 +339,7 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 
 %changelog
 * Sat Jan 26 2013 - Ken Mays <kmays2000@gmail.com>
-- bump to 3.2.3, migrated to Perl 5.10.0 usage
+- bump to 3.2.3, migrated to pnm_macros usage for Perl
 * Sat Dec 25 2010 - Milan Jurik
 - bump to 3.2.1
 * Sat Nov 27 2010 - Milan Jurik
