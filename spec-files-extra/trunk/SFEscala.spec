@@ -15,7 +15,7 @@ Name:                    SFEscala
 IPS_Package_Name:	 runtime/java/scala
 Summary:                 Scala - The Scala Programming Language
 Group:                   Development/Scala
-Version:                 2.9.2
+Version:                 2.10.0
 URL:		         http://www.scala-lang.org/
 Source:		         http://www.scala-lang.org/downloads/distrib/files/scala-%{version}.tgz
 License: 		 BSD License
@@ -66,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Sat Jan 26 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 2.10.0
 * Sun Dec 16 2012 - Logan Bruns <logan@gedanken.org>
 - Changed IPS package name from runtime/scala to runtime/java/scala.
 * Sat Dec 15 2012 - Logan Bruns <logan@gedanken.org>
