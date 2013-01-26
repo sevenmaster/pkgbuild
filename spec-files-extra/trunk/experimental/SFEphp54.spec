@@ -46,6 +46,8 @@ Requires:      SFElxml-gnu
 %endif
 BuildRequires: SFEgmp
 Requires:      SFEgmp
+BuildRequires: SFEre2c
+Requires:      SFEre2c
 
 
 %package root
@@ -74,8 +76,10 @@ export CFLAGS="$CFLAGS -I %{gnu_inc}"
 export LDFLAGS="$LDFLAGS %{gnu_lib_path} -liconv -lxml2"
 
 #from OS Makefile (php5.2)
-export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xnorunpath -xO4 -xalias_level=basic -xipo=0"
+#export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xnorunpath -xO4 -xalias_level=basic -xipo=0"
+export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xO4 -xalias_level=basic -xipo=0"
 export CFLAGS="$CFLAGS -xlibmopt -xprefetch_level=1 -xprefetch=auto -xstrconst -zlazyload"
+export LDFLAGS="$LDFLAGS -xlibmopt -xprefetch_level=1 -xprefetch=auto -xstrconst -zlazyload -liconv"
 
 #	PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 #	PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -93,6 +97,9 @@ SAMPLES_DIR=%{_prefix}/php/%{php_major_minor_version}/samples
 
 cd php-%{version}-fastcgi
 
+#find libtool from our own build directory, not from the OS (oi libtool tried /usr/ucb/echo, not installed by default)
+PATHSAVED=$PATH
+export PATH=`pwd`:$PATHSAVED
 
 ###TODO### check obsolete/misspelled/wrong options:
 #configure: WARNING: unrecognized options: --enable-fastcgi, --with-sqlite, --enable-sqlite-utf8, --with-freetype, --with-jpeg, --with-pcre, --with-png, --with-libxml, --with-xpm, --enable-discard-path
@@ -158,16 +165,13 @@ PHP_LIBXML_DIR=/usr/gnu \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
 
-#	    --datadir=%{_datadir}		\
-#	    --mandir=%{_mandir}			\
-#	    --libexec=%{_libexecdir}		\
-#	    --sysconfdir=%{_sysconfdir}		\
-
-
 gmake -j$CPUS
 cd ..
 
 cd php-%version
+#find libtool from our own build directory, not from the OS (oi libtool tried /usr/ucb/echo, not installed by default)
+export PATH=`pwd`:$PATHSAVED
+
 #NOTE: the following variables are ENV variables to configure
 PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -177,6 +181,7 @@ PHP_PEAR_SIG_BIN=/usr/gnu/bin/gpg \
 %if %{usexml2gnu}
 PHP_LIBXML_DIR=/usr/gnu \
 %endif
+##TODO## disable-fastcgi disable-cgi ... siehe php 5.2 makefiles
 ./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
 	    --bindir=%{_prefix}/php/%{php_major_minor_version}/bin \
 	    --sbindir=%{_prefix}/php/%{php_major_minor_version}/sbin \
@@ -270,13 +275,17 @@ echo >${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd.conf
 echo "LoadModule /usr/dummy.so" >>${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd.conf
 
 cd php-%version
+#find libtool from our own build directory, not from the OS (oi libtool tried /usr/ucb/echo, not installed by default)
+PATHSAVED=$PATH
+export PATH=`pwd`:$PATHSAVED
+
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/
 cp php.ini-production $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/php.ini
 
 mkdir -p $RPM_BUILD_ROOT/%{_localstatedir}/php/%{php_major_minor_version}/sessions
-mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/
+mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/conf.d
 
 # Remove the dummy line and rename the file.
 awk '!/dummy/ {print}' ${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd.conf > ${RPM_BUILD_ROOT}/etc/apache2/%{apache2_version}/httpd-php.conf
@@ -293,6 +302,17 @@ rm -r ${RPM_BUILD_ROOT}/.lock
 rm -r ${RPM_BUILD_ROOT}/.depdblock
 rm -r ${RPM_BUILD_ROOT}/.depdb
 
+#create simple default config files for the modules delivered
+EXTDIR=`${RPM_BUILD_ROOT}/%{_prefix}/php/%{php_major_minor_version}/bin/php-config --extension-dir`
+
+for MODULE in `cd $EXTDIR; find . -type f -name \*so`
+ do
+ MODULESOFILE=$( basename $MODULE )
+ MODULEINIFILE=$( echo $MODULESOFILE | sed -e 's?\.so?.ini?' )
+ echo "creating module ini file $MODULEINIFILE for module $MODULESOFILE"
+ echo "extension=$MODULESOFILE" > $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/conf.d/$MODULEINIFILE
+done # MODULE
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -305,6 +325,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/apache2/*
 
 %defattr (-, root, bin)
+#%dir %attr (0755, root, sys) %{_datadir}
+#%dir %attr (0755, root, other) %{_docdir}
 %dir %attr (0755, root, sys) %{_localstatedir}
 ##%dir %attr (0755, root, bin) %{_localstatedir}/php/%{php_major_minor_version}/pear
 ##%{_localstatedir}/php/%{php_major_minor_version}/pear
@@ -321,65 +343,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 changelog incomplete, under development, stay tuned
-open: missing addons needed for openid in drupal
-popen: check imap client
+open: check imap client
 open: modify lib name libphp5.so and make it mod_php5.4.so
 open: add notes in description for how to activate this php5.4 in apache2
+* Sat Jan 26 2013 - Thomas Wagner
+- add (Build)Requires: SFEre2c
+- remove -xnorunpath from CFLAGS, add LDFLAGS similar to the ones from php 5.2 in ON
+- make PATH search for libtool in our build directory (not find OS provided libtool on OI)
+- generate /etc/php/5.4/conf.g/<modulename>.ini and by default enable all modules compiled
 * Fri Jan 18 2013 - Thomas Wagner
 - bump to 5.4.11
 * Thu Jan 10 2013 - Thomas Wagner
 - add --with-openssl=shared to get smtp encrypted transfers
-* Sun Jan  6 2013 - Thomas Wagner
-
-
-                              /usr/php/5.2/bin/php-config
-Usage: /usr/php/5.2/bin/php-config [OPTION]
-Options:
-  --prefix            [/usr/php/5.2]
-  --includes          [-I/usr/php/5.2/include/php -I/usr/php/5.2/include/php/main -I/usr/php/5.2/include/php/TSRM -I/usr/php/5.2/include/php/Zend -I/usr/php/5.2/include/php/ext -I/usr/php/5.2/include/php/ext/date/lib]
-  --ldflags           [ -L/usr/ucblib]
-  --libs              [
-           -lcrypt   -lz 
-             -lexslt   
-             -lresolv 
-            -lm -lsocket -lnsl 
-             -ldl 
-            -lposix4 
-               -lxml2 -lz -lm -lsocket -lnsl 
-            -lxslt 
-  --extension-dir     [/usr/php/5.2/modules]
-  --include-dir       [/usr/php/5.2/include/php]
-  --php-binary        [/usr/php/5.2/bin/php]
-  --php-sapis         [cli apache2handler]
-  --configure-options [--bindir=/usr/php/5.2/bin --datadir=/usr/php/5.2/share 
---enable-bcmath --enable-calendar --enable-ctype --enable-cli --enable-dom --enable-dtrace --enable-exif --enable-flatfile --enable-filter --enable-gd-jis-conv --enable-gd-native-ttf --enable-hash --enable-inifile --enable-ipv6 --enable-json --enable-magic-quotes --enable-mbregex --enable-mbstring --enable-mod-charset --enable-pcntl --enable-posix --enable-reflection --with-libxml-dir=/usr --enable-libxml --enable-sqlite-utf8 --enable-session --enable-shared --enable-shmop --enable-short-tags --enable-simplexml --enable-soap --enable-sockets --enable-spl --enable-sysvmsg --enable-sysvsem --enable-sysvshm --enable-tokenizer --enable-xml --enable-xmlreader --enable-xmlwriter --enable-zend-multibyte --enable-zip --exec-prefix=/usr/php/5.2 --includedir=/usr/php/5.2/include --libdir=/usr/php/5.2/lib --libexecdir=/usr/php/5.2/modules --mandir=/usr/php/5.2/man --oldincludedir=/usr/php/5.2/share --prefix=/usr/php/5.2 --sbindir=/usr/php/5.2/sbin --sysconfdir=/etc/php/5.2 --with-cdb --with-config-file-path=/etc/php/5.2 --with-config-file-scan-dir=/etc/php/5.2/conf.d --with-exec-dir=/usr/php/5.2/bin --with-freetype-dir=/usr/sfw --with-jpeg-dir=/usr --with-kerberos --with-layout=PHP --with-mcrypt=shared,/builds2/sfwnv-gate/proto/root_i386/usr --with-pcre-dir=/builds2/sfwnv-gate/proto/root_i386/usr --with-pcre-regex --with-png-dir=/usr --with-xmlrpc --with-xpm-dir=/usr/openwin --with-xsl --with-zend-vm=CALL 
---enable-discard-path --enable-ftp=shared --enable-pdo=shared --with-apxs2=/builds2/sfwnv-gate/proto/root_i386/usr/apache2/2.2/bin/apxs --with-bz2=shared --with-curl=shared,/builds2/sfwnv-gate/proto/root_i386/usr --with-curlwrappers --with-gd=shared --with-gettext=shared --with-iconv=shared --with-imap=shared,/builds2/sfwnv-gate/usr/src/cmd/php5/imap-2007e --with-imap-ssl=shared,/builds2/sfwnv-gate/proto/root_i386/usr --with-ldap=shared --with-mysql=shared,/builds2/sfwnv-gate/proto/root_i386/usr/mysql/5.1 --with-mysql-sock=/tmp/mysql.sock --with-mysqli=shared,/builds2/sfwnv-gate/proto/root_i386/usr/mysql/5.1/bin/mysql_config --with-openssl=shared --with-pear=/var/php/5.2/pear --with-pdo-mysql=shared,/builds2/sfwnv-gate/proto/root_i386/usr/mysql/5.1 --with-pdo-pgsql=shared,/builds2/sfwnv-gate/proto/root_i386/usr/postgres/8.3 --with-pdo-sqlite=shared --with-pgsql=shared,/builds2/sfwnv-gate/proto/root_i386/usr/postgres/8.3 --with-snmp=shared,/builds2/sfwnv-gate/proto/root_i386/usr --with-sqlite=shared --with-tidy=shared,/builds2/sfwnv-gate/proto/root_i386/usr --with-zlib=shared 
-
---disable-cgi --disable-fastcgi 
---disable-dbase --disable-debug --disable-dmalloc --disable-inline-optimization --disable-libgcc --disable-libtool-lock --disable-rpath --disable-static 
---without-dbm --without-t1lib 
---without-tsrm-pthreads]
-  --version           [5.2.11]
-  --vernum            [50211]
-
-VON ZWISCHENDURCH:
- ~/packages/PKGS/SFEphp54/reloc/usr/php/5.4/bin ./php-config 
-Usage: ./php-config [OPTION]
-Options:
-  --prefix            [/usr/php/5.4]
-  --includes          [-I/usr/php/5.4/include/php -I/usr/php/5.4/include/php/main -I/usr/php/5.4/include/php/TSRM -I/usr/php/5.4/include/php/Zend -I/usr/php/5.4/include/php/ext -I/usr/php/5.4/include/php/ext/date/lib]
-  --ldflags           [ -L/usr/ucblib]
-  --libs              [  -lresolv -lrt -lintl -lbz2 -lz -lrt -lm -lnsl -lsocket  -lxml2 -lz -lm -lsocket -lnsl -lxml2 -lz -lm -lsocket -lnsl -lxml2 -lz -lm -lsocket -lnsl -lxml2 -lz -lm -lsocket -lnsl -lxml2 -lz -lm -lsocket -lnsl -lxml2 -lz -lm -lsocket -lnsl ]
-  --extension-dir     [/usr/php/5.4/lib/php/extensions/no-debug-non-zts-20100525]
-  --include-dir       [/usr/php/5.4/include/php]
-  --man-dir           [/usr/php/5.4/man]
-  --php-binary        [/usr/php/5.4/bin/php]
-  --php-sapis         [ apache2handler cli cgi]
-  --configure-options [--prefix=/usr/php/5.4 --bindir=/usr/php/5.4/bin --sbindir=/usr/php/5.4/sbin --datadir=/usr/php/5.4/share --localstatedir=/var/php --libexecdir=/usr/php/5.4/modules --mandir=/usr/php/5.4/man --oldincludedir=/usr/php/5.4/share --sysconfdir=/etc/php/5.4 --with-config-file-path=/etc/php/5.4 --with-config-file-scan-dir=/etc/php/5.4/conf.d --enable-fastcgi --with-bz2 --with-zlib --enable-mbstring --with-gettext=/usr/gnu --with-layout=PHP --with-pear= --with-pdo-pgsql=shared,/usr/postgres/8.4 --with-sqlite=shared --with-apxs2=/usr/apache2/2.2/bin/apxs]
-  --version           [5.4.10]
-  --vernum            [50410]
-
-
 * Tue Jan  1 2013 - Thomas Wagner
 - bump to 5.4.10
 
