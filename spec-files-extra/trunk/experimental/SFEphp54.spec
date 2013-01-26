@@ -305,7 +305,7 @@ rm -r ${RPM_BUILD_ROOT}/.depdb
 #create simple default config files for the modules delivered
 EXTDIR=`${RPM_BUILD_ROOT}/%{_prefix}/php/%{php_major_minor_version}/bin/php-config --extension-dir`
 
-for MODULE in `cd $EXTDIR; find . -type f -name \*so`
+for MODULE in `cd ${RPM_BUILD_ROOT}/$EXTDIR && find . -type f -name \*so`
  do
  MODULESOFILE=$( basename $MODULE )
  MODULEINIFILE=$( echo $MODULESOFILE | sed -e 's?\.so?.ini?' )
@@ -351,6 +351,7 @@ open: add notes in description for how to activate this php5.4 in apache2
 - remove -xnorunpath from CFLAGS, add LDFLAGS similar to the ones from php 5.2 in ON
 - make PATH search for libtool in our build directory (not find OS provided libtool on OI)
 - generate /etc/php/5.4/conf.g/<modulename>.ini and by default enable all modules compiled
+  fixed finding modules
 * Fri Jan 18 2013 - Thomas Wagner
 - bump to 5.4.11
 * Thu Jan 10 2013 - Thomas Wagner
