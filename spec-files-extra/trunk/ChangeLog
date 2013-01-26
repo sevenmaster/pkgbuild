@@ -1,3 +1,8 @@
+2013-01-26 Ken Mays  <kmays2000@gmail.com>
+
+	* SFEamanda.spec: bump to 3.2.3
+	* experimental/SFElibreoffice: bump to 4.0.0.2
+
 2013-01-22  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEejabberd.spec: initial spec.
