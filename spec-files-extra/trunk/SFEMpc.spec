@@ -1,122 +1,87 @@
 #
-# spec file for package SFEMpc
-#
-# Copyright 2010 Sun Microsystems, Inc.
+# Copyright (c) 2006 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
-#
 
 %include Solaris.inc
-%include usr-gnu.inc
 
-%define cc_is_gcc 1
-
-%define pkg_src_name     mpc
-%define src_name         mpc
-%define src_ver          0.8.2
-
-##TODO## think on usr-gnu.inc define infodir inside /usr/gnu/share to avoid conflicts
-%define _infodir           %{_datadir}/info
-
-%ifarch amd64 sparcv9
-%include arch64.inc
-%define is64 1
-%use Mpc_64 = Mpc.spec
-%endif
-
-%include base.inc
-%define is64 0
-%use Mpc = Mpc.spec
-
-Name:                    SFEMpc
-Summary:                 mpc - C library for the arithmetic of complex numbers
-Version:                 %{src_ver}
-Release:                 1
-License:                 LGPL
-Group:                   Development/Languages/Mpc
-Distribution:            Java Desktop System
-Vendor:                  Sun Microsystems, Inc.
-Source:                  http://www.multiprecision.org/mpc/download/%{pkg_src_name}-%{version}.tar.gz
-Url:	    	         http://www.multiprecision.org/
-SUNW_BaseDir:            %{_basedir}/%{_subdir}
-BuildRoot:               %{_tmppath}/%{src_name}_%{src_ver}
-
+Name:                SFEmpc
+Summary:             Command line tool and client for Music Player Daemon
+License:             GPLv2
+SUNW_Copyright:	     mpc.copyright
+Meta(info.upstream): Max Kellermann <max@duempel.org>
+Version:             0.22
+Source:              http://downloads.sourceforge.net/project/musicpd/mpc/%{version}/mpc-%version.tar.bz2
+SUNW_BaseDir:        %{_basedir}
+BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-Requires: 	SFEgcc
-
-BuildRequires:  SFEgmp-devel
-Requires:       SFEgmp
-
-Requires:       SFEmpfr-devel
-BuildRequires:  SFEmpfr
+BuildRequires:	SFElibmpdclient-devel
+Requires:	SFElibmpdclient
 
 %package devel
-Summary:                 %{summary} - developer files
-SUNW_BaseDir:            %{_basedir}/%{_subdir}
+Summary:        %{summary} - development files
+SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
 Requires: %name
 
 %prep
-rm -rf %{name}-%{version}
-mkdir %{name}-%{version}
-%ifarch amd64 sparcv9
-mkdir %{name}-%{version}/%{_arch64}
-%define is64 1
-%Mpc_64.prep -d %{name}-%{version}/%{_arch64}
-%endif
-
-mkdir %{name}-%{version}/%{base_arch}
-%define is64 0
-%Mpc.prep -d %{name}-%{version}/%{base_arch}
-
+%setup -q -n mpc-%version
 
 %build
-%ifarch amd64 sparcv9
-%define is64 1
-%Mpc_64.build -d %{name}-%{version}/%{_arch64}
-%endif
 
-%define is64 0
-%Mpc.build -d %{name}-%{version}/%{base_arch}
+CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
+if test "x$CPUS" = "x" -o $CPUS = 0; then
+     CPUS=1
+fi
 
+export CFLAGS="%optflags"
+export LDFLAGS="%_ldflags"
+
+./configure --prefix=%{_prefix}  \
+            --mandir=%{_mandir} \
+	    --disable-iconv
+
+# Be modern and use libxnet instead of libsocket
+sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
+mv Makefile.xnet Makefile
+
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%ifarch amd64 sparcv9
-%define is64 1
-%Mpc_64.install -d %{name}-%{version}/%{_arch64}
-%endif
 
-%define is64 0
-%Mpc.install -d %{name}-%{version}/%{base_arch}
+gmake install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
-%ifarch amd64 sparcv9
-%define is64 1
-%Mpc_64.clean -d %{name}-%{version}/%{_arch64}
-%endif
+rm -rf $RPM_BUILD_ROOT
 
-%define is64 0
-%Mpc.clean -d %{name}-%{version}/%{base_arch}
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/lib*.so*
-%ifarch amd64 sparcv9
-%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
-%{_libdir}/%{_arch64}/lib*.so*
-%endif
+%dir %attr (0755, root, bin) %{_bindir}
+%{_bindir}/mpc
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/mpc.1
 
 %files devel
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_includedir}
-%{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr(0755, root, bin) %{_infodir}
-%{_infodir}/*
+%dir %attr (0755, root, other) %{_datadir}/doc
+%{_datadir}/doc/*
 
 %changelog
-* Mon July 19 2010 - markwright@internode.on.net
+* Fri Aug 10 2012 - Thomas Wagner
+- fix download URL
+* Thu Jul  5 2012 - Thomas Wagner
+- bump to 0.22
+* Sat Jul 23 2011 - Alex Viskovatoff
+- Add SUNW_Copyright
+* Tue Jan 18 2011 - Alex Viskovatoff
+- Bump to 0.20; use libxnet
+* Wed Oct 25 2006 - Eric Boutilier
+- Add devel package and fix attributes
+* Tue Sep 26 2006 - Eric Boutilier
 - Initial spec
