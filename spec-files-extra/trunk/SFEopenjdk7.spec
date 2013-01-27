@@ -9,18 +9,18 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define srcname openjdk7
 %define major 7
-%define minor 6
-%define buildnum 24
+%define minor 14
+%define buildnum 11
+%define srcname openjdk%{major}
+%define tag jdk%{major}u%{minor}-b%{buildnum}
 
-Name:                    SFEopenjdk7
-IPS_Package_Name:	 developer/java/openjdk-7
+Name:                    SFEopenjdk%{major}
+IPS_Package_Name:	 developer/java/openjdk-%{major}
 Summary:                 OpenJDK - open-source Java SE implementation
 Group:                   Development/Java
-Version:                 %{major}.0.%{minor}
-URL:		         http://jdk7.java.net
-Source:		         http://www.java.net/download/openjdk/jdk7u6/promoted/b24/openjdk-%{major}u%{minor}-fcs-src-b%{buildnum}-28_aug_2012.zip
+Version:                 %{major}.0.%{minor}.%{buildnum}
+URL:		         http://jdk%{major}.java.net
 License: 		 GPLv2
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
@@ -30,11 +30,16 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 BuildRequires: %pnm_buildrequires_java_runtime_default
 BuildRequires: SUNWant 
 BuildRequires:	SUNWcupsu
+BuildRequires: SUNWmercurial
 Requires:	SUNWcupsu
 BuildRequires: SUNWfreetype2
 Requires: SUNWfreetype2
+BuildRequires: SUNWaudh
+Requires: SUNWaudh
+BuildRequires: SUNWxorg-headers
+Requires: SUNWxorg-headers
 
-%define jdkroot %{_prefix}/jdk/instances/jdk1.%{major}.0
+%define jdkroot %{_prefix}/jdk/instances/openjdk1.%{major}.0
 
 %description
 Java Platform, Standard Edition (Java SE) lets you develop and deploy
@@ -44,10 +49,14 @@ performance, versatility, portability, and security that today’s
 applications require.
 
 %prep
-rm -rf openjdk
-%setup -q -n openjdk
+rm -rf %{srcname}
+hg clone -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u %{srcname}
+cd %{srcname}
+gsed -i -e 's/hg clone/hg clone -r %{tag}/g' make/scripts/hgforest.sh
+bash ./make/scripts/hgforest.sh clone
 
 %build
+cd %{srcname}
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
@@ -58,11 +67,13 @@ export ALT_CUPS_HEADERS_PATH=/usr/include
 export FULL_DEBUG_SYMBOLS=0
 export BUILD_NUMBER=b%{buildnum}
 export MILESTONE=%{minor}
+export ARCH_DATA_MODEL=32
 
 make sanity
 make all
 
 %install
+cd %{srcname}
 rm -rf $RPM_BUILD_ROOT
 cd build/solaris-*/j2sdk-image
 mkdir -p $RPM_BUILD_ROOT%{jdkroot}
@@ -79,5 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Sat Jan 26 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to JDK 7u14b11. 
+- Changed install path to /usr/jdk/instances/openjdk1.7.0.
 * Tue Dec 25 2012 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
