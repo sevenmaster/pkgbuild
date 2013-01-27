@@ -13,7 +13,7 @@
 Name:		SFEstellarium
 IPS_Package_Name:	image/stellarium
 Version:	0.11.4a
-Summary:	Photo-realistic nightsky renderer
+Summary:	3D photo-realistic sky renderer (planetarium)
 Group:		Scientific/Astronomy
 License:	GPLv2+
 URL:		http://stellarium.free.fr/
@@ -25,20 +25,20 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-#BuildRequires: SFEsdl-mixer-devel
-#Requires: SFEsdl-mixer
-#BuildRequires: SUNWimagick
-#BuildRequires: SFEcmake
-#BuildRequires: SFEqt-stdcxx-devel
-#Requires: SFEqt-stdcxx
-#BuildRequires: SUNWgnome-config-devel
-#Requires: SUNWgnome-config
+BuildRequires: SFEsdl-mixer-devel
+Requires: SFEsdl-mixer
+BuildRequires: SUNWimagick
+BuildRequires: SFEcmake
+BuildRequires: SFEqt-stdcxx-devel
+Requires: SFEqt-stdcxx
+BuildRequires: SUNWgnome-config-devel
+Requires: SUNWgnome-config
 
 %description
-Stellarium is a real-time 3D photo-realistic nightsky renderer. It can
-generate images of the sky as seen through the Earth's atmosphere with
-more than one hundred thousand stars from the Hipparcos Catalogue,
-constellations, planets, major satellites and nebulas.
+Stellarium is a free open source planetarium for your computer.
+It shows a realistic sky in 3D, just like what you see with the
+naked eye, binoculars or a telescope. It is being used in
+planetarium projectors. Just set your coordinates and go.
 
 %if %build_l10n
 %package l10n
@@ -95,6 +95,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, bin)
+%doc AUTHORS ChangeLog COPYING README
 %{_bindir}
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/stellarium
@@ -113,6 +114,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Sun Jan 27 2013 - Ken Mays <kmays2000@gmail.com>
+- Test review
 * Wed Nov 21 2012 - Ken Mays <kmays2000@gmail.com>
 - Bumped to 0.11.4
 - Added stellarium-0.11.4-01-studio.diff
