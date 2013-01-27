@@ -12,7 +12,7 @@
 
 Name:		SFEamanda
 Summary:	A network-capable tape backup solution
-Version:	3.3.3
+Version:	3.2.3
 Source:		%{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
 License:	BSD
 Group:		Applications/System
@@ -83,7 +83,7 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
-#./autogen
+./autogen
 
 ./configure --prefix=%{_prefix} \
 	--sysconfdir=%{_sysconfdir}	\
@@ -154,9 +154,6 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %attr(-,%amanda_user, sys)	%{_prefix}/%{perl_path_vendor_perl_version}/Amanda/
 %attr(-,%amanda_user, sys)	%{_sbindir}/amrestore
 %attr(-,%amanda_user, sys)	%{_sbindir}/amarchiver
-%attr(-,%amanda_user, sys)      %{_sbindir}/amdump_client 
-%attr(-,%amanda_user, sys)      %{_sbindir}/amcleanupdisk
-
 %{_mandir}/man8/amrestore.8
 %{_mandir}/man8/amarchiver.8
 %{_mandir}/man8/script-email.8
@@ -168,7 +165,6 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %{_mandir}/man7/amanda-scripts.7
 %{_mandir}/man7/amanda-compatibility.7 
 %{_mandir}/man7/amanda-match.7
-%{_mandir}/man7/amanda-interactivity.7
 
 %dir %attr(-, root, sys) %{_localstatedir}
 %dir %attr(-, root, sys) %{_localstatedir}/log
@@ -199,6 +195,7 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %attr(4750,root, sys)		%{_libexecdir}/amanda/planner
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/taper
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/chunker
+%attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/amcleanupdisk
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/chg-manual
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/chg-multi
 %attr(-,%amanda_user, sys)	%{_libexecdir}/amanda/chg-zd-mtx
@@ -262,12 +259,10 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %{_mandir}/man8/amcheckdb.8
 %{_mandir}/man8/amcheckdump.8
 %{_mandir}/man8/amcleanup.8
-%{_mandir}/man8/amcleanupdisk.8
 %{_mandir}/man8/amcrypt.8
 %{_mandir}/man8/amcryptsimple.8
 %{_mandir}/man8/amdevcheck.8
 %{_mandir}/man8/amdump.8
-%{_mandir}/man8/amdump_client.8
 %{_mandir}/man8/amflush.8
 %{_mandir}/man8/amgetconf.8
 %{_mandir}/man8/amgpgcrypt.8
@@ -329,6 +324,7 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %files devel
 %defattr(-, root, bin)
 %dir %attr (0755, root, sys) %{_prefix}
+%{_includedir}/amanda/
 %{_libdir}/amanda/libamanda.so
 %{_libdir}/amanda/libamdevice.so
 %{_libdir}/amanda/libamclient.so
@@ -339,11 +335,9 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %{_libdir}/amanda/libamglue.so
 %{_libdir}/amanda/libndmjob.so
 %{_libdir}/amanda/libndmlib.so
-%{_libdir}/amanda/amdumpd
+
 
 %changelog
-* Sun Jan 27 2013 - Ken Mays <kmays2000@gmail.com>
-- bump to 3.3.3
 * Sat Jan 26 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.2.3, migrated to pnm_macros usage for Perl
 * Sat Dec 25 2010 - Milan Jurik
