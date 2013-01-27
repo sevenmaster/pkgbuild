@@ -1,5 +1,8 @@
 2013-01-26  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEopenjdk7.spec: updated to JDK 7u14b11. Changed install path
+	to /usr/jdk/instances/openjdk1.7.0.
+
 	* SFEscala.spec: updated to 2.10.0
 
 	* SFEruby-18.spec: forked from 1.9 back to 1.8 series to get newer
