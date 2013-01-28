@@ -5,8 +5,8 @@
 %include Solaris.inc
 Name:                    SFEmbuffer
 Summary:                 mbuffer - tool for extra buffering pipes
-URL:                     http://www.maier-komor.de/software/mbuffer
-Version:                 20101230
+URL:                     http://www.maier-komor.de/mbuffer.html
+Version:                 20121111
 Source:                  http://www.maier-komor.de/software/mbuffer/mbuffer-%{version}.tgz
 
 
@@ -54,6 +54,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 28 2013  - Thomas Wagner
+- bump to 20121111
 * Sun Jan  1 2011  - Thomas Wagner
 - bump to 20101230
 - change shell in configure, remove obsolete configure switches
