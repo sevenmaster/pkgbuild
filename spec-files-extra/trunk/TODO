@@ -14,6 +14,7 @@ Some are low hanging fruit, some not. You may choose to read from bottom up.
 
 1)
 SFEhplip.spec: pnm_macros for SFEcups/SUNWcups, SFEsane-backends/SUNWsanebackends/SUNWsanebackendu, eventually python version macro 2.4/2.6
+SFExmlto.spec: add pnm_macros for docbook
 
 2)
 SFErsnapshot.spec: pnm_macros for SUNWsshu
@@ -74,6 +75,12 @@ requires:
     MIME::Base64:                  0
     Test::More:                    0
     Time::HiRes:                   0
+
+8d)
+experimental/make_perl_cpan_settings.pl find a way to detect if "Build.PL" is to be
+used for building _or_ Mailefile.PL.
+Put the right method into newly generated spec files
+
 
 9)
 lengthy+high_quality description: http://gcc.gnu.org/ml/gcc-patches/2010-01/msg01300.html
@@ -236,6 +243,7 @@ make these spec files dual 32/64 bit:
   SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
  
 37) 
+Update: 20130113 currently working on this: tomww (see experimental/SFEphp54.spec)
 overhaul SFEphp*spec. base pacakge and extensions, get base and extensions in 
 sync, version bump, use pnm_macros ( change database/postgres-90/library, 
 database/postgres-90/developer SUNWphp52r SUNWphp52u ) Note: postgres base
@@ -346,6 +354,14 @@ These packages may not be installed together. Any non-conflicting set may
 be, or the packages must be corrected before they can be installed.
 [.....]
 
+48b)
+check those packages, they share files with others:
+OI151a4 S11.0
+  X      ?     SFElibdiscid
+  X      ?     SFElibotr
+  X      ?     SFEreadline-devel
+deprecate netatalk (2.x) for netatalk3 in buildlists .. eliminates being files shared
+
 
 
 49)
@@ -376,3 +392,14 @@ encumbered/SFEffmpeg-sse2-only.spec:Requires: SFEsdl
 encumbered/SFEvlc.spec:Requires:       SFEsdl
 
 52) Note spec builds requiring DocBook XSL Stylesheets >1.69.1
+
+53)
+maybe change livemedia version number detection to an autoupdate_but_stored_in_svn variant
+that way you can rely on the svn revision be in sync with the consuming spec files and 
+not get upgrdes accidentially at compile time
+
+54)
+find a solution for more fresh distroy carry a SUNWbdb including the header file (was 
+missing in older OS builds, bdb 4.x) and version 5.x 
+maybe move SFEbdb to usr-gnu.inc and only use in special cases
+consuming spec files may need something like pnm_bdb_default
