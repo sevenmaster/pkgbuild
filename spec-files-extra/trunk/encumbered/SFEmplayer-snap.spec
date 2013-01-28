@@ -100,7 +100,7 @@ Requires: %{pnm_requires_SUNWlibmng}
 Requires: SFElzo
 BuildRequires: %{pnm_buildrequires_SUNWsmba}
 Requires: %{pnm_requires_SUNWsmba}
-Requires: SFEliveMedia
+Requires: SFElivemedia
 Requires: SFElibcdio
 Requires: SFElibvpx
 BuildRequires: SFElibvpx-devel
@@ -292,6 +292,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change (Build)Requires from liveMedia to livemedia
 * Sat Jan 12 2013 - Thomas Wagner
 - change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
