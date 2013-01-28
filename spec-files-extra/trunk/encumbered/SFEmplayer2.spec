@@ -72,8 +72,8 @@ BuildRequires: %{pnm_buildrequires_SUNWsmba}
 Requires: %{pnm_requires_SUNWsmba}
 BuildRequires: SFEffmpeg-devel
 Requires: SFEffmpeg
-Requires: SFEliveMedia
-BuildRequires: SFEliveMedia
+Requires: SFElivemedia
+BuildRequires: SFElivemedia
 Requires: SFElibcdio
 Requires: SFElibdvdnav
 BuildRequires: SFEfaad2-devel
@@ -254,6 +254,8 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- change (Build)Requires from liveMedia to livemedia
 * Sun Apr 29 2012 - Pavel Heimlich
 - make mplayer2 work with current liveMedia
 * Tue Jan 24 2012 - James Choi
