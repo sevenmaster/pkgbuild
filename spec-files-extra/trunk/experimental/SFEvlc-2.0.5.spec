@@ -119,7 +119,7 @@ Requires: x11/library/libxcb
 
 Name:                   SFEvlc
 Summary:                vlc - multimedia player and streaming server
-Version:                2.0.3
+Version:                2.0.5
 Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.xz
 Patch3:                 vlc-03-1141-oss.diff
 
@@ -133,7 +133,7 @@ Patch3:                 vlc-03-1141-oss.diff
 #Patch24:               vlc-24-1114-NAME_MAX-dirty-fix-need-rework-x11_factory.cpp.diff
 ##TODO## vlc-25-1111 needs a better solution
 #Patch25:               vlc-25-1111-hack-define-posix_fadvise.diff
-Patch28:               vlc-28-203-missing-system-include.diff
+Patch28:               vlc-28-205-missing-system-include.diff
 
 #note: ts.c:2455:21: error: implicit declaration of function 'dvbpsi_SDTServiceAddDescriptor'
 #needs libdvbpsi >=0.1.6
@@ -240,6 +240,8 @@ BuildRequires: SFElame-devel
 Requires: SFElame
 BuildRequires: SFElibdvdcss-devel
 Requires: SFElibdvdcss
+BuildRequires: SFElivemedia
+Requires: SFElivemedia
 
 %if %{enable_pulseaudio}
 BuildRequires: %{pnm_buildrequires_pulseaudio}
@@ -307,10 +309,17 @@ nlsopt=-disable-nls
 X11LIB="-L/usr/X11/lib -R/usr/X11/lib"
 GNULIB="-L/usr/gnu/lib -R/usr/gnu/lib"
 
-##evil!!! export PATH=/usr/gnu/bin:$PATH
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal -I ./m4"
 export CC=/usr/gnu/bin/gcc
 export CXX=/usr/gnu/bin/g++
+
+#place selected gnu tools into a local bin directory (e.g. gnu grep -q)
+#export PATH=`pwd`/bin:/usr/bin:$PATH
+export PATH=`pwd`/bin:$PATH
+[ -d bin ] || mkdir bin
+[ -s bin/grep ] || ln -s /usr/gnu/bin/grep bin/grep
+[ -s bin/ar ] || ln -s /usr/bin/ar bin/ar
+
 #
 #notes to flags:
 # Ticket #3040 (closed defect: fixed) https://trac.videolan.org/vlc/ticket/3040
@@ -342,6 +351,7 @@ export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DO_DIRECTORY=0x1000000"
 export CFLAGS="${CFLAGS} ${EXTRA_CFLAGS}"
 export CPPFLAGS="${CPPFLAGS} ${EXTRA_CFLAGS}"
 
+export CFLAGS="${CPPFLAGS} -mmmx -sse"
 
 
 %if %{debug_build}
@@ -352,9 +362,15 @@ export CFLAGS="$CFLAGS -O4"
 %endif
 
 export LD=/opt/dtbld/bin/ld-wrapper
+#need to use this "ar"
 export AR=/usr/bin/ar
-export PATH=/usr/bin:$PATH
-#-L/lib -R/lib might trigger finding wrong libgcc_s.so and libstdc++.so.6 export LDFLAGS="%_ldflags -L/lib -R/lib"
+#place selected gnu tools into a local bin directory (e.g. gnu grep -q)
+#export PATH=`pwd`/bin:/usr/bin:$PATH
+export PATH=`pwd`/bin:$PATH
+[ -d bin ] || mkdir bin
+[ -s bin/grep ] || ln -s /usr/gnu/bin/grep bin/grep
+[ -s bin/ar ] || ln -s /usr/bin/ar bin/ar
+
 export LDFLAGS="%_ldflags"
 
 #extend EXTRA_LDFLAGS with more library locations for special libraries
@@ -569,6 +585,13 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Jan 28 2013 - Thomas Wagner
+- place selected gnu tools into local bin directory (e.g. gnu grep -q), 
+  replace hardcoded PATH=/usr/bin:$PATH with symlinking ar to local bin/
+* Sun Jan 27 2013 - Thomas Wagner
+- bump to 2.0.5
+- rework patch vlc-28-203-missing-system-include.diff to vlc-28-205-missing-system-include.diff
+- add missing (Build)Requires: SFElivemedia
 * Sat Jan 12 2013 - Thomas Wagner
 - change to pnm_buildrequires_SFExz_gnu
 * Sun Aug  6 2012 - Thomas Wagner
@@ -648,7 +671,7 @@ test -x $BASEDIR/lib/postrun || exit 0
   CPPFLAGS remove -D__STDC_ISO_10646__ ,
   add  -fpermissive ... gcc 4.6.1 works, gcc 4.5.3 fails
 - rewrite into temp-pc-files: QtGui.pc + QtCore.pc to include -R/usr/g++/lib, 
-  then tweak PG_CONFIG_PATH to first find temp-pc-files, then /usr/g++, then system
+  then tweak PKG_CONFIG_PATH to first find temp-pc-files, then /usr/g++, then system
 - removed on suspicion  --disable-rpath  from configure
 - removed wrong perl s/spatializer// on vlc-config
 * Sat Aug  6 2011 - Thomas Wagner
