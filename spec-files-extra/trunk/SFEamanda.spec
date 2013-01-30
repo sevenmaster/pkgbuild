@@ -11,6 +11,7 @@
 %define amanda_tapeserver	%{indexserver}
 
 Name:		SFEamanda
+IPS_package_name:	backup/amanda
 Summary:	A network-capable tape backup solution
 Version:	3.3.3
 Source:		%{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
