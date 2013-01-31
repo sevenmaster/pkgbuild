@@ -1,0 +1,13 @@
+--- smrazor-0.2.1/smrazor.c	2002-08-01 13:23:51.000000000 -0700
++++ smrazor-0.2.1-patched/smrazor.c	2013-01-31 08:19:12.005212199 -0800
+@@ -32,8 +32,8 @@
+ #endif /* DEBUG */
+ 
+ #define PERL_BIN_PATH "/usr/bin/perl"
+-#define RAZOR_CHECK_PATH "/usr/local/bin/razor-check"
+-#define DEFAULT_PID_FILE_NAME "/var/run/smrazor.pid"
++#define RAZOR_CHECK_PATH "/usr/bin/razor-check"
++#define DEFAULT_PID_FILE_NAME "/tmp/smrazor.pid"
+ #define ERROR_FILE_NAME "/tmp/smrazor.err"
+ #define ERR_TIME_FORMAT "[%m/%d/%Y %H:%M:%S] "
+ #define RAZOR_CHECK_TIMEOUT 30

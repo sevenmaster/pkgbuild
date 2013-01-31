@@ -1,3 +1,9 @@
+2013-01-31  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEsmrazor.spec: initial version
+	* ext-sources/smrazor.xml
+	* patches/smrazor-01-bin-path.diff
+
 2013-01-30 Milan Jurik <sfnet@xylab.cz>
 
 	* SFEscummvm.spec: bump to 1.5.0
