@@ -1,5 +1,8 @@
 2013-01-31  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFElibspf2.spec: initial version
+	* copyright/SFElibspf2.copyright
+
 	* SFEsmrazor.spec: initial version
 	* ext-sources/smrazor.xml
 	* patches/smrazor-01-bin-path.diff
