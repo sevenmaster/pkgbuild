@@ -24,8 +24,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Requires:	%{pnm_requires_perl_default}
 BuildRequires:	%{pnm_buildrequires_perl_default}
-BuildRequires:	SFEperl-compress-zlib
-Requires:	SFEperl-compress-zlib
+BuildRequires:	SFEperl-io-compress
+Requires:	SFEperl-io-compress
 BuildRequires:	SFEperl-html-parser
 Requires:	SFEperl-html-parser
 BuildRequires:	SFEperl-uri
@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 01 2013 - Thomas Wagner
+- change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
 * Sun May 27 2012 - Milan Jurik
 - bump to 6.04, all except LWP:: went to separate packages
 * Tue Feb  1 2011 - Thomas Wagner
