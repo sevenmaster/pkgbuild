@@ -6,7 +6,7 @@
 
 ##TODO## needs some cleaning (moving around directory in install probably can be cleaned up)
 
-%define module_version 2.84
+%define module_version 2.85
 %define module_name razor-agents
 %define module_name_major Razor2
 %define module_package_name razor-agents
@@ -103,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 
 %changelog
+* Wed Nov 28 2012 - Thomas Wagner
+- bump to 2.85
 * Sun Jul 24 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Fri Jun 23 2011 - Thomas Wagner
