@@ -20,7 +20,7 @@ Name:                    SFEsamba35
 IPS_package_name:	 sfe/service/network/samba35
 Summary:                 samba - CIFS Server and Domain Controller
 URL:                     http://samba.org/
-Version:                 3.5.20
+Version:                 3.5.21
 Copyright:               GPL
 Url:                     http://www.samba.org
 #Source:                  http://samba.org/samba/ftp/stable/samba-%{version}.tar.gz
@@ -87,7 +87,7 @@ to SMB/CIFS clients
 #%patch2 -p1
 
 perl -w -pi.bak -e "s,^SHELL=/bin/sh,SHELL=/usr/bin/bash," source*/Makefile.in source*/Makefile
-perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find source* -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
+perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure `find source* -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
 
 #samba manifest
 cp -p %{SOURCE2} sambagnu-smbd.xml
@@ -225,6 +225,9 @@ cp ../addmachinescript ${RPM_BUILD_ROOT}%{_bindir}/
 chmod a+rx  ${RPM_BUILD_ROOT}%{_bindir}/addmachinescript
 [ -d ${RPM_BUILD_ROOT}%{_docdir}/%{name}/ ] || mkdir -p ${RPM_BUILD_ROOT}%{_docdir}/%{name}/
 cp ../domain.reg ${RPM_BUILD_ROOT}%{_docdir}/%{name}/
+
+#/data/netlogon/
+#/localhomes/tom/packages/BUILD/samba-3.5.20/docs-xml/registry/Win7_Samba3DomainMember.reg
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
