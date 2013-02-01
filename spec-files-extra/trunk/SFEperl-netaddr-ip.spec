@@ -1,89 +1,83 @@
 #
-# spec file for package SFEperl-netaddr-ip
+# spec file for package: SFEperl-netaddr-ip
 #
-# includes module(s): NetAddr::IP
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
 #
-
-#note: download file version differs from package version (for IPS not accepting "015" / leading zero)
-%define module_version 4.59
-%define module_version_download 4.059
-
-%define module_name NetAddr-IP
-%define module_name_major NetAddr
-%define module_package_name netaddr-ip
-#still unused: %define module_name_minor NetAddr
-
-
+# includes module(s):
+#
 %include Solaris.inc
 %include packagenamemacros.inc
-Name:                    SFEperl-%{module_package_name}
-Summary:                 %{module_name}-%{module_version} PERL module
-Version:                 %{perl_version}.%{module_version}
-Source:                  http://www.cpan.org/modules/by-module/%{module_name_major}/%{module_name}-%{module_version_download}.tar.gz
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-BuildRequires:           %{pnm_buildrequires_perl_default}
-Requires:                %{pnm_requires_perl_default}
-BuildRequires:           %{pnm_buildrequires_SUNWsfwhea}
+
+%define tarball_version 4.066
+%define tarball_name    NetAddr-IP
+
+Name:		SFEperl-netaddr-ip
+IPS_package_name: library/perl-5/netaddr-ip
+Version:	4.066
+IPS_component_version: 4.66
+Summary:	Manipulation and operations on IP addresses
+License:	Artistic
+Distribution:   OpenSolaris
+Vendor:         OpenSolaris Community
+Url:		http://search.cpan.org/~luismunoz/%{tarball_name}-%{tarball_version}
+SUNW_Basedir:	%{_basedir}
+SUNW_Copyright: %{name}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKER/NetAddr-IP-%{tarball_version}.tar.gz
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires:	%{pnm_requires_perl_default}
+
+Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
+Meta(info.upstream):            Luis Munoz <luismunoz@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~luismunoz/%{tarball_name}-%{tarball_version}
+Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Provides vendor_perl modules:
-Date::Format
-Date::Parse
-Time::Zone
-
-
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
-%include default-depend.inc
+Manipulation and operations on IP addresses
 
 %prep
-%setup -q            -c -n %name-%module_version
+%setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-
-
-
-
-cd %{module_name}-%{module_version_download}
 perl Makefile.PL \
-    UNINST=0 \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd %{module_name}-%{module_version_download}
 make install
 
-#remove:       /usr/lib/i86pc-solaris-64int/perllocal.pod
-rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
-
-%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
+find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
+%defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-%dir %attr(0755, root, sys) %{_datadir}
+#%dir %attr(0755,root,bin) %{_bindir}
+#%{_bindir}/*
+%dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
 %dir %attr(0755, root, bin) %{_mandir}/man3
 %{_mandir}/man3/*
 
-
 %changelog
+* Wed Nov 28 2012 - Thomas Wagner
+- bump to 4.0.66 4.66 (IPS)
+- re-make spec file with make_perl_cpan_settings.pl
 * Sat Mar 31 2012 - Pavel Heimlich
 - version bump
 * Fri Jun 17 2011 - Thomas Wagner
