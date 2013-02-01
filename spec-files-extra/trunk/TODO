@@ -403,3 +403,9 @@ find a solution for more fresh distroy carry a SUNWbdb including the header file
 missing in older OS builds, bdb 4.x) and version 5.x 
 maybe move SFEbdb to usr-gnu.inc and only use in special cases
 consuming spec files may need something like pnm_bdb_default
+
+55)
+make pnm_macro for perl module io-compress (zlib), perl 5.10.x may start including that
+module by default, so skip SFE version in that case an just require default perl as
+a dummy (modeled after %{pnm_buildrequires_SFEperl_extutils_cbuilder} read packagenames.define.allbuilds.inc )
+
