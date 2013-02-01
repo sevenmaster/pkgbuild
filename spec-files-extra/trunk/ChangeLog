@@ -1,5 +1,8 @@
 2013-01-31  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFErblcheck.spec: initial version
+	* copyright/SFErblcheck.copyright
+
 	* SFElibspf2.spec: initial version
 	* copyright/SFElibspf2.copyright
 
