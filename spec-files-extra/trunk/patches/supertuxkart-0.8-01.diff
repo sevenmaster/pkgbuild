@@ -1,0 +1,24 @@
+--- lib/enet/unix.c.old	2013-02-02 00:45:31.666517096 +0000
++++ lib/enet/unix.c	2013-02-02 00:51:45.316757320 +0000
+@@ -30,6 +30,10 @@
+ #include <sys/poll.h>
+ #endif
+ 
++#if defined (__SVR4) && defined (__sun)
++#include <sys/filio.h>
++#endif
++
+ // _SOCKLEN_T is used on OSX
+ #if !defined(HAS_SOCKLEN_T) && !defined(_SOCKLEN_T) \
+                             && !defined(__socklen_t_defined)
+--- lib/irrlicht/source/Irrlicht/os.cpp.old	2013-02-02 02:01:32.787025769 +0000
++++ lib/irrlicht/source/Irrlicht/os.cpp	2013-02-02 02:03:08.825853145 +0000
+@@ -27,8 +27,6 @@
+ 	#define bswap_16(X) bswap16(X)
+ 	#define bswap_32(X) bswap32(X)
+ #elif !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__PPC__) && !defined(_IRR_WINDOWS_API_)
+-	#include <byteswap.h>
+-#else
+ 	#define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
+ 	#define bswap_32(X) ( (((X)&0x000000FF)<<24) | (((X)&0xFF000000) >> 24) | (((X)&0x0000FF00) << 8) | (((X) &0x00FF0000) >> 8))
+ #endif
