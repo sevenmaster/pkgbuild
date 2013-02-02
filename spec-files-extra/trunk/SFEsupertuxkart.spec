@@ -5,7 +5,7 @@
 %include packagenamemacros.inc
 
 %define src_name supertuxkart
-%define src_version 0.7.3
+%define src_version 0.8
 
 %define SFEsdl      %(/usr/bin/pkginfo -q SFEsdl && echo 1 || echo 0)
 %define SFEplib_gpp %(/usr/bin/pkginfo -q SFEplib-gpp && echo 1 || echo 0)
@@ -13,13 +13,19 @@
 
 
 Name:           SFEsupertuxkart
-Version:        0.7.3
+Version:        0.8 
 Summary:        Kids 3D go-kart racing game featuring Tux
 Group:          Amusements/Games
 License:        GPLv2+ and GPLv3 and CC-BY-SA
 URL:            http://supertuxkart.sourceforge.net/
 Source0:        %{sf_download}/%{src_name}/%{src_name}-%{src_version}-src.tar.bz2
-Source2:	%{sf_download}/%{src_name}/STK_0.7_Karts_AddonsPack.7z
+# Green Valley Track add-on 
+Source1:        http://stkaddons.net/dl/14e58f56031b9b.zip
+Source2:	http://stkaddons.net/dl/14e5cb067d9ff9.zip
+Source3:	http://stkaddons.net/dl/4fb7523eb5b48.zip
+# On an Iceberg Track add-on
+Source4:	http://stkaddons.net/dl/14e1eba8ff0c62.zip
+Patch1:		supertuxkart-0.8-01.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %if %SFEplib_gpp
@@ -34,22 +40,22 @@ BuildRequires:  SFEplib-devel
 %endif
 
 BuildRequires:  SUNWlibsdl-devel
-Requires:	SUNWlibsdl
+Requires:       SUNWlibsdl
 BuildRequires:  %{pnm_buildrequires_SUNWlibmikmod_devel}
 Requires:       %{pnm_requires_SUNWlibmikmod}
 BuildRequires:  SUNWogg-vorbis-devel
-Requires:	SUNWogg-vorbis
-BuildRequires:	SFEfreeglut-devel
-Requires:	SFEfreeglut
+Requires:       SUNWogg-vorbis
+BuildRequires:  SFEfreeglut-devel
+Requires:       SFEfreeglut
 BuildRequires:  SFEopenal-devel
-Requires:	SFEopenal
-BuildRequires:	SFEfreealut-devel
-Requires:	SFEfreealut
-BuildRequires:	SUNWgawk
-BuildRequires:	SUNWgnu-findutils
-Requires:	SFEbullet
-BuildRequires:	SFEplib-devel
-Requires:	SFEplib
+Requires:       SFEopenal
+BuildRequires:  SFEfreealut-devel
+Requires:       SFEfreealut
+BuildRequires:  SUNWgawk
+BuildRequires:  SUNWgnu-findutils
+Requires:       SFEbullet
+BuildRequires:  SFEplib-devel
+Requires:       SFEplib
 
 %description
 3D go-kart racing game for kids with several famous OpenSource mascots
@@ -75,30 +81,36 @@ Requires: %name
 %endif
 
 %prep
-%setup -q -n %{src_name}-%{src_version}
-# some cleanups
-chmod -x AUTHORS COPYING ChangeLog README TODO
-chmod -x `find -name "*.cpp" -o -name "*.hpp"`
-rm -fr data/karts/*/.svn data/karts/.svn
-
-unzip %{SOURCE2} -d data/ -x karts/mriceblock*
+%setup -q -n SuperTuxKart-%{src_version}
+%patch1 -p1
 
 %build
+# Environmental setup
 %if %SFEplib_gpp
 export CC=/usr/gnu/bin/gcc
 export CXX=/usr/gnu/bin/g++
 export CXXFLAGS="-I%{_includedir} -I%{_prefix}/X11/include"
 export LDFLAGS="-L%{_libdir} -R%{_libdir} -lGLU -lnsl -lsocket"
 %else
-export CXXFLAGS="%cxx_optflags -I%{_includedir} -I%{_prefix}/X11/include"
+export CXXFLAGS="-I%{_includedir} -I%{_prefix}/X11/include"
 export LDFLAGS="%_ldflags -L%{_libdir} -R%{_libdir} -lGLU -lnsl -lsocket"
 %endif
 export PKG_CONFIG_PATH="%{_libdir}/pkgconfig"
 
-autoconf
-export ac_cv_member_struct_msghdr_msg_flags=no
-./configure --prefix=%{_prefix} --mandir=%{_mandir}
-make
+# CPU Counter
+CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
+if test "x$CPUS" = "x" -o $CPUS = 0; then
+    CPUS=1
+fi
+
+# Build
+pushd lib/irrlicht/source/Irrlicht
+make -j$CPUS
+popd
+	mkdir cmake_build
+	cd cmake_build
+	cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} ..
+	make -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -123,21 +135,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,bin)
-%dir %attr (0755, root, sys) %{_prefix}
-%{_bindir}
-%dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_datadir}/applications
-%{_datadir}/applications/%{src_name}.desktop
-%dir %attr (0755, root, other) %{_datadir}/pixmaps
-%{_datadir}/pixmaps/*.xpm
-%dir %attr (0755, root, other) %{_datadir}/doc
-%{_datadir}/doc/*
+%doc AUTHORS COPYING README TODO ChangeLog
+%{_bindir}/supertuxkart
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/pixmaps/%{name}_*.xpm
 
 %files data
 %defattr(-,root,bin)
-%dir %attr (0755, root, sys) %{_prefix}
-%dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/games/%{src_name}
+%{_datadir}/%{src_name}
 
 %if %build_l10n
 %files l10n
@@ -147,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+Fri Feb 1 2013 - Ken Mays <kmays2000@gmail.com>
+- Bumped to 0.8
+- Added supertuxkart-0.8-01.diff 
 * Mon Jul 30 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibmikmod_devel}, %include packagenamemacros.inc
 - change BuildRequires to SFEglib-gpp-devel
