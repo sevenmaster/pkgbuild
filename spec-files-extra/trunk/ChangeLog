@@ -1,3 +1,7 @@
+2013-02-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEgerrit.spec: bump to 2.5.1
+
 2013-02-01 Ken Mays <kmays2000@gmail.com
 
 	* experimental/SFEsupertuxkart.spec: bump to 0.8
