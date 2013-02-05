@@ -1,9 +1,9 @@
 #
-# Copyright (c) 2008 Sun Microsystems, Inc.
+# spec file for package SFElibspf2
+#
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-
 %include Solaris.inc
 
 Name:                SFElibspf2
