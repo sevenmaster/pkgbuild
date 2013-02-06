@@ -81,6 +81,8 @@ rm -rf %{buildroot}
 %{_docdir}/boost-%{version}
 
 %changelog
+* Wed Feb  6 2013 - Thomas Wagner
+- add patch5 for S10, SXCE to remove fchmodat
 * Sat May 19 2012 - Logan Bruns <logan@gedanken.org>
 - added a missing define (stl_is_stdcxx) that is now need due to
   changes in the base spec.
