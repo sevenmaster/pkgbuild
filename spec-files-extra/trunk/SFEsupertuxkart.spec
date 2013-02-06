@@ -19,12 +19,8 @@ Group:          Amusements/Games
 License:        GPLv2+ and GPLv3 and CC-BY-SA
 URL:            http://supertuxkart.sourceforge.net/
 Source0:        %{sf_download}/%{src_name}/%{src_name}-%{src_version}-src.tar.bz2
-# Green Valley Track add-on 
-Source1:        http://stkaddons.net/dl/14e58f56031b9b.zip
-Source2:	http://stkaddons.net/dl/14e5cb067d9ff9.zip
-Source3:	http://stkaddons.net/dl/4fb7523eb5b48.zip
-# On an Iceberg Track add-on
-Source4:	http://stkaddons.net/dl/14e1eba8ff0c62.zip
+# Duke add-on kart - http://stkaddons.net/karts/duke 
+Source1:        http://stkaddons.net/dl/14dcd0709206fb.zip
 Patch1:		supertuxkart-0.8-01.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -82,7 +78,7 @@ Requires: %name
 
 %prep
 %setup -q -n SuperTuxKart-%{src_version}
-%patch1 -p1
+%patch1 -p0
 
 %build
 # Environmental setup
@@ -104,7 +100,9 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 # Build
-pushd lib/irrlicht/source/Irrlicht
+pushd lib/irrlicht
+./update
+cd source/Irrlicht
 make -j$CPUS
 popd
 	mkdir cmake_build
@@ -114,12 +112,11 @@ popd
 
 %install
 rm -rf $RPM_BUILD_ROOT
+cd cmake_build
 make install DESTDIR=$RPM_BUILD_ROOT
-# easier then patching all the Makefile's
-mkdir -p $RPM_BUILD_ROOT%{_bindir}
-mv $RPM_BUILD_ROOT%{_prefix}/games/%{src_name} $RPM_BUILD_ROOT%{_bindir}
-mv $RPM_BUILD_ROOT%{_datadir}/games/%{src_name}/data/po $RPM_BUILD_ROOT%{_datadir}/locale
-rmdir $RPM_BUILD_ROOT%{_prefix}/games
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/supertuxkart/data/karts/duke/
+cd $RPM_BUILD_ROOT%{_datadir}/supertuxkart/data/karts/duke/
+unzip %{SOURCE1}
 
 %if %build_l10n
 # usr/share/locale/fr_CA should be in fr
@@ -137,8 +134,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %doc AUTHORS COPYING README TODO ChangeLog
 %{_bindir}/supertuxkart
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/pixmaps/%{name}_*.xpm
+%{_datadir}/applications/%{src_name}.desktop
+%{_datadir}/pixmaps/%{src_name}_*.xpm
 
 %files data
 %defattr(-,root,bin)
