@@ -28,12 +28,15 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%define cc_is_gcc 1
+%include base.inc
+
 Name:		SFEdovecot
 IPS_Package_Name:	service/network/imap/dovecot
 Summary:	dovecot - A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.1.12
+Version:	2.1.14
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -43,6 +46,8 @@ Source2:	dovecot.xml
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
+BuildRequires:      SFEgcc
+Requires:           SFEgccruntime
 BuildRequires: SUNWzlib
 Requires: SUNWzlib
 BuildRequires: SUNWbzip
@@ -56,6 +61,12 @@ Requires: SUNWcurl
 #help Solaris 10 and SVR4 Nevada to workaround multiple package renames
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
+BuildRequires: SFElibstemmer-devel
+Requires: SFElibstemmer
+BuildRequires: SFElibtextcat-devel
+Requires: SFElibtextcat
+BuildRequires: SFEclucene-gpp-devel
+Requires: SFEclucene-gpp
 
 %include default-depend.inc
 
@@ -80,8 +91,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-
+export CC=gcc
+export CXX=g++
 export CFLAGS="%optflags"
+export CXXFLAGS="-I/usr/g++/include"
+export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib"
 
 ./configure --prefix=%{_prefix}		\
 	    --bindir=%{_bindir}		\
@@ -93,7 +107,8 @@ export CFLAGS="%optflags"
             --sysconfdir=%{_sysconfdir} \
             --enable-shared		\
             --with-rundir=%{_localstatedir}/run/%{src_name} \
-            --enable-header-install \
+            --with-lucene \
+            --with-stemmer \
             --with-solr \
 	    --disable-static		
 
@@ -178,6 +193,9 @@ user ftpuser=false gcos-field="%src_name login user" username="%{daemonloginuser
 
 
 %changelog
+* Tue Feb 5 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 2.1.14
+- enabled lucene full text search indexing plug-in
 * Thu Dec  4 2012 - Thomas Wagner
 - bump to 2.1.12 (auth. user can DoS)
 * Sat Aug 25 2012 - Ken Mays <kmays2000@gmail.com>
