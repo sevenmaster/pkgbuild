@@ -5,12 +5,12 @@
 
 %define _basedir /usr/g++
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 # Build multithreaded libs: no need for non-multithreaded libs
 %define boost_with_mt 1
 
-%include packagenamemacros.inc
 
 %use boost = boost.spec
 
@@ -97,6 +97,7 @@ rm -rf %{buildroot}
 %changelog
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
+- include packagenamemacros.inc earlier
 * Sun Apr 29 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_python_default}, %include packagenamacros.inc
 * Thu Jan 12 2012 - Milan Jurik

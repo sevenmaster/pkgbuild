@@ -4,6 +4,7 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define stl_is_stdcxx 0
 %use boost = boost.spec
@@ -83,6 +84,7 @@ rm -rf %{buildroot}
 %changelog
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
+- include packagenamemacros.inc
 * Sat May 19 2012 - Logan Bruns <logan@gedanken.org>
 - added a missing define (stl_is_stdcxx) that is now need due to
   changes in the base spec.
