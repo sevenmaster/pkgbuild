@@ -1,5 +1,7 @@
 2013-02-05  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFElibtextcat.spec: initial version
+
 	* SFElibstemmer.spec: initial version
 
 	* SFEclucene-gpp.spec: initial version
