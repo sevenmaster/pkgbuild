@@ -1,5 +1,8 @@
 2013-02-05  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEdovecot.spec: updated to 2.1.14. enabled lucene full text
+	search indexing plug-in.
+
 	* SFElibtextcat.spec: initial version
 
 	* SFElibstemmer.spec: initial version
