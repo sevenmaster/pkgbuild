@@ -4,13 +4,13 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1
 %define boost_with_mt 1
 
 %include base.inc
 
-%include packagenamemacros.inc
 
 %use boost = boost.spec
 
@@ -70,6 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
+- include packagenamemacros.inc earlier
 * Sun Apr 29 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_python_default}, %include packagenamacros.inc
 * Fri Jan 29 2010 - Brian Cameron <brian.cameron@sun.com>

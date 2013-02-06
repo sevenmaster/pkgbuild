@@ -8,10 +8,10 @@
 #
 %define _basedir /usr/stdcxx
 %include Solaris.inc
+%include packagenamemacros.inc
 %define stl_is_stdcxx 1
 %use boost = boost.spec
 
-%include packagenamemacros.inc
 
 %define	major 1
 %define	minor 48
@@ -104,6 +104,7 @@ rm -rf %{buildroot}
 %changelog
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
+- include packagenamemacros.inc earlier
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}
 * Sun Apr 29 2012 - Thomas Wagner
