@@ -68,6 +68,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_cxx_libdir}/lib*.a
 
 %changelog
+* Wed Feb  6 2013 - Thomas Wagner
+- add patch5 for S10, SXCE to remove fchmodat
 * Sun Apr 29 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_python_default}, %include packagenamacros.inc
 * Fri Jan 29 2010 - Brian Cameron <brian.cameron@sun.com>

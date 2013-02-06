@@ -102,6 +102,8 @@ rm -rf %{buildroot}
 %{_docdir}/boost-%{version}
 
 %changelog
+* Wed Feb  6 2013 - Thomas Wagner
+- add patch5 for S10, SXCE to remove fchmodat
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}
 * Sun Apr 29 2012 - Thomas Wagner

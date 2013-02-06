@@ -27,6 +27,8 @@ Patch2:       boost-gpp-01-cstdint.diff
 # stlport4/stdcxx4
 Patch3:       boost-stdcxx-01-stl.diff
 Patch4:       boost-stdcxx-02-wchar.diff
+# S9, S10, SXCE, Ticket #6659
+Patch5:       boost-05-remove-fchmodat.diff
 URL:          http://www.boost.org/
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
@@ -40,6 +42,11 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 %patch3 -p0
 %patch4 -p0
 %endif
+%endif
+
+#S9, S10, SXCE
+%if %{SXCE}
+%patch5 -p0
 %endif
 
 %build
@@ -72,6 +79,8 @@ export LDFLAGS="%_ldflags"
 ./bjam install --prefix=$RPM_BUILD_ROOT%{_prefix}
 
 %changelog
+* Wed Feb  6 2013 - Thomas Wagner
+- add patch5 for S10, SXCE to remove fchmodat
 * Sat May 19 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 1.49.0 and removed a patch that is no longer needed.
 * Sat Jan 14 2012 - Milan Jurik
