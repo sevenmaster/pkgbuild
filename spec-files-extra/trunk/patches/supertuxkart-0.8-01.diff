@@ -11,14 +11,43 @@
  // _SOCKLEN_T is used on OSX
  #if !defined(HAS_SOCKLEN_T) && !defined(_SOCKLEN_T) \
                              && !defined(__socklen_t_defined)
---- lib/irrlicht/source/Irrlicht/os.cpp.old	2013-02-02 02:01:32.787025769 +0000
-+++ lib/irrlicht/source/Irrlicht/os.cpp	2013-02-02 02:03:08.825853145 +0000
-@@ -27,8 +27,6 @@
- 	#define bswap_16(X) bswap16(X)
- 	#define bswap_32(X) bswap32(X)
- #elif !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__PPC__) && !defined(_IRR_WINDOWS_API_)
--	#include <byteswap.h>
--#else
- 	#define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
- 	#define bswap_32(X) ( (((X)&0x000000FF)<<24) | (((X)&0xFF000000) >> 24) | (((X)&0x0000FF00) << 8) | (((X) &0x00FF0000) >> 8))
- #endif
+
+--- lib/irrlicht/include/IrrCompileConfig.h.old	2013-02-06 15:21:47.777705497 +0000
++++ lib/irrlicht/include/IrrCompileConfig.h	2013-02-06 15:36:40.284701529 +0000
+@@ -15,6 +15,7 @@
+ #define IRRLICHT_SDK_VERSION "1.8.0"
+ 
+ #include <stdio.h> // TODO: Although included elsewhere this is required at least for mingw
++#define _IRR_SOLARIS_PLATFORM_
+ 
+ //! The defines for different operating system are:
+ //! _IRR_XBOX_PLATFORM_ for XBox
+@@ -107,10 +108,10 @@
+ 
+ 
+ //! Define _IRR_COMPILE_WITH_JOYSTICK_SUPPORT_ if you want joystick events.
+-#define _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+-#ifdef NO_IRR_COMPILE_WITH_JOYSTICK_EVENTS_
++//#define _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
++#define NO_IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+ #undef _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+-#endif
++//#endif
+ 
+ 
+ //! Maximum number of texture an SMaterial can have, up to 8 are supported by Irrlicht.
+
+--- lib/irrlicht/include/IrrCompileConfig.h.old	2013-02-06 16:29:05.494680941 +0000
++++ lib/irrlicht/include/IrrCompileConfig.h	2013-02-06 16:29:33.484590654 +0000
+@@ -189,9 +189,9 @@
+ //! Define _IRR_OPENGL_USE_EXTPOINTER_ if the OpenGL renderer should use OpenGL extensions via function pointers.
+ /** On some systems there is no support for the dynamic extension of OpenGL
+ 	via function pointers such that this has to be undef'ed. */
+-#if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
++//#if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
+ #define _IRR_OPENGL_USE_EXTPOINTER_
+-#endif
++//#endif
+ 
+ //! On some Linux systems the XF86 vidmode extension or X11 RandR are missing. Use these flags
+ //! to remove the dependencies such that Irrlicht will compile on those systems, too.
