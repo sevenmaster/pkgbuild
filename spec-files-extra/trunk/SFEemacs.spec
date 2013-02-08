@@ -12,14 +12,15 @@
 %include packagenamemacros.inc
 
 Name:                    SFEemacs
+IPS_Package_Name:	 sfe/editor/gnu-emacs
 Summary:                 GNU Emacs - an operating system in a text editor
-Version:                 23.3.2
+Version:                 24.2.1
 License:                 GPLv3+
 SUNW_Copyright:          emacs.copyright
-%define emacs_version    23.3b
-%define src_version      23.3
+%define emacs_version    24.2
+%define src_version      24.2
 Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.bz2
-Patch1:                  emacs-01-sound.diff
+#Patch1:                  emacs-01-sound.diff
 URL:                     http://www.gnu.org/software/emacs/emacs.html
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -55,6 +56,8 @@ Requires: SUNWxwice
 %endif
 BuildRequires: SFEgiflib-devel
 Requires: SFEgiflib
+BuildRequires: SFEimagemagick-devel
+Requires: SFEimagemagick
 
 %package root
 Summary:                 %{summary} - root
@@ -63,7 +66,7 @@ SUNW_BaseDir:            /
 
 %prep
 %setup -q -n emacs-%src_version
-%patch1 -p1
+#%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -71,9 +74,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 export CPP="cc -E -Xs"
-#export CFLAGS='-i -xO3 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
+export CFLAGS='-i -xO3 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
 #Studio 12.3 crashes when building emacs with -xOn
-export CFLAGS='-i -xO0 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
+#export CFLAGS='-i -xO0 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
+export LDFLAGS="$LDFLAGS -lcurses"
 
 export PERL=/usr/perl5/bin/perl
 
@@ -153,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 24.2
+- added IPS name
 * Sun Apr 01 2012 - Pavel Heimlich
 - bump to 23.3b, workaround for Studio 12.3
 * Sun Oct  2 2011 - Alex Viskovatoff
