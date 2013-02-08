@@ -1,3 +1,7 @@
+2013-02-08  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEemacs.spec: updated to 24.2 and added IPS name.
+
 2013-02-05  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEdovecot.spec: updated to 2.1.14. enabled lucene full text
