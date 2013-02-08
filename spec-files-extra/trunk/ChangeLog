@@ -1,3 +1,7 @@
+2013-02-08 Ken Mays <kmays2000@gmail.com
+
+	* SFEsamba4-gpp.spec: bump to 4.0.3
+
 2013-02-08  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEemacs.spec: updated to 24.2 and added IPS name.
@@ -24,7 +28,7 @@
 
 2013-02-01 Ken Mays <kmays2000@gmail.com
 
-	* experimental/SFEsupertuxkart.spec: bump to 0.8
+	* SFEsupertuxkart.spec: bump to 0.8
 	* patches/supertuxkart-0.8-01.diff
 
 2013-01-31  Logan O'Sullivan Bruns  <logan@gedanken.org>

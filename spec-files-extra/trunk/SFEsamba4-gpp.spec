@@ -6,14 +6,15 @@
 # PASSED: samba4a11 on oi_151a/SS 12.1 - 10/30/2012 - Ken Mays
 # PASSED: samba4rc4 on oi_151a/GCC 4.6.2 10/31/2012 - Ken Mays
 # PASSED: samba4rc5 on oi_151a/GCC 4.6.2 11/15/2012 - Ken Mays
+# PASSED: samba4.0.3 on oi_151a7/GCC 4.6.2 2/8/2013 - Ken Mays
 #
 %include Solaris.inc
-%define source_name 	samba-4.0.0 
+%define source_name 	samba-4.0.3 
 %define cc_is_gcc 1 
 
 Name:                SFEsamba4
 Summary:             samba - CIFS Server and Domain Controller v4
-Version:             4.0.1
+Version:             4.0.3
 Source:              ftp://ftp.samba.org/pub/samba/stable/%{source_name}.tar.gz
 
 
@@ -36,7 +37,7 @@ rm -rf %name-%version
 %build
 export CC=gcc
 export CXX=g++
-export CPP=cpp
+export CPP=/usr/lib/cpp
 
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
@@ -115,6 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0775, root, sys) /var/log/samba
 
 %changelog
+* Fri Feb 8 2013 - Ken Mays <kmays2000@gmail.com>
+- bumped to 4.0.3
 * Tue Jan 15 2013 - Ken Mays <kmays2000@gmail.com>
 - bumped to 4.0.1
 * Wed Dec 12 2012 - Ken Mays <kmays2000@gmail.com>
