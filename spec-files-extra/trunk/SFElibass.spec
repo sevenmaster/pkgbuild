@@ -14,7 +14,7 @@ IPS_Package_Name:	library/video/libass
 Summary:	Portable renderer for the ASS/SSA (Substation Alpha) subtitle format
 Group:		System/Multimedia Libraries
 URL:		http://code.google.com/p/libass/
-Version:	0.10.0
+Version:	0.10.1
 License:	ISC
 SUNW_Copyright:	libass.copyright
 Source:		http://%srcname.googlecode.com/files/%srcname-%version.tar.gz
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 09 2013 - Milan Jurik
+- bump do 0.10.1
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
 - added missing requires for SFElibfribidi
 * Sun Dec 11 2011 - Milan Jurik
