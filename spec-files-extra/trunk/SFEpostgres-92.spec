@@ -11,16 +11,17 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.2.2
+%define tarball_version  9.2.3
 %define major_version	 9.2
-
+%define prefix_name      SFEpostgres-92
 %define _basedir         %{_prefix}/%{major_version}
 
-Name:                    SFEpostgres-92
+Name:                    %{prefix_name}-client
 IPS_package_name:        database/postgres-92
 Summary:	         PostgreSQL client tools
 Version:                 9.2.2
 License:		 PostgreSQL
+Group:		System/Databases
 Url:                     http://www.postgresql.org/
 Source:                  http://ftp.postgresql.org/pub/source/v%{tarball_version}/%{tarball_name}-%{tarball_version}.tar.bz2
 Source1:		 postgres-92-postgres_92
@@ -31,8 +32,8 @@ Source5:		 postgres-92-exec_attr
 Source6:		 postgres-92-user_attr
 Distribution:            OpenSolaris
 Vendor:		         OpenSolaris Community
-SUNW_Basedir:            %{_basedir}
-SUNW_Copyright:          %{name}.copyright
+SUNW_Basedir:            /usr
+SUNW_Copyright:          %{prefix_name}.copyright
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: %{pnm_buildrequires_SUNWlxsl}
@@ -55,7 +56,7 @@ Requires: %{pnm_requires_SUNWlibms}
 Requires: %{pnm_requires_SUNWgss}
 Requires: SFEeditline
 
-Requires: %{name}-library
+Requires: %{prefix_name}-libs
 
 # OpenSolaris IPS Package Manifest Fields
 Meta(info.upstream):	 	PostgreSQL Global Development Group
@@ -66,14 +67,14 @@ Meta(info.classification):	System Database
 %description
 PostgreSQL is a powerful, open source object-relational database system. It has more than 15 years of active development and a proven architecture that has earned it a strong reputation for reliability, data integrity, and correctness. It runs on all major operating systems, including Linux, UNIX (AIX, BSD, HP-UX, SGI IRIX, Mac OS X, Solaris, Tru64), and Windows. It is fully ACID compliant, has full support for foreign keys, joins, views, triggers, and stored procedures (in multiple languages). It includes most SQL:2008 data types, including INTEGER, NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and TIMESTAMP. It also supports storage of binary large objects, including pictures, sounds, or video. It has native programming interfaces for C/C++, Java, .Net, Perl, Python, Ruby, Tcl, ODBC, among others, and exceptional documentation. 
 
-%package library
+%package -n %{prefix_name}-libs
 
 IPS_package_name: database/postgres-92/library
 Summary: PostgreSQL client libraries
 Requires: %{pnm_requires_SUNWlibms}
 Requires: %{pnm_requires_SUNWcsl}
 
-%package languages
+%package -n %{prefix_name}-pl
 IPS_package_name: database/postgres-92/language-bindings
 Summary: PostgreSQL additional Perl, Python & TCL server procedural languages
 
@@ -83,9 +84,9 @@ Requires: %{pnm_requires_SUNWlibms}
 Requires: %{pnm_requires_SUNWcsl}
 Requires: %{pnm_requires_SUNWTcl}
 Requires: %{name}
-Requires: %{name}-library
+Requires: %{prefix_name}-libs
 
-%package developer
+%package -n %{prefix_name}-devel
 IPS_package_name: database/postgres-92/developer
 Summary: PostgreSQL development tools and header files
 
@@ -97,13 +98,13 @@ Requires: %{pnm_requires_SUNWcsl}
 Requires: %{pnm_requires_SUNWzlib}
 Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
-Requires: %{name}-library
+Requires: %{prefix_name}-libs
 
-%package documentation
+%package -n %{prefix_name}-docs
 IPS_package_name: database/postgres-92/documentation
 Summary: PostgreSQL documentation and man pages
 
-%package server
+%package -n %{prefix_name}-server
 IPS_package_name: service/database/postgres-92
 Summary: PostgreSQL database server
 
@@ -118,9 +119,10 @@ Requires: %{pnm_requires_SUNWcsl}
 Requires: %{pnm_requires_SUNWzlib}
 Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
-Requires: %{name}-library
+Requires: %{prefix_name}-libs
+Requires: SFEpostgres-common
 
-%package contrib
+%package -n %{prefix_name}-contrib
 IPS_package_name: database/postgres-92/contrib
 Summary: PostgreSQL community contributed tools not part of core product
 
@@ -132,7 +134,7 @@ Requires: %{pnm_requires_SUNWcsl}
 Requires: %{pnm_requires_SUNWzlib}
 Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
-Requires: %{name}-library
+Requires: %{prefix_name}-libs
 
 %prep
 %setup -c -n %{tarball_name}-%{tarball_version}
@@ -254,9 +256,9 @@ gmake install-world DESTDIR=$RPM_BUILD_ROOT
 
 #export OLD_PATH=`pwd`
 #cd $RPM_BUILD_ROOT%{_prefix}/%{major_version}/bin
-#ln -s %{_arch64} 64
+#ln -fs %{_arch64} 64
 #cd ../lib
-#ln -s %{_arch64} 64
+#ln -fs %{_arch64} 64
 #cd ${OLD_PATH}
 #cd ..
 %endif
@@ -298,7 +300,80 @@ rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libecpg_compat.a
 # make symbolic link
 
 cd $RPM_BUILD_ROOT/%{_prefix}/%{major_version}/bin/
-[ -r 64 ] || ln -s amd64 64
+[ -r 64 ] || ln -fs amd64 64
+
+mkdir -p $RPM_BUILD_ROOT/usr/bin/amd64
+cd $RPM_BUILD_ROOT/usr/bin/
+ln -fs ../postgres/%{major_version}/bin/clusterdb .
+ln -fs ../postgres/%{major_version}/bin/createdb .
+ln -fs ../postgres/%{major_version}/bin/createlang .
+ln -fs ../postgres/%{major_version}/bin/createuser .
+ln -fs ../postgres/%{major_version}/bin/dropdb .
+ln -fs ../postgres/%{major_version}/bin/droplang .
+ln -fs ../postgres/%{major_version}/bin/dropuser .
+ln -fs ../postgres/%{major_version}/bin/ecpg .
+ln -fs ../postgres/%{major_version}/bin/initdb .
+ln -fs ../postgres/%{major_version}/bin/oid2name .
+ln -fs ../postgres/%{major_version}/bin/pg_archivecleanup .
+ln -fs ../postgres/%{major_version}/bin/pg_basebackup .
+ln -fs ../postgres/%{major_version}/bin/pg_config .
+ln -fs ../postgres/%{major_version}/bin/pg_controldata .
+ln -fs ../postgres/%{major_version}/bin/pg_ctl .
+ln -fs ../postgres/%{major_version}/bin/pg_dump .
+ln -fs ../postgres/%{major_version}/bin/pg_dumpall .
+ln -fs ../postgres/%{major_version}/bin/pg_resetxlog .
+ln -fs ../postgres/%{major_version}/bin/pg_restore .
+ln -fs ../postgres/%{major_version}/bin/pg_receivexlog .
+ln -fs ../postgres/%{major_version}/bin/pg_standby .
+ln -fs ../postgres/%{major_version}/bin/pg_test_fsync .
+ln -fs ../postgres/%{major_version}/bin/pg_test_timing
+ln -fs ../postgres/%{major_version}/bin/pg_upgrade .
+ln -fs ../postgres/%{major_version}/bin/pgbench .
+ln -fs ../postgres/%{major_version}/bin/pltcl_delmod .
+ln -fs ../postgres/%{major_version}/bin/pltcl_listmod .
+ln -fs ../postgres/%{major_version}/bin/pltcl_loadmod .
+ln -fs ../postgres/%{major_version}/bin/postgres .
+ln -fs ../postgres/%{major_version}/bin/postmaster .
+ln -fs ../postgres/%{major_version}/bin/psql .
+ln -fs ../postgres/%{major_version}/bin/reindexdb .
+ln -fs ../postgres/%{major_version}/bin/vacuumdb .
+ln -fs ../postgres/%{major_version}/bin/vacuumlo .
+
+cd $RPM_BUILD_ROOT/usr/bin/amd64
+ln -fs ../postgres/%{major_version}/bin/amd64/clusterdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/createdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/createlang .
+ln -fs ../postgres/%{major_version}/bin/amd64/createuser .
+ln -fs ../postgres/%{major_version}/bin/amd64/dropdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/droplang .
+ln -fs ../postgres/%{major_version}/bin/amd64/dropuser .
+ln -fs ../postgres/%{major_version}/bin/amd64/ecpg .
+ln -fs ../postgres/%{major_version}/bin/amd64/initdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/oid2name .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_archivecleanup .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_basebackup .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_config .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_controldata .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_ctl .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_dump .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_dumpall .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_resetxlog .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_restore .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_receivexlog .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_standby .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_test_fsync .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_test_timing
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_upgrade .
+ln -fs ../postgres/%{major_version}/bin/amd64/pgbench .
+ln -fs ../postgres/%{major_version}/bin/amd64/pltcl_delmod .
+ln -fs ../postgres/%{major_version}/bin/amd64/pltcl_listmod .
+ln -fs ../postgres/%{major_version}/bin/amd64/pltcl_loadmod .
+ln -fs ../postgres/%{major_version}/bin/amd64/postgres .
+ln -fs ../postgres/%{major_version}/bin/amd64/postmaster .
+ln -fs ../postgres/%{major_version}/bin/amd64/psql .
+ln -fs ../postgres/%{major_version}/bin/amd64/reindexdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/vacuumdb .
+ln -fs ../postgres/%{major_version}/bin/amd64/vacuumlo .
 
 # plpython is out in postgresql 9.2
 rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/plpython-%{major_version}.mo
@@ -306,9 +381,9 @@ rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/plpy
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%actions server
-group groupname="postgres"
-user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" password=NP group="postgres"
+#%actions server
+#group groupname="postgres"
+#user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" password=NP group="postgres"
 
 %files
 %defattr (-, root, bin)
@@ -352,6 +427,40 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_test_timing
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/reindexdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/vacuumdb
+
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/clusterdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/createdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/createlang
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/createuser
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/dropdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/droplang
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/dropuser
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_basebackup
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_dump
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_dumpall
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_restore
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_test_fsync
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_test_timing
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/reindexdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/psql
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/psql
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/clusterdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/createdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/createlang
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/createuser
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/dropdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/droplang
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/dropuser
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_basebackup
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_dump
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_dumpall
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_restore
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_test_fsync
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_test_timing
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/reindexdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/vacuumdb
+
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/psqlrc.sample
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/initdb-%{major_version}.mo
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/pg_controldata-%{major_version}.mo
@@ -364,7 +473,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/pg_basebackup-%{major_version}.mo
 
 
-%files library
+%files -n %{prefix_name}-libs
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin
@@ -417,7 +526,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so.5
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so.5.5
  
-%files languages
+%files -n %{prefix_name}-pl
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin
@@ -432,6 +541,9 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pltcl_listmod
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pltcl_loadmod
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pltcl_delmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pltcl_listmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pltcl_loadmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pltcl_delmod
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/plperl-%{major_version}.mo
 #%attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/plpython-%{major_version}.mo
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/pltcl-%{major_version}.mo
@@ -443,6 +555,9 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pltcl_delmod
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pltcl_listmod
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pltcl_loadmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pltcl_delmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pltcl_listmod
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pltcl_loadmod
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/unknown.pltcl
 %{_prefix}/%{major_version}/share/extension/plperl--1.0.sql
 %{_prefix}/%{major_version}/share/extension/plperl--unpackaged--1.0.sql
@@ -467,7 +582,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %{_prefix}/%{major_version}/share/extension/pltclu.control
 
 
-%files developer
+%files -n %{prefix_name}-devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin/amd64
@@ -537,6 +652,12 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_config
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/ecpg
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_config
+
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/ecpg
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_config
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/ecpg
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_config
+
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/amd64/pgxs/config/install-sh
 %attr (0444, root, bin) %{_prefix}/%{major_version}/lib/amd64/pgxs/src/Makefile.global
 %attr (0444, root, bin) %{_prefix}/%{major_version}/lib/amd64/pgxs/src/Makefile.port
@@ -586,7 +707,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0644, root, bin) %{_prefix}/%{major_version}/include/server/datatype/timestamp.h
 %attr (0644, root, bin) %{_prefix}/%{major_version}/include/libpq/*.h
 
-%files documentation
+%files -n %{prefix_name}-docs
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/doc
@@ -597,7 +718,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/doc/extension
 %{_prefix}/%{major_version}/doc/extension/*
 
-%files server
+%files -n %{prefix_name}-server
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, sys) /usr
@@ -653,6 +774,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0644, root, sys) /etc/security/prof_attr.d/service\%2Fdatabase\%2Fpostgres-92
 %attr (0644, root, sys) /etc/user_attr.d/service\%2Fdatabase\%2Fpostgres-92
 %class(manifest) %attr (0444, root, sys) /var/svc/manifest/application/database/postgresql_92.xml
+
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/initdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_controldata
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_ctl
@@ -667,6 +789,22 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/postgres
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/postmaster
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_receivexlog
+
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/initdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_controldata
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_ctl
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_resetxlog
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/postgres
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/postmaster
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_receivexlog
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/initdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_controldata
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_ctl
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_resetxlog
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/postgres
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/postmaster
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_receivexlog
+
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/amd64/ascii_and_mic.so
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/amd64/cyrillic_and_mic.so
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/amd64/dict_snowball.so
@@ -775,7 +913,7 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/extension/plpgsql--unpackaged--1.0.sql
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/extension/plpgsql.control
 
-%files contrib
+%files -n %{prefix_name}-contrib
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin
@@ -996,7 +1134,24 @@ user ftpuser=false gcos-field="PostgreSQL Reserved UID" username="postgres" pass
 %{_prefix}/%{major_version}/bin/amd64/pgbench
 %{_prefix}/%{major_version}/bin/amd64/vacuumlo
 
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/oid2name
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_archivecleanup
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_standby
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_upgrade
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pgbench
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/vacuumlo
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/oid2name
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_archivecleanup
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_standby
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_upgrade
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pgbench
+%ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumlo
+
 %changelog
+* Thu Feb  7 JST 2013 TAKI, Yasushi <taki@justplayer.com>
+- bump to 9.2.3
+* Thu Jan 17 PST 2013 TAKI, Yasushi <taki@justplayer.com>
+- support mediator.
 * Sun Jan  6 JST 2013 TAKI, Yasushi <taki@justplayer.com>
 - fix comment
 * Sat Dec 15 JST 2012 Fumihisa TONAKA <fumi.ftnk@gmail.com>
