@@ -11,7 +11,7 @@
 
 %define major 7
 %define minor 14
-%define buildnum 11
+%define buildnum 12
 %define srcname openjdk%{major}
 %define tag jdk%{major}u%{minor}-b%{buildnum}
 
@@ -34,6 +34,9 @@ BuildRequires: SUNWmercurial
 Requires:	SUNWcupsu
 BuildRequires: SUNWfreetype2
 Requires: SUNWfreetype2
+# OpenJDK's AWT uses deja vu as the default font for latin character set languages
+BuildRequires: system/font/truetype/dejavu
+Requires: system/font/truetype/dejavu
 BuildRequires: SUNWaudh
 Requires: SUNWaudh
 BuildRequires: SUNWxorg-headers
@@ -62,20 +65,33 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-export ALT_COMPILER_PATH=/opt/sunstudio12.1/bin
+export ALT_COMPILER_PATH=`dirname \`which CC\``
 export ALT_CUPS_HEADERS_PATH=/usr/include
 export FULL_DEBUG_SYMBOLS=0
+export ALT_PARALLEL_COMPILE_JOBS=$CPUS
+
 export BUILD_NUMBER=b%{buildnum}
 export MILESTONE=%{minor}
-export ARCH_DATA_MODEL=32
 
+%ifarch amd64 sparcv9
+export ARCH_DATA_MODEL=64
 make sanity
 make all
+mv build/solaris-*/j2sdk-image .
+make clean
+%else
+mkdir j2sdk-image
+%endif
+
+export ARCH_DATA_MODEL=32
+make sanity
+make all
+(cd build/solaris-*/j2sdk-image ; tar cf - .) | (cd j2sdk-image ; tar xf -)
 
 %install
 cd %{srcname}
 rm -rf $RPM_BUILD_ROOT
-cd build/solaris-*/j2sdk-image
+cd j2sdk-image
 mkdir -p $RPM_BUILD_ROOT%{jdkroot}
 cp -r * $RPM_BUILD_ROOT%{jdkroot}
 
@@ -90,6 +106,12 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>
+- Added 64 bit build.
+- Added dependency on dejavu font for AWT apps. 
+  (Different default platform font for OpenJDK.)
+- Updated to JDK 7u14b12.
+- Enabled use of newer sun compiler.
 * Sat Jan 26 2013 - Logan Bruns <logan@gedanken.org>
 - Updated to JDK 7u14b11. 
 - Changed install path to /usr/jdk/instances/openjdk1.7.0.
