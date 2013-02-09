@@ -8,6 +8,10 @@
 
 2013-02-09  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEopenjdk7.spec: added 64 bit build. Added dependency on dejavu
+	font for AWT apps. (Different default platform font for OpenJDK.)
+	Updated to JDK 7u14b12.
+
 	* SFEopenjdk8.spec: initial spec.
 
 2013-02-08 Ken Mays <kmays2000@gmail.com
