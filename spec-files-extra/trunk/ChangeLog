@@ -4,6 +4,7 @@
 	* encumbered/SFErtmpdump.spec: bump to 2.4
 	* SFElibass.spec: bump to 0.10.1
 	* SFEgajim.spec: bump to 0.15.2
+	* SFEopenttd.spec: bump to 1.2.3
 
 2013-02-09  Logan O'Sullivan Bruns  <logan@gedanken.org>
 

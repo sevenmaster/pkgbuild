@@ -1,0 +1,11 @@
+--- openttd-1.2.2/src/core/alloc_func.hpp	Thu Aug 16 20:41:36 2012
++++ openttd-1.2.2/src/core/alloc_func.hpp	Mon Oct  1 22:44:02 2012
+@@ -12,6 +12,8 @@
+ #ifndef ALLOC_FUNC_HPP
+ #define ALLOC_FUNC_HPP
+ 
++#include <alloca.h>
++
+ /*
+  * Functions to exit badly with an error message.
+  * It has to be linked so the error messages are not

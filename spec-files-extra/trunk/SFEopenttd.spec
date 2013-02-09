@@ -10,13 +10,13 @@
 
 Name:           SFEopenttd
 IPS_Package_Name:	games/openttd
-Version:        1.1.5
+Version:        1.2.3
 Summary:        Transport system simulation game
 Source:         http://binaries.openttd.org/releases/%{version}/%{src_name}-%{version}-source.tar.gz
-Source1:	http://bundles.openttdcoop.org/opengfx/releases/0.4.3/opengfx-0.4.3.zip
+Source1:	http://bundles.openttdcoop.org/opengfx/releases/0.4.6.1/opengfx-0.4.6.1.zip
 Source2:	http://bundles.openttdcoop.org/opensfx/releases/0.2.3/opensfx-0.2.3.zip
 Source3:	http://bundles.openttdcoop.org/openmsx/releases/0.3.1/openmsx-0.3.1.zip
-Patch1:		openttd-01-makedependlimit.diff
+Patch2:		openttd-02-alloca.diff
 URL:		http://www.openttd.org/
 Group:		Applications/Games
 License:	GPLv2
@@ -54,6 +54,7 @@ were inspired by TTDPatch while others are original.
 
 %prep
 %setup -q -n openttd-%{version}
+%patch2 -p1
 
 
 %build
@@ -84,14 +85,9 @@ bash ./configure \
         --install-dir=$RPM_BUILD_ROOT
 
 gmake -j$CPUS
-# generate the AI API docs
-cd src/ai/api
-doxygen
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
-#%patch1 -p1
 make install VERBOSE=1
 
 # Remove the installed docs - we will install subset of those
@@ -107,9 +103,13 @@ desktop-file-install --dir=$RPM_BUILD_ROOT%{_datadir}/applications \
         --add-category=StrategyGame \
         media/openttd.desktop
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/openttd/data
+
 cd $RPM_BUILD_ROOT%{_datadir}/openttd/data && unzip %SOURCE1 && unzip %SOURCE2
 chmod 755  $RPM_BUILD_ROOT%{_datadir}/openttd/data/open*-0.*
 chmod og+r $RPM_BUILD_ROOT%{_datadir}/openttd/data/open*-0.*/*
+
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/openttd/gm
 
 cd $RPM_BUILD_ROOT%{_datadir}/openttd/gm && unzip %SOURCE3
 chmod 755  $RPM_BUILD_ROOT%{_datadir}/openttd/gm/open*-0.*
@@ -155,6 +155,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %{_datadir}/openttd/*
 
 %changelog
+* Sat Feb 09 2013 - Milan Jurik
+- bump to 1.2.3
 * Sat Jan 12 2013 - Thomas Wagner
 - change to pnm_buildrequires_SFExz_gnu
 * Sat Jun 23 2012 - Thomas Wagner
