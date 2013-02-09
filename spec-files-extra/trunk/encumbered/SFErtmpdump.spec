@@ -17,9 +17,8 @@ Group:               Applications/Sound and Video
 License:             GPLv2+, LGPLv2+
 SUNW_copyright:      rtmpdump.copyright
 URL:                 http://rtmpdump.mplayerhq.hu/
-Version:             2.3
-Source:              http://rtmpdump.mplayerhq.hu/download/rtmpdump-%{version}.tgz
-Patch1:              rtmpdump-01-lsocket.diff
+Version:             2.4
+Source:		http://rtmpdump.mplayerhq.hu/download/rtmpdump-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -34,8 +33,7 @@ Requires: %name
 
 
 %prep
-%setup -q -n rtmpdump-%version
-%patch1 -p1
+%setup -q -n rtmpdump
 
 %build
 export CC=gcc
@@ -52,7 +50,7 @@ mv Makefile.new Makefile
 sed -e 's:/usr/local:%{_prefix}:g' librtmp/Makefile > librtmp/Makefile.new
 mv librtmp/Makefile.new librtmp/Makefile
 
-gmake -j$CPUS
+XLIBS="-lnsl -lsocket" gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -97,6 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 09 2013 - Milan Jurik
+- bump to 2.4
 * Oct 12 2011 - Alex Viskovatoff
 - Fix librtmp.pc; add SUNW_copyright and IPS_package_name
 * Dec 28 2010 - jchoi42@pha.jhu.edu

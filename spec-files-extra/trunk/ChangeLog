@@ -1,3 +1,8 @@
+2013-02-09 Milan Jurik <sfnet@xylab.cz>
+
+	* base-specs/ffmpeg.spec: bump to 1.1
+	* encumbered/SFErtmpdump.spec: bump to 2.4
+
 2013-02-09  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEopenjdk8.spec: initial spec.
