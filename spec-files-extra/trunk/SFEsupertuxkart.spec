@@ -13,6 +13,7 @@
 
 
 Name:           SFEsupertuxkart
+IPS_Package_Name:	games/supertuxkart
 Version:        0.8 
 Summary:        Kids 3D go-kart racing game featuring Tux
 Group:          Amusements/Games
