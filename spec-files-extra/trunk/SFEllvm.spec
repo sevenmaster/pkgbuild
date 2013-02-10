@@ -18,7 +18,7 @@ Name:		SFEllvm
 IPS_Package_Name:	developer/llvm
 Summary:	The Low Level Virtual Machine (An Optimizing Compiler Infrastructure)
 SUNW_Copyright:	llvm.copyright
-Version:	3.1
+Version:	3.2
 License:        BSD
 
 URL:		http://llvm.org/
@@ -106,6 +106,8 @@ mv ${RPM_BUILD_ROOT}/%{_prefix}/docs ${RPM_BUILD_ROOT}%{_datadir}/doc
 %{_docdir}/llvm
 
 %changelog
+* Sun Feb 10 2013 - Milan Jurik
+- bump to 3.2
 * Wed May 23 2012 - Milan Jurik
 - bump to 3.1
 * Sun Dec 04 2011 - Milan Jurik
