@@ -1,3 +1,7 @@
+2013-02-12 Ken Mays <kmays2000@gmail.com>
+
+	* SFEgnucash.spec: bump to 2.4.11
+
 2013-02-10 Milan Jurik <sfnet@xylab.cz>
 
 	* SFEllvm.spec: bump to 3.2
@@ -18,7 +22,7 @@
 
 	* SFEopenjdk8.spec: initial spec.
 
-2013-02-08 Ken Mays <kmays2000@gmail.com
+2013-02-08 Ken Mays <kmays2000@gmail.com>
 
 	* SFEsamba4-gpp.spec: bump to 4.0.3
 
@@ -46,7 +50,7 @@
 
 	* SFEgerrit.spec: bump to 2.5.1
 
-2013-02-01 Ken Mays <kmays2000@gmail.com
+2013-02-01 Ken Mays <kmays2000@gmail.com>
 
 	* SFEsupertuxkart.spec: bump to 0.8
 	* patches/supertuxkart-0.8-01.diff

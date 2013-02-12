@@ -184,6 +184,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Tue Feb 12 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.4.11
 * Sat Sep 17 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 2.4.7
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>

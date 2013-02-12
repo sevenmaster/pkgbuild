@@ -13,12 +13,12 @@ Name:           gnucash
 Summary:        GnuCash is an application to keep track of your finances.
 License:        GPL
 Group:          Office
-Version:        2.4.7
+Version:        2.4.11
 Release:        1
 Distribution:   Java Desktop System
 Vendor:         Sun Microsystems, Inc.
 URL:            http://www.gnucash.org/
-Source:         http://sourceforge.net/projects/gnucash/files/gnucash%20%28stable%29/2.4.6/%{name}-%{version}.tar.bz2
+Source:         http://downloads.sourceforge.net/sourceforge/gnucash/gnucash-%{version}.tar.bz2
 # Fixed patches from Halton Hui for GnuCash 2.4.6 <kmays>
 Patch4:         %{name}-04-void-return.diff
 Patch5:         %{name}-05-solaris-guile.diff
@@ -64,23 +64,17 @@ in C programs.
 %patch5 -p1
 
 %build
-%ifos linux
-if [ -x /usr/bin/getconf ]; then
-  CPUS=`getconf _NPROCESSORS_ONLN`
-fi
-%else
   CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-%endif
 if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-aclocal $ACLOCAL_FLAGS -I . -I macros
-libtoolize --force
-intltoolize --force --automake
-autoheader
-automake -a -f -c --gnu
-autoconf
+#aclocal $ACLOCAL_FLAGS -I . -I macros
+#libtoolize --force
+#intltoolize --force --automake
+#autoheader
+#automake -a -f -c --gnu
+#autoconf
 
 CFLAGS="$RPM_OPT_FLAGS"
 ./configure  --prefix=%{_prefix}         \
@@ -92,11 +86,15 @@ CFLAGS="$RPM_OPT_FLAGS"
 %if %debug_build
               --enable-debug             \
 %endif
-             --enable-gui
-
+	--enable-gui \
+	--enable-ofx \
+	--enable-locale-specific-tax \
+	--enable-html-docs \
+	--disable-dbi \
+	--with-html-engine=webkit \
+	--enable-python-bindings
 
 make -j $CPUS
-
 
 %install
 export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
@@ -155,6 +153,8 @@ fi
 %{_includedir}/gnucash
 
 %changelog
+* Tue Feb 12 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 2.4.11
 * Sat Jun 25 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 2.4.7
 * Sat Jun 25 2011 - Ken Mays <kmays2000@gmail.com>
