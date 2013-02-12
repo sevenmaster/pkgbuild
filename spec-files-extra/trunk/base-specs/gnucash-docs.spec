@@ -13,12 +13,12 @@ Name:           gnucash-docs
 Summary:        This is the documentation module for GnuCash
 License:        GNU Free Documentation License
 Group:          Applications/Finance
-Version:        2.4.1
+Version:        2.4.2
 Release:        1
 Distribution:   Java Desktop System
 Vendor:         Sun Microsystems, Inc.
 URL:            http://www.gnucash.org/
-Source:         http://downloads.sourceforge.net/project/gnucash/gnucash-docs/2.4.1/gnucash-docs-%{version}.tar.gz
+Source:         http://downloads.sourceforge.net/project/gnucash/gnucash-docs/%{version}/gnucash-docs-%{version}.tar.gz
 BuildRoot:      %{tmpdir}/%{name}-%{version}-root
 
 Requires:       gnucash >= 1.8.0, scrollkeeper >= 0.3.4
