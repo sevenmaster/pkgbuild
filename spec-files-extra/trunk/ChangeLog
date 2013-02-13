@@ -1,6 +1,7 @@
 2013-02-12 Ken Mays <kmays2000@gmail.com>
 
 	* SFEgnucash.spec: bump to 2.4.11
+	* SFEgmp.spec: bump to 5.1.1
 
 2013-02-10 Milan Jurik <sfnet@xylab.cz>
 
