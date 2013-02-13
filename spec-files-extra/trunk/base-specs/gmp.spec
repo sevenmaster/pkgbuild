@@ -44,7 +44,8 @@ fi
             --datadir=%{_datadir}	\
             --libexecdir=%{_libexecdir}	\
             --sysconfdir=%{_sysconfdir}	\
-            --disable-cxx               \
+            --disable-static		\
+	    --disable-cxx               \
 	    --disable-assembly
 
 make -j$CPUS 
