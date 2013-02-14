@@ -14,8 +14,6 @@
 Name:		gmp
 Version:	5.1.1
 Source:		http://ftp.sunet.se/pub/gnu/gmp/gmp-%{version}.tar.bz2
-Patch1:		gmp-01-solaris.diff
-Patch2:		gmp-02-extern-inline-gmp-h.in.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
@@ -45,8 +43,8 @@ fi
             --libexecdir=%{_libexecdir}	\
             --sysconfdir=%{_sysconfdir}	\
             --disable-static		\
-	    --disable-cxx               \
-	    --disable-assembly
+	    --enable-cxx                \
+	    --enable-fat
 
 make -j$CPUS 
 
