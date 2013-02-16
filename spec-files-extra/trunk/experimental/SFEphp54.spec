@@ -1,3 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# checken: sourceforge.net/apps/trac/gar/browser/csw/mgar/pkg/php5/trunk/Makefile
+
+
+
+
+
+
+
+
+
 #
 # spec file for package SFEphp
 #
@@ -48,6 +75,12 @@ BuildRequires: SFEgmp
 Requires:      SFEgmp
 BuildRequires: SFEre2c
 Requires:      SFEre2c
+
+%if %openindiana
+#apache2handler -> instdso.sh uses own /usr/apr/1.3/build/libtool
+#with hardcoded /usr/ucb/echo (note: S11 uses /usr/gnu/bin/echo)
+BuildRequires: compatibility/ucb
+%endif
 
 
 %package root
@@ -170,6 +203,7 @@ PHP_LIBXML_DIR=/usr/gnu \
             --with-openssl=shared \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
+            --enable-zip \
 
 gmake -j$CPUS
 cd ..
@@ -244,6 +278,7 @@ PHP_LIBXML_DIR=/usr/gnu \
             --with-openssl=shared \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
+            --enable-zip \
 
 
 
@@ -290,6 +325,9 @@ PATHSAVED=$PATH
 export PATH=`pwd`:$PATHSAVED
 
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
+
+gsed -i.bak -e 's?^;session.save_path = "/tmp"?session.save_path = "/var/php/%{php_major_minor_version}/sessions"?' \
+            php.ini-production
 
 mkdir -p $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/
 cp php.ini-production $RPM_BUILD_ROOT/etc/php/%{php_major_minor_version}/php.ini
@@ -356,6 +394,11 @@ changelog incomplete, under development, stay tuned
 open: check imap client
 open: modify lib name libphp5.so and make it mod_php5.4.so
 open: add notes in description for how to activate this php5.4 in apache2
+* Sun Feb  3 2013 - Thomas Wagner
+- --enable-zip
+- set file patch for php session
+* Sun Jan 27 2013 - Thomas Wagner
+- add BuildRequires: compatibility/ucb, on OI151a4 /usr/apr/1.3/build/libtool requires /usr/ucb/echo be present
 * Sat Jan 26 2013 - Thomas Wagner
 - add (Build)Requires: SFEre2c
 - remove -xnorunpath from CFLAGS, add LDFLAGS similar to the ones from php 5.2 in ON
