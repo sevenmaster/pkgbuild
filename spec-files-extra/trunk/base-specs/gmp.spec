@@ -43,8 +43,7 @@ fi
             --libexecdir=%{_libexecdir}	\
             --sysconfdir=%{_sysconfdir}	\
             --disable-static		\
-	    --enable-cxx                \
-	    --enable-fat
+	    --disable-assembly
 
 make -j$CPUS 
 
