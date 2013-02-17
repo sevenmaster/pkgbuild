@@ -111,7 +111,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Wed Feb 13 2013 - Ken Mays <kmays2000@gmail.com>
-- Bump to 5.1.1
+- Bump to 5.1.1, used SS12.1 -library=stlport4
 * Sun Jan 27 2013 - Ken Mays <kmays <kmays2000@gmail.com>
 - bump to 5.0.5
 * Fri Mar 9 2012 - Ken Mays <kmays2000@gmail.com>
