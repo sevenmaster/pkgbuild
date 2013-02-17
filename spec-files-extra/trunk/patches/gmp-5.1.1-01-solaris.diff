@@ -1,0 +1,22 @@
+--- gmp-5.1.1/mpn/x86_64/x86_64-defs.m4.orig	2013-02-17 00:37:34.108782141 +0000
++++ gmp-5.1.1/mpn/x86_64/x86_64-defs.m4	2013-02-16 23:51:03.393315443 +0000
+@@ -218,7 +218,7 @@
+ dnl  This can save reloc entries and improve shlib sharing as well as
+ dnl  application startup times
+ 
+-define(`PROTECT',  `.protected $1')
++define(`PROTECT',  `.hidden $1')
+ 
+ 
+ dnl  Usage: x86_lookup(target, key,value, key,value, ...)
+--- gmp-5.1.1/cxx/osdoprnti.cc.orig	2013-02-16 23:29:23.743316538 +0000
++++ gmp-5.1.1/cxx/osdoprnti.cc	2013-02-16 23:29:44.967912315 +0000
+@@ -22,7 +22,7 @@
+ along with the GNU MP Library.  If not, see http://www.gnu.org/licenses/.  */
+ 
+ #include <iostream>
+-#include <cstdarg>    /* for va_list and hence doprnt_funs_t */
++#include <stdarg.h>    /* for va_list and hence doprnt_funs_t */
+ #include <cstring>    /* for strlen */
+ 
+ #include "gmp.h"

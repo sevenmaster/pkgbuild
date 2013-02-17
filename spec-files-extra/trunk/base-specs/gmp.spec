@@ -14,10 +14,12 @@
 Name:		gmp
 Version:	5.1.1
 Source:		http://ftp.sunet.se/pub/gnu/gmp/gmp-%{version}.tar.bz2
+Patch1:		gmp-5.1.1-01-solaris.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %name-%version
+%patch1 -p1 
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -43,7 +45,7 @@ fi
             --libexecdir=%{_libexecdir}	\
             --sysconfdir=%{_sysconfdir}	\
             --disable-static		\
-	    --disable-assembly
+	    --enable-fat
 
 make -j$CPUS 
 
@@ -57,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Feb 13 2013 - Ken Mays <kmays2000@gmail.com>
-- Bump to 5.1.1
+- Bump to 5.1.1, use -library=stlport4
 * Tue May 29 2012 - Milan Jurik
 - bump to 5.0.5
 * Fri Mar 9 2012 - Ken Mays <kmays2000@gmail.com>
