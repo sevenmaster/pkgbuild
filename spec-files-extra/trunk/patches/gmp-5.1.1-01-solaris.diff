@@ -20,3 +20,14 @@
  #include <cstring>    /* for strlen */
  
  #include "gmp.h"
+--- gmp-5.1.1/tests/cxx/t-ops2.cc.orig	2013-02-17 14:24:36.790397487 +0000
++++ gmp-5.1.1/tests/cxx/t-ops2.cc	2013-02-17 14:55:23.409957933 +0000
+@@ -20,7 +20,7 @@
+ #include "config.h"
+ 
+ #include <iostream>
+-#include <cmath>
++#include <math.h>
+ 
+ #include "gmp.h"
+ #include "gmpxx.h"
