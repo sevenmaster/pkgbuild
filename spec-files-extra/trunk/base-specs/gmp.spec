@@ -15,6 +15,7 @@ Name:		gmp
 Version:	5.1.1
 Source:		http://ftp.sunet.se/pub/gnu/gmp/gmp-%{version}.tar.bz2
 Patch1:		gmp-5.1.1-01-solaris.diff
+Patch2:		gmp-5.1.1-02-libtool.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
@@ -45,9 +46,14 @@ fi
             --libexecdir=%{_libexecdir}	\
             --sysconfdir=%{_sysconfdir}	\
             --disable-static		\
+	    --enable-cxx                \
 	    --enable-fat
 
+%patch2 -p1
 make -j$CPUS 
+
+#Make Check
+make check
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT

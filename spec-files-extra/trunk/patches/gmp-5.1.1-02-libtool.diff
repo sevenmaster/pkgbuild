@@ -1,0 +1,11 @@
+--- gmp-5.1.1/libtool.orig	2013-02-18 14:55:59.426449442 +0000
++++ gmp-5.1.1/libtool	2013-02-18 14:56:08.520023142 +0000
+@@ -10233,7 +10233,7 @@
+ predep_objects=""
+ postdep_objects=""
+ predeps=""
+-postdeps="-library=Cstd -library=Crun"
++#postdeps="-library=Cstd -library=Crun"
+ 
+ # The library search path used internally by the compiler when linking
+ # a shared library.

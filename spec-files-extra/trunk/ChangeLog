@@ -2,7 +2,8 @@
 
 	* SFEgnucash.spec: bump to 2.4.11
 	* SFEgmp.spec: bump to 5.1.1, used SS12.1 -library=stlport4
-	* SFE/patches/gmp-5.1.1-01-solaris.diff: initial patch
+	* patches/gmp-5.1.1-01-solaris.diff: initial patch
+	* patches/gmp-5.1.1-02-libtool.diff: initial patch
 
 2013-02-10 Milan Jurik <sfnet@xylab.cz>
 
