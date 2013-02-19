@@ -22,7 +22,7 @@ Name:                    SFEhbase
 IPS_Package_Name:	 developer/distributed/hbase
 Summary:                 HBase - The Hadoop database
 Group:                   Utility
-Version:                 0.94.2
+Version:                 0.94.5
 URL:		         http://hbase.apache.org
 Source:		         http://www.us.apache.org/dist/hbase/hbase-%{version}/hbase-%{version}.tar.gz
 Source2:                 hbase.xml
@@ -59,6 +59,9 @@ HDFS.
 rm -rf %{srcname}-%{version}
 %setup -q -n %{srcname}-%{version}
 cp %{SOURCE2} hbase.xml
+
+# Use 2.0.2 instead of 2.0.0
+gsed -i 's/2.0.0-alpha/2.0.2-alpha/g' pom.xml
 
 %build
 
@@ -140,6 +143,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/hbase.xml
 
 %changelog
+* Mon Feb 18 2013 - Logan Bruns <logan@gedanken.org>
+- update to 0.94.5 and use hadoop 2.0.2 instead of 2.0.0
 * Wed Nov 14 2012 - Logan Bruns <logan@gedanken.org>
 - bumped to 0.94.2 and enabled hadoop2 compatibility
 * Sat Oct 6 2012 - Logan Bruns <logan@gedanken.org>
