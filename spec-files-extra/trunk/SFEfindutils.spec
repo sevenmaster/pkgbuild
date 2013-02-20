@@ -10,7 +10,7 @@
 
 Name:                SFEfindutils
 Summary:             GNU find, locate, and xargs
-Version:             4.4.0
+Version:             4.4.2
 URL:                 http://www.gnu.org/software/findutils/
 Source:              http://ftp.gnu.org/pub/gnu/findutils/findutils-%{version}.tar.gz
 
@@ -81,6 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.4.2
 * Tue Sep 9 2008 - < pradhap (at) gmail (dot) com>
 - Bump to 4.4.0
 * Thu Feb 21 2008 - nonsea@users.sourceforge.net

@@ -4,6 +4,7 @@
 	* SFEbinutils-gpp.spec: bump to 2.23.1
 	* SFEcoreutils.spec: bump to 8.21
 	* SFEdiffutils.spec: bump to 3.2
+	* SFEsharutils.spec: bump to 4.13.3
 
 2013-02-19  Logan O'Sullivan Bruns  <logan@gedanken.org>
 

@@ -36,7 +36,8 @@ Requires:                %{name}
 %endif
 
 %prep
-%setup -q -n coreutils-%version
+#%setup -q -n coreutils-%version
+tar xJf %{SOURCE}
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -50,6 +51,7 @@ export CFLAGS="%optflags"
 export CFLAGS="$CFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
 %endif
 export LDFLAGS="%_ldflags"
+cd coreutils-%version
 
 ./configure --prefix=%{_prefix}			\
 	    --mandir=%{_mandir}                 \

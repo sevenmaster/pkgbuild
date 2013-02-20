@@ -10,9 +10,9 @@
 Name:                SFEsharutils
 License:             GPL
 Summary:             A utility to create self-extracting Shell Archives.
-Version:             4.7
+Version:             4.13.3
 URL:                 http://www.gnu.org/software/sharutils/
-Source:              ftp://ftp.gnu.org/gnu/sharutils/REL-%{version}/sharutils-%{version}.tar.bz2
+Source:              http://ftp.gnu.org/gnu/sharutils/sharutils-%{version}.tar.xz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -26,10 +26,12 @@ Requires:                %{name}
 %endif
 
 %prep
-%setup -q -n sharutils-%version
+#%setup -q -n sharutils-%version
+tar xJf %{SOURCE}
 
 %build
 
+cd sharutils-%version
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
@@ -87,5 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.13.3
 * Sun Feb 10 2008 - moinak.ghosh@sun.com
 - Initial spec.
