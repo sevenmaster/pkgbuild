@@ -19,9 +19,11 @@ Name:                    SFEphantomjs
 IPS_Package_Name:	 network/phantomjs
 Summary:                 PhantomJS - Headless WebKit
 Group:                   Utility
-Version:                 1.7.0
+Version:                 1.8.1
 URL:		         http://phantomjs.googlecode.com
-Source:		         http://phantomjs.googlecode.com/files/phantomjs-%{version}-source.zip
+# OI has an old version of unzip that improperly processes the zip version use the tar.gz version instead
+Source:		         http://github.com/ariya/phantomjs/archive/%{version}.tar.gz
+#Source:		         http://phantomjs.googlecode.com/files/phantomjs-%{version}-source.zip
 Patch1:                  phantomjs-01-mkspecs.diff
 Patch2:                  phantomjs-02-yield.diff
 Patch3:                  phantomjs-03-isnan.diff
@@ -39,7 +41,7 @@ native support for various web standards: DOM handling, CSS selector,
 JSON, Canvas, and SVG.
 
 %prep
-rm -rf %name-%version
+rm -rf %srcname-%version
 %setup -q -n %srcname-%version
 %patch1 -p1
 %patch2 -p1
@@ -85,5 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/phantomjs/*
 
 %changelog
+* Tue Feb 19 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 1.8.1
 * Fri Dec 7 2012 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
