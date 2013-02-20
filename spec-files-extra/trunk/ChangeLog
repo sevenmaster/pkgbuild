@@ -1,6 +1,7 @@
 2013-02-12 Ken Mays <kmays2000@gmail.com>
 
 	* SFEpostfix.spec: bump to 2.9.6
+	* SFEbinutils-gpp.spec: bump to 2.23.1
 
 2013-02-19  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
