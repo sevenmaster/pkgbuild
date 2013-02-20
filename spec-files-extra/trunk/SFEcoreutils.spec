@@ -10,8 +10,8 @@
 Name:                    SFEcoreutils
 IPS_Package_Name:	 sfe/file/gnu-coreutils
 Summary:                 GNU coreutils - basic file, shell and text manipulation utilities
-Version:		 8.13
-Source:                  http://ftp.gnu.org/pub/gnu/coreutils/coreutils-%{version}.tar.gz
+Version:		 8.21
+Source:                  http://ftp.gnu.org/pub/gnu/coreutils/coreutils-%{version}.tar.xz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -148,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 8.21
 * Fri Jun 22 2012 - Logan Bruns <logan@gedanken.org>
 - Added missing soft link: /usr/bin/ginstall -> /usr/gnu/bin/install
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
