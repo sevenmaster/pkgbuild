@@ -11,7 +11,7 @@
 
 Name:                SFEbinutils-gpp
 Summary:             GNU binutils (g++-built)
-Version:             2.22
+Version:             2.23.1
 Source:              http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 Patch1:              binutils-01-bug-2495.diff
 #Patch2:              binutils-02-ld-m-elf_i386.diff
@@ -207,6 +207,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.23.1
 * Thu Feb 09 2012 - James Choi
 - bump to 2.22, use g++ path to not interfere with gnu-binutils pkg
 - fork from archive/SFEbinutils, build with gcc
