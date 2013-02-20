@@ -409,3 +409,4 @@ make pnm_macro for perl module io-compress (zlib), perl 5.10.x may start includi
 module by default, so skip SFE version in that case an just require default perl as
 a dummy (modeled after %{pnm_buildrequires_SFEperl_extutils_cbuilder} read packagenames.define.allbuilds.inc )
 
+56) SFEgcc.spec - fix C++ exception handling capability
