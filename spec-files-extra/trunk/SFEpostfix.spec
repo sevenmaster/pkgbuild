@@ -112,13 +112,12 @@
 %define	V_postfinger	1.30
 
 Name:                    SFEpostfix
-IPS_Package_Name:	service/network/smtp/postfix
+IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
-Group:		System/Services
+Group:			 System/Services
 URL:                     http://postfix.org/
-Version:                 2.9.5
+Version:                 2.9.6
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
-#Source2:                 http://ftp.wl0.org/official/%{major_version}.%{minor_version}/SRPMS/postfix-%{version}-1.src.rpm
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
 Source5:                 postfix-spamassassin-wiki.apache.org-filter.sh
@@ -133,7 +132,7 @@ Source9:	postfix-saslauthd.conf
 #Patch3:		postfix-03-remove-nisplus-build130.diff
 
 SUNW_BaseDir:            %{_basedir}
-SUNW_Copyright:		postfix.copyright
+SUNW_Copyright:		 postfix.copyright
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 #TODO: BuildReqires:
@@ -905,6 +904,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.9.6
 * Fri Jan 19 2013 - Thomas Wagner
 - Bump to 2.9.5
 * Fri Aug 24 2012 Ken Mays <kmays2000@gmail.com>
