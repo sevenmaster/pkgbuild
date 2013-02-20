@@ -11,7 +11,7 @@
 %define _prefix %{_basedir}/gnu
 
 Name:			SFEdiffutils
-Version:		2.8.1
+Version:		3.2
 Summary:		GNU diff
 Source:			ftp://ftp.gnu.org/pub/gnu/diffutils/diffutils-%{version}.tar.gz
 #Source2:                gendiff
@@ -55,6 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*
 
 %changelog
+* Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.2
 * Wed Nov 15 2006  <eric.boutilier@sun.com>
 - Copied and transposed CBEdiffutils to SFEdiffutils
 * Tue Aug 22 2006  <laca@sun.com>
