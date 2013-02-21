@@ -6,7 +6,7 @@
 Name:                    SFEmbuffer
 Summary:                 mbuffer - tool for extra buffering pipes
 URL:                     http://www.maier-komor.de/mbuffer.html
-Version:                 20130209
+Version:                 20130220
 Source:                  http://www.maier-komor.de/software/mbuffer/mbuffer-%{version}.tgz
 
 
@@ -54,6 +54,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 21 2013  - Thomas Wagner
+- bump to 20130220
 * Mon Feb 18 2013  - Thomas Wagner
 - bump to 20130209
 * Mon Jan 28 2013  - Thomas Wagner
