@@ -1,3 +1,7 @@
+2013-02-20  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEemacs.spec: minor tweaks and cleanups.
+
 2013-02-12 Ken Mays <kmays2000@gmail.com>
 
 	* SFEpostfix.spec: bump to 2.9.6

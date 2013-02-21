@@ -5,6 +5,9 @@
 #
 %include Solaris.inc
 
+%define cc_is_gcc 1
+%include base.inc
+
 # Avoid conflict with editor/gnu-emacs
 %include usr-gnu.inc
 %define _infodir %_datadir/info
@@ -56,8 +59,8 @@ Requires: SUNWxwice
 %endif
 BuildRequires: SFEgiflib-devel
 Requires: SFEgiflib
-BuildRequires: SFEimagemagick-devel
-Requires: SFEimagemagick
+BuildRequires: SFElibmagick-gpp-devel
+Requires: SFElibmagick-gpp
 
 %package root
 Summary:                 %{summary} - root
@@ -73,13 +76,14 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
-export CPP="cc -E -Xs"
-export CFLAGS='-i -xO3 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
-#Studio 12.3 crashes when building emacs with -xOn
-#export CFLAGS='-i -xO0 -xspace -xstrconst -xpentium -mr -xregs=no%frameptr '
-export LDFLAGS="$LDFLAGS -lcurses"
+export CC=gcc
+export CFLAGS="$CFLAGS -O6"
+export CXX=g++
+export LDFLAGS="$LDFLAGS -L/usr/gnu/lib -R/usr/gnu/lib -lncurses -R/usr/g++/lib"
 
 export PERL=/usr/perl5/bin/perl
+
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:/usr/lib/pkgconfig
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
@@ -89,10 +93,7 @@ export PERL=/usr/perl5/bin/perl
             --localstatedir=%{_localstatedir}   \
             --with-gif=yes \
             --with-x-toolkit=%toolkit \
-            --enable-python \
-            --enable-font-backend \
-            --with-xft \
-            --with-freetype
+            --with-xft
 
 make -j$CPUS 
 
@@ -157,6 +158,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Wed Feb 20 2013 - Logan Bruns <logan@gedanken.org>
+- minor tweaks and cleanups.
 * Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 24.2
 - added IPS name
