@@ -9,7 +9,7 @@
 #
 
 %define        major      1
-%define        minor      49
+%define        minor      53
 %define        patchlevel 0
 %define        ver_boost  %{major}_%{minor}_%{patchlevel}
 
@@ -79,6 +79,8 @@ export LDFLAGS="%_ldflags"
 ./bjam install --prefix=$RPM_BUILD_ROOT%{_prefix}
 
 %changelog
+* Thu Feb 21 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 1.53.0
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
 * Sat May 19 2012 - Logan Bruns <logan@gedanken.org>
