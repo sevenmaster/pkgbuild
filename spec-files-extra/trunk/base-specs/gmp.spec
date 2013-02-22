@@ -14,13 +14,19 @@
 Name:		gmp
 Version:	5.1.1
 Source:		http://ftp.sunet.se/pub/gnu/gmp/gmp-%{version}.tar.bz2
+%if %cc_is_gcc
+%else
 Patch1:		gmp-5.1.1-01-solaris.diff
 Patch2:		gmp-5.1.1-02-libtool.diff
+%endif
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %name-%version
+%if %cc_is_gcc
+%else
 %patch1 -p1 
+%endif
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -49,7 +55,10 @@ fi
 	    --enable-cxx                \
 	    --enable-fat
 
+%if %cc_is_gcc
+%else
 %patch2 -p1
+%endif
 make -j$CPUS 
 
 #Make Check
@@ -64,6 +73,8 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Feb 21 2013 - Logan Bruns <logan@gedanken.org>
+- Fork to create g++ version of gmp.
 * Wed Feb 13 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 5.1.1, use -library=stlport4
 * Tue May 29 2012 - Milan Jurik
