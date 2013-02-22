@@ -1,3 +1,8 @@
+2013-02-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEisl.spec: initial version
+	* copyright/SFEisl.copyright
+
 2013-02-21 Ken Mays <kmays2000@gmail.com>
 
 	* base-specs/boost.spec: bump to 1.53.0
