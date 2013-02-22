@@ -1,5 +1,8 @@
 2013-02-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEcloog.spec: initial version
+	* copyright/SFEcloog.copyright
+
 	* SFEisl.spec: initial version
 	* copyright/SFEisl.copyright
 
