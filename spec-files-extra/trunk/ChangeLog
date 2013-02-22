@@ -1,5 +1,8 @@
 2013-02-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEgmp-gpp.spec: fork to create g++ version of gmp.
+	* base-specs/gmp.spec
+
 	* SFEcloog.spec: initial version
 	* copyright/SFEcloog.copyright
 
