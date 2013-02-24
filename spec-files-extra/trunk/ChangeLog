@@ -1,3 +1,7 @@
+2013-02-23  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEbinutils-gpp.spec: added ips name
+
 2013-02-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEgmp-gpp.spec: fork to create g++ version of gmp.
