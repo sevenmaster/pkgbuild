@@ -1,0 +1,11 @@
+--- gcc-4.7.2/gcc/config/sol2.h.orig	2013-02-21 19:34:57.818581004 -0800
++++ gcc-4.7.2/gcc/config/sol2.h	2013-02-21 19:35:16.854139294 -0800
+@@ -150,7 +150,7 @@
+    %{YP,*} \
+    %{R*} \
+    %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/lib:%R/usr/lib} \
+-	   %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/lib:%R/usr/lib}}}"
++	   %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/lib:%R/usr/lib:%R/usr/gnu/lib}}}"
+ 
+ #undef LINK_ARCH32_SPEC
+ #define LINK_ARCH32_SPEC LINK_ARCH32_SPEC_BASE

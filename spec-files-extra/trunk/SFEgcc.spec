@@ -56,7 +56,7 @@
 #default to SUNWbinutils
 ##TODO## if necessary add osbuild numbers to decide SUNW/SFE version
 %define SUNWbinutils    %(/usr/bin/pkginfo -q SUNWbinutils 2>/dev/null && echo 1 || echo 0)
-%define SFEbinutils     %(/usr/bin/pkginfo -q SFEbinutils  2>/dev/null && echo 1 || echo 0)
+%define SFEbinutils     %(/usr/bin/pkginfo -q SFEbinutils-gpp  2>/dev/null && echo 1 || echo 0)
 #see below, older builds then 126 have too old gmp / mpfr to gcc version around 4.4.4
 #%define SFEgmp          %(/usr/bin/pkginfo -q SFEgmp  2>/dev/null  && echo 1 || echo 0)
 ##TODO## to be replaced by packagenamemacros, selecting SFEgmp on specific osbuilds where
@@ -115,7 +115,7 @@
 #below *or* specify the number on the command line (gcc_version), example see below
 
 # To set a specific gcc version to be build, do this from *outside*
-# pkgtool build SFEgcc --define 'gcc_version 4.6.1'
+# pkgtool build SFEgcc --define 'gcc_version 4.7.2'
 
 %if %{!?gcc_version:1}
 #make version bump *here* - this is the default version being built
@@ -159,7 +159,11 @@ Patch1:              gcc-01-libtool-rpath.diff
 Patch2:              gcc-02-handle_pragma_pack_push_pop.diff
 %else
 %endif
+%if %( expr %{major_minor} '>=' 4.7 )
+Patch3:              gcc-03-gnulib-47.diff
+%else
 Patch3:              gcc-03-gnulib.diff
+%endif
 
 #LINK_LIBGCC_SPEC
 #gcc-05 could be reworked to know both, amd64 and sparcv9
@@ -228,8 +232,8 @@ Requires: SFElibmpc
 %endif
 
 %if %SFEbinutils
-BuildRequires: SFEbinutils
-Requires: SFEbinutils
+BuildRequires: SFEbinutils-gpp
+Requires: SFEbinutils-gpp
 %else
 BuildRequires: SUNWbinutils
 Requires: SUNWbinutils
@@ -372,7 +376,40 @@ nlsopt='--with-libiconv-prefix=/usr/gnu -enable-nls'
 nlsopt=-disable-nls
 %endif
 
+#%define build_gcc_with_gnu_ld 0
+#saw problems. 134 did compile, OI147 stopped with probably linker errors
+##TODO## research which osbuild started to fail, adjust the number below
+#%if %(expr %{osbuild} '>=' 1517)
+%if %( expr %{major_minor} '>=' 4.7 )
+%define build_gcc_with_gnu_ld 1
+%else
+%define build_gcc_with_gnu_ld 0
+%endif
+
+%if %build_gcc_with_gnu_ld
+
+%if %SFEbinutils
+export LD="/usr/g++/bin/ld"
+export PATH=/usr/g++/bin:$PATH
+%else
+export LD="/usr/gnu/bin/ld"
+%endif
+%define _ldflags
+%define ld_options
+
+%else
+
+#avoid slipping in gnu ld
+#might be changed to plain /usr/bin/ld instead of CBE ld-wrapper
+#export LD=`which ld-wrapper`
+#it's actually better to really specify /usr/bin/ld and skip the
+#extra options from the wrapper instead of ending up on a system
+#without the SFE build-env and have no ld-wrapper installed there
+export LD=/usr/bin/ld
 %define ld_options      -zignore -zcombreloc -Bdirect -i
+
+%endif
+
 
 export CC=cc
 export CXX=CC
@@ -382,36 +419,25 @@ export CONFIG_SHELL=/usr/bin/ksh
 export CPP="cc -E"
 export CFLAGS="-O"
 
-export BOOT_CFLAGS="-Os -Xlinker -i %gcc_picflags %gnu_lib_path"
-export BOOT_LDLAGS="%_ldflags -R%{_prefix}/%major_minor/lib %gnu_lib_path"
+export BOOT_CFLAGS="-Os %gcc_picflags %gnu_lib_path"
+%if %build_gcc_with_gnu_ld
+%else
+export BOOT_CFLAGS="$BOOT_CFLAGS -Xlinker -i"
+%endif
+export BOOT_LDFLAGS="%_ldflags -R%{_prefix}/lib %gnu_lib_path"
 
 # for target libraries (built with bootstrapped GCC)
-export CFLAGS_FOR_TARGET="-O2 -Xlinker -i %gcc_picflags"
+export CFLAGS_FOR_TARGET="-O2 %gcc_picflags"
+%if %build_gcc_with_gnu_ld
+%else
+export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
+%endif
 export LDFLAGS_FOR_TARGET="%_ldflags"
 export LDFLAGS="%_ldflags %gnu_lib_path"
 export LD_OPTIONS="%ld_options"
 
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
-
-%define build_gcc_with_gnu_ld 0
-#saw problems. 134 did compile, OI147 stopped with probably linker errors
-##TODO## research which osbuild started to fail, adjust the number below
-#%if %(expr %{osbuild} '>=' 146)
-#%define build_gcc_with_gnu_ld 1
-#%endif
-
-%if %build_gcc_with_gnu_ld
-export LD="/usr/gnu/bin/ld"
-%else
-#avoid slipping in gnu ld
-#might be changed to plain /usr/bin/ld instead of CBE ld-wrapper
-#export LD=`which ld-wrapper`
-#it's actually better to really specify /usr/bin/ld and skip the
-#extra options from the wrapper instead of ending up on a system
-#without the SFE build-env and have no ld-wrapper installed there
-export LD=/usr/bin/ld
-%endif
 
 
 ../gcc-%{version}/configure			\
@@ -420,6 +446,11 @@ export LD=/usr/bin/ld
         --libexecdir=%{_libexecdir}		\
         --mandir=%{_mandir}			\
 	--infodir=%{_infodir}			\
+%if %SFEbinutils
+	--with-build-time-tools=/usr/g++	\
+	--with-as=/usr/g++/bin/as		\
+	--with-gnu-as				\
+%else
 %if %SUNWbinutils
 	--with-build-time-tools=/usr/sfw	\
 	--with-as=/usr/sfw/bin/gas		\
@@ -427,6 +458,7 @@ export LD=/usr/bin/ld
 %else
 	--with-as=/usr/gnu/bin/as		\
 	--with-gnu-as				\
+%endif
 %endif
 %if %build_gcc_with_gnu_ld
 	--with-ld=$LD                           \
@@ -642,6 +674,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 23 2013 - Logan Bruns <logan@gedanken.org>
+- updated some of the patches for gcc 4.7
+- use gnu ld by default for gcc 4.7
+- updated %build_gcc_with_gnu_ld rules
+- use SFEbinutils-gpp if present
 * Fri Jun 22 2012 - Thomas Wagner
 - back to CC=cc and CXX=CC as solarisstudio is still needed for SFE anyways.
   and that way we don't need gcc-3 installed generally. Maybe the wrong
