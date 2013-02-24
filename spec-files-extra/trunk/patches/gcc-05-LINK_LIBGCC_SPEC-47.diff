@@ -117,11 +117,11 @@ set theyr compiler to find runtimes in theyr private filesystem tree.
 MD_EXEC_PREFIX is preparing to search for compiler tools (not already in use,
 except there would be other symlinks there, e.g. ln -s /usr/gcc/4.6/bin/gcc /usr/gcc/bin/gcc
 
---- gcc-4.7.x/gcc/config/i386/sol2-10.h.orig2	2011-09-04 00:00:00.000000000 +0200
-+++ gcc-4.7.x/gcc/config/i386/sol2-10.h	2011-09-04 00:00:00.000000000 +0200
-@@ -131,6 +131,13 @@
- #define LINK_ARCH_SPEC TARGET_LD_EMULATION \
- 		       "%{m64:" LINK_ARCH64_SPEC "}%{!m64:" LINK_ARCH32_SPEC "}"
+--- gcc-4.7.2/gcc/config/sol2.h.orig2	2013-02-21 19:49:01.189288339 -0800
++++ gcc-4.7.2/gcc/config/sol2.h	2013-02-21 19:46:00.495173644 -0800
+@@ -117,6 +117,14 @@
+ #undef MD_EXEC_PREFIX
+ #define MD_EXEC_PREFIX "/usr/ccs/bin/"
  
 +/* #undef LINK_LIBGCC_SPECIAL_1 */
 +/* #define LINK_LIBGCC_SPECIAL_1=1 */
@@ -130,6 +130,7 @@ except there would be other symlinks there, e.g. ln -s /usr/gcc/4.6/bin/gcc /usr
 +#undef MD_EXEC_PREFIX
 +#define MD_EXEC_PREFIX "/usr/gcc/bin/"
 +#define LINK_ELIMINATE_DUPLICATE_LDIRECTORIES 0
- /* We do not need to search a special directory for startup files.  */
++
  #undef MD_STARTFILE_PREFIX
- 
+ #define MD_STARTFILE_PREFIX "/usr/ccs/lib/"
+ #endif
