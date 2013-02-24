@@ -10,6 +10,7 @@
 
 
 Name:                SFEbinutils-gpp
+IPS_package_name:    developer/g++/binutils
 Summary:             GNU binutils (g++-built)
 Version:             2.23.1
 Source:              http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
@@ -207,6 +208,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 23 2013 - Logan Bruns <logan@gedanken.org>
+- added ips name
 * Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.23.1
 * Thu Feb 09 2012 - James Choi
