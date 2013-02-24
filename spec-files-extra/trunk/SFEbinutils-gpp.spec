@@ -89,6 +89,8 @@ cd binutils-%{version}-64
 	    --infodir=%{_infodir}		\
 	    --enable-shared			\
 	    --disable-static			\
+	    --enable-lto			\
+	    --enable-gold			\
 	    $nlsopt
 
 make -j$CPUS
@@ -208,6 +210,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
+- also build gold
 * Sat Feb 23 2013 - Logan Bruns <logan@gedanken.org>
 - added ips name
 * Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
