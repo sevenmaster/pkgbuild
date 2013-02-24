@@ -75,6 +75,12 @@
 %define SUNWbinutils 0
 %endif
 
+#if building gcc 4.7 or up force the use of SFEbinutils since OI's binutils is too old
+%if %( expr %{major_minor} '>=' 4.7 )
+%define SFEbinutils 1
+%define SUNWbinutils 0
+%endif
+
 # force using gmp | mpfr
 #if SFEgmp is not present, force them as required by the commandline switch --with_SFEgmp
 %define with_SFEgmp %{?_with_SFEgmp:1}%{?!_with_SFEgmp:0}
@@ -380,11 +386,7 @@ nlsopt=-disable-nls
 #saw problems. 134 did compile, OI147 stopped with probably linker errors
 ##TODO## research which osbuild started to fail, adjust the number below
 #%if %(expr %{osbuild} '>=' 1517)
-%if %( expr %{major_minor} '>=' 4.7 )
-%define build_gcc_with_gnu_ld 1
-%else
 %define build_gcc_with_gnu_ld 0
-%endif
 
 %if %build_gcc_with_gnu_ld
 
@@ -674,6 +676,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
+- switch back to sun ld for gcc 4.7 but require SFEbinutils (for 4.7 only)
 * Sat Feb 23 2013 - Logan Bruns <logan@gedanken.org>
 - updated some of the patches for gcc 4.7
 - use gnu ld by default for gcc 4.7
