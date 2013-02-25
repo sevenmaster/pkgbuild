@@ -80,5 +80,7 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 0.2.1
 * Wed Dec 28 2011 - Milan Jurik
 - initial spec

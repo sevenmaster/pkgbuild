@@ -4,7 +4,7 @@
 #
 
 Name:	libwebp
-Version:	0.1.99
+Version:	0.2.1
 Source:		http://webp.googlecode.com/files/%{name}-%{version}.tar.gz
 
 %prep
@@ -35,6 +35,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/libwebp*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 0.2.1
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 0.1.99
 * Wed Dec 28 2011 - Milan Jurik
