@@ -15,7 +15,7 @@
 Name:		SFEsimgear
 IPS_Package_Name:	library/simgear
 Summary:	Simulator Construction Tools
-Version:	2.8.0
+Version:	2.10.0
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Patch1:		simgear-01-stdlib.diff
 Patch2:		simgear-02-isnan.diff
@@ -41,8 +41,8 @@ SUNW_BaseDir:	%{_prefix}
 
 %prep
 %setup -q -n %{src_name}-%{version}
-%patch1 -p1
-%patch2 -p1
+#%patch1 -p1
+#%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -77,6 +77,8 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Mon Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.10.0
 * Thu Aug 30 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.8.0
 * Sat Jun 23 2012 - Thomas Wagner
