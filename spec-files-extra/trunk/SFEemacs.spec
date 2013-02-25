@@ -31,6 +31,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %define _with_gtk 1
 
+BuildRequires:      SFEgcc
+Requires:           SFEgccruntime
 BuildRequires: SUNWgnome-common-devel
 BuildRequires: SUNWgtk2
 BuildRequires: SFEalsa-lib-devel
@@ -158,6 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
+- added missing (build)requires for sfegcc(runtime)
 * Wed Feb 20 2013 - Logan Bruns <logan@gedanken.org>
 - minor tweaks and cleanups.
 * Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>
