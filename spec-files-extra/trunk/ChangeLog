@@ -1,5 +1,7 @@
 2013-02-24  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFElibmagick-gpp.spec: updated to 6.8.2-10
+
 	* SFElibwebp.spec: updated to 0.2.1
 
 	* SFEgcc.spec: switch back to sun ld for gcc 4.7 but require
