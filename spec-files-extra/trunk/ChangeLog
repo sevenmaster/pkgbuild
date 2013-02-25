@@ -1,3 +1,7 @@
+2013-02-25 Ken Mays <kmays2000@gmail.com>
+
+	* SFEdovecot.spec: bump to 2.1.15
+
 2013-02-24  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEemacs.spec: added missing (build)requires for sfegcc(runtime)
