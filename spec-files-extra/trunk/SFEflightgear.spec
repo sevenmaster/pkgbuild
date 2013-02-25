@@ -1,6 +1,6 @@
 #
 # spec file for package SFEFlightGear.spec
-# Gilles Dauphin
+# by Gilles Dauphin
 #
 #
 
@@ -13,31 +13,30 @@
 
 #
 # Mirror:
-# ftp://ftp.kingmont.com/flightsims/flightgear/Source/flightgear-2.8.0.tar.bz2
-# http://ftp.linux.kiev.ua/pub/fgfs/Source/flightgear-2.8.0.tar.bz2
-# ftp://ftp.de.flightgear.org/pub/fgfs/Source/flightgear-2.8.0.tar.bz2 
-# ftp://ftp.is.co.za/pub/games/flightgear/ftp/Source/flightgear-2.8.0.tar.bz2
+# ftp://ftp.kingmont.com/flightsims/flightgear/Source/flightgear-2.10.0.tar.bz2
+# http://ftp.linux.kiev.ua/pub/fgfs/Source/flightgear-2.10.0.tar.bz2
+# ftp://ftp.de.flightgear.org/pub/fgfs/Source/flightgear-2.10.0.tar.bz2
+# ftp://ftp.is.co.za/pub/games/flightgear/ftp/Source/flightgear-2.10.0.tar.bz2
 #
 # TODO: make package with:
 # http://www.flightgear.org/Docs/getstart/getstart.html
 # http://mapserver.flightgear.org/getstart.pdf
 #
 # FlightGear Scenery package (Main Mirror)
-# ftp://ftp.de.flightgear.org/pub/fgfs/Shared/FlightGear-data-2.8.0.tar.bz2
+# ftp://ftp.de.flightgear.org/pub/fgfs/Shared/FlightGear-data-2.10.0.tar.bz2
 #
 # FlightGear Aircraft files (Mirror)
-# ftp://ftp.de.flightgear.org/pub/fgfs/Aircraft-2.8/
+# ftp://ftp.de.flightgear.org/pub/fgfs/Aircraft-2.10/
 #
 # FlightGear Scenery
-# ftp://ftp.de.flightgear.org/pub/fgfs/Scenery-v2.8.0/
+# ftp://ftp.de.flightgear.org/pub/fgfs/Scenery-v2.10.0/
 #
 Name:                   SFEFlightGear
 Summary:                The multi-platform flight simulator development project
-Version:                2.8.0
+Version:                2.10.0
 Source:                 %{src_url}/%{src_name}-%{version}.tar.bz2
 Source1:		ftp://ftp.de.flightgear.org/pub/fgfs/Shared/FlightGear-data-%{version}.tar.bz2 
 Group:			Applications/Games
-#Patch1:			FlightGear20-04.diff
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -77,14 +76,6 @@ export LDFLAGS="-L%{_libdir} -R%{_libdir} -L/usr/X11/lib -R/usr/X11/lib"
 # FlightGear >=2.6.0 uses CMake >=2.6.4
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix}
 
-# FlightGear 2.4.0 
-#/bin/bash ./configure CONFIG_SHELL=/bin/bash --prefix=%{_prefix} \
-	--with-osg=%{_prefix} \
-	--with-boost=%{_prefix} \
-	--with-boost-libdir=%{_libdir} \
-	--with-plib=%{_prefix} \
-	--with-simgear=%{_prefix}
-
 make # -j$CPUS 
 
 %install
@@ -110,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.10.0
 * Thu Aug 30 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.8.0
 * Mon Mar 05 2012 - Ken Mays <kmays2000@gmail.com>
