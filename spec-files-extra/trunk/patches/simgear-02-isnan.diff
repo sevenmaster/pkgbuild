@@ -1,6 +1,6 @@
---- simgear-2.6.0/simgear/scene/sky/cloud.cxx	Fri Feb 17 23:38:44 2012
-+++ simgear-2.6.0/simgear/scene/sky/cloud.cxx	Sun Mar  4 11:23:02 2012
-@@ -735,7 +735,7 @@
+--- simgear-2.10.0/simgear/scene/sky/cloud.cxx.orig	2013-02-25 17:06:56.819955193 +0000
++++ simgear-2.10.0/simgear/scene/sky/cloud.cxx	2013-02-25 17:09:45.211593555 +0000
+@@ -736,7 +736,7 @@
              // this happens, lets just use the last known good course.
              // This is a hack, and it would probably be better to make
              // calc_gc_course_dist() more robust.
@@ -9,19 +9,18 @@
                  course = last_course;
              } else {
                  last_course = course;
---- simgear-2.6.0/simgear/sound/sample_group.cxx	Fri Feb 17 23:38:44 2012
-+++ simgear-2.6.0/simgear/sound/sample_group.cxx	Sun Mar  4 11:31:46 2012
-@@ -23,7 +23,7 @@
- #ifdef HAVE_CONFIG_H
+--- simgear-2.10.0/simgear/sound/sample_group.cxx.orig	2013-02-25 17:07:44.104263632 +0000
++++ simgear-2.10.0/simgear/sound/sample_group.cxx	2013-02-25 17:13:02.394452967 +0000
+@@ -24,6 +24,7 @@
  #  include <simgear_config.h>
  #endif
--
-+#include <cmath>
- #include <simgear/compiler.h>
  
- #include "soundmgr_openal.hxx"
-@@ -30,7 +30,7 @@
- #include "sample_group.hxx"
++#include <cmath>
+ #include <cassert>
+ #include <simgear/compiler.h>
+ #include <simgear/sg_inlines.h>
+@@ -36,7 +37,7 @@
+ using std::string;
  
  bool isNaN(float *v) {
 -   return (isnan(v[0]) || isnan(v[1]) || isnan(v[2]));

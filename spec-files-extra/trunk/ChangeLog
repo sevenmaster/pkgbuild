@@ -1,6 +1,9 @@
 2013-02-25 Ken Mays <kmays2000@gmail.com>
 
 	* SFEdovecot.spec: bump to 2.1.15
+	* SFEsimgear.spec: bump to 2.10.0 
+	* patches/simgear-01-stdlib.diff
+	* patches/simgear-02-isnan.diff
 
 2013-02-24  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
