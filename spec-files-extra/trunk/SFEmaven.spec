@@ -15,15 +15,24 @@ Name:                    SFEmaven
 IPS_Package_Name:	 developer/build/maven
 Summary:                 Maven - a software project management and comprehension tool
 Group:                   Utility
-Version:                 3.0.4
+Version:                 3.0.5
 URL:		         http://maven.apache.org
-Source:		         http://www.us.apache.org/dist/%{srcname}/binaries/apache-%{srcname}-%{version}-bin.tar.gz
+Source:		         http://www.us.apache.org/dist/%{srcname}/%{srcname}-3/%{version}/binaries/apache-%{srcname}-%{version}-bin.tar.gz
 License: 		 Apache License, Version 2.0
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: %pnm_requires_java_runtime_default
+%define SFEopenjdk7     %(/usr/bin/pkginfo -q SFEopenjdk7  2>/dev/null && echo 1 || echo 0)
+
+# Use openjdk7 if present instead of OI's older version of java
+%if %SFEopenjdk7
+Requires: SFEopenjdk7
+%define java_home /usr/jdk/instances/openjdk1.7.0
+%else
+Requires:           %pnm_requires_java_runtime_default
+%define java_home /usr/java
+%endif
 
 %description
 Apache Maven is a software project management and comprehension
@@ -45,7 +54,7 @@ sed -e 's|/etc/mavenrc|/usr/share/maven/etc/mavenrc|g' \
   < bin/mvn > $RPM_BUILD_ROOT%{_datadir}/maven/bin/mvn
 mkdir $RPM_BUILD_ROOT/%{_datadir}/maven/etc
 echo M2_HOME=%{_datadir}/maven > $RPM_BUILD_ROOT%{_datadir}/maven/etc/mavenrc
-echo JAVA_HOME=/usr/java >> $RPM_BUILD_ROOT%{_datadir}/maven/etc/mavenrc
+echo JAVA_HOME=%java_home >> $RPM_BUILD_ROOT%{_datadir}/maven/etc/mavenrc
 mkdir -p $RPM_BUILD_ROOT/usr/bin
 ln -s %{_datadir}/maven/bin/mvn $RPM_BUILD_ROOT/usr/bin/mvn
 
@@ -61,5 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/mvn
 
 %changelog
+* Tue Feb 26 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 3.0.5 (mainly addresses CVE-2013-0253)
+- Use SFEopenjdk7 if present as default java instead of OI's older version of java.
 * Sun Jun 24 2012 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
