@@ -125,6 +125,7 @@ export LDFLAGS="$LDFLAGS32"
 	    $nlsopt
 
 make -j$CPUS
+make check
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -188,6 +189,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
+- Added make check for optimized builds
 * Sun Jul 22 2012 - Milan Jurik
 - bump to 3.1.1
 * Mon Oct 10 2011 - Milan Jurik
