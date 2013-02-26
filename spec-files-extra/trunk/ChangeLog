@@ -5,6 +5,7 @@
 	* SFEsimgear.spec: bump to 2.10.0 
 	* patches/simgear-01-stdlib.diff
 	* patches/simgear-02-isnan.diff
+	* base-specs/libmpc.spec: added library check 
 
 2013-02-24  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
