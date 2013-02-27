@@ -1,5 +1,8 @@
 2013-02-26  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEscala.spec: use SFEopenjdk7 if present as the default java
+	instead of OI's older version of java.
+
 	* SFEmaven.spec: updated to 3.0.5 (mainly addresses
 	CVE-2013-0253.) Use SFEopenjdk7 if present as default java instead
 	of OI's older version of java.

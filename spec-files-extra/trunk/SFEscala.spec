@@ -23,7 +23,18 @@ SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: %pnm_requires_java_runtime_default
+
+
+%define SFEopenjdk7     %(/usr/bin/pkginfo -q SFEopenjdk7  2>/dev/null && echo 1 || echo 0)
+
+# Use openjdk7 if present instead of OI's older version of java
+%if %SFEopenjdk7
+Requires: SFEopenjdk7
+%define java_home /usr/jdk/instances/openjdk1.7.0
+%else
+Requires:           %pnm_requires_java_runtime_default
+%define java_home /usr/java
+%endif
 
 %description
 Scala is a general purpose programming language designed to express
@@ -45,11 +56,12 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/scala
 mv man $RPM_BUILD_ROOT%{_datadir}
 rm bin/*.bat
 mv * $RPM_BUILD_ROOT%{_datadir}/scala
-ln -s /usr/java/lib/tools.jar $RPM_BUILD_ROOT%{_datadir}/scala/lib/tools.jar
+ln -s %{java_home}/lib/tools.jar $RPM_BUILD_ROOT%{_datadir}/scala/lib/tools.jar
 mkdir -p $RPM_BUILD_ROOT/usr/bin
 for f in $RPM_BUILD_ROOT%{_datadir}/scala/bin/* ; do 
   ln -s %{_datadir}/scala/bin/`basename $f` $RPM_BUILD_ROOT/usr/bin/`basename $f`
 done
+gsed -i -e 's|JAVACMD:=java|JAVACMD:=%java_home/bin/java|g' $RPM_BUILD_ROOT%{_datadir}/scala/bin/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -66,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Tue Feb 26 2013 - Logan Bruns <logan@gedanken.org>
+- Use SFEopenjdk7 if present as the default java instead of OI's older version of java.
 * Sat Jan 26 2013 - Logan Bruns <logan@gedanken.org>
 - Updated to 2.10.0
 * Sun Dec 16 2012 - Logan Bruns <logan@gedanken.org>
