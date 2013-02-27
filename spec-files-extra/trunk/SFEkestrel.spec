@@ -70,7 +70,7 @@ mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp kestrel.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 mkdir -p $RPM_BUILD_ROOT/var/log/kestrel
 mkdir -p $RPM_BUILD_ROOT/var/spool/kestrel
-mkdir -p $RPM_BUILD_ROOT/var/run/kestrel
+mkdir -p $RPM_BUILD_ROOT/var/lib/kestrel
 
 mkdir -p $RPM_BUILD_ROOT/usr/share/kestrel
 mv * $RPM_BUILD_ROOT/usr/share/kestrel
@@ -80,6 +80,7 @@ echo "export JAVA_HOME=%java_home" > $RPM_BUILD_ROOT/etc/kestrel/kestrel-env.sh
 
 gsed -i -e 's|/etc/sysconfig/kestrel|/etc/kestrel/kestrel-env.sh|g' \
      -e 's|/usr/local/$APP_NAME/current|/usr/share/kestrel|g' \
+     -e 's|/var/run|/var/lib|g' \
      -e 's|-server|-d64 -server|g' \
   `find $RPM_BUILD_ROOT/usr/share/kestrel/scripts/* -type f -print`
 
@@ -92,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %actions
 #you my at the top of the file %define runuserid (numeric) and add here: uid=%{runuserid}
-user ftpuser=false gcos-field="Kestrel Reserved UID" username="%{runuser}" password=NP group="other" home-dir="/var/spool/kestrel"
+user ftpuser=false gcos-field="Kestrel Reserved UID" username="%{runuser}" password=NP group="other" home-dir="/var/lib/kestrel"
 
 
 %pre root
@@ -121,8 +122,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr(0755, kestrel, other) /var/log/kestrel
 %dir %attr(0755, root, bin) /var/spool
 %dir %attr(0700, kestrel, other) /var/spool/kestrel
-%dir %attr(0755, root, sys) /var/run
-%dir %attr(0700, kestrel, other) /var/run/kestrel
+%dir %attr(0755, root, other) /var/lib
+%dir %attr(0700, kestrel, other) /var/lib/kestrel
 %dir %attr(0755, root, sys) /var/svc
 %dir %attr(0755, root, sys) /var/svc/manifest
 %dir %attr(0755, root, sys) /var/svc/manifest/site
