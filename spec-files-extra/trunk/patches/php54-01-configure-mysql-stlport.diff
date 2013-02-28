@@ -1,0 +1,11 @@
+--- php-5.4.11-fastcgi/configure.orig	2013-02-20 18:21:12.423718154 +0100
++++ php-5.4.11-fastcgi/configure	2013-02-20 18:22:54.516922093 +0100
+@@ -61448,7 +61448,7 @@
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-l$MYSQL_LIBNAME  $LIBS"
++LIBS="-l$MYSQL_LIBNAME  $LIBS -lstlport"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 

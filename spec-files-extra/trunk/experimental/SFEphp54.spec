@@ -20,6 +20,7 @@
 
 
 
+%define mysql_use_stdcxx 0
 
 
 
@@ -45,6 +46,9 @@
 #1 use xml2 from gnu location in new version, 0 use system supplied xml2
 %define usexml2gnu 1
 
+#testing!
+%define mysql_major_minor_version    5.6
+%define mysql_default_prefix mysql/%{mysql_major_minor_version}
 
 Name:                    SFEphp54
 IPS_package_name:	 web/php-54
@@ -52,6 +56,7 @@ Summary:                 php - Hypertext Preprocessor - general-purpose scriptin
 Version:                 %{php_major_minor_micro_version}
 Source:                  http://www.php.net/distributions/php-%{version}.tar.bz2
 URL:                     http://www.php.net/
+Patch1:                  php54-01-configure-mysql-stlport.diff
 SUNW_BaseDir:            /
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -91,7 +96,18 @@ SUNW_BaseDir:            /
 
 %prep
 %setup -q -c -n php-%version
+
 cp -pr php-%version php-%{version}-fastcgi
+
+cd php-%{version}
+%patch1 -p1
+cd ..
+cd php-%{version}-fastcgi
+%if %{mysql_use_stdcxx}
+%else
+%patch1 -p1
+%endif
+cd ..
 
 #do not run apxs with -a (it would try to install/activate the module instantly)
 gsed -i.bak1 -e 's#APXS -i -a -n php5#APXS -i -n php5#' php-%version*/configure
@@ -106,7 +122,8 @@ export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:$PKG_CONFIG_PATH
 export CFLAGS="%optflags"
 export LDFLAGS="%{_ldflags}"
 export CFLAGS="$CFLAGS -I %{gnu_inc}"
-export LDFLAGS="$LDFLAGS %{gnu_lib_path} -liconv -lxml2"
+export CXXFLAGS="%{cxx_optflags}"
+export LDFLAGS="$LDFLAGS %{gnu_lib_path} -liconv -lxml2 -R%{_prefix}/%{mysql_default_prefix}/lib"
 
 #from OS Makefile (php5.2)
 #export CFLAGS="$CFLAGS -xjobs=16 -fsimple=2 -xnorunpath -xO4 -xalias_level=basic -xipo=0"
@@ -148,7 +165,11 @@ PHP_PEAR_SIG_BIN=/usr/gnu/bin/gpg \
 %if %{usexml2gnu}
 PHP_LIBXML_DIR=/usr/gnu \
 %endif
-./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
+%if %{mysql_use_stdcxx}
+%else
+MYSQL_SHARED_LIBADD="-lstlport" \
+%endif
+                                   ./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
 	    --bindir=%{_prefix}/php/%{php_major_minor_version}/bin \
 	    --sbindir=%{_prefix}/php/%{php_major_minor_version}/sbin \
 	    --datadir=%{_prefix}/php/%{php_major_minor_version}/share \
@@ -204,6 +225,7 @@ PHP_LIBXML_DIR=/usr/gnu \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
             --enable-zip \
+            --enable-exif \
 
 gmake -j$CPUS
 cd ..
@@ -212,6 +234,7 @@ cd php-%version
 #find libtool from our own build directory, not from the OS (oi libtool tried /usr/ucb/echo, not installed by default)
 export PATH=`pwd`:$PATHSAVED
 
+##TODO## disable-fastcgi disable-cgi ... siehe php 5.2 makefiles
 #NOTE: the following variables are ENV variables to configure
 PHP_PEAR_CACHE_DIR=/var/tmp/pear/cache \
 PHP_PEAR_DOWNLOAD_DIR=/var/tmp/pear/cache \
@@ -221,8 +244,11 @@ PHP_PEAR_SIG_BIN=/usr/gnu/bin/gpg \
 %if %{usexml2gnu}
 PHP_LIBXML_DIR=/usr/gnu \
 %endif
-##TODO## disable-fastcgi disable-cgi ... siehe php 5.2 makefiles
-./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
+%if %{mysql_use_stdcxx}
+%else
+MYSQL_SHARED_LIBADD="-lstlport" \
+%endif
+                                  ./configure --prefix=%{_prefix}/php/%{php_major_minor_version} \
 	    --bindir=%{_prefix}/php/%{php_major_minor_version}/bin \
 	    --sbindir=%{_prefix}/php/%{php_major_minor_version}/sbin \
 	    --datadir=%{_prefix}/php/%{php_major_minor_version}/share \
@@ -279,6 +305,7 @@ PHP_LIBXML_DIR=/usr/gnu \
             --enable-bcmath \
             --with-gmp=/usr/gnu \
             --enable-zip \
+            --enable-exif \
 
 
 
@@ -394,6 +421,8 @@ changelog incomplete, under development, stay tuned
 open: check imap client
 open: modify lib name libphp5.so and make it mod_php5.4.so
 open: add notes in description for how to activate this php5.4 in apache2
+* Mon Feb 25 2013 - Thomas Wagner
+- --enable-exif
 * Sun Feb  3 2013 - Thomas Wagner
 - --enable-zip
 - set file patch for php session
