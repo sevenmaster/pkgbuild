@@ -11,7 +11,7 @@
 
 %define major 7
 %define minor 14
-%define buildnum 12
+%define buildnum 13
 %define srcname openjdk%{major}
 %define tag jdk%{major}u%{minor}-b%{buildnum}
 
@@ -88,6 +88,11 @@ make sanity
 make all
 (cd build/solaris-*/j2sdk-image ; tar cf - .) | (cd j2sdk-image ; tar xf -)
 
+# build cacerts
+for f in /etc/certs/CA/*.pem ; do 
+  keytool -importcert -noprompt -trustcacerts -keystore j2sdk-image/jre/lib/security/cacerts -storepass changeit -alias $f -file $f 
+done
+
 %install
 cd %{srcname}
 rm -rf $RPM_BUILD_ROOT
@@ -106,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Tue Feb 27 2013 - Logan Bruns <logan@gedanken.org>
+- Populate cacerts with /etc/certs/CA/*.pem at build time.
+- Updated to JDK 7u14b13.
 * Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>
 - Added 64 bit build.
 - Added dependency on dejavu font for AWT apps. 
