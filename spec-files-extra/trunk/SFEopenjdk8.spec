@@ -11,7 +11,7 @@
 
 %define major 8
 %define minor 0
-%define buildnum 76
+%define buildnum 78
 %define srcname openjdk%{major}
 %define tag jdk%{major}-b%{buildnum}
 
@@ -92,6 +92,11 @@ make overlay-images JOBS=$CPUS ENABLE_FULL_DEBUG_SYMBOLS=0
 
 %endif
 
+# build cacerts
+for f in /etc/certs/CA/*.pem ; do 
+  keytool -importcert -noprompt -trustcacerts -keystore j2sdk-image/jre/lib/security/cacerts -storepass changeit -alias $f -file $f 
+done
+
 %install
 cd %{srcname}
 rm -rf $RPM_BUILD_ROOT
@@ -110,5 +115,8 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Thu Feb 28 2013 - Logan Bruns <logan@gedanken.org>
+- Populate cacerts with /etc/certs/CA/*.pem at build time.
+- Updated to JDK 8b78.
 * Sat Feb  9 2013 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
