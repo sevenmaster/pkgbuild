@@ -9,7 +9,7 @@
 #	 only process raw video streams.
 
 %define x264_build       124
-%define snap             20120930
+%define snap             20130303
 %define snaph            2245-stable
 %define src_name         x264-snapshot
 %define src_url          http://download.videolan.org/pub/videolan/x264/snapshots
@@ -74,6 +74,8 @@ rm -f $RPM_BUILD_ROOT%_libdir/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Mar 3 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 20130303
 * Sun Sep 30 2012 - Milan Jurik
 - update to 20120930
 * Thu Jun 21 2012 - Milan Jurik

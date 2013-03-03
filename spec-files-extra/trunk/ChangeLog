@@ -1,6 +1,7 @@
-2013-02-25 Ken Mays <kmays2000@gmail.com>
+2013-03-03 Ken Mays <kmays2000@gmail.com>
 
 	* SFEnasm.spec: bump to 2.10.07
+	* base-specs/libx264.spec: update to 20130303
 
 2013-03-02  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
