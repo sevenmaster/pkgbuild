@@ -1,3 +1,8 @@
+2013-03-02  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEgroovy.spec: Updated to 2.1.1. Added IPS name. Fixed
+	permissions and updated dependencies.
+
 2013-02-28  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEopenjdk8.spec: populate cacerts with /etc/certs/CA/*.pem at
