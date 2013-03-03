@@ -1,3 +1,7 @@
+2013-02-25 Ken Mays <kmays2000@gmail.com>
+
+	* SFEnasm.spec: bump to 2.10.07
+
 2013-03-02  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEgroovy.spec: Updated to 2.1.1. Added IPS name. Fixed
