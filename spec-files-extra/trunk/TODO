@@ -455,3 +455,22 @@ S11 175.0.0.4       osbuild 175     sub-build is 0  SRU is 4
 details:
 maybe prepare a variable like "ips_pkg_entire_version" for use in spec-files
 
+59)
+distinguish provided JDK and/or openjdk.
+spec file then require just (macro names are subject to change)
+   "jdk_default"
+   "jdk16_default"
+   "jdk17_default"
+   "openjdk_default"
+   "openjdk7_default"
+   "openjdk8_default" 
+and get what is needed for the spec file.
+we coul dstart with this switching logic:
+> > OI:
+> >   generic java macro -> SFEopenjdk7
+> >   java7 macro -> SFEopenjdk8
+> >
+> > S11:
+> >   generic java macro -> os provided default
+> >   java7 macro -> os available but not default jdk7
+
