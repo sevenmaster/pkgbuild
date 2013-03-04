@@ -44,7 +44,9 @@ notes: with perl5 you might need to change other paths in the spec as well
 6)
 #updated once Solaris 11 Express build is out delivering a new perl version, check + adjust
 #updated the build-number and remove corresponding ##TODO## in include/packagenames.define.allbuilds.inc
-ANSWER: use perl-512 for testing
+testing now Solaris 11 (Express) Build >= 166 to use perl-512
+#note: pnm_macros already implement this since June 17th 2011. Use the pnm_macro for perl (pnm_buildrequires_perl_default, pnm_requires_perl_default, ...)
+
 
 7)
 need one general license file for "perl" licensed packages. all specs can point to that file with SUNW_Copyright:
@@ -82,13 +84,15 @@ used for building _or_ Mailefile.PL.
 Put the right method into newly generated spec files
 
 
-##DONE##9)
-#lengthy+high_quality description: http://gcc.gnu.org/ml/gcc-patches/2010-01/msg01300.html
-#and maybe http://comments.gmane.org/gmane.comp.gcc.devel/111431
-#see if SFEgcc can avoid forcing the linker to be the gnu ld. suggested by richlowe is https://github.com/mirrors/gcc/commit/ce72f71213f2d4c75e3e82b6524e477d0e743ec5 
-#this would enable sun ld even on OI147.
-#check if this fix is already in the %version of gcc we have now (4.5.3).
-ANSWER: Solaris x86, use sun ld and GNU as combo.
+9)
+lengthy+high_quality description: http://gcc.gnu.org/ml/gcc-patches/2010-01/msg01300.html
+and maybe
+http://comments.gmane.org/gmane.comp.gcc.devel/111431
+
+see if SFEgcc can avoid forcing the linker to be the gnu ld. suggested by richlowe is https://github.com/mirrors/gcc/commit/ce72f71213f2d4c75e3e82b6524e477d0e743ec5 
+this would enable sun ld even on OI147.
+check if this fix is already in the %version of gcc we have now (4.5.3).
+#edit by kenmays: Solaris x86, use sun ld and GNU as combo.
 
 ##DONE##10)
 ##DONE##think on _default macro to point to Python 2.4 or 2.6 or whatever future version is in a Distribution
@@ -363,10 +367,9 @@ deprecate netatalk (2.x) for netatalk3 in buildlists .. eliminates being files s
 
 
 
-#49)
-#change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from
-#outdated older libfuse or the S11 provided libfuse (might not work)
-ANSWER: Independent work done by ISV.
+49)
+change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from
+outdated older libfuse or the S11 provided libfuse (might not work)
 
 50)
 change existing /usr/gnu/ spec files to place xchat.desktop files *not* in
@@ -398,13 +401,13 @@ maybe change livemedia version number detection to an autoupdate_but_stored_in_s
 that way you can rely on the svn revision be in sync with the consuming spec files and 
 not get upgrdes accidentially at compile time
 
-#54)
-#find a solution for SUNWbdb including the header file (was 
-#missing in older OS builds, bdb 4.x) and version 5.x 
-#maybe move SFEbdb to usr-gnu.inc and only use in special cases
-#consuming spec files may need something like pnm_bdb_default
-#ANSWER: Use database/berkeleydb-5@5.1.25 or bdb 5.3.21 package as
-#       a comparable solution for SFEbdb (4.8.30).
+54)
+find a solution for more fresh distroy carry a SUNWbdb including the header file (was 
+missing in older OS builds, bdb 4.x) and version 5.x 
+maybe move SFEbdb to usr-gnu.inc and only use in special cases
+consuming spec files may need something like pnm_bdb_default
+#suggested (kenmays): Use database/berkeleydb-5@5.1.25 or bdb 5.3.21 package as
+#                     a comparable solution for SFEbdb (4.8.30).
 
 55)
 make pnm_macro for perl module io-compress (zlib), perl 5.10.x may start including that
@@ -412,5 +415,27 @@ module by default, so skip SFE version in that case an just require default perl
 a dummy (modeled after %{pnm_buildrequires_SFEperl_extutils_cbuilder} read packagenames.define.allbuilds.inc )
 
 56)
-Review migration planning efforts for:
-LLVM 3.2, Boost 1.53, GCC 4.7.2
+SFEdovecot.spec -- test plugin structure e.g. SFEdovecot-plugin-lucene.spec SFEdovecot-plugin-quota.spec SFEdovecot-plugin-sieve.spec and so on - successfull relocate lucene out of SFEdovecot.spec over to SFEdovecot-plugin-lucene.spec
+
+maybe those make sense as plugins, see also: http://wiki2.dovecot.org/Plugins/
+SFEdovecot-plugin-quota.spec
+SFEdovecot-plugin-trash.spec
+SFEdovecot-plugin-expire.spec
+SFEdovecot-plugin-zlib.spec
+  from: http://wiki.mattrude.com/Dovecot-2.0#Downloading_.26_Compiling_the_Plugin
+  Downloading & Compiling the Plugin
+
+  hg clone http://hg.dovecot.org/dovecot-antispam-plugin
+  cd dovecot-antispam-plugin
+
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make
+  make install
+  
+  Configuring Dovecot's AntiSpam Plugin
+
+  protocol imap {
+      mail_plugins = $mail_plugins antispam
+  }
+  
