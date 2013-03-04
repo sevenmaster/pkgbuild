@@ -487,3 +487,5 @@ we coul dstart with this switching logic:
 > >   generic java macro -> os provided default
 > >   java7 macro -> os available but not default jdk7
 
+60)
+Review Boost.Locale security notice (Boost #7743)
