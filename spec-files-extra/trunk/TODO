@@ -443,3 +443,15 @@ SFEdovecot-plugin-zlib.spec
 Review migration planning efforts for:
 LLVM 3.2, Boost 1.53, GCC 4.7.2
 
+58)
+need a way to distinguish sub-builds in osdistro.inc 
+this helps switching in packagenamemacros and other
+OS-version specific features
+S11 175.0 -> 175.1  osbuild 175 but sub-build is 0 or 1
+OI151a4 -> OI151a7  osbuild 151 but sub-build is 4 or 7
+It should be as well possible to detect S11 SRUs 
+SRUs:
+S11 175.0.0.4       osbuild 175     sub-build is 0  SRU is 4
+details:
+maybe prepare a variable like "ips_pkg_entire_version" for use in spec-files
+
