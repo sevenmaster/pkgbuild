@@ -1,5 +1,7 @@
 2013-03-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEopenafs.spec: updated to 1.6.2
+
 	* SFEopenjdk7.spec: updated to JDK 7u15b02.
 
 2013-03-03 Ken Mays <kmays2000@gmail.com>

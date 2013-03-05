@@ -19,16 +19,14 @@ Name:                    SFEopenafs
 IPS_Package_Name:        system/file-system/openafs
 Summary:                 OpenAFS - Distributed file system
 Group:                   Utility
-Version:                 1.6.1.5
+Version:                 1.6.2
 License: 		 IBM Public License Version 1.0
-Patch1:                  openafs-01-configure.diff
+#Patch1:                  openafs-01-configure.diff
 Patch2:                  openafs-02-afs-rc.diff
 Patch3:                  openafs-03-enable-multiarch.diff
 Patch4:                  openafs-04-krb5_conf_path.diff
-#Source:                  http://openafs.org/dl/openafs/%{version}/%{srcname}-%{version}-src.tar.bz2
-Source:                  http://openafs.org/dl/openafs/1.6.1/%{srcname}-1.6.1-src.tar.bz2
-#Source2:                 http://openafs.org/dl/openafs/%{version}/%{srcname}-%{version}-doc.tar.bz2
-Source2:                 http://openafs.org/dl/openafs/1.6.1/%{srcname}-1.6.1-doc.tar.bz2
+Source:                  http://openafs.org/dl/openafs/%{version}/%{srcname}-%{version}-src.tar.bz2
+Source2:                 http://openafs.org/dl/openafs/%{version}/%{srcname}-%{version}-doc.tar.bz2
 Source3:                 openafs.xml
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
@@ -52,9 +50,7 @@ source available for community development and maintenance. They
 called the release OpenAFS.
 
 %prep
-#%setup -q -n %{srcname}-%{version}
-%setup -q -n %{srcname}-1.6.1
-%patch1 -p1
+%setup -q -n %{srcname}-%{version}
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -149,6 +145,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/openafs.xml
 
 %changelog
+* Mon Mar  4 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 1.6.2
 * Mon Jun 18 2012 - Logan Bruns <logan@gedanken.org>
 - Fixed default path for krb5.conf (/etc/krb5.conf -> /etc/krb5/krb5.conf)
 - Added missing buildrequires for math headers
