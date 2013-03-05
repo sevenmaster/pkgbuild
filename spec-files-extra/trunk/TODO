@@ -444,17 +444,17 @@ For C++11 conformance and cross-platform application development/porting:
 Review integration concerns and issues during migration planning to 
 update OI-SFE boost packages (headers/docs/library) to Boost 1.53. (KenMays) 
 
-Packages affected:
-system/library/g++/boost@1.47.0,5.11-0.151.1:20111014T84718Z
-system/library/g++/boost@1.49.0,5.11-0.151.1.5:20120729T202051Z
-system/library/g++/boost/documentation@1.49.0,5.11-0.151.1.5:20120729T202121Z
-system/library/g++/boost/header-boost@1.49.0,5.11-0.151.1.5:20120729T202054Z
-runtime/gcc@4.6.2
-sfe/developer/gcc@4.6.3
-developer/llvm@3.1
+OI-SFE: Packages affected:
+OI-SFE: system/library/g++/boost@1.47.0,5.11-0.151.1:20111014T84718Z
+OI-SFE: system/library/g++/boost@1.49.0,5.11-0.151.1.5:20120729T202051Z
+OI-SFE: system/library/g++/boost/documentation@1.49.0,5.11-0.151.1.5:20120729T202121Z
+OI-SFE: system/library/g++/boost/header-boost@1.49.0,5.11-0.151.1.5:20120729T202054Z
+OI-SFE: runtime/gcc@4.6.2
+OI-SFE: sfe/developer/gcc@4.6.3
+OI-SFE: developer/llvm@3.1
 
-Status: passed all testing on oi_151a7 with Boost 1.53 and SFEgcc 4.6.2
-TODO: Update to >= Boost 1.53; Add LLVM 3.2 and GCC 4.7.2 packages to repo 
+OI-SFE: Status: passed all testing on oi_151a7 with Boost 1.53 and SFEgcc 4.6.2
+OI-SFE: TODO: Update to >= Boost 1.53; Add LLVM 3.2 and GCC 4.7.2 packages to repo 
 
 58)
 need a way to distinguish sub-builds in osdistro.inc 
