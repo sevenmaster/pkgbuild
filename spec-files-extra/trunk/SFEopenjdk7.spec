@@ -10,10 +10,10 @@
 %include packagenamemacros.inc
 
 %define major 7
-%define minor 14
-%define buildnum 13
+%define minor 15
+%define buildnum 2
 %define srcname openjdk%{major}
-%define tag jdk%{major}u%{minor}-b%{buildnum}
+%define tag jdk%{major}u%{minor}-b0%{buildnum}
 
 Name:                    SFEopenjdk%{major}
 IPS_Package_Name:	 developer/java/openjdk-%{major}
@@ -53,7 +53,7 @@ applications require.
 
 %prep
 rm -rf %{srcname}
-hg clone -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u %{srcname}
+hg clone -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u-dev %{srcname}
 cd %{srcname}
 gsed -i -e 's/hg clone/hg clone -r %{tag}/g' make/scripts/hgforest.sh
 bash ./make/scripts/hgforest.sh clone
@@ -111,7 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
-* Tue Feb 27 2013 - Logan Bruns <logan@gedanken.org>
+* Mon Mar  4 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to JDK 7u15b02.
+* Wed Feb 27 2013 - Logan Bruns <logan@gedanken.org>
 - Populate cacerts with /etc/certs/CA/*.pem at build time.
 - Updated to JDK 7u14b13.
 * Fri Feb  8 2013 - Logan Bruns <logan@gedanken.org>

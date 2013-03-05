@@ -1,3 +1,7 @@
+2013-03-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEopenjdk7.spec: updated to JDK 7u15b02.
+
 2013-03-03 Ken Mays <kmays2000@gmail.com>
 
 	* SFEnasm.spec: bump to 2.10.07
