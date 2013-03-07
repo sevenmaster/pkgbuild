@@ -1,3 +1,7 @@
+2013-03-07  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEgit.spec: bump to 1.8.1.3
+
 2013-03-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEopenafs.spec: updated to 1.6.2
