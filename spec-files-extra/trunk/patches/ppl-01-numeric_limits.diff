@@ -1,0 +1,38 @@
+--- ppl-0.12.1/src/mp_std_bits.defs.hh	2012-04-16 05:12:30.000000000 -0700
++++ ppl-0.12.1-patch/src/mp_std_bits.defs.hh	2013-03-07 10:52:24.264499814 -0800
+@@ -38,6 +38,8 @@
+ #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+ void swap(mpq_class& x, mpq_class& y);
+ 
++#if 0
++
+ namespace std {
+ 
+ #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+@@ -164,6 +166,8 @@
+ 
+ } // namespace std
+ 
++#endif
++
+ #include "mp_std_bits.inlines.hh"
+ 
+ #endif // !defined(PPL_mp_std_bits_defs_hh)
+--- ppl-0.12.1/src/mp_std_bits.cc	2012-04-16 05:12:30.000000000 -0700
++++ ppl-0.12.1-patch/src/mp_std_bits.cc	2013-03-07 10:52:36.981630004 -0800
+@@ -25,6 +25,8 @@
+ #include "ppl-config.h"
+ #include "mp_std_bits.defs.hh"
+ 
++#if 0
++
+ const bool std::numeric_limits<mpz_class>::is_specialized;
+ const int std::numeric_limits<mpz_class>::digits;
+ const int std::numeric_limits<mpz_class>::digits10;
+@@ -70,3 +72,6 @@
+ const bool std::numeric_limits<mpq_class>::traps;
+ const bool std::numeric_limits<mpq_class>::tininess_before;
+ const std::float_round_style std::numeric_limits<mpq_class>::round_style;
++
++#endif
++
