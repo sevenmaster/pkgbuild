@@ -7,12 +7,14 @@
 
 %define src_name	WordNet
 %define src_url		http://wordnetcode.princeton.edu/
+%define base_version    3.0
 
 Name:                   SFEwordnet
 IPS_Package_Name:	text/wordnet
 Summary:                lexical database for the English language
-Version:                3.0
-Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.bz2
+Version:                3.1
+Source:                 %{src_url}/%{base_version}/%{src_name}-%{base_version}.tar.bz2
+Source2:                %{src_url}/wn%{version}.dict.tar.gz
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -23,7 +25,9 @@ SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
 
 %prep
-%setup -q -n %{src_name}-%{version}
+%setup -q -n %{src_name}-%{base_version}
+tar xzf %{SOURCE2}
+gsed -i -e 's/%{base_version}/%{version}/g' configure lib/wnglobal.c
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -74,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Mon Mar 11 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 3.1
 * Sat Mar 10 2012 - Logan Bruns <logan@gedanken.org>
 - Updated download url and added ips package name.
 * Sun Mar  6 2007 - dougs@truemail.co.th
