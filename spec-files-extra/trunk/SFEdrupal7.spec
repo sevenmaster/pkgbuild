@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.20
+Version:             7.21
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -104,6 +104,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 12 2013 - Thomas Wagner
+- bump to 7.21 - Maintenance release of the Drupal 7 series. Includes fixes for incompatibilities introduced in the Drupal 7.20 security release only. Read the release notes for instructions!
 * Thu Feb 21 2013 - Thomas Wagner
 - bump to 7.20 - DRUPAL-SA-CORE-2013-002 - Drupal core - Denial of service (from remote, Image module)
 * Thu Jan 17 2013 - Thomas Wagner
