@@ -20,7 +20,7 @@ Name:                    SFEgerrit
 IPS_Package_Name:	 developer/versioning/gerrit
 Summary:                 Gerrit - Web based code review and project management
 Group:                   Utility
-Version:                 2.5.1
+Version:                 2.5.2
 URL:		         http://gerrit.googlecode.com
 Source:		         http://gerrit.googlecode.com/files/gerrit-full-%{version}.war
 Source2:                 gerrit.xml
@@ -110,6 +110,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/gerrit.xml
 
 %changelog
+* Wed Mar 13 2012 - Logan Bruns <logan@gedanken.org>
+- updated to 2.5.2
 * Mon Feb 4 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 2.5.1
 * Fri Nov 16 2012 - Logan Bruns <logan@gedanken.org>
