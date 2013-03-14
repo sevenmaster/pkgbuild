@@ -1,5 +1,7 @@
 2013-03-13  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEjenkins.spec: updated to 1.505
+
 	* SFEgerrit.spec: updated to 2.5.2
 
 2013-03-11  Logan O'Sullivan Bruns  <logan@gedanken.org>
