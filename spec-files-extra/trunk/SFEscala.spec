@@ -15,7 +15,7 @@ Name:                    SFEscala
 IPS_Package_Name:	 runtime/java/scala
 Summary:                 Scala - The Scala Programming Language
 Group:                   Development/Scala
-Version:                 2.10.0
+Version:                 2.10.1
 URL:		         http://www.scala-lang.org/
 Source:		         http://www.scala-lang.org/downloads/distrib/files/scala-%{version}.tgz
 License: 		 BSD License
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Tue Mar 19 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 2.10.1
 * Tue Feb 26 2013 - Logan Bruns <logan@gedanken.org>
 - Use SFEopenjdk7 if present as the default java instead of OI's older version of java.
 * Sat Jan 26 2013 - Logan Bruns <logan@gedanken.org>
