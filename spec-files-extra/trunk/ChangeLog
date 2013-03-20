@@ -1,5 +1,7 @@
 2013-03-19  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEclamav.spec: updated to 0.97.7
+
 	* SFEscala.spec: updated to 2.10.1
 
 2013-03-13  Logan O'Sullivan Bruns  <logan@gedanken.org>
