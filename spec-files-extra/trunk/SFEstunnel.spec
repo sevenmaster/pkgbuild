@@ -17,7 +17,7 @@
 Name:                SFEstunnel
 IPS_Package_Name:    sfe/service/security/stunnel
 Summary:             An SSL client/server encryption wrapper
-Version:             4.54
+Version:             4.55
 Source:              http://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
 Source2:             stunnel.xml
 
@@ -115,6 +115,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr(0755, stunnel, other) /var/lib/stunnel
 
 %changelog
+* Thu Mar 21 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 4.55
 * Sat Jan 12 2013 - Logan Bruns <logan@gedanken.org>
 - bump to 4.54
 - added IPS name
