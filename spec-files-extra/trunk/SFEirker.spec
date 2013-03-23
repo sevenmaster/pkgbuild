@@ -13,11 +13,11 @@
 
 Name:                    SFEirker
 Summary:		 An IRC client that runs as a daemon accepting notification requests as JSON objects presented to a listening socket
-Version:                 1.12
+Version:                 1.17
 Source:                  http://www.catb.org/~esr/irker/irker-%{version}.tar.gz
 Source2:                 irker.xml
 ##TODO## temporary patch
-Patch1:			 irker-1.12-urlparse.diff
+#Patch1:			 irker-1.12-urlparse.diff
 URL:                     http://www.catb.org/esr/irker
 SUNW_BaseDir:            /
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -38,7 +38,7 @@ cp %{SOURCE2} irker.xml
 perl -pi -e 's:^#! */usr/bin/python.*:#!/usr/bin/python%{python_major_minor_version}:' `find . -type f -print`
 perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}:' `find . -type f -print`
 
-%patch1 -p1
+#%patch1 -p1
 
 %build
 
@@ -88,6 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 23 2013 - Thomas Wagner
+- bump to 1.17
+- remove patch1 irker-1.12-urlparse.diff
 * Sat Oct 27 2012 - Thomas Wagner
 - relocate irkerd to /usr/sbin/
 - add SMF manifest (run irkerd as user nobody:nogroup)
