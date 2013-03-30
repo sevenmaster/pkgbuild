@@ -1,8 +1,23 @@
+# early stage for a mysql 5.6.x spec file, currently only 32-bit
+
+# S T R O N G  N O T E :  initialize fresh database. In case you
+#                         restore a database-dump from older mysql
+#                         then you *need* to re-run "mysql_upgrade"
+#                         or risk crashing the mysqld with weirdest
+#                         error messages pointing to c++ functions.
+#                         Note flag file /var/mysql/5.6/data/mysql_upgrade_info
+#                         it could misslead you. If you run mysql_upgrade
+#                         and import your database-backup, then you
+#                         mit need to re-run the mysql_upgrade script
+#                         maybe with the --force switch.
 
 #1 use, 0 don't
 %define use_stdcxx 0
 
 # oh well, this is in a _very_ early state. it compiles. no fine tuning. 32-bit only.
+
+%define enable_libumem 1
+
 
 %include Solaris.inc
 %include base.inc
@@ -50,6 +65,9 @@ BuildRequires: SFEcmake
 #evtl. neu machen %patch1 -p1
 %patch2 -p1
 
+##TODO##
+#mysql_upgrade is /bin/sh
+
 %build
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -80,6 +98,11 @@ export DATA_PREFIX="/var/mysql/%{major_minor}"
 # C common compiler flags
 #export COMMONCFLAGS="-xO4 -xstrconst -xprefetch=auto -xprefetch_level=3 -mt -fns=no -fsimple=1 -xbuiltin=%%all -xlibmil -xlibmopt -xnorunpath"
 
+%if %{use_stdcxx}
+export CC=${CC}
+export CXX="${CXX} -library=no%Cstd"
+#export CFLAGS="%{optflags}"
+%endif
 
 
 #test with -lthread
@@ -87,12 +110,14 @@ export LDFLAGS="%{_ldflags} -lrt -lm -lthread "
 #export CFLAGS="%{optflags}"
 #export CFLAGS=""  or get #bool Rpl_info_factory::change_mi_repository(Master_info*,const unsigned,const char**) ../../../sql/libsql.a(sys_vars.cc.o)
 export CFLAGS=""
-export CXXFLAGS="%{cxx_optflags}"
+#export CXXFLAGS="%{cxx_optflags}"
 
-%if %{use_stdcxx}
-export CC=${CC}
-export CXX="${CXX} -library=no%Cstd"
-export CFLAGS="%{optflags}"
+%if %{enable_libumem}
+#diese oder
+export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -lumem "
+#diese Variable?
+export LDFLAGS="$LDFLAGS -lumem "
+%else
 %endif
 
 #aus compile-lauf:
@@ -103,6 +128,7 @@ echo "DEBUG: CXX     " $CXX
 echo "DEBUG: CFLAGS  " $CFLAGS
 echo "DEBUG: CXXFLAGS" $CXXFLAGS
 echo "DEBUG: LDFLAGS " $LDFLAGS
+echo "DEBUG: EXTRA_LDFLAGS " $EXTRA_LDFLAGS
 
 #bash
 
@@ -168,6 +194,18 @@ CMAKE=cmake
 
   gmake -j$CPUS VERBOSE=1
 
+echo "build results: ldd and dump -Lv"
+
+for file in  sql/mysqld client/mysql libmysql/libmysqlclient_r.so.18.0.0 libmysql/libmysqlclient.so.18.0.0
+ do
+ echo "ldd $file"
+       ldd $file
+ echo "dump -Lv $file"
+       dump -Lv $file
+ echo "======================="
+ done #for
+
+
 %install
 cd %{bld_arch}
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -182,6 +220,7 @@ gsed -i -e '/^embedded_libs/ s?\"$? -lstlport "?' $RPM_BUILD_ROOT%{_prefix}/mysq
 
 rm $RPM_BUILD_ROOT%{_prefix}/mysql/%{major_minor}/lib/libmysqld.a
 rm $RPM_BUILD_ROOT%{_prefix}/mysql/%{major_minor}/lib/libmysqlclient.a
+rm $RPM_BUILD_ROOT%{_prefix}/mysql/%{major_minor}/lib/libmysqlclient_r.a
 rm $RPM_BUILD_ROOT%{_prefix}/mysql/%{major_minor}/lib/libmysqlservices.a
 
 
@@ -241,6 +280,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 ##%changelog
+- add switch enable_libumem 1
+- add debugging info to build results (ldd and dump -Lv)
 * Sat Feb  9 2013 - Thomas Wagner
 - initial spec, only compiles, no fine tuning, 32-bit only
 
