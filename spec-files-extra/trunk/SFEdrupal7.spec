@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.21
+Version:             7.22
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -70,8 +70,7 @@ cp -p %{SOURCE3} .
 rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/etc/apache%{apache2_majorversion}/%{apache2_version}/samples-conf.d/
-#mv %{src_name}.conf.example $RPM_BUILD_ROOT/etc/apache%{apache2_majorversion}/%{apache2_version}/samples-conf.d/%{src_name}.conf
-mv %{name}.conf.example $RPM_BUILD_ROOT/etc/apache%{apache2_majorversion}/%{apache2_version}/samples-conf.d/%{name}.conf
+cp -p %{name}.conf.example $RPM_BUILD_ROOT/etc/apache%{apache2_majorversion}/%{apache2_version}/samples-conf.d/%{name}.conf
 
 mkdir -p $RPM_BUILD_ROOT/%{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}/
 cp -pr * $RPM_BUILD_ROOT/%{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}/
@@ -93,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0750, webservd, bin) %{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}
 %{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}/*
 %{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}/.htaccess
-#don't let wordpress modify it's files - for security owned by root and not writable by the webservd userid
+#don't let drupal modify it's files - for security owned by root and not writable by the webservd userid
 #places explicitly needed writable are system/logs, system/html, system/tmp
 %defattr (0644, root, bin)
 #example %dir %attr (0750, webservd, bin) %{_localstatedir}/%{src_name}-%{version}%{src_name_minor_extra}/writable_file_this_is
@@ -104,6 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 10 2013 - Thomas Wagner
+- bump to 7.22 - Maintenance release of the Drupal 7 series. Includes bugfixes and small API/feature improvements only (no major new functionality)
+* Sun Mar 17 2013 - Thomas Wagner
+- use cp instead of mv for the example apache config file (%install)
 * Tue Mar 12 2013 - Thomas Wagner
 - bump to 7.21 - Maintenance release of the Drupal 7 series. Includes fixes for incompatibilities introduced in the Drupal 7.20 security release only. Read the release notes for instructions!
 * Thu Feb 21 2013 - Thomas Wagner
