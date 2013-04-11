@@ -9,9 +9,11 @@
 %define docversion 2.6.0
 
 Name:                    SFEmediathek
+IPS_package_name:        media/mediathek
+Group:                   Applications/Sound and Video
 Summary:                 mediathek - download TV broadcasters online offers, download podcasts
 URL:                     http://zdfmediathk.sourceforge.net/
-Version:                 3.1.0
+Version:                 3.2.1
 Source:                  %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{version}/MediathekView_%{version}.zip
 Source2:                 %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{docversion}/Kurzanleitung_%{docversion}.pdf
 
@@ -58,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 23 2013 - Thomas Wagner
+- bump to 3.2.1
+* Sun Jan 27 2013 - Thomas Wagner
+- add IPS_package_name, Group
 * Wed Jan 23 2013 - Thomas Wagner
 - bump to 3.1.0
 * Mon May 14 2012 - Thomas Wagner
