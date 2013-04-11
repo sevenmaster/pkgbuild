@@ -3,6 +3,7 @@
 #
 #
 %include Solaris.inc
+%include osdistro.inc
 
 Name:		SFEgeoip
 IPS_Package_Name:	library/geoip
@@ -38,10 +39,12 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
+%if %{SXCE}
 libtoolize --copy --force
 aclocal
 automake -a -f
 autoconf -f
+%endif
 
 ./configure --prefix=%{_prefix}           \
             --bindir=%{_bindir}           \
@@ -51,6 +54,10 @@ autoconf -f
             --mandir=%{_mandir}           \
             --infodir=%{_infodir}         \
             --disable-static              
+
+%if %{SXCE}
+sed -i -e 's?LIBTOOL =.*?LIBTOOL = /usr/bin/libtool?' `find . -type f -name Makefile`
+%endif
 
 make -j$CPUS
 
@@ -81,6 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 11 2013 - Thomas Wagner
+- make use libtoolize/* conditional (S10/SXCE)
 * Sun Dec 11 2011 - Milan Jurik
 - bump to 1.4.8
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
