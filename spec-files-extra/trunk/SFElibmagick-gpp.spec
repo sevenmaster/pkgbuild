@@ -9,7 +9,7 @@
 %include base.inc
 
 %define src_name	ImageMagick
-%define major		6.8.2
+%define major		6.8.3
 %define minor		10
 
 # Note: we purposely take the latest version from legacy since these
@@ -94,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Apr 13 2013 - Logan Bruns <logan@gedanken.org>
+- update to 6.8.3-10
 * Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 6.8.2-10
 * Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>

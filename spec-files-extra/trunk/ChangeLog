@@ -1,5 +1,7 @@
 2013-04-13  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFElibmagick-gpp.spec: update to 6.8.3-10
+
 	* SFEimagemagick.spec: update to 6.8.3-10. Added socket
 	libraries. Updated some packaging paths.
 
