@@ -7,7 +7,7 @@
 %include packagenamemacros.inc
 
 %define src_name	ImageMagick
-%define major		6.7.9
+%define major		6.8.3
 %define minor		10
 
 # Note: we purposely take the latest version from legacy since these
@@ -73,7 +73,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export CPPFLAGS="-I/usr/include/freetype2 -I/usr/X11/include"
-export LDFLAGS="%_ldflags -L/usr/X11/lib -R/usr/X11/lib"
+export LDFLAGS="%_ldflags -lnsl -lsocket -L/usr/X11/lib -R/usr/X11/lib"
 if [ "x`basename $CC`" = xgcc ]
 then
 	%error "Building this spec with GCC is not supported."
@@ -113,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so*
 %{_libdir}/%{src_name}-%{major}
 %dir %attr (0755,root,sys) %{_datadir}
-%{_datadir}/%{src_name}-%{major}
+%{_datadir}/%{src_name}-%(echo %{major} | cut -f1 -d.)
 %{_mandir}
 %dir %attr (0755,root,other) %{_datadir}/doc
 %{_datadir}/doc/*
@@ -129,9 +129,13 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, sys)
 %dir %attr (-, root, sys) %_sysconfdir
-%attr (-, root, root) %_sysconfdir/ImageMagick
+%attr (-, root, root) %_sysconfdir/%{src_name}-%(echo %{major} | cut -f1 -d.)
 
 %changelog
+* Sat Apr 13 2013 - Logan Bruns <logan@gedanken.org>
+- update to 6.8.3-10
+- added socket libraries
+- updated some packaging paths
 * Tue Oct 30 2012 - Thomas Wagner
 - remove perllocal.pod
 * Sun Oct 26 2012 - Thomas Wagner
