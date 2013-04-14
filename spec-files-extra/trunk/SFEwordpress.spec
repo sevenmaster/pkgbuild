@@ -15,7 +15,7 @@
 Name:                SFEwordpress
 IPS_Package_Name:	 web/service/wordpress 
 Summary:             Blogging software
-Version:             3.4.1
+Version:             3.5.1
 Source:              http://wordpress.org/wordpress-3.4.1.tar.gz
 #Source:              http://wordpress.org/wordpress-%{version}%{src_name_minor_extra}.zip
 License:	     GPLv2
@@ -82,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 14 2013 - Thomas Wagner
+- bump to 3.5.1
 * Sat Aug 25 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.4.1
 * Tue Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
