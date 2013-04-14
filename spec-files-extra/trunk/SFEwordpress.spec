@@ -16,7 +16,7 @@ Name:                SFEwordpress
 IPS_Package_Name:	 web/service/wordpress 
 Summary:             Blogging software
 Version:             3.5.1
-Source:              http://wordpress.org/wordpress-3.4.1.tar.gz
+Source:              http://wordpress.org/wordpress-%{version}.tar.gz
 #Source:              http://wordpress.org/wordpress-%{version}%{src_name_minor_extra}.zip
 License:	     GPLv2
 Group:		Web Services/Portals
