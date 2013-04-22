@@ -17,12 +17,12 @@
 Name:                    SFEemacs
 IPS_Package_Name:	 sfe/editor/gnu-emacs
 Summary:                 GNU Emacs - an operating system in a text editor
-Version:                 24.2.1
+Version:                 24.3.1
 License:                 GPLv3+
 SUNW_Copyright:          emacs.copyright
-%define emacs_version    24.2
-%define src_version      24.2
-Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.bz2
+%define emacs_version    24.3
+%define src_version      24.3
+Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.gz
 #Patch1:                  emacs-01-sound.diff
 URL:                     http://www.gnu.org/software/emacs/emacs.html
 SUNW_BaseDir:            %{_basedir}
@@ -160,6 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Mon Apr 22 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 24.3
 * Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
 - added missing (build)requires for sfegcc(runtime)
 * Wed Feb 20 2013 - Logan Bruns <logan@gedanken.org>
