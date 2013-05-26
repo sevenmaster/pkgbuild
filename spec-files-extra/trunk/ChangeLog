@@ -1,3 +1,7 @@
+2013-05-26  Thomas Wagner  <tom68@users.sourceforge.net>
+
+	* SFEopus.spec: initial spec version 1.0.2
+
 2013-04-22  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEemacs.spec: updated to 24.3
