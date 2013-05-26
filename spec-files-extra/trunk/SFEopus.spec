@@ -97,22 +97,6 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
-## Packaging one part.
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/include/opus/opus.h
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/include/opus/opus_custom.h
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/include/opus/opus_defines.h
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/include/opus/opus_multistream.h
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/include/opus/opus_types.h
-/opt/jdsbld/packages/PKGS/SFEopus-devel/reloc/lib/amd64/pkgconfig/opus.pc
-## Validating control scripts.
-## Packaging complete.
-error: Installed (but unpackaged) file(s) found:
-        /usr/lib/amd64/libopus.la
-        /usr/lib/libopus.la
-        /usr/share
-        /usr/share/aclocal
-        /usr/share/aclocal/opus.m4
-
 * Sat May 25 2013 - Thomas Wagner
 - initial spec derived from libvorbis.spec, SFEgmp.spec and opus.spec (SuSE)
 - starting with GNU gcc (Studio compilers would need patching compiler switches in opus)
