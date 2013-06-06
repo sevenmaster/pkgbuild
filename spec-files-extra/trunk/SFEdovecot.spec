@@ -7,7 +7,7 @@
 
 #defaults to _off_ . use pkgtool --with-clucene to get 
 #the nice server side search extension
-#note: needs boost, libtemmer, libtextcat, switches to gcc/g++
+#note: needs boost, libstemmer, libtextcat, switches to gcc/g++
 %define with_clucene %{!?_with_clucene:0}%{?_with_clucene:1}
 
 %define src_name dovecot
@@ -17,7 +17,7 @@
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
-%define  daemongcosfield 'dovecot Reserved UID'
+%define  daemongcosfield dovecot Reserved UID
 %define  daemongroup other
 %define  daemongid   1
 #starting with version 2.0.0  -  adds one more user
@@ -25,7 +25,7 @@
 #inspired by http://slackbuilds.org/uid_gid.txt
 ##TODO## check if this id is a good choice in Solaris
 %define  daemonloginuid   248
-%define  daemonloginusergcosfield 'dovecot Reserved UID login user'
+%define  daemonloginusergcosfield dovecot Reserved UID login user
 ##TODO## check if this should be nogroup or nobody group
 #READ! if you change from nogroup (65534) then *ENABLE* group creation below, twice
 %define  daemonlogingroup nogroup
@@ -159,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
 #not needed _if_ group is nogroup  (65534)
 # group groupname="%{daemonlogingroup}" gid="%{daemonlogingid}"
-user ftpuser=false gcos-field="%{daemongloginusercosfield}" username="%{daemonloginuser}" uid=%{daemonloginuid} password=NP group="%{daemonlogingroup}"
+user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonloginuser}" uid=%{daemonloginuid} password=NP group="%{daemonlogingroup}"
 
 
 #SVR4 (e.g. Solaris 10, SXCE)
@@ -216,6 +216,8 @@ user ftpuser=false gcos-field="%{daemongloginusercosfield}" username="%{daemonlo
 
 
 %changelog
+* Wed Jun  6 2013 - Thomas Wagner
+- fix typo in daemon* variable, remove quotes
 * Sat Apr  6 2013 - Thomas Wagner
 - make clucene optional (--with-clucene)
 - bump to 2.1.16 (needs -D__EXTENSIONS__) 
