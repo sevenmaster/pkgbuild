@@ -5,6 +5,11 @@
 
 # NOTE: READ THE WIKI page for SFEdovecot.spec : http://pkgbuild.wiki.sourceforge.net/SFEdovecot.spec
 
+#defaults to _off_ . use pkgtool --with-clucene to get 
+#the nice server side search extension
+#note: needs boost, libtemmer, libtextcat, switches to gcc/g++
+%define with_clucene %{!?_with_clucene:0}%{?_with_clucene:1}
+
 %define src_name dovecot
 # maybe set to nullstring outside release-candidates (example: 1.1/rc  or just 1.1)
 #%define downloadversion	 1.1/rc
@@ -12,14 +17,15 @@
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
+%define  daemongcosfield 'dovecot Reserved UID'
 %define  daemongroup other
 %define  daemongid   1
-
-#starting with version 2.0.0
+#starting with version 2.0.0  -  adds one more user
 %define  daemonloginuser  dovenull
 #inspired by http://slackbuilds.org/uid_gid.txt
 ##TODO## check if this id is a good choice in Solaris
 %define  daemonloginuid   248
+%define  daemonloginusergcosfield 'dovecot Reserved UID login user'
 ##TODO## check if this should be nogroup or nobody group
 #READ! if you change from nogroup (65534) then *ENABLE* group creation below, twice
 %define  daemonlogingroup nogroup
@@ -28,15 +34,17 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %{with_clucene}
 %define cc_is_gcc 1
 %include base.inc
+%endif
 
 Name:		SFEdovecot
 IPS_Package_Name:	service/network/imap/dovecot
 Summary:	dovecot - A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.1.15
+Version:	2.1.16
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -46,8 +54,10 @@ Source2:	dovecot.xml
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
+%if %{with_clucene}
 BuildRequires:      SFEgcc
 Requires:           SFEgccruntime
+%endif
 BuildRequires: SUNWzlib
 Requires: SUNWzlib
 BuildRequires: SUNWbzip
@@ -61,12 +71,14 @@ Requires: SUNWcurl
 #help Solaris 10 and SVR4 Nevada to workaround multiple package renames
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
+%if %{with_clucene}
 BuildRequires: SFElibstemmer-devel
 Requires: SFElibstemmer
 BuildRequires: SFElibtextcat-devel
 Requires: SFElibtextcat
 BuildRequires: SFEclucene-gpp-devel
 Requires: SFEclucene-gpp
+%endif
 
 %include default-depend.inc
 
@@ -91,11 +103,17 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
+%if %{with_clucene}
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags"
-export CXXFLAGS="-I/usr/g++/include"
-export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib"
+%endif
+export CFLAGS="%optflags -D__EXTENSIONS__"
+export CXXFLAGS="%cxx_optflags"
+export LDFLAGS="%_ldflags"
+%if %{with_clucene}
+export CXXFLAGS="$CXXFLAGS -I/usr/g++/include"
+export LDFLAGS="$LDFLAGS -L/usr/g++/lib -R/usr/g++/lib"
+%endif
 
 ./configure --prefix=%{_prefix}		\
 	    --bindir=%{_bindir}		\
@@ -110,8 +128,10 @@ export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib"
             --with-ioloop=best \
 	    --with-ssl=openssl \
 	    --with-gssapi=yes  \
+%if %{with_clucene}
 	    --with-lucene \
             --with-stemmer \
+%endif
             --with-solr \
 	    --disable-static		
 
@@ -135,11 +155,11 @@ rm -rf $RPM_BUILD_ROOT
 #IPS
 ##TODO## is is possible to predefine the numeric GID and UID?
 %actions
-group groupname="%{daemongroup}" gid="%{daemongid}"
-user ftpuser=false gcos-field="%src_name user" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
+#no more then one package may deliver this: group groupname="%{daemongroup}" gid="%{daemongid}"
+user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
 #not needed _if_ group is nogroup  (65534)
 # group groupname="%{daemonlogingroup}" gid="%{daemonlogingid}"
-user ftpuser=false gcos-field="%src_name login user" username="%{daemonloginuser}" uid=%{daemonloginuid} password=NP group="%{daemonlogingroup}"
+user ftpuser=false gcos-field="%{daemongloginusercosfield}" username="%{daemonloginuser}" uid=%{daemonloginuid} password=NP group="%{daemonlogingroup}"
 
 
 #SVR4 (e.g. Solaris 10, SXCE)
@@ -149,10 +169,10 @@ user ftpuser=false gcos-field="%src_name login user" username="%{daemonloginuser
 ( echo 'PATH=/usr/bin:/usr/sbin; export PATH' ;
   echo 'retval=0';
   echo 'getent group %{daemongroup} || groupadd -g %{daemongid} %{daemongroup} ';
-  echo 'getent passwd %{daemonuser} || useradd -d /tmp -g %{daemongroup} -s /bin/false  -u %{daemonuid} %{daemonuser}';
+  echo 'getent passwd %{daemonuser} || useradd -d /tmp -g %{daemongroup} -c %{daemongcosfield} -s /bin/false  -u %{daemonuid} %{daemonuser}';
   echo '#not needed _if_ group is nogroup  (65534) because the group is altready there!'
   echo '# getent group %{daemonlogingroup} || groupadd -g %{daemonlogingid} %{daemonlogingroup} ';
-  echo 'getent passwd %{daemonloginuser} || useradd -d /tmp -g %{daemonlogingroup} -s /bin/false  -u %{daemonloginuid} %{daemonloginuser}';
+  echo 'getent passwd %{daemonloginuser} || useradd -d /tmp -g %{daemonlogingroup} -c %{daemonloginusergcosfield} -s /bin/false  -u %{daemonloginuid} %{daemonloginuser}';
   echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -c SFE
 
 #%postun root
@@ -196,6 +216,12 @@ user ftpuser=false gcos-field="%src_name login user" username="%{daemonloginuser
 
 
 %changelog
+* Sat Apr  6 2013 - Thomas Wagner
+- make clucene optional (--with-clucene)
+- bump to 2.1.16 (needs -D__EXTENSIONS__) 
+* Mon Apr  1 2013 - Thomas Wagner
+- make purpose of created userids more clear, mind re-installing SFEdovecot-root package if upgrading from 1.x.x
+- remove %action group, no more then one package may deliver this (for group other/1)
 * Mon Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.1.15
 * Tue Feb 5 2013 - Logan Bruns <logan@gedanken.org>
