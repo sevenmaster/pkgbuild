@@ -13,7 +13,7 @@
 %define src_name dovecot
 # maybe set to nullstring outside release-candidates (example: 1.1/rc  or just 1.1)
 #%define downloadversion	 1.1/rc
-%define downloadversion	 2.1
+%define downloadversion	 2.2
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
@@ -44,7 +44,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Summary:	dovecot - A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.1.16
+Version:	2.2.2
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -115,7 +115,8 @@ export CXXFLAGS="$CXXFLAGS -I/usr/g++/include"
 export LDFLAGS="$LDFLAGS -L/usr/g++/lib -R/usr/g++/lib"
 %endif
 
-./configure --prefix=%{_prefix}		\
+#needs bash (for parsing krb5-config call)
+bash ./configure --prefix=%{_prefix}		\
 	    --bindir=%{_bindir}		\
 	    --mandir=%{_mandir}		\
             --libdir=%{_libdir}         \
@@ -127,13 +128,27 @@ export LDFLAGS="$LDFLAGS -L/usr/g++/lib -R/usr/g++/lib"
             --with-rundir=%{_localstatedir}/run/%{src_name} \
             --with-ioloop=best \
 	    --with-ssl=openssl \
-	    --with-gssapi=yes  \
+	    --with-gssapi=plugin  \
 %if %{with_clucene}
 	    --with-lucene \
             --with-stemmer \
 %endif
             --with-solr \
+--with-zlib \
+--with-bzlib \
+--with-ldap=plugin  \
+--with-libwrap \
 	    --disable-static		
+
+#--with-gssapi=plugin
+ #--with-ldap=plugin
+#--with-sql=plugin
+#--with-pgsql
+ #--with-zlib
+ #--with-bzlib
+#--with-libwrap
+#--with-ssl=openssl
+
 
 
 gmake -j $CPUS
@@ -145,6 +160,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp dovecot.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
+find $RPM_BUILD_ROOT -type f -name '*.la' -exec rm -f {} \;
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
@@ -169,10 +186,10 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 ( echo 'PATH=/usr/bin:/usr/sbin; export PATH' ;
   echo 'retval=0';
   echo 'getent group %{daemongroup} || groupadd -g %{daemongid} %{daemongroup} ';
-  echo 'getent passwd %{daemonuser} || useradd -d /tmp -g %{daemongroup} -c %{daemongcosfield} -s /bin/false  -u %{daemonuid} %{daemonuser}';
+  echo 'getent passwd %{daemonuser} || useradd -d /tmp -g %{daemongroup} -c "%{daemongcosfield}" -s /bin/false  -u %{daemonuid} %{daemonuser}';
   echo '#not needed _if_ group is nogroup  (65534) because the group is altready there!'
   echo '# getent group %{daemonlogingroup} || groupadd -g %{daemonlogingid} %{daemonlogingroup} ';
-  echo 'getent passwd %{daemonloginuser} || useradd -d /tmp -g %{daemonlogingroup} -c %{daemonloginusergcosfield} -s /bin/false  -u %{daemonloginuid} %{daemonloginuser}';
+  echo 'getent passwd %{daemonloginuser} || useradd -d /tmp -g %{daemonlogingroup} -c "%{daemonloginusergcosfield}" -s /bin/false  -u %{daemonloginuid} %{daemonloginuser}';
   echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -c SFE
 
 #%postun root
@@ -216,7 +233,13 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
-* Wed Jun  6 2013 - Thomas Wagner
+* Sat Jun  8 2013 - Thomas Wagner
+- bump to 2.2.2
+- use bash configure
+- use quotes with daemongcosfield
+- add options zlib, bzlib, ldap, libwrap, gssapi=plugin
+- remove *.la static files
+* Wed Jun  5 2013 - Thomas Wagner
 - fix typo in daemon* variable, remove quotes
 * Sat Apr  6 2013 - Thomas Wagner
 - make clucene optional (--with-clucene)
