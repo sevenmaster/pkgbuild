@@ -3,19 +3,20 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include osdistrofeatures.inc
 
 %define src_name libfuse
-%define src_url http://hub.opensolaris.org/bin/download/Project+fuse/files
+%define src_url http://sfe.opencsw.org/files
 %define tarball_version 20100615
 
 Name:		SFElibfuse
 IPS_Package_Name:	 system/file-system/libfuse 
-Summary:	Library for FUSE
+Summary:	Library for FUSE (/usr/gnu)
 License:	LGPLv2
 SUNW_Copyright:	libfuse.copyright
 Version:	0.%{tarball_version}
 Group:		System/File System
-URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
+#is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
 Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
 Source1:	libfuse.exec_attr
 Source2:	libfuse.prof_attr
@@ -68,6 +69,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/gnu/
 #cp -r proto/usr/* $RPM_BUILD_ROOT/usr/gnu
 cp -r proto/usr/* $RPM_BUILD_ROOT/usr/
 
+##TODO## create switch to merge into exec_attr / prof_attr for SVR4 systems or before osbuild 151
 mkdir -p $RPM_BUILD_ROOT%{_std_sysconfdir}/security/exec_attr.d
 cp %{SOURCE1} $RPM_BUILD_ROOT%{_std_sysconfdir}/security/exec_attr.d/libfuse
 
@@ -109,10 +111,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files root
 %defattr (-, root, sys)
+%if %{etc_security_directorylayout}
+%dir %attr (0755, root, other) %{_std_sysconfdir}/security/exec_attr.d
+%dir %attr (0755, root, other) %{_std_sysconfdir}/security/prof_attr.d
+%{_std_sysconfdir}/security/exec_attr.d/libfuse
+%{_std_sysconfdir}/security/prof_attr.d/libfuse
+%else
 %{_std_sysconfdir}
+%endif
 
 
 %changelog
+* Thu Jun 20 2013 - Thomas Wagner
+- new download url
+- prepared for switching old/new layout in /etc/security/<$1|$1.d/>,
+  %include osdistrofeatures.inc
 * Sat Jul 23 2012 - Thomas Wagner
 - hard replace paths to use /gnu/ in Makefile*
 - fix paths used with "cp" in %install

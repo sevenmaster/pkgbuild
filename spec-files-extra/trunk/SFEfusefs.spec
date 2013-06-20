@@ -7,7 +7,7 @@
 %include Solaris.inc
 
 %define src_name fusefs
-%define src_url http://hub.opensolaris.org/bin/download/Project+fuse/files
+%define src_url http://sfe.opencsw.org/files
 %define tarball_version	20100615
 
 %define usr_kernel /usr/kernel
@@ -15,12 +15,12 @@
 
 Name:		SFEfusefs
 IPS_Package_Name:	system/file-system/fusefs
-Summary:	File system in User Space
+Summary:	File system in User Space (/usr/gnu)
 Version:	0.%{tarball_version}.2
 License:	CDDL and BSD
 Group:		System/File System
 SUNW_Copyright:	fusefs.copyright
-URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
+#is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
 Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
 Patch1:		fuse-01-jean-pierre.diff
 SUNW_BaseDir:	%{_basedir}
@@ -83,6 +83,8 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Thu Jun 20 2013 - Thomas Wagner
+- new download url
 * Fri Aug 31 2012 - Milan Jurik
 - bump version with new patch from Jean-Pierre Andre 
 * Sat Jan 28 2012 - Milan Jurik
