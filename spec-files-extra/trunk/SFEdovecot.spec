@@ -233,6 +233,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Fri Jun 21 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 2.2.3
 * Sat Jun  8 2013 - Thomas Wagner
 - bump to 2.2.2
 - use bash configure
