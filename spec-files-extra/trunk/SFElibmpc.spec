@@ -134,6 +134,8 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Thu Jun 27 2013 - Thomas Wagner
+- paused make checks, dumps core
 * Mon Dec 17 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 1.0.1
 * Sun Jul 22 2012 - Milan Jurik
