@@ -110,6 +110,9 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Thu Jun 26 2013 - Thomas Wagner
+- bump to 5.1.2
+- remove obsolete patch1 gmp-5.1.1-01-solaris.diff
 * Wed Feb 13 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 5.1.1, used SS12.1 -library=stlport4
 * Sun Jan 27 2013 - Ken Mays <kmays <kmays2000@gmail.com>
