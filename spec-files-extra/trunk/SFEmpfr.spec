@@ -31,7 +31,7 @@ Group:		Development/Libraries
 License:	GPLv3
 SUNW_Copyright:	mpfr.copyright
 URL:		http://www.mpfr.org/
-Version:	3.1.1
+Version:	3.1.2
 Source:		http://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.bz2
 SUNW_BaseDir:	%{_basedir}/%{_subdir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -189,6 +189,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jun 26 2013 - Thomas Wagner
+- bump to 3.1.2
 * Tue Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
 - Added make check for optimized builds
 * Sun Jul 22 2012 - Milan Jurik
