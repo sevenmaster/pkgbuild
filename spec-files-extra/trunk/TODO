@@ -152,6 +152,7 @@ searching idea how to dynamicly start vncserver and later on explicitly kill thi
 18)
 packagenamemacros.inc - maybe add a rule for libpng14 (older builds don't have that new version, may need SFE png as replacement)
 packagenamemacros.inc - handle osbuild dependend to graphviz_default to be SUNWgraphviz or SFEgraphviz
+packagenamemacros.inc - handle osbuild dependend to get OS libid3tag in /usr/lib or SFELibid3tag-gnu.spec in /usr/gnu/lib
 
 19)
 commit files delete in gmpc-plugins/ which already have moved into trunk/
@@ -467,6 +468,9 @@ SRUs:
 S11 175.0.0.4       osbuild 175     sub-build is 0  SRU is 4
 details:
 maybe prepare a variable like "ips_pkg_entire_version" for use in spec-files
+Add S12 to the osbuild logic
+write examples on how to distinguish osbuild in different distros,
+e.g. S12 osbuild 24 is newer then and different from S11 osbuild 175
 
 59)
 distinguish provided JDK and/or openjdk.
@@ -492,3 +496,28 @@ Review Boost.Locale security notice (Boost #7743)
 
 61) 
 Review C++11 decltype keyword support for GCC 4.6.3/4.7.2 (N3276)
+
+62)
+provide 32/64 bit packages
+specfile:           32       64        comment
+SFElibiconv.spec    OK     missing     https://sourceforge.net/p/pkgbuild/spec-files-extra/25/
+
+
+63)
+check which osbuild need updated "expat" to get "xmlparse.h" header file (SFEaudacity.spec)
+
+64)
+update xgettext to new version, re-enable --package-name= in audacity
+
+65)
+boost 1.53.0 doesn't compile in SFEboost-stdcx.spec version (1.49.0 does)
+
+66) 
+Update README file in svn to point users to: wiki, buildinstructions, 
+mailinglists, IRC channel and on how to ask for help and participate in SFE
+
+67)
+spec files currently broken or in need for investigation
+what:                   where:
+see why checks fail	SFElibmpc.spec, base-specs/libmpc.spec: disabled make checks, needs investigation
+
