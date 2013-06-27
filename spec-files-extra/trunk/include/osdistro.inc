@@ -10,6 +10,8 @@
 # TODO2: extend rules to match Solaris 10 / SVR4
 # TODO3: add copyright (CDDL?)
 
+# TODO4: Add fine granularity for version/branch of entire@ package
+
 
 #
 # Macro definitions for Solaris OS build version and distribution detection
@@ -78,6 +80,10 @@
 %define osbuild 175
 %endif 
 
+%if %( uname -v | egrep '^s12_[0-9]' > /dev/null && echo 1 || echo 0 )
+%define osbuild $( uname -v | sed -e 's/s12_//' )
+%endif
+
 # see if we are on old SVR4 release
 %define SXCE %( egrep "Solaris Express Community Edition" /etc/release > /dev/null 2>&1 && echo 1 || echo 0 )
 
@@ -106,6 +112,7 @@
 #no versioning here
 %define openindiana 0
 %define solaris11express 0
+%define solaris12 0
 
 #boolean flags for major osdistro names - *with* versioning the releases
 #use osbuild in addition to finer granularity, e.g. osbuild >= 148
@@ -117,6 +124,9 @@
 ##TODO## replace oi201100
 %define oi201100 0
 %define oi201009 0
+
+#Solaris 12
+%define s1220130024 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -222,6 +232,31 @@
 %define osdistrelnumber 147
 #                                below: subject to change!
 %define osdistrelname   "OpenIndiana"
+#this was the last check, skip all others
+%define osdet299999 0
+%else
+%endif
+%else
+%endif
+%else
+%endif
+##END
+
+#NOTE: s12201200 <- 1200 - nothing is released, all is speculative. Use "00" for FCS/GA once we may have it, later Updates 12.1 -> 1201
+#NOTE: we try to set a resonable release number in %osdistrelnumber until day x
+# name as well, they should behave similar. Remaining issues to be fixed
+# in consuming spec file!
+%if %{osdet299999}
+%if %( expr %{osbuild} '>=' 24 )
+%if %( egrep 'Oracle Solaris 12' /etc/release > /dev/null && echo 1 || echo 0 )
+#we are on an IPS based OS distro
+%define os2nnn   1
+#below: subject to change!
+%define s12201200 1
+%define solaris12 1
+%define osdistrelnumber 201200
+#                                below: subject to change!
+%define osdistrelname   "Solaris 12"
 #this was the last check, skip all others
 %define osdet299999 0
 %else
@@ -356,6 +391,8 @@
 
 
 %changelog
+* Sun Jun 22 2013 - Thomas Wagner
+- start prelimiary support for S12
 * Thu Jun 21 2012 - Thomas Wagner
 - osbuild needs to work with 151a4, should print 151 and not 151a4,
   change sed pattern
