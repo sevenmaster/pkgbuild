@@ -4,7 +4,7 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
-%include osdistro.inc
+%include packagenamemacros.inc
 
 Name:                SFEnasm
 IPS_Package_Name:	developer/nasm 
@@ -21,36 +21,10 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-#new os2nnn and starting with build 134
-%if %{os2nnn}
-%if %(expr %{osbuild} '>=' 134)
-BuildRequires:		text/texinfo
-BuildRequires:		print/filter/ghostscript
-%endif
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWghostscript}
+BuildRequires: %{pnm_buildrequires_SUNWtexi}
+BuildRequires: %{pnm_buildrequires_SUNWdoc}
 
-%if %{os2nnn}
-%if %(expr %{osbuild} '>=' 100)
-%if %(expr %{osbuild} '<' 134)
-BuildRequires:       SUNWtexi
-BuildRequires:       SUNWghostscript
-%endif
-%endif
-%endif
-
-%if %{os2nnn}
-%if %(expr %{osbuild} '<' 100)
-BuildRequires:       SUNWtexi
-BuildRequires:       SUNWgscr
-%endif
-%endif
-
-#SXCE
-%if %SXCE
-BuildRequires:       SUNWtexi
-BuildRequires:       SUNWghostscriptr
-BuildRequires:       SUNWghostscriptu
-%endif
 
 %prep
 %setup -q -n nasm-%version
@@ -59,6 +33,9 @@ BuildRequires:       SUNWghostscriptu
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
+
+#/usr/gnu/bin/nroff on s12 doesn't find an.tmac, but calling /usr/bin/nroff does
+export NROFF=/usr/bin/nroff
 
 ./configure --prefix=%{_prefix}  \
             --mandir=%{_mandir} \
@@ -101,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/nasm/*
 
 %changelog
+* Fri Jun 28 2013 - Thomas Wagner
+- change to BuildRequires %{pnm_buildrequires_SUNWghostscript}, %{pnm_buildrequires_SUNWtexi}, %{pnm_buildrequires_SUNWdoc}, include packagenamemacros.inc
+- /usr/gnu/bin/nroff (s12) might need some love, /usr/bin/nroff does't
 * Sun Mar 3 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 2.10.07
 * Thu Jun 21 2012 - Milan Jurik
