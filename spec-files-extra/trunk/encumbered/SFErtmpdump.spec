@@ -1,3 +1,5 @@
+##TODO## ist this necessary? if ye,s then might use SFEboost-gpp (gcc!)
+#Requires: SFEboost
 #
 # Copyright (c) 2010 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
@@ -7,6 +9,8 @@
 #%include usr-gnu.inc
 %define cc_is_gcc 1
 %include base.inc
+
+%include packagenamemacros.inc
 
 # TODO: write SMF manifest for rtmpsrv
 
@@ -22,8 +26,9 @@ Source:		http://rtmpdump.mplayerhq.hu/download/rtmpdump-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-#Requires: SFEboost
-Requires: SUNWopenssl-libraries
+BuildRequires:          %{pnm_buildrequires_SUNWopenssl_include}
+Requires:               %{pnm_requires_SUNWopenssl_libraries}
+
 
 %package devel
 Summary:         %{summary} - development files
@@ -95,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 28 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWopenssl_include}, 
+  %{pnm_requires_SUNWopenssl_libraries}, %include packagenamemacros.inc
 * Sat Feb 09 2013 - Milan Jurik
 - bump to 2.4
 * Oct 12 2011 - Alex Viskovatoff
