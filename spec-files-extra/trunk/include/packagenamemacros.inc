@@ -17,6 +17,13 @@
 %include osdistro.inc
 %endif
 
+#already included before?
+%if %{?osdistrofeatures}
+#yes, osdistrofeatures.inc is already included
+%else
+%include osdistrofeatures.inc
+%endif
+
 #use for testing:    pkgbuild --interactive base-specs/packagenamemacros.spec
 #you may want to edit your test cases into the base-specs/packagenamemacros.spec
 
@@ -50,8 +57,8 @@
 #normal packages in IPS did get theyer -devel name stripped off and the files flagged
 #as "devel" instead
 #in the end packages on IPS combine regular and devel parts into one single package
-%if %( expr %{osbuild} '>=' 81)
-%if %( expr %{osbuild} '<' 133)
+%if %( expr %{osbuild} '>=' 81 '|' %{solaris12} '=' 0 )
+%if %( expr %{osbuild} '<' 133 '|' %{solaris12} '=' 0 )
 %include packagenames.define-81.inc
 %include packagenames.define-specialcases-81.inc
 #<133
@@ -61,7 +68,7 @@
 
 #huge package rename actions took place with build 133 (including)
 #http://defect.opensolaris.org/bz/show_bug.cgi?id=6186
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133  '|' %{solaris12} '>=' 1 )
 %include packagenames.define-133.inc
 %include packagenames.define-specialcases-133.inc
 #>=133
@@ -70,7 +77,7 @@
 #NOTE: cumulative, this includes the settings from builds before
 #package rename actions took place with build 134 (including)
 #http://defect.opensolaris.org/bz/show_bug.cgi?id=6186
-%if %( expr %{osbuild} '>=' 134 )
+%if %( expr %{osbuild} '>=' 134  '|' %{solaris12} '>=' 1 )
 %include packagenames.define-134.inc
 %include packagenames.define-specialcases-134.inc
 #>=133
@@ -83,6 +90,10 @@
 %include packagenames.define.allbuilds.inc
 
 %changelog
+* Fri Jun 28 2013 - Thomas Wagner
+- first s12 support
+* Thu Jun 20 2013 - Thomas Wagner
+- include osdistrofeatures.inc
 * Wed Mar 16 2011 - Thomas Wagner
 - add missing changelog
 - change include order to include packagenames.define.allbuilds.inc at the 
