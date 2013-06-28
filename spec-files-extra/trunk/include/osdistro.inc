@@ -126,7 +126,10 @@
 %define oi201009 0
 
 #Solaris 12
-%define s1220130024 0
+#always defined on 12.0 and all subsequent 12.xx versions. build 00.
+%define s120000 0
+#12.0 build 24
+%define s120024 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -157,6 +160,7 @@
 # Note osdet299999 is a helper variable. Specs should use %if %os2nnn ... and %os2nnndistro
 # Make default to "1" to enable the os20nn.nn detection steps below.
 # for readability see separated %if where a present %SXCE resets this switch to "0" and disables all remaining checks
+# which makes this file skip any following checks
 %define osdet299999 1
 
 # we are on SXCE, so skip the all other os2nnn detection rules and leave %os**** defaults at "0"
@@ -165,7 +169,6 @@
 %define osdet299999 0
 %define osdistrelname   "SXCE"
 %endif
-
 
 # try detecting the distro release we are on
 # might need more fine grained rules some day?
@@ -242,19 +245,17 @@
 %endif
 ##END
 
-#NOTE: s12201200 <- 1200 - nothing is released, all is speculative. Use "00" for FCS/GA once we may have it, later Updates 12.1 -> 1201
-#NOTE: we try to set a resonable release number in %osdistrelnumber until day x
-# name as well, they should behave similar. Remaining issues to be fixed
-# in consuming spec file!
+#NOTE: s121200 <- 1200 - 12.00 - nothing is released, all is speculative. Later Updates, e.g. 12.1 -> 1201
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 24 )
 %if %( egrep 'Oracle Solaris 12' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
-%define s12201200 1
+%define s120000 1
+%define s120024 1
 %define solaris12 1
-%define osdistrelnumber 201200
+%define osdistrelnumber 24
 #                                below: subject to change!
 %define osdistrelname   "Solaris 12"
 #this was the last check, skip all others
@@ -391,6 +392,8 @@
 
 
 %changelog
+* Thu Jun 27 2013 - Thomas Wagner
+- renamed s12 variables
 * Sun Jun 22 2013 - Thomas Wagner
 - start prelimiary support for S12
 * Thu Jun 21 2012 - Thomas Wagner
