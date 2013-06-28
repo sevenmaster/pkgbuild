@@ -130,7 +130,7 @@
 #cases >=133 AND os2nnn
 %if %{os2nnn}
 ##TODO## Re-visit this buildnumber, was this 133 or 134 ? (pkg info SUNWopenssl says not installed)
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_SUNWopenssl			library/security/openssl
 %define pnm_buildrequires_SUNWopenssl_include           library/security/openssl
 #handy alias based on typo
@@ -584,6 +584,31 @@
 %define pnm_buildrequires_SUNWzlib			SUNWzlib
 %define pnm_requires_SUNWzlib				SUNWzlib
 
+#SUNWltdl
+%define pnm_buildrequires_library_libtool_libltdl	SUNWltdl
+%define pnm_requires_library_libtool_libltdl		SUNWltdl
+%define pnm_buildrequires_SUNWltdl_devel		SUNWltdl
+%define pnm_buildrequires_SUNWltdl			SUNWltdl
+%define pnm_requires_SUNWltdl				SUNWltdl
+%define pnm_buildrequires_ltdl				SUNWltdl
+%define pnm_requires_ltdl				SUNWltdl
+
+#SUNWautomake-111 SFEautomake-111
+#starting with S11 175.1 we have developer/build/automake-111
+%define pnm_buildrequires_developer_build_automake_111	SFEautomake-111
+%define pnm_buildrequires_developer_build_automake_111	SFEautomake-111
+%define pnm_buildrequires_SUNWautomake_111		SFEautomake-111
+%define pnm_requires_SUNWautomake_111			SFEautomake-111
+%define pnm_buildrequires_SFEautomake_111		SFEautomake-111
+%define pnm_requires_SFEautomake_111			SFEautomake-111
+
+#SUNWlibstdcxx4
+%define pnm_buildrequires_SUNWlibstdcxx4_devel		SUNWlibstdcxx4
+%define pnm_buildrequires_SUNWlibstdcxx4		SUNWlibstdcxx4
+%define pnm_requires_SUNWlibstdcxx4			SUNWlibstdcxx4
+%define pnm_buildrequires_libstdcxx4			SUNWlibstdcxx4
+%define pnm_requires_libstdcxx4				SUNWlibstdcxx4
+
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -600,7 +625,7 @@
 #pre/including nnn: SUNWhea    -> past nnn replacement is
 #NOTE: superseeding the previous definitions SUNWsfwhea
 #cases >=133
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_SUNWhea	    system/header
 %define pnm_requires_SUNWhea		    system/header
 %define pnm_buildrequires_system_header	    system/header
@@ -610,7 +635,7 @@
 
 #NOTE: this section might be superseeded by lower build numbers 
 #cases <133
-%if %( expr %{osbuild} '<' 133 )
+%if %( expr %{osbuild} '<' 133 '&' %{solaris12} '=' 0 )
 %define pnm_buildrequires_SUNWhea		SUNWhea
 %define pnm_requires_SUNWhea	 		SUNWhea
 #this might be overwritten again by builds below 130
@@ -621,7 +646,7 @@
 
 #pre/including 130: SUNWsfwhea -> past 130 replacement is system/header
 ##TODO## please verify build numbers and intended replacement packagename
-%if %( expr %{osbuild} '>=' 130 )
+%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_SUNWsfwhea	    SUNWhea
 %define pnm_requires_SUNWsfwhea		    SUNWhea
 %define pnm_buildrequires_system_header	    SUNWhea
@@ -631,7 +656,7 @@
 
 #NOTE: including SUNWhea too
 #cases <130
-%if %( expr %{osbuild} '<' 130 )
+%if %( expr %{osbuild} '<' 130 '&' %{solaris12} '=' 0 )
 %define pnm_buildrequires_SUNWhea		SUNWsfwhea
 %define pnm_requires_SUNWhea	 		SUNWsfwhea
 %define pnm_buildrequires_SUNWsfwhea		SUNWsfwhea
@@ -647,7 +672,7 @@
 # SFEgnupg2 SUNWgnupg SUNWlibgpg-error SUNWlibgpg-error-devel SUNWlibgcrypt SUNWlibgcrypt-devel
 
 #pre/including 130: SFEgnupg2 -> past 130 replacement is SUNWgnupg
-%if %( expr %{osbuild} '>=' 130 )
+%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
 #sunw
 %define pnm_buildrequires_SUNWgnupg_devel	SUNWgnupg
 %define pnm_buildrequires_SUNWgnupg		SUNWgnupg
@@ -689,7 +714,7 @@
 #END >=130
 
 #cases <130
-%if %( expr %{osbuild} '<' 130 )
+%if %( expr %{osbuild} '<' 130 '&' %{solaris12} '=' 0 )
 #sunw
 %define pnm_buildrequires_SUNWgnupg_devel	SFEgnupg2
 %define pnm_buildrequires_SUNWgnupg		SFEgnupg2
@@ -751,7 +776,7 @@
 #>91
 
 #we need SFE version on very old builds
-%if %( expr %{osbuild} '<=' 90 )
+%if %( expr %{osbuild} '<=' 90 '&' %{solaris12} '=' 0 )
 #running an old build or Solaris 10
 %define pnm_buildrequires_SFEsane_backend_devel		SFEsane-backend-devel
 %define pnm_requires_SFEsane_backend	 		SFEsane-backend
@@ -777,7 +802,7 @@
 %define pnm_requires_library_fftw_3	 	SUNWfftw3
 #>=107
 
-%if %( expr %{osbuild} '<' 107 )
+%if %( expr %{osbuild} '<' 107 '&' %{solaris12} '=' 0 )
 #running an old build or Solaris 10
 %define pnm_buildrequires_SFEfftw3		SFEfftw3
 %define pnm_requires_SFEfftw3	 		SFEfftw3
@@ -804,7 +829,7 @@
 
 ##TODO## below: probably obsolete or needs rethinking:
 ##TODO## which osbuild version is right?
-%if %( expr %{osbuild} '<' 133 )
+%if %( expr %{osbuild} '<' 133 '&' %{solaris12} '=' 0 )
 #replace requested SUNWfreetype2* with SFE version on older
 #osbuild version
 #NOTE: might adjust exact osbuild version later
@@ -829,7 +854,7 @@
 %define pnm_buildrequires_SUNWlibmikmod		SUNWlibmikmod-devel
 %define pnm_requires_SUNWlibmikmod		SUNWlibmikmod
 
-%if %( expr %{osbuild} '<' 99 )
+%if %( expr %{osbuild} '<' 99 '&' %{solaris12} '=' 0 )
 #running an old build or Solaris 10
 %define pnm_buildrequires_SFElibmikmod_devel	SFElibmikmod-devel
 %define pnm_buildrequires_SFElibmikmod		SFElibmikmod-devel
@@ -846,7 +871,7 @@
 %define pnm_buildrequires_SUNWgnu_dbm		SUNWgnu-dbm
 %define pnm_requires_SUNWgnu_dbm		SUNWgnu-dbm
 
-%if %( expr %{osbuild} '<' 116 )
+%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 )
 #running an old build or Solaris 10
 %define pnm_buildrequires_SFEgdbm		SFEgdbm
 %define pnm_requires_SFEgdbm		 	SFEgdbm
@@ -861,7 +886,7 @@
 #meta-package data/docbook is requested (it shows never as being installed).
 #up to 133 it was developer/documentation-tool/gtk-doc
 #NOTE we overwrite what the include for 134 has defined
-%if %( expr %{osbuild} '>=' 134 )
+%if %( expr %{osbuild} '>=' 134 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_developer_documentation_tool_gtk_doc    developer/documentation-tool/gtk-doc
 %define pnm_requires_developer_documentation_tool_gtk_doc         developer/documentation-tool/gtk-doc
 %define pnm_buildrequires_SUNWgtk_doc_devel     developer/documentation-tool/gtk-doc
@@ -883,7 +908,7 @@
 #special case, pkgtool/pkgbuild can't see if packages are installed if
 #meta-package x11/client is requested. up to 143 it was TBD
 #NOTE we overwrite what the include for 133 / 134 has defined (target was x11/client)
-%if %( expr %{osbuild} '>=' 144 )
+%if %( expr %{osbuild} '>=' 144 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_x11_clients		compatibility/packages/SUNWxwplt
 %define pnm_requires_x11_clients		compatibility/packages/SUNWxwplt
 %define pnm_buildrequires_SUNWxwplt_devel	compatibility/packages/SUNWxwplt
@@ -924,7 +949,7 @@
 %define pnm_requires_developer_vala		SFEvala
 
 #cases >=151
-%if %( expr %{osbuild} '>=' 151 )
+%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_SFEvala_devel		developer/vala
 %define pnm_buildrequires_SFEvala		developer/vala
 %define pnm_requires_SFEvala			developer/vala
@@ -981,8 +1006,8 @@
 #changes the defaults from above, in case the build is newer.
 #this is for Solaris (Express) 11 builds (above excluding 151)
 #which now includes freeglut
-%if %{solaris11express}
-%if %( expr %{osbuild} '>' 151 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>' 151         '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_SFEfreeglut		x11/library/freeglut
 %define pnm_requires_SFEfreeglut		x11/library/freeglut
 %define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
@@ -1001,8 +1026,8 @@
 #spec file maintainer how to solve that
 
 #cases >=156
-%if %{solaris11express}
-%if %( expr %{osbuild} '>=' 156 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 156        '|' %{solaris12} '>=' 1 )
 #https://defect.opensolaris.org/bz/attachment.cgi?id=4441
 #(the attachment link from above is in: https://defect.opensolaris.org/bz/show_bug.cgi?id=17668)
 %define pnm_buildrequires_library_python_2_python_pigment_26	SUNWcs
@@ -1022,8 +1047,8 @@
 
 # audio headers got renamed several times, then 
 # included in other package
-%if %{solaris11express}
-%if %( expr %{osbuild} '>=' 163 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 163        '|' %{solaris12} '>=' 1 )
 #with 163 system/header/header-audio moved into system/header
 %define pnm_buildrequires_SUNWaudh_devel 			system/header
 %define pnm_buildrequires_SUNWaudh 				system/header
@@ -1055,6 +1080,18 @@
 
 #Solaris 11 Update 1
 #
+#TO BE DEFINED pulseaudio in Solaris 11.x
+
+#SUNWautomake-111 SFEautomake-111
+#starting with S11 175.1 we have developer/build/automake-111
+%define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
+%define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
+%define pnm_buildrequires_SUNWautomake_111		developer/build/automake-111
+%define pnm_requires_SUNWautomake_111			developer/build/automake-111
+%define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
+%define pnm_requires_SFEautomake_111			developer/build/automake-111
+
+
 
 #START setting perl5, defaults  - Part 1 of 3
 #define perl defaults, primarily shared settings and default version, paths
@@ -1097,9 +1134,9 @@
 
 #set perl5 for Solaris11Express
 %if %{os2nnn}
-%if %{solaris11express}
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
 ##TODO## remove this todo once the perl version to use is known and set the exact build number
-%if %( expr %{osbuild} '>=' 166 )
+%if %( expr %{osbuild} '>=' 166        '|' %{solaris12} '>=' 1 )
 #set perl5 for Solaris 11 Express
 %define perl_version 5.12
 %define perl_major_minor_version 5.12
@@ -1160,7 +1197,7 @@
 # echo %{_prefix}/%{perl_path_site_perl_version}   -> prints /usr/perl5/site_perl/5.8.4 (or 5.10.0)
 %define perl_path_site_perl_version perl%{perl_major_version}/site_perl/%{perl_version}
 
-%if %{?perl_dir:1}
+%if %{?perl_dir:1}%{!?perl_dir:0}
 #skip this, the perl_dir variable is already defined
 %else
 %ifarch sparc
@@ -1232,7 +1269,7 @@
 #which build number removed SUNWpysqlite and used the python 2.6/2.7 internal pysqlite?
 #if python is version 2.4, then we need SUNWpysqlite
 ##TODO## adjust the osbuild number which introduced Python2.6
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #all more recent builds should just require the current python default version of this platform
 #instead of the SUNWpysqlite
 %define pnm_buildrequires_SUNWpysqlite_devel 	%{pnm_buildrequires_python_default}
@@ -1284,7 +1321,7 @@
 #older IPS systems
 %define pnm_buildrequires_mysql_default	SUNWmysql51
 %define pnm_requires_mysql_default	SUNWmysql51
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #database/mysql-51
 %define pnm_buildrequires_mysql_default	database/mysql-51,database/mysql-51/library
@@ -1359,7 +1396,7 @@
 %if %{os2nnn}
 #older IPS systems
 #use the default from before (e.g. SUNWj6rt and SUNWj6rtx
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #runtime/java and runtime/java/runtime64
 %define pnm_buildrequires_java_runtime_default		runtime/java
@@ -1418,7 +1455,7 @@
 %if %{os2nnn}
 #older IPS systems
 #use the default from before
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #note: currently explicitly defined only for SXCE and for >=133
 %define pnm_buildrequires_apache2_default		SUNWapch22u
@@ -1513,7 +1550,7 @@
 #older IPS systems
 %define pnm_buildrequires_postgres_default	SUNWpostgr-84-devel
 %define pnm_requires_postgres_default		SUNWpostgr-84-libs
-%if %( expr %{osbuild} '>=' 133 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #database/postgres-51
 %define pnm_buildrequires_postgres_default	database/postgres-84/developer
@@ -1526,7 +1563,7 @@
 
 #for better readability repeat. This time special switch for Solaris build >= 147
 %if %{os2nnn}
-%if %( expr %{osbuild} '>=' 147 )
+%if %( expr %{osbuild} '>=' 147        '|' %{solaris12} '>=' 1 )
 #from build 147 and up we have postgres no longer in the Solaris repo
 #database/postgres-91 - we default to the latest SFE postgres we know that is working fine
 
@@ -1707,6 +1744,17 @@
 # 
 
 %changelog
+* Fri Jun 28 2013 - Thomas Wagner
+- add solaris12 to osbuild related decisions
+* Thu Jun 20 2013 - Thomas Wagner
+- add feature flag etc_security_directorylayout (>=151)
+* Sat Apr  6 2013 - Thomas Wagner
+- add SVR4 package names for %define pnm_buildrequires_SUNWlibstdcxx4 (S10, SXCE)
+* Sat Mar 23 2013 - Thomas Wagner
+- fix expression %if %{?perl_dir:1}%{!?perl_dir:0}
+  contributed by Martin C.  https://sourceforge.net/p/pkgbuild/spec-files-extra/44/
+* Wed Jan 30 2013 - Thomas Wagner
+- add SVR4 package names for pnm_buildrequires_SUNWltdl (S10, SXCE)
 * Sat Jan 26 2013 - Thomas Wagner
 - add mysql_default_prefix (e.g. %{prefix}%{mysql_default_prefix} = /usr/mysql/5.1 )
 * Sun Jan 13 2013 - Thomas Wagner
