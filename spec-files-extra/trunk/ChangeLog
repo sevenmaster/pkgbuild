@@ -1,3 +1,7 @@
+2013-06-29  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEclamav.spec: updated to 0.97.8
+
 2013-06-21  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEdovecot.spec: updated to 2.2.3
