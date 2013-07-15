@@ -10,10 +10,10 @@
 %include packagenamemacros.inc
 
 %define major 7
-%define minor 15
-%define buildnum 2
+%define minor 40
+%define buildnum 32
 %define srcname openjdk%{major}
-%define tag jdk%{major}u%{minor}-b0%{buildnum}
+%define tag jdk%{major}u%{minor}-b%{buildnum}
 
 Name:                    SFEopenjdk%{major}
 IPS_Package_Name:	 developer/java/openjdk-%{major}
@@ -111,6 +111,8 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Mon July 15 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to JDK 7u40b32.
 * Mon Mar  4 2013 - Logan Bruns <logan@gedanken.org>
 - Updated to JDK 7u15b02.
 * Wed Feb 27 2013 - Logan Bruns <logan@gedanken.org>
