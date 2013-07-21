@@ -113,6 +113,42 @@
 %define pnm_buildrequires_smba			SUNWsmbau
 %define pnm_requires_smba			SUNWsmbau
 
+
+%define pnm_buildrequires_library_ncurses 			library/ncurses
+%define pnm_requires_library_ncurses			 	library/ncurses
+%define pnm_buildrequires_SUNWncurses_devel 			library/ncurses
+%define pnm_buildrequires_SUNWncurses 				library/ncurses
+%define pnm_requires_SUNWncurses 				library/ncurses
+%define pnm_buildrequires_ncurses 				library/ncurses
+%define pnm_requires_ncurses 					library/ncurses
+#pre build 100 we're missing ncurses and use SFEncurses instead
+#but we are >>>>100 here
+%define pnm_buildrequires_SFEncurses_devel 			library/ncurses
+%define pnm_buildrequires_SFEncurses 				library/ncurses
+%define pnm_requires_SFEncurses 				library/ncurses
+
+
+
+#SFElibsndfile/SUNWlibsndfile
+#for now, we always default to the SFE version 1.0.25 located in /usr/gnu
+#for every platform
+#SFElibsndfile/SFElibsndfile-devel or SUNWlibsndfile (no -devel)
+%define pnm_buildrequires_library_gnu_libsndfile		library/gnu/libsndfile
+%define pnm_requires_library_gnu_libsndfile			library/gnu/libsndfile
+%define pnm_buildrequires_SFElibsndfile_devel			library/gnu/libsndfile
+%define pnm_buildrequires_SFElibsndfile				library/gnu/libsndfile
+%define pnm_requires_SFElibsndfile				library/gnu/libsndfile
+#Devel-Package SUNWlibsndfile_devel doesn't really exist, but define it anyways:
+%define pnm_buildrequires_library_libsndfile			library/gnu/libsndfile
+%define pnm_requires_library_libsndfile				library/gnu/libsndfile
+%define pnm_buildrequires_libsndfile				library/gnu/libsndfile
+%define pnm_requires_libsndfile					library/gnu/libsndfile
+%define pnm_buildrequires_SUNWlibsndfile_devel			library/gnu/libsndfile
+%define pnm_buildrequires_SUNWlibsndfile			library/gnu/libsndfile
+%define pnm_requires_SUNWlibsndfile				library/gnu/libsndfile
+
+##TODO## Add your packages here in case you specify an old
+
 %endif
 #END os2nnn
 
@@ -306,6 +342,20 @@
 %define pnm_requires_SUNWghostscriptr			SUNWghostscriptr
 %define pnm_buildrequires_SUNWghostscriptu		SUNWghostscriptu
 %define pnm_requires_SUNWghostscriptu			SUNWghostscriptu
+
+
+%define pnm_buildrequires_text_texinfo			SUNWtexi
+%define pnm_requires_text_texinfo			SUNWtexi
+%define pnm_buildrequires_SUNWtexi			SUNWtexi
+%define pnm_buildrequires_SUNWtexi			SUNWtexi
+%define pnm_requires_SUNWtexi				SUNWtexi
+
+%define pnm_buildrequires_text_doctools			SUNWdoc
+%define pnm_requires_text_doctools			SUNWdoc
+%define pnm_buildrequires_SUNWdoc_devel			SUNWdoc
+%define pnm_buildrequires_SUNWdoc			SUNWdoc
+%define pnm_requires_SUNWdoc				SUNWdoc
+
 
 #Apache on a SXCE or S10  host
 
@@ -608,6 +658,43 @@
 %define pnm_requires_SUNWlibstdcxx4			SUNWlibstdcxx4
 %define pnm_buildrequires_libstdcxx4			SUNWlibstdcxx4
 %define pnm_requires_libstdcxx4				SUNWlibstdcxx4
+
+#SUNWncurses
+%define pnm_buildrequires_library_ncurses 			SUNWncurses-devel
+%define pnm_requires_library_ncurses			 	SUNWncurses
+%define pnm_buildrequires_SUNWncurses_devel 			SUNWncurses-devel
+%define pnm_buildrequires_SUNWncurses 				SUNWncurses-devel
+%define pnm_requires_SUNWncurses 				SUNWncurses
+%define pnm_buildrequires_ncurses 				SUNWncurses-devel
+%define pnm_requires_ncurses 					SUNWncurses
+#pre build 100 we're missing ncurses and use SFEncurses instead
+#past build 100, use the settings below
+%define pnm_buildrequires_SFEncurses_devel 			SUNWncurses-devel
+%define pnm_buildrequires_SFEncurses 				SUNWncurses-devel
+%define pnm_requires_SFEncurses 				SUNWncurses
+
+
+#SFElibsndfile/SUNWlibsndfile
+#for now, we always default to the SFE version 1.0.25 located in /usr/gnu
+#for every platform
+#SFElibsndfile/SFElibsndfile-devel or SUNWlibsndfile (no -devel)
+#SFE in /usr/gnu
+%define pnm_buildrequires_library_gnu_libsndfile		SFElibsndfile_devel
+%define pnm_requires_library_gnu_libsndfile			SFElibsndfile
+#Solaris/OI
+%define pnm_buildrequires_library_libsndfile			SFElibsndfile_devel
+%define pnm_requires_library_libsndfile				SFElibsndfile
+#old OpenSolaris pre renaming
+%define pnm_buildrequires_libsndfile				SFElibsndfile_devel
+%define pnm_requires_libsndfile					SFElibsndfile
+#S10 SXCE
+#Devel-Package SUNWlibsndfile_devel doesn't really exist, but define it anyways:
+%define pnm_buildrequires_SFElibsndfile_devel			SFElibsndfile_devel
+%define pnm_buildrequires_SFElibsndfile				SFElibsndfile_devel
+%define pnm_requires_SFElibsndfile				SFElibsndfile
+%define pnm_buildrequires_SUNWlibsndfile_devel			SFElibsndfile_devel
+%define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile_devel
+%define pnm_requires_SUNWlibsndfile				SFElibsndfile
 
 
 ##TODO## Add your packages here in case you specify an old
@@ -1006,17 +1093,23 @@
 #changes the defaults from above, in case the build is newer.
 #this is for Solaris (Express) 11 builds (above excluding 151)
 #which now includes freeglut
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
-%if %( expr %{osbuild} '>' 151         '|' %{solaris12} '>=' 1 )
+#%if %(expr %{solaris12} '>=' 1 '|' '(' %{solaris11express} '>=' 1 '&' %{osbuild} '>' 151 ')')
+%if %( expr %{solaris12} '>=' 1 )
+#%if 0
 %define pnm_buildrequires_SFEfreeglut		x11/library/freeglut
 %define pnm_requires_SFEfreeglut		x11/library/freeglut
 %define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
 %define pnm_requires_x11_library_freeglut	x11/library/freeglut
+#END solaris12
 %endif
-#END > 151
-%endif
-#END solaris11express
 
+%if %( expr %{solaris11express} '>=' 1 '&' %{osbuild} '>' 151 )
+%define pnm_buildrequires_SFEfreeglut		x11/library/freeglut
+%define pnm_requires_SFEfreeglut		x11/library/freeglut
+%define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
+%define pnm_requires_x11_library_freeglut	x11/library/freeglut
+#END solaris11express > 151
+%endif
 
 
 #-----------------------------------------------------------------
@@ -1072,15 +1165,49 @@
 %endif
 #END solaris11express
 
-#pulseaudio, we currently have this in SFE
-%define pnm_buildrequires_SFEpulseaudio				SFEpulseaudio
+# math headers went from pkg:/system/library/math/header-math
+#                     to pkg:/system/library/math@0.5.11-0.174.0.0.0.0.0
+# OI stays unchanged for a while
+#solaris11express >=174, solaris 11 solaris 12
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 174        '|' %{solaris12} '>=' 1 )
+#with 174 library/math/header-math moved into system/library/math
+%define pnm_buildrequires_system_library_math_header_math	system/library/math
+%define pnm_requires_system_library_math_header_math		system/library/math
+%define pnm_buildrequires_SUNWlibm_devel			system/library/math
+%define pnm_buildrequires_SUNWlibm				system/library/math
+%define pnm_requires_SUNWlibm					system/library/math
+%define pnm_buildrequires_libm					system/library/math
+%define pnm_requires_libm					system/library/math
+
+%endif
+#END >=174
+%endif
+#END solaris11express >=174, solaris 11 solaris 12
+
+#pulseaudio, we currently have this in SFE - see below for more fresh distros
+%define pnm_buildrequires_SFEpulseaudio				SFEpulseaudio-devel
 %define pnm_requires_SFEpulseaudio				SFEpulseaudio
-%define pnm_buildrequires_pulseaudio				SFEpulseaudio
+%define pnm_buildrequires_pulseaudio				SFEpulseaudio-devel
 %define pnm_requires_pulseaudio				SFEpulseaudio
+
+#automake version 1.11, we currently have this in SFE - see below for more fresh distros
+%define pnm_buildrequires_developer_build_automake_111	SFEautomake-111
+%define pnm_buildrequires_developer_build_automake_111	SFEautomake-111
+%define pnm_buildrequires_SUNWautomake_111		SFEautomake-111
+%define pnm_requires_SUNWautomake_111			SFEautomake-111
+%define pnm_buildrequires_SFEautomake_111		SFEautomake-111
+%define pnm_requires_SFEautomake_111			SFEautomake-111
+
 
 #Solaris 11 Update 1
 #
 #TO BE DEFINED pulseaudio in Solaris 11.x
+%if %{s110100}
+%define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
+%define pnm_requires_SFEpulseaudio				SUNWpulseaudio
+%define pnm_buildrequires_pulseaudio				SUNWpulseaudio-devel
+%define pnm_requires_pulseaudio					SUNWpulseaudio
 
 #SUNWautomake-111 SFEautomake-111
 #starting with S11 175.1 we have developer/build/automake-111
@@ -1091,6 +1218,28 @@
 %define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
 %define pnm_requires_SFEautomake_111			developer/build/automake-111
 
+%endif
+#END s110100 aka solaris11 11.1
+
+#Solaris 12
+#
+%if %{solaris12}
+%define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
+%define pnm_requires_SFEpulseaudio				SUNWpulseaudio
+%define pnm_buildrequires_pulseaudio				SUNWpulseaudio-devel
+%define pnm_requires_pulseaudio					SUNWpulseaudio
+
+#SUNWautomake-111 SFEautomake-111
+#starting with S11 175.1 we have developer/build/automake-111
+%define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
+%define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
+%define pnm_buildrequires_SUNWautomake_111		developer/build/automake-111
+%define pnm_requires_SUNWautomake_111			developer/build/automake-111
+%define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
+%define pnm_requires_SFEautomake_111			developer/build/automake-111
+
+%endif
+#END solaris12
 
 
 #START setting perl5, defaults  - Part 1 of 3
@@ -1132,12 +1281,25 @@
 #different distro releases. Order is: greatest osbuild must be listed last to
 #override previous settings)
 
-#set perl5 for Solaris11Express
+#set perl5 for Solaris 12
 %if %{os2nnn}
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
-##TODO## remove this todo once the perl version to use is known and set the exact build number
-%if %( expr %{osbuild} '>=' 166        '|' %{solaris12} '>=' 1 )
-#set perl5 for Solaris 11 Express
+%if %( expr  %{solaris12} '>=' 1 )
+#set perl5 for Solaris 12
+%define perl_version 5.12
+%define perl_major_minor_version 5.12
+%define perl_major_minor_micro_version 5.12.5
+#runtime/perl-512 or library/perl-5/sun-solaris-512
+%define pnm_buildrequires_perl_default runtime/perl-512
+%define pnm_requires_perl_default	runtime/perl-512
+%endif
+#END solaris12
+%endif
+#END os2nnn
+
+#set perl5 for Solaris 11, Solaris11Express
+%if %{os2nnn}
+%if %( expr %{solaris11express} '>=' 1 '&' %{osbuild} '>=' 166 )
+#set perl5 for Solaris 11, Solaris 11 Express
 %define perl_version 5.12
 %define perl_major_minor_version 5.12
 %define perl_major_minor_micro_version 5.12.3
@@ -1145,10 +1307,7 @@
 %define pnm_buildrequires_perl_default runtime/perl-512
 %define pnm_requires_perl_default	runtime/perl-512
 %endif
-##TODO## remove this todo once the perl version to use is known and set the exact build number
-#END >= 166
-%endif
-#END solaris11express
+#END solaris11, solaris11express >= 166
 %endif
 #END os2nnn
 
@@ -1722,7 +1881,7 @@
 # 
 #     27 depspacks=`echo ${depspacks} | sed 's/SFEsdl$/SUNWlibsdl/'`
 # 
-#     28 depspacks=`echo ${depspacks} | sed s/SFElibsndfile/SUNWlibsndfile/`
+##done###     28 depspacks=`echo ${depspacks} | sed s/SFElibsndfile/SUNWlibsndfile/`
 # 
 #     29 depspacks=`echo ${depspacks} | sed s/SUNWgnome-common/SUNWgnome-common-devel/`
 # 
@@ -1743,7 +1902,35 @@
 #     37 depspacks=`echo ${depspacks} | sed 's/SUNWapch22u$/SUNWapch22/'`
 # 
 
+##TODO## if a consumer appears (e.g. S10)
+#SUNWncurses
+##%if %(expr %{osbuild} '>=' 100)
+##BuildRequires: SUNWncurses-devel
+##Requires: SUNWncurses
+##%else
+##BuildRequires: SFEncurses-devel
+##Requires: SFEncurses
+##%endif
+
+
 %changelog
+* Sun Jul 21 2013 - Thomas Wagner
+- handle SUNWlibm / pnm_buildrequires_system_library_math_header_math -> system/library/math (S11* >= 174, S12)
+  math headers went into system header package
+- fix package name SFEpulseaudio-devel (SXCE)
+- set perl version (S11.1, S12)
+* Thu Jul  4 2013 - Thomas Wagner
+- handle SFElibsndfile/SUNWlibsndfile to get default (1.0.25 for now, /usr/gnu)
+  or solve missing legacy name SUNWlibsndfile
+* Mon Jul  1 2013 - Thomas Wagner
+- handle pnm_buildrequires_library_ncurses/SUNWncurses-devel (>=100,  S10: not yet implemented)
+- handle SFEautomake-111 / automake / pnm_requires_SFEautomake_111 (>= 175.1 >= S11.1)
+- handle SFEpulseaudio / pulseaudio / pnm_requires_SFEpulseaudioautomake_111 (>= 175.1 >= S11.1)
+* Sun Jun 30 2013 - Thomas Wagner
+- fix logic for pnm_buildrequires_x11_library_freeglut on Solaris 12
+* Fri Jun 28 2013 - Thomas Wagner
+- handle pnm_requires_SUNWtexi / text/texinfo
+- handle pnm_requires_SUNWdoc / text/doctools
 * Fri Jun 28 2013 - Thomas Wagner
 - add solaris12 to osbuild related decisions
 * Thu Jun 20 2013 - Thomas Wagner
