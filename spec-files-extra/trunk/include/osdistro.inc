@@ -112,6 +112,7 @@
 #no versioning here
 %define openindiana 0
 %define solaris11express 0
+%define solaris11 0
 %define solaris12 0
 
 #boolean flags for major osdistro names - *with* versioning the releases
@@ -130,6 +131,13 @@
 %define s120000 0
 #12.0 build 24
 %define s120024 0
+
+#Solaris 11
+#always defined on 11.0 and all subsequent 11.xx versions.
+#11.0 build ??
+%define s110000 0
+#11.1 build ??
+%define s110100 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -283,10 +291,15 @@
 ##TODO## replace s11ex201100
 %define s11ex201100 1
 %define solaris11express 1
-##TODO## replace 201100
 %define osdistrelnumber 201100
-#                                below: subject to change!
-%define osdistrelname   "Solaris 11 Express"
+%define s110000 1
+#11.1 build ??
+%if %( uname -v | egrep '^11\.1]$' > /dev/null && echo 1 || echo 0 )
+%define s110100 1
+%define osdistrelnumber 201100
+%else
+%endif
+%define osdistrelname   "Solaris 11"
 #this was the last check, skip all others
 %define osdet299999 0
 %else
@@ -392,6 +405,8 @@
 
 
 %changelog
+* Mon Jul  1 2013 - Thomas Wagner
+- add s11 11.1 support
 * Thu Jun 27 2013 - Thomas Wagner
 - renamed s12 variables
 * Sun Jun 22 2013 - Thomas Wagner
