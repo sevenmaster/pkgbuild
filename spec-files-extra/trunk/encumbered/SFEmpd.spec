@@ -26,13 +26,15 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.17.3
-Source:              %{sf_download}/project/musicpd/%{src_name}/%{version}/%{src_name}-%{version}.tar.bz2
+Version:             0.17.4
+%define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
+Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
 BuildRequires: SUNWogg-vorbis-devel
@@ -41,8 +43,8 @@ BuildRequires: SUNWflac-devel
 BuildRequires: SFElibshout
 BuildRequires: SFElibcdio
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
 BuildRequires: SUNWglib2
-BuildRequires: SUNWlibsndfile
 BuildRequires: SUNWcurl
 #TODO# BuildRequires: SFElibpulse-devel
 BuildRequires: SUNWavahi-bridge-dsd-devel
@@ -56,8 +58,8 @@ Requires: SUNWflac
 Requires: SFElibshout
 Requires: SFElibcdio
 Requires: %{pnm_requires_SUNWsqlite3}
+Requires:      %{pnm_requires_SFElibsndfile}
 Requires: SUNWglib2
-Requires: SUNWlibsndfile
 Requires: SUNWcurl
 #TODO# Requires: SFElibpulse
 Requires: SUNWavahi-bridge-dsd
@@ -88,7 +90,9 @@ auto-network SFEpulseaudio ( via pulseaudio, libao (sun|pulse) ).
 
 
 %prep
-%setup -q -n %src_name-%version
+#don't unpack please
+%setup -q -c -T -n %src_name-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %build
 
@@ -114,7 +118,7 @@ sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure
             --enable-mpg123      \
 %else
             --disable-mpg123     \
-            --disable-aac        \
+            --enable-aac         \
             --disable-mpc        \
             --disable-lame-encoder \
             --disable-twolame-encoder \
@@ -158,6 +162,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Sat Jul 27 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}
+- bump to 0.17.4
+- new download URL, add BuildRequires %{pnm_buildrequires_SFExz_gnu}, make %prep xz friendly 
+* Mon Mar  4 2013 - Thomas Wagner
+- --enable-aac (was explicitly --disable-aac before)
 * Sun Jan 20 2013 - Thomas Wagner
 - bump to 0.17.3
 - use %{sf_download} macro for Source
