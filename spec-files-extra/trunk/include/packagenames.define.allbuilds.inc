@@ -522,7 +522,7 @@
 %define pnm_requires_SUNWflac			SUNWflac
 %define pnm_buildrequires_SUNWspeex_devel	SUNWspeex-devel
 %define pnm_requires_SUNWspeex			SUNWspeex
-%define pnm_buildrequires_SUNWpangomm_devel	SUNWpangomm-deve√l
+%define pnm_buildrequires_SUNWpangomm_devel	SUNWpangomm-devel
 %define pnm_requires_SUNWpangomm		SUNWpangomm
 %define pnm_buildrequires_SUNWpango_devel	SUNWpango-devel
 %define pnm_requires_SUNWpango			SUNWpango
@@ -679,21 +679,21 @@
 #for every platform
 #SFElibsndfile/SFElibsndfile-devel or SUNWlibsndfile (no -devel)
 #SFE in /usr/gnu
-%define pnm_buildrequires_library_gnu_libsndfile		SFElibsndfile_devel
+%define pnm_buildrequires_library_gnu_libsndfile		SFElibsndfile-devel
 %define pnm_requires_library_gnu_libsndfile			SFElibsndfile
 #Solaris/OI
-%define pnm_buildrequires_library_libsndfile			SFElibsndfile_devel
+%define pnm_buildrequires_library_libsndfile			SFElibsndfile-devel
 %define pnm_requires_library_libsndfile				SFElibsndfile
 #old OpenSolaris pre renaming
-%define pnm_buildrequires_libsndfile				SFElibsndfile_devel
+%define pnm_buildrequires_libsndfile				SFElibsndfile-devel
 %define pnm_requires_libsndfile					SFElibsndfile
 #S10 SXCE
 #Devel-Package SUNWlibsndfile_devel doesn't really exist, but define it anyways:
-%define pnm_buildrequires_SFElibsndfile_devel			SFElibsndfile_devel
-%define pnm_buildrequires_SFElibsndfile				SFElibsndfile_devel
+%define pnm_buildrequires_SFElibsndfile_devel			SFElibsndfile-devel
+%define pnm_buildrequires_SFElibsndfile				SFElibsndfile-devel
 %define pnm_requires_SFElibsndfile				SFElibsndfile
-%define pnm_buildrequires_SUNWlibsndfile_devel			SFElibsndfile_devel
-%define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile_devel
+%define pnm_buildrequires_SUNWlibsndfile_devel			SFElibsndfile-devel
+%define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile-devel
 %define pnm_requires_SUNWlibsndfile				SFElibsndfile
 
 
@@ -1440,10 +1440,10 @@
 %else
 #we are < 133
 #note, we have in real world no -devel - macro only for convenience
-%define pnm_buildrequires_SUNWpysqlite_devel 	SUNWpysqlite_devel
+%define pnm_buildrequires_SUNWpysqlite_devel 	SUNWpysqlite-devel
 %define pnm_buildrequires_SUNWpysqlite 		SUNWpysqlite
 %define pnm_requires_SUNWpysqlite 		SUNWpysqlite
-%define pnm_buildrequires_pysqlite 		SUNWpysqlite_devel
+%define pnm_buildrequires_pysqlite 		SUNWpysqlite-devel
 %define pnm_requires_pysqlite 			SUNWpysqlite
 %endif
 #END < 133  (else)
@@ -1914,6 +1914,8 @@
 
 
 %changelog
+* Sat Jul 27 2013 - Thomas Wagner
+- remove typos _devel$ -> -devel$
 * Sun Jul 21 2013 - Thomas Wagner
 - handle SUNWlibm / pnm_buildrequires_system_library_math_header_math -> system/library/math (S11* >= 174, S12)
   math headers went into system header package
