@@ -1,3 +1,8 @@
+2013-07-31  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* experimental/SFEtinc.spec: initial spec.
+	* copyright/SFEtinc.copyright 
+
 2013-07-15  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEopenjdk7.spec: updated to JDK 7u40b32
