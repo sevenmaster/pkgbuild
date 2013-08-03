@@ -18,7 +18,7 @@ URL:		http://www.whiteboard.ne.jp/~admin2/tuntap/
 License:        GPLv2
 SUNW_Copyright:	tuntap.copyright
 Meta(info.upstream): Kazuyoshi Aizawa <admin2@whiteboard.ne.jp>
-Version:	1.3.0
+Version:	1.3.2
 Source:		%{src_url}/%{src_name}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -104,6 +104,8 @@ driver name=tap
 %endif
 
 %changelog
+* Sat Aug  3 2013 - Thomas Wagner
+- bump to 1.3.2
 * Thu Oct 06 2011 - Milan Jurik
 - add IPS package name
 * Fri Jul 29 2011 - Alex Viskovatoff
