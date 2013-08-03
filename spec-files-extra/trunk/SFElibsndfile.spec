@@ -16,7 +16,8 @@
 %define SFEogg_vorbis    %(/usr/bin/pkginfo -q SFEogg-vorbis && echo 1 || echo 0)
 
 Name:                    SFElibsndfile
-Summary:                 %{libsndfile.summary}
+IPS_package_name:	 library/gnu/libsndfile
+Summary:                 %{libsndfile.summary} (/usr/gnu)
 Version:                 %{libsndfile.version}
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -122,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- add IPS_package_name and inlude hint to "gnu" location
 * Sun Nov  4 2012 - Thomas Wagner
 - relocate to /usr/gnu (pulseaudio needs >= 1.0.20 and dist has 1.0.17)
   (version is now 1.0.25 see base-specs/libsndfile.spec)
