@@ -4,17 +4,15 @@
 
 
 Name:                    SFElxml-gnu
-Version:                 2.9.0
+Version:                 2.9.1
 Summary:                 The XML library (gnu)
 #Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
 Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
-Patch1:                  libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
 URL:                     http://xmlsoft.org
 
 %prep
 %setup -q -n %{src_name}-%{version}
 
-%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -50,6 +48,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/xml2Conf.sh
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Aug  2 2013 - Thomas Wagner
+- bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
+- remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
 * Sun Jan 13 2013 - Thomas Wagner
 - fix isaexec (hardlink)
 - fix %hard %files %_bindir for multiarch
