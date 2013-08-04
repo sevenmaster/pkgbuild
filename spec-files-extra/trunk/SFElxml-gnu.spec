@@ -28,7 +28,6 @@ Version:                 %{lxml.version}
 IPS_component_version:   %( echo %{version} | sed  -e '/\.[0-9][0-9]*$/ s/$/.1/' -e '/-rc[0-9][0-9]*/ s/-rc/.0./' )
 #Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
 Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
-Patch1:                  libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
 URL:                     %{lxml.url}
 SUNW_BaseDir:            %{_prefix}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -151,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Fri Aug  2 2013 - Thomas Wagner
+- bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
+- remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
 * Sun Jan 13 2013 - Thomas Wagner
 - fix isaexec (hardlink)
 - fix %hard %files %_bindir for multiarch
