@@ -16,8 +16,8 @@
 %include base.inc
 %use faac = faac.spec
 
-Name:		SFEfaac
-IPS_Package_Name:	audio/faac 
+Name:		SFEfaac-gpp
+IPS_Package_Name:	audio/g++/faac 
 Summary:	%{faac.summary} (g++)
 Version:	%{faac.version}
 License:	%{faac.license}
@@ -32,7 +32,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 #BuildRequires:	SFElibmp4v2-devel
 #Requires:	SFElibmp4v2
 BuildRequires:	SFEgcc
-Requires:	SFEgcc-runtime
+Requires:	SFEgccruntime
 
 %description
 FAAC is an AAC audio encoder. It currently supports MPEG-4 LTP, MAIN and LOW
@@ -101,9 +101,13 @@ rm -rf %{buildroot}
 %{_includedir}/*.h
 
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- svn copy SFEfaac.spec SFEfaac-gpp.spec
+- fix linking to C++ libs %if %{cc_is_gcc}  ( s/-lCrun/-lstdc++/ )
+- %if %{cc_is_gcc} change Name, IPS_Package_Name to SFEfaac-gpp, audio/g++/faac
+- %if %{cc_is_gcc} add (Build)Requires: SFEgcc(runtime)
 * Fri Jun 28 2013 - Thomas Wagner
 - use gcc because previous libs in the stack already use g++
-- svn copy SFEfaac.spec SFEfaac-gpp.spec
 * Wed Aug 16 2012 - Milan Jurik
 - build with internal mp4v2
 * Mon Oct 17 2011 - Milan Jurik
