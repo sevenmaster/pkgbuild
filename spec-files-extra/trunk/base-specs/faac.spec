@@ -34,6 +34,15 @@ export LDFLAGS="%{_ldflags} -lm"
 
 #perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure `find . -type f -exec /usr/gnu/bin/grep -q "^#\!.*/bin/sh" {} \; -print`
 
+%if %{cc_is_gcc}
+#configure: postdeps_CXX='-lCstd -lCrun'
+#aclocal.m4: _LT_AC_TAGVAR(postdeps,$1)='-lCstd -lCrun'
+gsed -i.bak -e '/_LT_AC_TAGVAR(postdeps,$1)=.-lCstd -lCrun./ s?.-lCstd -lCrun.??' aclocal.m4
+#frontend/Makefile:LDADD = $(top_builddir)/libfaac/libfaac.la $(top_srcdir)/common/mp4v2/libmp4v2.a -lm -lCrun
+#frontend/Makefile.am  <- change this file, will make up a new Makefile
+gsed -i.bak -e '/^LDADD.*Crun/ s?-lCrun?-lstdc++?' frontend/Makefile.am
+%endif 
+
 ./configure --prefix=%{_prefix} \
     --libdir=%{_libdir} \
     --disable-static \
@@ -52,6 +61,10 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- fix linking to C++ libs %if %{cc_is_gcc}  ( s/-lCrun/-lstdc++/ )
+- %if %{cc_is_gcc} change Name, IPS_Package_Name to SFEfaac-gpp, audio/g++/faac
+- %if %{cc_is_gcc} add (Build)Requires: SFEgcc(runtime)
 * Sat Aug 10 2013 - Thomas Wagner
 - set CC in calling spec file
 * Fri Jun 28 2013 - Thomas Wagner
