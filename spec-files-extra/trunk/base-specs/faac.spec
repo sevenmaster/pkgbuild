@@ -32,7 +32,7 @@ export CFLAGS="%{optflags}"
 export CXXFLAGS="%{cxx_optflags}"
 export LDFLAGS="%{_ldflags} -lm"
 
-sh bootstrap
+#perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure `find . -type f -exec /usr/gnu/bin/grep -q "^#\!.*/bin/sh" {} \; -print`
 
 ./configure --prefix=%{_prefix} \
     --libdir=%{_libdir} \
@@ -52,6 +52,12 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Aug 10 2013 - Thomas Wagner
+- set CC in calling spec file
+* Fri Jun 28 2013 - Thomas Wagner
+- use gcc because previous libs in the stack already use g++
+* Wed Jan 30 2013 - Thomas Wagner
+- fix build by removing sh bootstrap, change shell in scripts to bash
 * Thu Aug 16 2012 - Milan Jurik
 - build with internal mp4v2
 * Mon Oct 17 2011 - Milan Jurik
