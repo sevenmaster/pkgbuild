@@ -16,8 +16,6 @@ Requires: SFElibmicrohttpd
 
 BuildRequires: SFEgmpc-devel
 Requires: SFEgmpc
-BuildRequires: SFEtaglib-devel
-Requires: SFEtaglib
 
 %description
 http://gmpc.wikia.com/wiki/Mserver
@@ -45,6 +43,8 @@ How it works: Mserver is compiled using the libmicrohttp library, which enables 
 
 
 %changelog
+* Fri Aug  9 2013 - Thomas Wagner
+- remove wrong dependency on SFEtaglib
 * Thu May 31 2012 - Thomas Wagner
 - add (Build)Requires: SFElibmicrohttpd
 * Wed Apr 25 2012 - Thomas Wagner
