@@ -94,6 +94,10 @@ rm -rf %{buildroot}
 %{_includedir}/*.h
 
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- fix linking to C++ libs %if %{cc_is_gcc}  ( s/-lCrun/-lstdc++/ )
+- %if %{cc_is_gcc} change Name, IPS_Package_Name to SFEfaac-gpp, audio/g++/faac
+- %if %{cc_is_gcc} add (Build)Requires: SFEgcc(runtime)
 * Wed Aug 16 2012 - Milan Jurik
 - build with internal mp4v2
 * Mon Oct 17 2011 - Milan Jurik
