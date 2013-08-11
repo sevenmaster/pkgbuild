@@ -14,7 +14,7 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.2.2
+Version:	2.3.2
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
 SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -34,6 +34,9 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
+export AR=/usr/ccs/bin/ar
+export RANLIB="/usr/ccs/bin/ar ts"
+export LIBS="-lnsl -lsocket"
 
 ./configure --prefix=%{_prefix}  \
             --mandir=%{_mandir}
@@ -51,6 +54,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_sbindir}
 %{_sbindir}/openvpn
+%dir %attr (0755, root, bin) %{_libdir}
+%{_libdir}/openvpn
+%dir %attr (0755, root, bin) %{_includedir}
+%{_includedir}/*.h
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man8
@@ -59,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Sun Aug 11 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 2.3.2
 * Tue Jul 24 2012 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNWopenssl}, %include packagenamacros.inc
 * Mon Jul  2 2012 - Thomas Wagner
