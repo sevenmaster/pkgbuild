@@ -1,5 +1,8 @@
 2013-08-11  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
+	* SFEeasy-rsa.spec: initial spec.
+	* copyright/SFEeasy-rsa.copyright
+
 	* SFEopenvpn.spec: updated to 2.3.2
 
 2013-07-31  Logan O'Sullivan Bruns  <logan@gedanken.org>
