@@ -15,7 +15,7 @@ IPS_Package_Name:	 system/security/easy-rsa
 Summary:                 Easy-Rsa - a small RSA key management package
 Group:			 System/Security
 Version:                 2.2.0
-URL:		         http://www.openca.org
+URL:		         http://www.openvpn.net
 Source:		         http://github.com/OpenVPN/easy-rsa/archive/v%{version}.tar.gz
 License: 		 GPLv2
 SUNW_Copyright:          %{name}.copyright
