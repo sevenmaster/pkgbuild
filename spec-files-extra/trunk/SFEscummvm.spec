@@ -10,8 +10,8 @@
 Name:                    SFEscummvm
 IPS_Package_Name:	games/scummvm
 Summary:                 ScummVM - emulator for classic graphical games
-Version:                 1.5.0
-Group:                   System/Emulators/Other
+Version:                 1.6.0
+Group:                   System/Emulators
 Source:                  %{sf_download}/scummvm/scummvm-%{version}.tar.bz2
 URL:                     http://www.scummvm.org/
 License:                 GPLv2
@@ -99,6 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Sun Sep 01 2013 - Milan Jurik
+- bump to 1.6.0
 * Wed Jan 30 2013 - Milan Jurik
 - bump to 1.5.0
 * Tue Feb 07 2012 - Milan Jurik
