@@ -2,8 +2,6 @@
 # spec file for package SFEscribus
 #
 
-# The stable release is 1.3.3.14.  This spec has not been tested with that.
-
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -14,8 +12,8 @@ IPS_Package_Name:	desktop/publishing/scribus
 Summary:        Graphical desktop publishing (DTP) application
 URL:		http://www.scribus.net/canvas/Scribus
 Group:		Applications/Office
-Version:        1.4.1
-Source:		%{sf_download}/%{src_name}/%{version}/%src_name-%version.tar.bz2
+Version:        1.4.3
+Source:		%{sf_download}/%{src_name}/%{version}/%src_name-%version.tar.xz
 License:	GPLv2
 Patch1:		scribus-01-math_c99.diff
 SUNW_BaseDir:   %_basedir
@@ -43,14 +41,13 @@ Scribus is a GUI desktop publishing (DTP) application for Unix/Linux.
 
 
 %prep
-%setup -q -c -n %src_name-%version
-cd Scribus
+%setup -q -n %src_name-%version
 %patch1 -p1
 mkdir -p builddir
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
-cd Scribus/builddir
+cd builddir
 # Don't even think about trying to build this with Solaris Studio
 export CC=gcc
 export CXX=g++
@@ -70,7 +67,7 @@ make -j$CPUS
 
 %install
 rm -rf %buildroot
-cd Scribus/builddir
+cd builddir
 make install DESTDIR=%buildroot INSTALL="%_bindir/ginstall -c -p"
 cd ..
 mkdir %buildroot%_datadir/applications
@@ -113,6 +110,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Sep 01 2013 - Milan Jurik
+- bump to 1.4.3
 * Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 1.4.1
 - explicitly force cmake to use python2.6 since it python3.x fails
