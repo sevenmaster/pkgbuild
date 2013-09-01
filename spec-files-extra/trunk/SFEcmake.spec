@@ -16,7 +16,7 @@
 Name:		SFEcmake
 IPS_Package_Name:	sfe/developer/build/cmake 
 Summary:	Cross platform make system
-Version:	2.8.10
+Version:	2.8.11
 License:	BSD3c
 SUNW_Copyright:	cmake.copyright
 Source:		http://www.cmake.org/files/v2.8/cmake-%{version}.tar.gz
@@ -68,6 +68,8 @@ rm -rf %{buildroot}
 %{_docdir}/cmake
 
 %changelog
+* Sun Sep 01 2013 - Milan Jurik
+- bump to 2.8.11
 * Sun Nov 11 2012 - Logan Bruns <logan@gedanken.org>
 - bump to 2.8.10
 * Sun Jun 17 2012 - Thomas Wagner
