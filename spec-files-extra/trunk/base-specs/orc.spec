@@ -1,7 +1,7 @@
 %define src_name orc
 
 Name:		SFEorc
-Version:	0.4.16
+Version:	0.4.18
 Summary:	The Oil Run-time Compiler
 
 Group:		System Environment/Libraries
