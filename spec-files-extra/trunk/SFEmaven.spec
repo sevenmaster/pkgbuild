@@ -15,7 +15,7 @@ Name:                    SFEmaven
 IPS_Package_Name:	 developer/build/maven
 Summary:                 Maven - a software project management and comprehension tool
 Group:                   Utility
-Version:                 3.0.5
+Version:                 3.1.0
 URL:		         http://maven.apache.org
 Source:		         http://www.us.apache.org/dist/%{srcname}/%{srcname}-3/%{version}/binaries/apache-%{srcname}-%{version}-bin.tar.gz
 License: 		 Apache License, Version 2.0
@@ -70,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/mvn
 
 %changelog
+* Sun Sep 1 2013 - Logan Bruns <logan@gedanken.org>
+- Updated to 3.1.0
 * Tue Feb 26 2013 - Logan Bruns <logan@gedanken.org>
 - Updated to 3.0.5 (mainly addresses CVE-2013-0253)
 - Use SFEopenjdk7 if present as default java instead of OI's older version of java.
