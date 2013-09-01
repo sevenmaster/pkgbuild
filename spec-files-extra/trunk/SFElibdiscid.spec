@@ -10,6 +10,7 @@
 %define	src_url	http://users.musicbrainz.org/~matt
 
 Name:		SFElibdiscid
+IPS_Package_Name: library/libdiscid
 Summary:	Library for creating MusicBrainz DiscIDs
 Version:	%{src_ver}
 License:	LGPL v2.1
