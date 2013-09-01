@@ -9,7 +9,7 @@
 #
 Name:           gst-ffmpeg
 License:        LGPL
-Version:        0.10.12
+Version:        0.10.13
 Release:        1
 Distribution:   Java Desktop System
 Vendor:         Sun Microsystems, Inc.
