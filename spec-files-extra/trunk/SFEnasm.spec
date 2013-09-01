@@ -11,8 +11,8 @@ IPS_Package_Name:	developer/nasm
 Summary:             Portable, modular 80x86 assembler
 License:             BSD
 SUNW_Copyright:      nasm.copyright
-Version:             2.10.07
-IPS_component_version: 2.10.7
+Version:             2.10.09
+IPS_component_version: 2.10.9
 URL:                 http://www.nasm.us/
 Source:              http://www.nasm.us/pub/nasm/releasebuilds/%{version}/nasm-%{version}.tar.bz2
 License:             2-BSD
