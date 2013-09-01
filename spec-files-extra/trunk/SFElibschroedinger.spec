@@ -28,7 +28,7 @@ IPS_Package_Name:	library/video/libschroedinger
 Version:        %{schroedinger.version}
 Summary:        %{schroedinger.summary}
 
-Group:          %{schroediner.group}
+Group:          %{schroedinger.group}
 License:        %{schroedinger.license}
 URL:            %{schroedinger.url}
 SUNW_Copyright:	schroedinger.copyright
