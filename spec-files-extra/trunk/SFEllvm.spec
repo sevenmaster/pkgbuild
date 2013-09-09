@@ -12,20 +12,24 @@
 %define cc_is_gcc 1
 %include base.inc
 
+%define src_url		http://llvm.org/releases
 %define src_name        llvm
 
 Name:		SFEllvm
 IPS_Package_Name:	developer/llvm
 Summary:	The Low Level Virtual Machine (An Optimizing Compiler Infrastructure)
 SUNW_Copyright:	llvm.copyright
-Version:	3.2
+Version:	3.3
 License:        BSD
 
 URL:		http://llvm.org/
-Source:		http://llvm.org/releases/%{version}/%{src_name}-%{version}.src.tar.gz
-Source1:	http://llvm.org/releases/%{version}/clang-%{version}.src.tar.gz
+Source:		%{src_url}/%{version}/%{src_name}-%{version}.src.tar.gz
+Source1:	%{src_url}/%{version}/cfe-%{version}.src.tar.gz
+Source2:	%{src_url}/%{version}/clang-tools-extra-%{version}.src.tar.gz
+Source3:	%{src_url}/%{version}/compiler-rt-%{version}.src.tar.gz
 # TODO: This needs proper fix
 Patch1:		llvm-01-gccpath.diff
+Patch2:		llvm-02-endian.diff
 
 Group:          Development/C
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -53,8 +57,14 @@ programming tools as well as libraries with equivalent functionality.
 
 %prep
 %setup -q -n %{src_name}-%{version}.src
-cd tools && tar xzf %{SOURCE1} && mv clang-%{version}.src clang
+%patch2 -p1
+
+cd tools && tar xzf %{SOURCE1} && mv cfe-%{version}.src clang
 %patch1 -p2
+
+cd clang/tools && tar xzf %{SOURCE2} && mv clang-tools-extra-%{version}.src extra
+
+cd ../../.. && cd projects && tar xzf %{SOURCE3} && mv compiler-rt-%{version}.src compiler-rt
 
 %build
 
@@ -106,6 +116,8 @@ mv ${RPM_BUILD_ROOT}/%{_prefix}/docs ${RPM_BUILD_ROOT}%{_datadir}/doc
 %{_docdir}/llvm
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 3.3
 * Sun Feb 10 2013 - Milan Jurik
 - bump to 3.2
 * Wed May 23 2012 - Milan Jurik
