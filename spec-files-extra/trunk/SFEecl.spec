@@ -12,7 +12,7 @@
 %include base.inc
 
 %define srcname ecl
-%define major 12.12
+%define major 13.5
 %define minor 1
 
 Name:                    SFEecl
@@ -106,6 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Sun Sep 8 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 13.5.1
 * Wed Dec 12 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 12.12.1
 * Mon Jul 30 2012 - Logan Bruns <logan@gedanken.org>
