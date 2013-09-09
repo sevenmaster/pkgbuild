@@ -13,8 +13,9 @@ Summary:             Ping/Traceroute network diagnostic tool with GTK support
 License:             GPLv2
 SUNW_Copyright:      mtr.copyright
 URL:                 http://www.bitwizard.nl/mtr/
-Version:             0.82
+Version:             0.85
 Source:              ftp://www.BitWizard.nl/mtr/mtr-%{version}.tar.gz
+Patch1:              mtr-01-fionbio.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -24,6 +25,7 @@ Requires: SUNWncurses
 
 %prep
 %setup -q -n mtr-%version
+%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -64,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/*
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 0.85
 * Sun Dec 11 2011 - Milan Jurik
 - bump to 0.82
 * Sun Jul 24 2011 - Alex Viskovatoff

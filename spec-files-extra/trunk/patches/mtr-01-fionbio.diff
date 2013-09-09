@@ -1,0 +1,29 @@
+--- mtr-0.85/net.c	Mon Sep  9 21:16:15 2013
++++ mtr-0.85/net.c	Mon Sep  9 21:19:05 2013
+@@ -298,7 +298,6 @@
+ void net_send_tcp(int index)
+ {
+   int ttl, s;
+-  int opt = 1;
+   int port;
+   struct sockaddr_storage local;
+   struct sockaddr_storage remote;
+@@ -307,6 +306,7 @@
+   struct sockaddr_in *remote4 = (struct sockaddr_in *) &remote;
+   struct sockaddr_in6 *remote6 = (struct sockaddr_in6 *) &remote;
+   socklen_t len;
++  int flags;
+ 
+   ttl = index + 1;
+ 
+@@ -350,8 +350,8 @@
+     exit(EXIT_FAILURE);
+   }
+ 
+-  opt = 1;
+-  if (ioctl(s, FIONBIO, &opt)) {
++  flags = fcntl(s, F_GETFL, 0);
++  if (fcntl(s, F_SETFL, flags | O_NONBLOCK) == -1) {
+     display_clear();
+     perror("ioctl FIONBIO");
+     exit(EXIT_FAILURE);
