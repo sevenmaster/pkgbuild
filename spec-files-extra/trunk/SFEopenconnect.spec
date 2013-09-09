@@ -11,8 +11,8 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	4.07
-IPS_Component_Version: 4.7
+Version:	5.01
+IPS_Component_Version: 5.1
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -105,6 +105,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 5.01
 * Sun Nov  4 2012 - Thomas Wagner
 - bump to 4.07
 - add IPS_Component_Version 4.7
