@@ -4,6 +4,7 @@
 	* SFEmtr.spec: bump to 0.85
 	* SFEldns.spec: bump to 1.6.16
 	* SFEllvm.spec: bump to 3.3
+	* SFEvidalia.spec: bump to 0.2.21
 
 2013-09-08  Logan O'Sullivan Bruns  <logan@gedanken.org>
 

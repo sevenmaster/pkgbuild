@@ -9,7 +9,7 @@
 Name:		SFEvidalia
 IPS_Package_Name:	desktop/security/vidalia
 Summary:	The Onion Router GUI
-Version:	0.2.15
+Version:	0.2.21
 URL:		http://www.torproject.org/
 Source:		%{url}/dist/%{src_name}/%{src_name}-%{version}.tar.gz
 Patch1:		vidalia-01-floor.diff
@@ -78,5 +78,7 @@ rm -rf %{buildroot}
 %{_datadir}/applications/%{src_name}.desktop
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 0.2.21
 * Sat Feb 11 2012 - Milan Jurik
 - Initial spec
