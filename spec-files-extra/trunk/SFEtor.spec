@@ -8,7 +8,7 @@
 Name:		SFEtor
 IPS_Package_Name:	network/tor
 Summary:	Anonymizing overlay network for TCP (The onion router)
-Version:	0.2.2.35
+Version:	0.2.3.25
 URL:		http://www.torproject.org/
 Source:		%{url}/dist/%{src_name}-%{version}.tar.gz
 Source1:	tor.auth_attr
@@ -133,5 +133,7 @@ user ftpuser=false gcos-field="TOR Reserved UID" username="tor" password=NP grou
 %attr (0555, root, bin) /lib/svc/method/%{src_name}
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 0.2.3.25
 * Sat Feb 11 2012 - Milan Jurik
 - Initial spec
