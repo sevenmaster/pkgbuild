@@ -15,8 +15,8 @@
 Name:		SFEopenssh-server
 IPS_Package_Name:	service/network/openssh
 Summary:	Secure Shell protocol Server
-Version:	6.1p1
-IPS_Component_Version:	6.1.1
+Version:	6.2p2
+IPS_Component_Version:	6.2.2
 URL:		http://www.openssh.org/
 Source:		http://ftp5.usa.openbsd.org/pub/OpenBSD/OpenSSH/portable/%{src_name}-%{version}.tar.gz
 Source1:	ssh.xml
@@ -188,6 +188,8 @@ legacy desc="Secure Shell protocol common Utilities" name="SSH Common, (Usr)" pk
 %{_mandir}/man1m/ssh-keysign.1m
 
 %changelog
+* Mon Sep 09 2013 - Milan Jurik
+- bump to 6.2p2
 * Fri Oct 12 2012 - Milan Jurik
 - bump to 6.1p1
 - force use of editline
