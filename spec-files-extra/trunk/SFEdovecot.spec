@@ -44,7 +44,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Summary:	dovecot - A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.2.3
+Version:	2.2.5
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -233,6 +233,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Mon Sep 9 2013 - Logan Bruns <logan@gedanken.org>
+- updated to 2.2.5
 * Fri Jun 21 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 2.2.3
 * Sat Jun  8 2013 - Thomas Wagner
