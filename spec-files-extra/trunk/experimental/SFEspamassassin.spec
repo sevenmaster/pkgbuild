@@ -6,15 +6,13 @@
 #TODO# re-work perl specific prerequisites...
 
 %define src_name spamassassin
-%define module_version 3.3.1
+%define module_version 3.3.2
 %define rules_version 3.3.2-r1104058
 %define rules_version_IPS $( echo %{rules_version} | sed -e 's/-r/./' )
 %define module_name Mail-Spamassassin
 %define module_name_major Mail
 %define module_package_name mail-spamassassin
 #still unused: %define module_name_minor spamassassin
-
-%define perl_version 5.8.4
 
 %include Solaris.inc
 %include packagenamemacros.inc
@@ -23,6 +21,8 @@
 %define contact_address_spamreport postmaster@localhost
 
 Name:                    SFEspamassassin
+IPS_package_name:        service/network/smtp/spamassassin
+Group:			 Applications/Internet
 Summary:                 spamassassin - a spam filter for email which can be invoked from mail delivery agents
 URL:                     http://spamassassin.apache.org/
 Version:                 %{module_version}
@@ -49,8 +49,8 @@ Requires: SFEperl-html-parser
 BuildRequires: SFEperl-net-dns
 Requires: SFEperl-net-dns
 #INSTALL file says this is required, build/check_dependencies does not complain..
-BuildRequires: SFEperl-libwww-perl
-Requires: SFEperl-libwww-perl
+BuildRequires: SFEperl-lwp
+Requires: SFEperl-lwp
 
 BuildRequires: SFEperl-encode-detect
 Requires: SFEperl-encode-detect
@@ -92,12 +92,15 @@ Requires: SUNWopenssl-libraries
 #pkgbuild: Requires: SFEperl-io-zlib
 
 #we have in SFE a special naming mess for the perl modules. :)
-Requires: SFEperl-compress-zlib
+Requires: SFEperl-io-compress
 Requires: SFEperl-archive-tar
-Requires: SFEperl-io-zlib
+#Requires: SFEperl-io-zlib
 #for sa-update we need more
 Requires: SFEperl-package-constants
 Requires: %{pnm_requires_SFEgnupg2}
+
+BuildRequires: SFEperl-netaddr-ip
+Requires: SFEperl-netaddr-ip
 
 #INSTALL file says this is highly recommended:
 #DB_File
@@ -127,11 +130,6 @@ Requires: %{pnm_requires_SFEgnupg2}
 # dcc_fuz1_max 999999
 # dcc_fuz2_max 999999 
 
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
 %include default-depend.inc
 
 #from the original spamassassin.spec in the source tarball
@@ -159,7 +157,7 @@ perl -w -pi.bak -e "s,GPGPath = \'gpg\' ,GPGPath = \'gpg2\' ," sa-update.raw
 # result in complete (Build)Requires entries (package dependencies) in this spec file
 # it uses the spamassassin provided check script in build/check_dependencies
 
-REQUIREDPERLMODULES=`build/check_dependencies 2>/dev/null| grep -i "REQUIRED module missing: " | sed -e 's/^.*missing: //' -e 's/::/-/g' | tr -s '[:upper:]' '[:lower:]'`
+REQUIREDPERLMODULES=`build/check_dependencies 2>/dev/null| grep -i "REQUIRED module missing: " | sed -e 's/^.*missing: //' -e 's/::/-/g' | tr '[:upper:]' '[:lower:]'`
 
 if echo $REQUIREDPERLMODULES | grep -v "^$" 
   then
@@ -167,6 +165,7 @@ if echo $REQUIREDPERLMODULES | grep -v "^$"
   echo "ERROR: missing required Spamassassin Perl Module(s). Requirements of SFEspamassassin.spec seem to have changes and must be extended in SFEspamassassin.spec."
   echo "ERROR: required perl modules missing, you need to add them to BuildRequires: and Requires: in the spec file."
   echo "ERROR: eventually you need to write a new spec file to get the required perl module."
+  echo "NOTE: you may use script make_perl_cpan_settings.pl in SFE spec-files-extra repository to create new packages for missing perl modules"
   for PERLMODULE in $REQUIREDPERLMODULES
    do
    echo "BuildRequires: %perlmodulepkgnameprefix-$PERLMODULE"
@@ -176,12 +175,13 @@ if echo $REQUIREDPERLMODULES | grep -v "^$"
 fi #$REQUIREDPERLMODULES
 
 #below: only tell about the optional modules. e.g. Archive::Tar for having sa-update working
-WANTEDPERLMODULES=`build/check_dependencies 2>/dev/null| grep -i " module missing: " | sed -e 's/^.*missing: //' -e 's/::/-/g' | tr -s '[:upper:]' '[:lower:]'`
+WANTEDPERLMODULES=`build/check_dependencies 2>/dev/null| grep -i " module missing: " | sed -e 's/^.*missing: //' -e 's/::/-/g' | tr '[:upper:]' '[:lower:]'`
 
 if echo $WANTEDPERLMODULES | grep -v "^$" 
   then
   echo "suggested perl modules missing, consider adding them to BuildRequires: and Requires: in the spec file"
   echo "suggestion for this spec build recipe: add or write and add required perl modules with this syntax:"
+  echo "NOTE: you may use script make_perl_cpan_settings.pl in SFE spec-files-extra repository to create new packages for missing perl modules"
   for PERLMODULE in $WANTEDPERLMODULES
    do
    echo "BuildRequires: %{perlmodulepkgnameprefix}-$PERLMODULE"
@@ -197,18 +197,30 @@ cp -p %{SOURCE2} spamassassin.xml
 
 #NOTE# special to this module: --no-online-tests
 
+##DEVEL## perl Makefile.PL \
+##DEVEL##	PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir} DESTDIR=$RPM_BUILD_ROOT \
+##DEVEL##	CONFDIR=%{_sysconfdir}/%{src_name} \
+##DEVEL##        INSTALLSITELIB=%{_prefix}/%{perl_path_vendor_perl_version} \
+##DEVEL##        INSTALLSITEARCH=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+##DEVEL##        INSTALLSITEMAN1DIR=%{_mandir}/man1 \
+##DEVEL##        INSTALLSITEMAN3DIR=%{_mandir}/man3 \
+##DEVEL##        INSTALLMAN1DIR=%{_mandir}/man1 \
+##DEVEL##        INSTALLMAN3DIR=%{_mandir}/man3 \
+##DEVEL##	ENABLE_SSL=yes \
+##DEVEL##	CONTACT_ADDRESS=%{contact_address_spamreport} \
+##DEVEL##	--no-online-tests
 perl Makefile.PL \
-	PREFIX=%{_prefix} SYSCONFDIR=%{_sysconfdir} DESTDIR=$RPM_BUILD_ROOT \
-	CONFDIR=%{_sysconfdir}/%{src_name} \
-        INSTALLSITELIB=%{_prefix}/%{perl_path_vendor_perl_version} \
-        INSTALLSITEARCH=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-        INSTALLSITEMAN1DIR=%{_mandir}/man1 \
-        INSTALLSITEMAN3DIR=%{_mandir}/man3 \
-        INSTALLMAN1DIR=%{_mandir}/man1 \
-        INSTALLMAN3DIR=%{_mandir}/man3 \
-	ENABLE_SSL=yes \
-	CONTACT_ADDRESS=%{contact_address_spamreport} \
-	--no-online-tests
+    PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    CONFDIR=%{_sysconfdir}/%{src_name} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
+    INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
+    INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
+    ENABLE_SSL=yes \
+    CONTACT_ADDRESS=%{contact_address_spamreport} \
+    --no-online-tests
 
 make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
@@ -225,13 +237,10 @@ make install
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp spamassassin.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 
-#remove /usr/lib/i86pc-solaris-64int/perllocal.pod 
-rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/%{src_name}
 
-[ -f $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/5.8.4/%{perl_dir}/auto/Mail/SpamAssassin/.packlist ] && rm $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/5.8.4/%{perl_dir}/auto/Mail/SpamAssassin/.packlist
-[ -d $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/5.8.4/%{perl_dir} ] && rm -r $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/5.8.4/%{perl_dir}
-
-#%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
+#remove perllocal.pod 
+find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -252,18 +261,9 @@ rm -rf $RPM_BUILD_ROOT
 #%{_docdir}/%{src_name}/*
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %attr (0755, root, bin) %dir %{_sysconfdir}/%{src_name}
-#%{_sysconfdir}/%{src_name}/*
 %class(renamenew) %{_sysconfdir}/%{src_name}/*
 %dir %attr (0755,root,bin) %{_bindir}
 %{_bindir}/*
-#%dir %attr(0755, root, bin) %{_prefix}/perl5
-#%dir %attr(0755, root, bin) %{_prefix}/perl5/vendor_perl
-#%dir %attr(0755, root, bin) %{_prefix}/perl5/vendor_perl/%{perl_version}
-#%{_prefix}/perl5/vendor_perl/%{perl_version}/*
-#%dir %attr(0755, root, bin) %{_prefix}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/%{module_name_major}
-#%{_prefix}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/%{module_name_major}/*
-#%dir %attr(0755, root, bin) %{_prefix}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto
-#%{_prefix}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto/*
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
@@ -274,28 +274,14 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
-     /usr/share/man/man3/Mail::SpamAssassin::SQLBasedAddrList.3
-        /usr/share/man/man3/Mail::SpamAssassin::Plugin::TextCat.3
-        /usr/perl5/vendor_perl/5.8.4/Mail
-        /usr/perl5/vendor_perl/5.8.4/Mail/SpamAssassin
-        /usr/perl5/vendor_perl/5.8.4/Mail/SpamAssassin/Util
-        /usr/perl5/vendor_perl/5.8.4/Mail/SpamAssassin/Util/RegistrarBoundaries.pm
-        /usr/perl5/vendor_perl/5.8.4/Mail/SpamAssassin/Util/ScopedTimer.pm
-
-
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/perl5
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/perl5/vendor_perl
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/perl5/vendor_perl/5.8.4
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/perl5/vendor_perl/5.8.4/*
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/share/man
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/share/man/man1
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/share/man/man1/*
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/share/man/man3
-pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEspamassassin-3.3.1-build/usr/share/man/man3/*
-ERROR: SFEspamassassin FAILED
-
-
-%changelog
+* Fri Feb 01 2013 - Thomas Wagner
+- change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
+- add (Build)Requires: SFEperl-netaddr-ip
+* Mon Nov 26 2012 - Thomas Wagner
+- bump to 3.3.2
+- align perl Makefile.PL and other places to standard settings
+- add IPS_package_name, add Group
+- fix (Build)Requires for renamed package SFEperl-libwww-perl -> SFEperl-lwp.spec
 * Thu May 17 2012 - Thomas Wagner
 - change Requires to %{pnm_requires_SUNWgnupg}
 * Sat May 12 2012 - Thomas Wagner
