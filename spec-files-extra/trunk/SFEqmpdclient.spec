@@ -10,6 +10,7 @@
 %define srcname qmpdclient
 
 Name:		SFEqmpdclient
+IPS_Package_Name: media/qmpdclient
 Summary:	Qt4 based Music Player Daemon client
 URL:		http://bitcheese.net/wiki/QMPDClient
 License:	GPLv2
@@ -63,11 +64,15 @@ make -j$CPUS
 rm -rf %buildroot
 export PATH=/usr/g++/bin:$PATH
 
-make install
-
 %if %build_l10n
-cp lang/*qm %buildroot%_datadir/QMPDClient/translations
+make install
+%else
+make install_target install_desktop_file install_icon64 install_icon48 install_icon22 install_icon16 install_iconsvg
 %endif
+
+# %if %build_l10n
+# cp lang/*qm %buildroot%_datadir/QMPDClient/translations
+# %endif
 
 %clean
 rm -rf %buildroot
@@ -107,5 +112,7 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Sep 12 2013 - Alex Viskovatoff
+- fix installation/packaging; add IPS package name
 * Mon Aug  1 2011 - Alex Viskovatoff
 - Initial spec
