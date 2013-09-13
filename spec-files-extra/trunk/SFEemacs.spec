@@ -23,7 +23,6 @@ SUNW_Copyright:          emacs.copyright
 %define emacs_version    24.3
 %define src_version      24.3
 Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.gz
-#Patch1:                  emacs-01-sound.diff
 URL:                     http://www.gnu.org/software/emacs/emacs.html
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -35,7 +34,6 @@ BuildRequires:      SFEgcc
 Requires:           SFEgccruntime
 BuildRequires: SUNWgnome-common-devel
 BuildRequires: SUNWgtk2
-BuildRequires: SFEalsa-lib-devel
 BuildRequires: SUNWtexi
 Requires: SUNWTiff
 Requires: SUNWpng
@@ -45,8 +43,6 @@ Requires: SUNWzlib
 Requires: %pnm_requires_perl_default
 Requires: SUNWtexi
 Requires: SUNWdbus
-Requires: SFEalsa-lib
-Requires: SFEalsa-plugins
 Requires: %{name}-root
 %if %{?_with_gtk:1}%{?!_with_gtk}
 %define toolkit gtk
@@ -71,17 +67,13 @@ SUNW_BaseDir:            /
 
 %prep
 %setup -q -n emacs-%src_version
-#%patch1 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CFLAGS="$CFLAGS -O6"
 export CXX=g++
-export LDFLAGS="$LDFLAGS -L/usr/gnu/lib -R/usr/gnu/lib -lncurses -R/usr/g++/lib"
+export LDFLAGS="$LDFLAGS -L/usr/gnu/lib -R/usr/gnu/lib:/usr/g++/lib -lncurses"
 
 export PERL=/usr/perl5/bin/perl
 
@@ -93,9 +85,10 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:/usr/lib/pk
             --infodir=%{_infodir}            \
             --sysconfdir=%{_sysconfdir}      \
             --localstatedir=%{_localstatedir}   \
-            --with-gif=yes \
-            --with-x-toolkit=%toolkit \
-            --with-xft
+            --with-gif=yes			\
+            --with-x-toolkit=%toolkit		\
+            --with-xft				\
+	    --without-sound
 
 make -j$CPUS 
 
@@ -160,6 +153,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Thu Sep 12 2014 - Alex Viskovatoff
+- disable sound - the only reason I added alsa was because the documentation
+  indicated that sound does not work on Solaris
 * Mon Apr 22 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 24.3
 * Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
