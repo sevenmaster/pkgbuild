@@ -8,41 +8,40 @@
 %define cc_is_gcc 1
 %include base.inc
 %include packagenamemacros.inc
-%define with_runtime_cpudetect 1
 
 %define SUNWlibsdl %(/usr/bin/pkginfo -q SUNWlibsdl && echo 1 || echo 0)
-%define with_alsa %(pkginfo -q SFEalsa-lib && echo 1 || echo 0)
 
 %ifarch sparc
 %define arch_opt --disable-optimizations
 %endif
 
 %ifarch i386
-%define arch_opt --cpu=pentiumpro --enable-runtime-cpudetect --enable-mmx --enable-mmx2 --enable-sse --enable-ssse3 --enable-amd3dnow --enable-amd3dnowext
-%define extra_gcc_flags
+%define arch_opt --cpu=prescott --enable-runtime-cpudetect --enable-mmx --enable-mmxext --enable-sse --enable-ssse3 --enable-sse4 --enable-sse42 --enable-avx --enable-amd3dnow --enable-amd3dnowext --enable-fma4
 %endif
 
 # On some Intel CPUs, ffmpeg incorrectly builds libraries for AMD
 %define noamd3d %(prtdiag -v | grep CPU | grep -q Intel && echo 1 || echo 0)
 %if %noamd3d
-%define arch_opt --cpu=pentiumpro --enable-runtime-cpudetect --enable-mmx --enable-mmx2 --enable-sse --enable-ssse3
-%define extra_gcc_flags
+%define arch_opt --cpu=prescott --enable-runtime-cpudetect --enable-mmx --enable-mmxext --enable-sse --enable-ssse3 --enable-sse4 --enable-sse42
 %endif
+
+%define extra_gcc_flags
 
 %use ffmpeg = ffmpeg.spec
 
-Name:                    SFEffmpeg
-Summary:                 %{ffmpeg.summary}
-Version:                 %{ffmpeg.version}
-License:                 GPLv2+ and LGPLv2.1+
-SUNW_Copyright:          ffmpeg.copyright
-URL:                     %{ffmpeg.url}
-Group:		         System/Multimedia Libraries
-Patch12:                 ffmpeg-12-unoverride.diff
+Name:			SFEffmpeg
+IPS_Package_Name:	video/ffmpeg
+Summary:		%{ffmpeg.summary}
+Version:		%{ffmpeg.version}
+License:		GPLv2+ and LGPLv2.1+
+SUNW_Copyright:		ffmpeg.copyright
+URL:			%{ffmpeg.url}
+Group:			System/Multimedia Libraries
+Patch12:		ffmpeg-12-unoverride.diff
 
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-Autoreqprov:             on
+SUNW_BaseDir:		%{_basedir}
+BuildRoot:		%{_tmppath}/%{name}-%{version}-build
+Autoreqprov:		on
 
 %include default-depend.inc
 BuildRequires: SFEgcc
@@ -93,10 +92,6 @@ BuildRequires: SFEopenal-devel
 Requires: SFEopenal
 BuildRequires: driver/graphics/nvidia
 Requires: driver/graphics/nvidia
-%if %with_alsa
-BuildRequires: SFEalsa-lib
-Requires: SFEalsa-lib
-%endif
 
 %package devel
 Summary:                 %{summary} - development files
@@ -143,8 +138,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ffmpeg/ffprobe.xsd
 %dir %attr(0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
-%dir %attr (0755, root, other) %dir %_docdir
-%doc -d %base_arch/ffmpeg-%version/doc developer.html faq.html ffmpeg.html ffplay.html ffprobe.html ffserver.html general.html libavfilter.html
 
 %files devel
 %defattr (-, root, bin)
@@ -161,9 +154,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libpostproc
 %{_includedir}/libswscale
 %{_includedir}/libswresample
+%dir %attr(0755, root, bin) %{_datadir}/ffmpeg
+%{_datadir}/ffmpeg/examples
 
 
 %changelog
+* Wed Sep 11 2013 - Alex Viskovatoff
+- Update to work with ffmpeg 1.2.3
+- Change cpu from pentiumpro to prescott
+- Remove dependency on alsa-lib, which is not of use on Solaris
 * Tue Jan 24 2012 - James Choi
 - Add libass, openal dependency
 * Tue Nov  1 2011 - Alex Viskovatoff

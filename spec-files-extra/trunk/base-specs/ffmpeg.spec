@@ -5,10 +5,9 @@
 #
 
 Summary:                 A very fast video and audio converter
-Version:                 1.1.2
+Version:                 1.2.3
 Source:                  http://www.ffmpeg.org/releases/ffmpeg-%version.tar.bz2
 URL:                     http://www.ffmpeg.org/index.html
-Patch10:		 ffmpeg-10-Makefile-quick-texi2html-fix.diff
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
 Patch13:	ffmpeg-13-rpath-link.diff
 SUNW_BaseDir:            %{_basedir}
@@ -17,7 +16,6 @@ Autoreqprov:             on
 
 %prep
 %setup -q -n ffmpeg-%version
-%patch10 -p1
 %patch11 -p1
 %patch13 -p1
 perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
@@ -48,7 +46,6 @@ bash ./configure	\
     --disable-debug	\
     --enable-nonfree	\
     --enable-gpl	\
-    --enable-runtime-cpudetect	\
     --enable-postproc	\
     --enable-avfilter   \
     --enable-swscale	\
@@ -104,6 +101,9 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Sep 12 2013 - Alex Viskovtoff
+- update to 1.2.3
+- remove --enable-runtime-cpudetect: that belongs in the spec file calling this
 * Sat Feb 09 2013 - Milan Jurik
 - bump to 1.1.2
 * Sun Sep 30 2012 - Milan Jurik

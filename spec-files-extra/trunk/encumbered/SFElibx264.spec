@@ -65,7 +65,7 @@ BuildRequires: SFEgpac-devel
 Requires: SFEgpac
 %endif
 
-BuildRequires: SUNWgawk
+BuildRequires: text/gawk
 
 %description
 x264 is a free software library and application for encoding video streams into
@@ -125,10 +125,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %libx264.install -d %name-%version/%{base_arch}
-find $RPM_BUILD_ROOT%{_libdir} -name \*.la -exec rm {} \;
-mkdir $RPM_BUILD_ROOT%{_bindir}/%{base_isa}
-mv $RPM_BUILD_ROOT%{_bindir}/x264  $RPM_BUILD_ROOT%{_bindir}/%{base_isa}/
-cd $RPM_BUILD_ROOT%{_bindir} && cp -p /usr/lib/isaexec x264
+#find $RPM_BUILD_ROOT%{_libdir} -name \*.la -exec rm {} \;
+#mkdir $RPM_BUILD_ROOT%{_bindir}/%{base_isa}
+#mv $RPM_BUILD_ROOT%{_bindir}/x264  $RPM_BUILD_ROOT%{_bindir}/%{base_isa}/
+#cd $RPM_BUILD_ROOT%{_bindir} && cp -p /usr/lib/isaexec x264
 #cd $RPM_BUILD_ROOT%{_bindir} && ln -s ../lib/isaexec x264
 
 
@@ -137,17 +137,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
-%if %can_isaexec
-%ifarch amd64 sparcv9
-%{_bindir}/%{_arch64}/*
-%endif
-%{_bindir}/%{base_isa}/*
-%{_bindir}/x264
-#%hard %{_bindir}/x264
-%else
-%{_bindir}/*
-%endif
+# %dir %attr (0755, root, bin) %{_bindir}
+# %if %can_isaexec
+# %ifarch amd64 sparcv9
+# %{_bindir}/%{_arch64}/*
+# %endif
+# %{_bindir}/%{base_isa}/*
+# %{_bindir}/x264
+# %else
+# %{_bindir}/*
+# %endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %ifarch amd64 sparcv9
@@ -169,6 +168,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 11 2013 - Alex Viskovatoff
+- do not build and install cli, since that creates a circular dependency in builds
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
 - autodetect whether to use SFEmpfr or system provided version.
 * Fri Oct 21 2011 - Milan Jurik

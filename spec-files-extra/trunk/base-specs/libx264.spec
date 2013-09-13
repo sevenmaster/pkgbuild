@@ -8,8 +8,12 @@
 #	 cannot link to libavcodec and libavformat, which means that it can
 #	 only process raw video streams.
 
-%define x264_build       124
-%define snap             20130303
+################################################################################
+#  x264_build MUST CORRESPOND to libx264.so.<number> as produced by the build  #
+################################################################################
+%define x264_build       136
+%define snap             20130910
+
 %define snaph            2245-stable
 %define src_name         x264-snapshot
 %define src_url          http://download.videolan.org/pub/videolan/x264/snapshots
@@ -21,7 +25,6 @@ Source:		%src_url/%src_name-%snap-%snaph.tar.bz2
 URL:		http://www.videolan.org/developers/x264.html
 Patch2:		libx264-02-version.diff
 Patch6:		libx264-06-gpac.diff
-#Patch7:		libx264-07-soname.diff
 BuildRoot:	%_tmppath/%name-%version-build
 
 %prep
@@ -29,14 +32,12 @@ BuildRoot:	%_tmppath/%name-%version-build
 
 %patch2 -p1
 %patch6 -p1
-#%patch7 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CFLAGS="%optflags"
-#export LDFLAGS="%_ldflags -lm -L/lib -R/lib"
 export LDFLAGS="%_ldflags -lm"
 
 if $( echo "%_libdir" | /usr/xpg4/bin/grep -q %_arch64 ) ; then
@@ -53,6 +54,11 @@ else
 	unset host
 fi
 
+# Don't build cli, because
+#   (1) It's useless, since it can only read raw streams at present
+#   (2) It creates a perverse circular dependency with ffmpeg
+# (The reason that wasn't a problem before is that the old version
+#  of pkgbuild didn't do a dependency check when creating IPS packages.)
 ./configure	\
     --prefix=%_prefix		\
     --bindir=%_bindir		\
@@ -60,20 +66,24 @@ fi
     --enable-pic		\
     --extra-cflags="$CFLAGS"	\
     --extra-ldflags="$LDFLAGS"	\
-    --system-libx264           \
-    --enable-visualize         \
-    --enable-shared
+    --disable-cli		\
+    --enable-visualize		\
+    --enable-shared		\
+    --disable-static
 
 make -j$CPUS
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT%_libdir/lib*.*a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Sep 11 2013 - Alex Viskovatoff
+- update to 20130910
+- do not build the cli, because that complicates builds with the new pkgbuild
+- use --disable-static, so we do not have to bother deleting static libraries
 * Sun Mar 3 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 20130303
 * Sun Sep 30 2012 - Milan Jurik
