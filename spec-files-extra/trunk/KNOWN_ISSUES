@@ -6,3 +6,5 @@
 - info dir updating needs to be fixed in several pkgs
 - SFEgimmie panel applet is unstable, standalone gimmie exits with
   "RuntimeError: pygtk was not compiled with Numeric Python support"
+- SFEpulseaudio does not build with gcc 4.6.3: this goes for later versions
+  of pulseaudio than specified by the spec, too
