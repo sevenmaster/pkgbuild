@@ -696,6 +696,24 @@
 %define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile-devel
 %define pnm_requires_SUNWlibsndfile				SFElibsndfile
 
+%define pnm_buildrequires_SUNWaudh_devel 			SUNWaudh-devel
+%define pnm_buildrequires_SUNWaudh 				SUNWaudh-devel
+%define pnm_requires_SUNWaudh 					SUNWaudh
+%define pnm_buildrequires_audh 					SUNWaudh-devel
+%define pnm_requires_audh 					SUNWaudh
+%define pnm_buildrequires_system_header_header_audio		SUNWaudh-devel
+%define pnm_requires_system_header_header_audio 		SUNWaudh
+
+#SUNWgnu-readline@5.2,5.11-0.132:20100130T084250Z
+#library/readline@5.2,5.11-0.134:20100302T041122Z
+%define pnm_buildrequires_library_readline			SFEreadline-devel
+%define pnm_requires_library_readline				SFEreadline
+%define pnm_buildrequires_SUNWgnu_readline_devel		SFEreadline-devel
+%define pnm_buildrequires_SUNWgnu_readline			SFEreadline-devel
+%define pnm_requires_SUNWgnu_readline				SFEreadline
+%define pnm_buildrequires_gnu_readline				SFEreadline-devel
+%define pnm_requires_gnu_readline				SFEreadline
+
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -1914,6 +1932,10 @@
 
 
 %changelog
+* Wed Aug 14 2013 - Thomas Wagner
+- handle (partially) SUNWgnu-readline / library/readline / SFEreadline (SXCE)
+* Sun Aug 11 2013 - Thomas Wagner
+- handle SUNWaudh|audh|system/header/header-audio for SXCE
 * Sat Jul 27 2013 - Thomas Wagner
 - remove typos _devel$ -> -devel$
 * Sun Jul 21 2013 - Thomas Wagner
