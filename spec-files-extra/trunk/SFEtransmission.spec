@@ -1,36 +1,46 @@
 #
 # spec file for package SFEtransmission
 #
+
+################################################################################
+#				  Note on GTK+                                 #
+#                                                                              #
+#  Version 2.33 is the last Transmission version that uses GTK+ 2 and not      #
+#  GTK+ 3.  This means that there is no point in "bumping" this package to a   #
+#  newer version until GTK+ 3 is built on Solaris.                             #
+################################################################################
+
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
 %include usr-gnu.inc
 %define source_name transmission
 
-Name:                    SFEtransmission
-Summary:                 GTK and console BitTorrent client
-Version:                 2.73
-Source:                  http://download.m0k.org/transmission/files/transmission-%{version}.tar.bz2
-License:		 MIT
-URL:                     http://transmission.m0k.org/
-SUNW_Copyright:		 transmission.copyright
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{source_name}-%{version}-build
+Name:			SFEtransmission
+IPS_package_name:	sfe/desktop/torrent/transmission
+Summary:		GTK and console BitTorrent client
+Version:		2.33
+Source:			http://download.m0k.org/transmission/files/transmission-%version.tar.bz2
+License:		MIT
+URL:			http://transmission.m0k.org/
+SUNW_Copyright:		transmission.copyright
+SUNW_BaseDir:		%_basedir
+BuildRoot:		%_tmppath/%source_name-%version-build
 %include default-depend.inc
-
-#BuildRequires: SUNWgtk2-devel
+BuildRequires: SUNWgtk2-devel
 BuildRequires: SUNWopenssl-include
-#BuildRequires: SUNWgnome-panel-devel
+BuildRequires: SUNWgnome-panel-devel
 BuildRequires: SUNWdbus-glib-devel
 BuildRequires: SFElibevent2
-#Requires: SUNWgtk2
-#Requires: SUNWgnome-panel
+Requires: SUNWgtk2
+Requires: SUNWgnome-panel
 Requires: SUNWdbus-glib
 Requires: SUNWopenssl-libraries
 Requires: SUNWcurl
 Requires: SFElibevent2
 Requires: SFElibiconv
 Requires: SUNWgnu-gettext
+
 
 %if %build_l10n
 %package l10n
@@ -46,22 +56,22 @@ Requires:        %{name}
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
-#export CFLAGS="-mt -D__inline=inline -xc99"
-#
-#export CFLAGS="%optflags"
-#export CXXFLAGS="%cxx_optflags"
-export CFLAGS="$CFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
-export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
-#export CFLAGS="$CFLAGS -I/usr/gnu/include"
-#export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include"
+export CC=/usr/gnu/bin/gcc
+export CXX=/usr/gnu/bin/g++
+#export CFLAGS="%optflags -mt -D__inline=inline -xc99"
+export CFLAGS="%optflags"
+export CXXFLAGS="%cxx_optflags"
+#export CFLAGS="$CFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
+#export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
+export CFLAGS="$CFLAGS -I/usr/gnu/include"
+export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -liconv"
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig
 
 ./configure --prefix=%{_prefix}   \
             --datadir=%{_datadir} \
 	    --mandir=%{_mandir}   \
+	    --disable-wx	\
             --program-prefix=""
 
 make -j$CPUS
@@ -87,38 +97,35 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
 %dir %attr (-, root, sys) %{_datadir}
-#%dir %attr (0755, root, other) %{_datadir}/applications
-#%{_datadir}/applications/*
-#%dir %attr (0755, root, other) %{_datadir}/pixmaps
-#%{_datadir}/pixmaps/*
+%dir %attr (0755, root, other) %{_datadir}/applications
+%{_datadir}/applications/*
+%dir %attr (0755, root, other) %{_datadir}/pixmaps
+%{_datadir}/pixmaps/*
 %dir %attr (0755, root, other) %{_datadir}/transmission
 %{_datadir}/transmission/*
-#
-#%dir %attr (0755, root, other) %{_datadir}/icons
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/16x16
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/16x16/apps
-#%{_datadir}/icons/hicolor/16x16/apps/transmission.png
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/22x22
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/22x22/apps
-#%{_datadir}/icons/hicolor/22x22/apps/transmission.png
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/24x24
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/24x24/apps
-#%{_datadir}/icons/hicolor/24x24/apps/transmission.png
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/32x32
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/32x32/apps
-#%{_datadir}/icons/hicolor/32x32/apps/transmission.png
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/48x48
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/48x48/apps
-#%{_datadir}/icons/hicolor/48x48/apps/transmission.png
-#
-# 256x256 icons were added at Transmission 2.31, but we stay with 2.22
-# %dir %attr (-, root, other) %{_datadir}/icons/hicolor/256x256
-# %dir %attr (-, root, other) %{_datadir}/icons/hicolor/256x256/apps
-# %{_datadir}/icons/hicolor/256x256/apps/transmission.png
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/scalable
-#%dir %attr (-, root, other) %{_datadir}/icons/hicolor/scalable/apps
-#%{_datadir}/icons/hicolor/scalable/apps/transmission.svg
+%dir %attr (0755, root, other) %{_datadir}/icons
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/16x16
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/16x16/apps
+%{_datadir}/icons/hicolor/16x16/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/22x22
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/22x22/apps
+%{_datadir}/icons/hicolor/22x22/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/24x24
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/24x24/apps
+%{_datadir}/icons/hicolor/24x24/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/32x32
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/32x32/apps
+%{_datadir}/icons/hicolor/32x32/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/48x48
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/48x48/apps
+%{_datadir}/icons/hicolor/48x48/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/256x256
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/256x256/apps
+%{_datadir}/icons/hicolor/256x256/apps/transmission.png
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/scalable
+%dir %attr (-, root, other) %{_datadir}/icons/hicolor/scalable/apps
+%{_datadir}/icons/hicolor/scalable/apps/transmission.svg
 
 %if %build_l10n
 %files l10n
@@ -130,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Sep 13 2013 - Alex Viskovatoff
+- bring down to 2.33, so that the GUI builds
 * Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.73; GTK client needs gtk+ >= 3.4.0
 * Sun Aug  7 2011 - Alex Viskovatoff
