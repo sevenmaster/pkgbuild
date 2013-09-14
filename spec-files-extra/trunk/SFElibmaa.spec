@@ -13,7 +13,7 @@ Group:		System/Libraries
 Summary:	Library providing low-level data structures helpful for writing compilers
 URL:		https://sourceforge.net/projects/dict/
 Meta(info.upstream):	Aleksey Cheusov <vle@gmx.net>
-Version:	1.3.1
+Version:	1.3.2
 License:	LGPLv2+
 SUNW_Copyright:	libmaa.copyright
 Source:		%sf_download/project/dict/%srcname/%srcname-%version/%srcname-%version.tar.gz
@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 13 2013 - Alex Viskovatoff
+- Bump to 1.3.2
 * Sat Dec 17 2011 - Alex Viskovatoff
 - Bump to 1.3.1
 * Wed Jul 20 2011 - Alex Viskovatoff
