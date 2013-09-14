@@ -344,24 +344,24 @@ pkg install: The following packages all deliver file actions to usr/lib/libmikmo
   pkg://localhosts11/SFElibmikmod@3.2.0.0.2,5.11-0.11.0:20120625T051311Z
   pkg://solaris/library/audio/libmikmod@3.2.0,5.11-0.175.0.0.0.0.0:20110927T101208Z
 
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-[.....]
-                       SFElibmng |      FAILED |
+#done# These packages may not be installed together. Any non-conflicting set may
+#done# be, or the packages must be corrected before they can be installed.
+#done# [.....]
+#done#                       SFElibmng |      FAILED |
 
-pkg install: The following packages all deliver file actions to usr/lib/libmng.so.1.0.0:
+#done# pkg install: The following packages all deliver file actions to usr/lib/libmng.so.1.0.0:
 
-  pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
-  pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
+#done#   pkg://localhosts11/SFElibmng@1.0.10,5.11-0.11.0:20120625T051551Z
+#done#   pkg://solaris/library/graphics/libmng@1.0.10,5.11-0.175.0.0.0.2.537:20111019T103350Z
 
-These packages may not be installed together. Any non-conflicting set may
-be, or the packages must be corrected before they can be installed.
-[.....]
+#done# These packages may not be installed together. Any non-conflicting set may
+#done# be, or the packages must be corrected before they can be installed.
+#done# [.....]
 
 several libraries to relocate into /usr/gnu/, add pnm_macros
 Those libraries should migrate: (in rare cases, they could retire but this would influence
 running SFE on Solaris 10!)
-    SFElibmng (SUNWlibmng is there since a while, interated with exact osbuild no:___)
+#done#     SFElibmng (SUNWlibmng is there since a while, interated with exact osbuild no:___)
 
 48b)
 check those packages, they share files with others:
@@ -496,6 +496,14 @@ we coul dstart with this switching logic:
 > >   generic java macro -> os provided default
 > >   java7 macro -> os available but not default jdk7
 
+Note: partly inplemented, you can use (example for SUNWj6*)
+pnm_buildrequires_java_runtime_default                runtime/java
+pnm_requires_java_runtime_default             runtime/java
+pnm_buildrequires_java_runtime_default_32     runtime/java
+pnm_requires_java_runtime_default_32          runtime/java
+pnm_buildrequires_java_runtime_default_64     runtime/java/runtime64
+pnm_requires_java_runtime_default_64          runtime/java/runtime64
+
 60)
 Review Boost.Locale security notice (Boost #7743)
 
@@ -553,3 +561,10 @@ check deviating permissions
 +# pkg://solaris/gnome/theme/gnome-icon-theme@2.30.3,5.11-0.175.0.0.0.0.0:20110927T092937Z
 +# delivers this directory as root:bin and not root:other
 +%dir %attr (-, root, bin) %{_datadir}/icons/gnome/scalable/mimetypes
+
+71)
+make pnm default macro for ruby, including path names
+pnm_buildrequires_ruby_default requires_ruby_default 
+optional:
+pnm_buildrequires_ruby18_default packagename_SFEruby-18_or_SUNWruby18
+pnm_buildrequires_ruby19_default packagename_SFEruby_or_SUNWruby19
