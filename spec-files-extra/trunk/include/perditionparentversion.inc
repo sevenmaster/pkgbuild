@@ -1,6 +1,13 @@
 #used by at least SFElibvanessa-* and SFEperdition.spec
 
 %define perditionparentversion 1.19-rc4
+# echo 1.19-rc4 | sed -e 's/-rc\([0-9]*\)/.\1/'
+#1.19.4
+# echo 1.19-rc4 | sed -e 's/-rc\([0-9]*\)/.0.\1/'
+#1.19.0.4
+#carefull!  1.19-rc4 -> 1.19.0.4 and 1.19 as relese does not auto-upgrade!
+#because 1.19.0.4 is bigger then 1.19 .. will need a little trick unfortunatly
+%define perditionparentversionips $( echo %perditionparentversion | sed -e 's/-rc\([0-9]*\)/.0.\1/' )
 
 #              ##NOTE## to version bumpers!
 # enter version numbers into the defines below (spec files pick up this include
@@ -22,6 +29,8 @@
 ##TODO## possibly define the lib versions as well (tied to the download-version directory)
 
 %changelog
+* Sun Feb 26 2012 - Thomas Wagner
+- calculate perditionparentversionips for IPS use (numbers only, straight incremental)
 * Mon Aug 02 2010 - Thomas Wagner
 - add library version numbers (must be updated manually for now)
 * Fri Jul  9 2010 - Thomas Wagner
