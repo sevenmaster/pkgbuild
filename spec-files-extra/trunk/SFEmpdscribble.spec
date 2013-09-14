@@ -8,6 +8,7 @@
 %define srcname mpdscribble
 
 Name:		SFEmpdscribble
+IPS_package_name: media/mpdscribble
 Summary:	MPD client which submits information about tracks being played to Last.fm
 URL:		http://mpd.wikia.com/wiki/Client:Mpdscribble
 Meta(info.upstream):	Max Kellermann <max@duempel.org>
