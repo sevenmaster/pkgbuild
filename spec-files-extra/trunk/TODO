@@ -568,3 +568,17 @@ pnm_buildrequires_ruby_default requires_ruby_default
 optional:
 pnm_buildrequires_ruby18_default packagename_SFEruby-18_or_SUNWruby18
 pnm_buildrequires_ruby19_default packagename_SFEruby_or_SUNWruby19
+
+72)
+clean up SFEruby.spec and SFEruby-18.spec (patched replacement for osdistro ruby)
+to match the layout as osdistro ruby uses. Look at the build sources of e.g. OSOL.
+This enables multi-version installations for ruby (say you can have 1.8 and 1.9 and
+x.y installed at the same time, only specify one as the system default by 
+configuring the mediated symlinks)
+below: sfe/runtime/ruby-18 and runtime/ruby-19 can't be installed at the same time
+ pkg search -r libruby.so
+INDEX      ACTION VALUE                       PACKAGE
+basename   link   usr/lib/libruby.so          pkg:/sfe/runtime/ruby-18@1.8.7.371-0.11.0
+basename   link   usr/lib/libruby.so          pkg:/runtime/ruby-19@1.9.3-0.11.0
+basename   link   usr/ruby/1.8/lib/libruby.so pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+
