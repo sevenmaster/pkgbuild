@@ -13,11 +13,11 @@ Name:		SFEncmpcpp
 Summary:	Text-mode Music Player Daemon client
 License:	GPLv2
 SUNW_Copyright:	ncmpcpp.copyright
-URL:		http://unkart.ovh.org/ncmpcpp
+URL:		http://ncmpcpp.rybczak.net
 Meta(info.upstream):	Andrzej Rybczak <electricityispower.gmail.com>
-Version:	0.5.7
+Version:	0.5.10
 License:	GPLv2
-Source:		http://unkart.ovh.org/%srcname/%srcname-%version.tar.bz2
+Source:		http://ncmpcpp.rybczak.net/stable/%srcname-%version.tar.bz2
 
 %include default-depend.inc
 SUNW_BaseDir:	%{_basedir}
@@ -82,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 13 2013 - Alex Viskovatoff
+- Update to 0.5.10
 * Sun Jul 24 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Mon Jul 18 2011 - Alex Viskovatoff
