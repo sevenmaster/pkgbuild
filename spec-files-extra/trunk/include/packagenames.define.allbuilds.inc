@@ -303,6 +303,9 @@
 ##TODO##
 #/var/sadm/pkg/SUNWruby18r
 #/var/sadm/pkg/SUNWruby18u
+%define pnm_buildrequires_SUNWruby18r			SUNWruby18r
+%define pnm_buildrequires_SUNWruby18u			SUNWruby18u
+%define pnm_buildrequires_SUNWruby18			SUNWruby18u
 
 #SUNWwgetu/SUNWwgetr/SUNWwget wget web/wget
 %define pnm_buildrequires_web_wget			SUNWwgetu
@@ -1601,6 +1604,178 @@
 #
 #END setting java, all builds, evaluated paths  - Part 3 of 3
 
+#START setting ruby, defaults  - Part 1 of 3
+#define ruby defaults, primarily shared settings and default version, paths
+#for older osbuilds/osdistros like OpenSolaris 134, SXCE/Nevada, Solaris 10
+#STRONG NOTE: located *below* the osdistro and osbuild sections, there is *another*
+#section evaluating the resulting paths on the disk, those are specific
+#to the ruby version in use. We hope, that we do not need to handle special
+#cases there, e.g. this would be an odd distro deciding to relocate to 
+#another path layout on disk....
+
+%define ruby_version 1.8.7
+%define ruby_major_version 1
+%define ruby_major_minor_version 1.8
+%define ruby_major_minor_micro_version 1.8.7
+
+%define pnm_buildrequires_ruby_default	SUNWruby18u
+%define pnm_requires_ruby_default	SUNWruby18u
+
+#Exception! We have two ruby_defaul, we add a define for a ruby
+#           version local to "SFE",
+#currently all the same for all osdistro
+#note1: different installation paths for SFE's ruby implementation,
+#       the binaries go into /usr/gnu/<bin|*> .
+#       See also: section Part 3 which defines variables with the
+#       install path to ruby or sfe_ruby.
+##TODO## think on how to replace the unpatched os ruby 1.8, see note2.
+#note2: currently unused is SFEruby-18.spec which contains a
+#       patched 1.8.7 to *replace* the OS provided SUNWruby/SUNWrubyu/SUNWrubyr
+
+#here comes SFE's local ruby version stored in /usr/gnu:
+#note the added _sfe_ in all variables including the variables-names
+#pointing to the install-path
+#       ....
+%define sfe_ruby_version 1.9.3
+%define sfe_ruby_major_version 1
+%define sfe_ruby_major_minor_version 1.9
+%define sfe_ruby_major_minor_micro_version 1.9.3
+
+#                         ....
+%define pnm_buildrequires_sfe_ruby_default	SFEruby
+%define pnm_requires_sfe_ruby_default	SFEruby
+
+# NOTE the section sitting below the distro specfic settings
+# where the resulting paths on the disk are evaluated!
+
+#END setting ruby, defaults  - Part 1 of 3
+
+
+
+#START setting ruby, changes with specific builds and distros  - Part 2 of 3
+
+#the distro specific settings below.
+#set specifics for more fresh osbuild/osdistro like Solaris 11 Express, OpenIndiana
+#which integrate ruby 5.10 or newer (please add more sections for overrides in 
+#different distro releases. Order is: greatest osbuild must be listed last to
+#override previous settings)
+
+#set ruby for Solaris 12 - just a guess
+#runtime/ruby-18@1.8.7
+%if %{os2nnn}
+%if %( expr  %{solaris12} '>=' 1 )
+#set ruby for Solaris 12
+%define ruby_version 1.8.7
+%define ruby_major_minor_version 1.8
+%define ruby_major_minor_micro_version 1.8.7
+#runtime/ruby-18
+%define pnm_buildrequires_ruby_default  runtime/ruby-18
+%define pnm_requires_ruby_default	runtime/ruby-18
+%endif
+#END solaris12
+%endif
+#END os2nnn
+
+#set ruby for Solaris 11
+#pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+%if %{os2nnn}
+%if %( expr %{solaris11express} '>=' 1 )
+#set ruby for Solaris 11, Solaris 11 Express
+%define ruby_version 1.8.7
+%define ruby_major_minor_version 1.8
+%define ruby_major_minor_micro_version 1.8.7
+#runtime/ruby-18 
+%define pnm_buildrequires_ruby_default  runtime/ruby-18
+%define pnm_requires_ruby_default       runtime/ruby-18
+%endif
+#END solaris11
+%endif
+#END os2nnn
+
+#set ruby for OpenIndiana
+%if %{os2nnn}
+%if %{openindiana}
+##TODO## monitor closely when OpenIndiana starts shipping
+%if %( expr %{osbuild} '>=' 151 )
+#set ruby for OpenIndiana 
+%define ruby_version 1.8.7
+%define ruby_major_minor_version 1.8
+%define ruby_major_minor_micro_version 1.8.7
+#runtime/ruby-18 
+%define pnm_buildrequires_ruby_default  runtime/ruby-18
+%define pnm_requires_ruby_default       runtime/ruby-18
+%endif
+#END >= 151
+%endif
+#END openindiana
+%endif
+#END os2nnn
+
+#add more distro here
+
+#END setting ruby, changes with specific builds and distros  - Part 2 of 3
+
+
+#START setting ruby, all builds, evaluated paths  - Part 3 of 3
+# this is the section noted above which evaluates the resulting paths on the
+# disk for the defaults for ruby or the distro specific changed values e.g.
+# more fresh ruby version 
+
+#currently none defined (examples see perl section)
+
+#set handy partial paths to default locations where important ruby files
+#are stored
+#note: simplyfication: %{_prefix} must be prepended by the spec file itself
+#note2: osdistro ruby is in /usr and sfe_ruby is in /usr/gnu
+
+#default install directory of ruby.
+##TODO## think if there is a smarter setting then the path hardcoded.
+#        Not allowed to be influenced by a _prefix changed in the spec file
+#        requiring this ruby implementation
+%define     ruby_default_prefix	/usr
+%define sfe_ruby_default_prefix	/usr/gnu
+
+#example:
+#note: in this implementation we include the version number
+#note: in this implementation we as well set the _prefix part as
+#      we always define explicitly that osdistro ruby lives in /usr
+#                                              and sfe_ruby in /usr/gnu
+#
+#      e.g. /usr/ruby/1.8/lib/ruby/1.8/i386-solaris2.11/ruby.h  (osdistro)
+#      e.g. /usr/gnu/include/ruby-1.9.3/ruby.h   (sfe)
+#
+#s11 (wrong) usr/lib/ruby/1.8/i386-solaris2.11/ruby.h           pkg:/sfe/runtime/ruby-18@1.8.7.371-0.11.0
+#s11 (wrong) usr/include/ruby-1.9.1/ruby.h                      pkg:/runtime/ruby-19@1.9.3-0.11.0
+#s11 (wrong) usr/include/ruby-1.9.1/ruby/ruby.h                 pkg:/runtime/ruby-19@1.9.3-0.11.0
+#s11 usr/ruby/1.8/lib/ruby/1.8/i386-solaris2.11/ruby.h  pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#s11 usr/ruby/1.8/lib/ruby/1.8/sparc-solaris2.11/ruby.h pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+
+#the ruby.h file would be found with CFLAGS="-I{ruby_default_includedir}"
+#the SFE's ruby.h file would be found with CFLAGS="-I{sfe_ruby_default_includedir}"
+##TODO## need better detection for the ruby_arch (S10, S11, S12, OI, ...)
+%ifarch sparc
+%define __ruby_arch sparc-solaris2.11
+%else
+%define __ruby_arch i386-solaris2.11
+%endif
+%define     ruby_default_includedir	    %{ruby_default_prefix}/ruby/%{ruby_major_minor_version}/lib/ruby/%{ruby_major_minor_version}/%{__ruby_arch}
+##
+##TODO##
+#after fixing sfe_ruby directory layout adjust the line below, should be similar to what ruby_default_includedir defines
+%define sfe_ruby_default_includedir	%{sfe_ruby_default_prefix}/include/ruby-%{sfe_ruby_major_minor_micro_version}
+
+#the ruby libs would be found with LDFLAGS and/or CFLAGS="-L%{ruby_default_libdir}     -R%{ruby_default_libdir}"
+#                                  or                "-L%{sfe_ruby_default_libdir} -R%{sfe_ruby_default_libdir}"
+#basename   link   usr/ruby/1.8/lib/libruby.so pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#basename   link   usr/gnu/lib/libruby.so          pkg:/runtime/ruby-19@1.9.3-0.11.0
+%define ruby_default_libdir	%{ruby_default_prefix}/ruby/%{ruby_major_minor_version}/lib
+#after fixing sfe_ruby directory layout: %define sfe_ruby_default_libdir	%{sfe_ruby_default_prefix}/ruby/%{sfe_ruby_major_minor_version}/lib
+#now with wrong sfe_ruby directory layout (SFEruby.spec version 1.9.3 svn rev =< 5117)
+%define sfe_ruby_default_libdir	%{sfe_ruby_default_prefix}/ruby/%{sfe_ruby_major_minor_version}/lib
+
+#you might need to keep an eye on 32-/64-bit locations of ruby libs if such appears
+
+#END setting ruby, all builds, evaluated paths  - Part 3 of 3
 
 
 #START setting apache2, defaults  - Part 1 of 3
@@ -1801,8 +1976,6 @@
 
 ##TODO## below: dumping place to collect examples to be integrated later
 
-#handle /var/sadm/pkg/SUNWruby18r /var/sadm/pkg/SUNWruby18u
-
 #  pkg contents -r -m system/header/header-audio
 # set name=pkg.fmri value=pkg://solaris/system/header/header-audio@0.5.11,5.11-0.163:20110410T085804Z
 # set name=variant.arch value=sparc value=i386
@@ -1932,6 +2105,8 @@
 
 
 %changelog
+* Sat Sep 14 2013 - Thomas Wagner
+- first implementation steps for pnm_requires_ruby_default (unfinished and needs fixed SFEruby.spec)
 * Wed Aug 14 2013 - Thomas Wagner
 - handle (partially) SUNWgnu-readline / library/readline / SFEreadline (SXCE)
 * Sun Aug 11 2013 - Thomas Wagner
