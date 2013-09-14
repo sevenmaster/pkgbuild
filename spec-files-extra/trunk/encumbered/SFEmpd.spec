@@ -26,14 +26,18 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.17.4
+Version:             0.17.5
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
+URL:		     http://http://www.musicpd.org/
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+# Use the system xz and libsndfile
+
+BuildRequires: system/header/header-audio
 BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
@@ -43,7 +47,8 @@ BuildRequires: SUNWflac-devel
 BuildRequires: SFElibshout
 BuildRequires: SFElibcdio
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
-BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+#BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+BuildRequires: library/libsndfile
 BuildRequires: SUNWglib2
 BuildRequires: SUNWcurl
 #TODO# BuildRequires: SFElibpulse-devel
@@ -58,7 +63,8 @@ Requires: SUNWflac
 Requires: SFElibshout
 Requires: SFElibcdio
 Requires: %{pnm_requires_SUNWsqlite3}
-Requires:      %{pnm_requires_SFElibsndfile}
+#Requires:      %{pnm_requires_SFElibsndfile}
+Requires: library/libsndfile
 Requires: SUNWglib2
 Requires: SUNWcurl
 #TODO# Requires: SFElibpulse
@@ -83,6 +89,7 @@ Requires: SFElibid3tag
 %description
 Music Daemon to play common audio fileformats to audio devices or 
 audio-networks. 
+
 Uses a database to store indexes (mp3-tags,...) and supports Playlists.
 Controlled via Network by SFEgmpc, SFEmpc, SFEncmpc, pitchfork and others.
 Output might go to local Solaris Audio-Hardware, Streams with SFEicecast,
@@ -101,8 +108,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
+# LDFLAGS below are based on the following fix to the same problem:
+# http://lists.libsdl.org/pipermail/commits-libsdl.org/2013-March/006360.html
+
 export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
-export LDFLAGS="%_ldflags"
+export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -Wl,-znodeferred"
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
@@ -162,6 +172,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Thu Sep 12 2013 - Alex Viskovatoff
+- update to 0.17.5
+- use system xz and libsndfile
 * Sat Jul 27 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}
 - bump to 0.17.4
