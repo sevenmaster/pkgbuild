@@ -10,6 +10,7 @@
 %define srcname ncmpcpp
 
 Name:		SFEncmpcpp
+IPS_package_name: media/ncmpcpp
 Summary:	Text-mode Music Player Daemon client
 License:	GPLv2
 SUNW_Copyright:	ncmpcpp.copyright
