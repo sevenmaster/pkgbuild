@@ -37,7 +37,7 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 # Use the system xz and libsndfile
 
-BuildRequires: system/header/header-audio
+BuildRequires:  %{pnm_buildrequires_system_header_header_audio}
 BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
@@ -47,8 +47,7 @@ BuildRequires: SUNWflac-devel
 BuildRequires: SFElibshout
 BuildRequires: SFElibcdio
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
-#BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
-BuildRequires: library/libsndfile
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
 BuildRequires: SUNWglib2
 BuildRequires: SUNWcurl
 #TODO# BuildRequires: SFElibpulse-devel
@@ -63,8 +62,7 @@ Requires: SUNWflac
 Requires: SFElibshout
 Requires: SFElibcdio
 Requires: %{pnm_requires_SUNWsqlite3}
-#Requires:      %{pnm_requires_SFElibsndfile}
-Requires: library/libsndfile
+Requires: %{pnm_requires_SFElibsndfile}
 Requires: SUNWglib2
 Requires: SUNWcurl
 #TODO# Requires: SFElibpulse
@@ -171,7 +169,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_datadir}/doc
 %{_datadir}/doc/*
 
-%changelog
+%changelog 
+* Sun Sep 15 2013 - Thomas Wagner
+- reverse changes to use pnm_macros for libsndfile and header/audio
 * Thu Sep 12 2013 - Alex Viskovatoff
 - update to 0.17.5
 - use system xz and libsndfile
