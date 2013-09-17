@@ -6,7 +6,7 @@
 %include Solaris.inc
 
 Name:                SFEmpc
-IPS_package_name:    sfe/library/mpc
+IPS_package_name:    sfe/media/mpc
 Summary:             Command line tool and client for Music Player Daemon
 License:             GPLv2
 SUNW_Copyright:	     mpc.copyright
@@ -74,6 +74,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Tue Sep 17 2013 - Thomas Wagner
+- fix IPS package name /media/ (duplicate)
+* Sat Sep 14 2013 - Alex Viskovatoff
+- add IPS package name
 * Fri Aug 10 2012 - Thomas Wagner
 - fix download URL
 * Thu Jul  5 2012 - Thomas Wagner
