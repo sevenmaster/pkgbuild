@@ -18,7 +18,7 @@
 
 Name:                SFEfreeradius
 Summary:             FreeRADIUS - modular, high performance and feature-rich RADIUS suite
-Version:             2.2.0
+Version:             2.2.1
 Source:              ftp://ftp.freeradius.org/pub/freeradius/freeradius-server-%{version}.tar.bz2
 Source2:	     freeradius.xml
 Source3:             svc-freeradius
@@ -56,13 +56,15 @@ BuildRequires: %{pnm_buildrequires_SUNWgnu_dbm}
 %define PERLpath /usr/perl%{perl_major_version}/bin/perl
 
 BuildRequires: %{pnm_buildrequires_perl_default}
-BuildRequires: SUNWltdl
+BuildRequires: %{pnm_buildrequires_SUNWltdl_devel}
+BuildRequires: %{pnm_buildrequires_library_readline}
 Requires: %{pnm_requires_SUNWkrb}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: %{pnm_requires_SUNWgnu_dbm}
 #Requires: %{pnm_requires_SUNWmysql_base}
 Requires: %{pnm_buildrequires_perl_default}
-Requires: SUNWltdl
+Requires: %{pnm_requires_SUNWltdl}
+Requires: %{pnm_requires_library_readline}
 
 Requires: %name-root
 %package root
@@ -265,6 +267,12 @@ user ftpuser=false gcos-field="freeradius" username="%{radiususer}" uid="%{radiu
 
 
 %changelog
+* Wed Sep 18 2013 - Thomas Wagner
+- bump to 2.2.1
+* Sat Dec 15 2012 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWltdl-devel}
+  as renamed package SUNWltdl can't be detected as installed on IPS
+- change (Build)Requires to %{pnm_buildrequires_library_readline}
 * Tue Sep 11 2011 - Thomas Wagner
 - bump to 2.2.0 - needs testing
 * Mon Aug  1 2011 - Thomas Wagner
