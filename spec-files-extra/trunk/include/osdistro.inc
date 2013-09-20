@@ -284,7 +284,7 @@
 # in consuming spec file!
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 152 )
-%if %( egrep 'Oracle Solaris 11 ' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'Oracle Solaris 11' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
@@ -405,6 +405,8 @@
 
 
 %changelog
+* Thu Sep 19 2013 - Ian Johnson
+- fix egrep "Oracle Solaris 11" to really detect (S11.1)
 * Mon Jul  1 2013 - Thomas Wagner
 - add s11 11.1 support
 * Thu Jun 27 2013 - Thomas Wagner
