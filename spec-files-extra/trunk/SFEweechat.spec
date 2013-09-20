@@ -32,16 +32,14 @@ SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
-BuildRequires:	SUNWgsed
+BuildRequires:%{pnm_buildrequires_SUNWgsed}
 BuildRequires:	SFEcmake
 BuildRequires:	SFElibiconv
 BuildRequires:	SFEruby
-#BuildRequires:	runtime/lua
-BuildRequires:  SUNWlua
+BuildRequires:  %{pnm_buildrequires_SUNWlua}
 Requires:	SFElibiconv
 Requires:	SFEruby
-#Requires:	runtime/lua
-Requires:	SUNWlua
+Requires:	%{pnm_requires_SUNWlua}
 
 %if %build_l10n
 %package l10n
@@ -135,6 +133,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 19 2013 - Ian Johnson
+- change (Build)Requires to %{pnm_buildrequires_SUNWgsed}, %{pnm_buildrequires_SUNWlua}
 * Sat Sep 14 2013 - Thomas Wagner
 - integrate Ian's work
 - change to (Build)Requires SUNWlua
