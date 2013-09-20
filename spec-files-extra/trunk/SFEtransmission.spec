@@ -14,6 +14,7 @@
 %define cc_is_gcc 1
 %include base.inc
 %include usr-gnu.inc
+%include packagenamemacros.inc
 %define source_name transmission
 
 Name:			SFEtransmission
@@ -27,19 +28,24 @@ SUNW_Copyright:		transmission.copyright
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%source_name-%version-build
 %include default-depend.inc
-BuildRequires: SUNWgtk2-devel
-BuildRequires: SUNWopenssl-include
-BuildRequires: SUNWgnome-panel-devel
-BuildRequires: SUNWdbus-glib-devel
+BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
+BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
+BuildRequires: %{pnm_buildrequires_SUNWgnome_panel_devel}
+BuildRequires: %{pnm_buildrequires_SUNWdbus_glib_devel}
+BuildRequires: %{pnm_buildrequires_SUNWcurl}
+BuildRequires: SFEgcc
 BuildRequires: SFElibevent2
-Requires: SUNWgtk2
-Requires: SUNWgnome-panel
-Requires: SUNWdbus-glib
-Requires: SUNWopenssl-libraries
-Requires: SUNWcurl
+BuildRequires: SFElibiconv-devel
+BuildRequires: %{pnm_buildrequires_SUNWgnu_gettext}
+Requires: %{pnm_requires_SUNWgtk2}
+Requires: %{pnm_requires_SUNWgnome_panel}
+Requires: %{pnm_requires_SUNWdbus_glib}
+Requires: %{pnm_requires_SUNWopenssl_libraries}
+Requires: %{pnm_requires_SUNWcurl}
+Requires: SFEgccruntime
 Requires: SFElibevent2
 Requires: SFElibiconv
-Requires: SUNWgnu-gettext
+Requires: %{pnm_requires_SUNWgnu_gettext}
 
 
 %if %build_l10n
@@ -137,6 +143,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 19 2013 - Ian Johnson
+- change (Build)Requires %{pnm_buildrequires_SUNWgtk2_devel}, %{pnm_buildrequires_SUNWopenssl_include}, %{pnm_buildrequires_SUNWgnome_panel_devel}, %{pnm_buildrequires_SUNWdbus_glib_devel}, %{pnm_buildrequires_SUNWcurl}, %{pnm_buildrequires_SUNWgnu_gettext}, %include packagenamemacros.inc
+- add (Build)Requires: SFEgcc(runtime)
 * Fri Sep 13 2013 - Alex Viskovatoff
 - bring down to 2.33, so that the GUI builds
 * Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>
