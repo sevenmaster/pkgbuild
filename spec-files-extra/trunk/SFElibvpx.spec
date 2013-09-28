@@ -89,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 1.2.0 (trigger autobuild)
 * Tue Nov  1 2011 - Alex Viskovatoff
 - Fix directory attributes
 * Thu Jul 21 2011 - Alex Viskovatoff
