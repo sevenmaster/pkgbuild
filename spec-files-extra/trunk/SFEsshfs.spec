@@ -10,8 +10,10 @@
 %include base.inc
 
 Name:                    SFEsshfs
+IPS_package_name: system/file-system/fuse-sshfs
 Summary:                 sshfs - filesystem access over SSH
-Version:                 2.2
+Version:                 2.3
+IPS_package_name:	system/file-system/sshfs
 License:                 GPLv2
 Source:			 %{sf_download}/fuse/%{src_name}-%{version}.tar.gz
 Patch1:                  sshfs-fuse-01-sunpro.diff
@@ -22,9 +24,9 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 %define _execprefix %{_prefix}
 
-BuildRequires: SUNWlibfuse
-Requires: SUNWfusefs
-Requires: SUNWlibfuse
+BuildRequires: SFElibfuse
+Requires: SFEfusefs
+Requires: SFElibfuse
 
 %prep
 %setup -q -n %src_name-%version
@@ -43,6 +45,10 @@ aclocal
 autoheader
 autoconf
 automake -a -c -f
+
+CFLAGS="%{optflags} -I/usr/gnu/include/fuse" \
+LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib" \
+PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig		\
 ./configure --prefix=%{_prefix}			\
             --bindir=%{_bindir}			\
 	    --mandir=%{_mandir}
@@ -72,5 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 2.3
 * Sat May 29 2010 - Albert Lee <trisk@opensolaris.org>
 - Initial spec.
