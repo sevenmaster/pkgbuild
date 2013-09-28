@@ -67,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
     --install_path libdoc=%{_mandir}/man3 \
 
 mkdir $RPM_BUILD_ROOT/%{_bindir}
-mv $RPM_BUILD_ROOT/%{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/spfquery $RPM_BUILD_ROOT/%{_bindir}/
+mv $RPM_BUILD_ROOT/%{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/spfquery $RPM_BUILD_ROOT/%{_bindir}/spfquery.pl
 rmdir  $RPM_BUILD_ROOT/%{_prefix}/perl%{perl_major_version}/%{perl_version}/bin
 rmdir  $RPM_BUILD_ROOT/%{_prefix}/perl%{perl_major_version}/%{perl_version}
 
@@ -92,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Sep 27 2013 - Thomas Wagner
+- rename query tools /usr/bin/spfquery -> spfquery.pl (avoid file conflict with SFElibsp2.spec)
 * Wed Nov 28 2012 - Thomas Wagner
 - re-create spec file by script, change back to Build.PL, fix placement of bin and man
 - use IPS_Package_Name
