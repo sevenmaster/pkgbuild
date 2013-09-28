@@ -1,0 +1,34 @@
+--- libcaca-0.99.beta18/configure.ac	2013-09-28 20:43:27.208501221 +0200
++++ libcaca-0.99.beta18/configure.ac	2013-09-28 20:44:40.758013818 +0200
+@@ -370,10 +370,10 @@
+ AC_SUBST(GL_LIBS)
+ 
+ # Optimizations
+-CFLAGS="${CFLAGS} -g -O2 -fno-strength-reduce -fomit-frame-pointer"
++#CFLAGS="${CFLAGS} -g -O2 -fno-strength-reduce -fomit-frame-pointer"
+ # Code qui fait des warnings == code de porc == deux baffes dans ta gueule
+-CFLAGS="${CFLAGS} -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wstrict-prototypes -Wshadow -Waggregate-return -Wmissing-prototypes -Wnested-externs -Wsign-compare"
+-CXXFLAGS="${CXXFLAGS} -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Wsign-compare"
++#CFLAGS="${CFLAGS} -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wstrict-prototypes -Wshadow -Waggregate-return -Wmissing-prototypes -Wnested-externs -Wsign-compare"
++#CXXFLAGS="${CXXFLAGS} -Wall -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Wsign-compare"
+ 
+ CACA_BINDINGS=""
+ 
+--- libcaca-0.99.beta18/ruby/Makefile.am	2013-09-28 20:45:55.539601250 +0200
++++ libcaca-0.99.beta18/ruby/Makefile.am	2013-09-28 20:46:01.130156281 +0200
+@@ -8,8 +8,6 @@
+ TESTS = test
+ endif
+ 
+-CFLAGS += -Wno-strict-prototypes -Wno-missing-prototypes
+-
+ caca_la_CPPFLAGS = -I$(top_srcdir)/caca -I../caca $(RUBY_CFLAGS)
+ caca_la_SOURCES = caca.c \
+                   common.h \
+--- libcaca-0.99.beta18/java/Makefile.am	Sat Sep 28 20:57:10 2013
++++ libcaca-0.99.beta18/java/Makefile.am	Sat Sep 28 20:58:00 2013
+@@ -1,3 +1,4 @@
++AM_CFLAGS=-I../caca
+ 
+ jnidir = $(libdir)/jni
+ libcaca_javadir = $(datadir)/java
