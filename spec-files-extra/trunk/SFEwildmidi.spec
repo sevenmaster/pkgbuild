@@ -9,7 +9,7 @@ Name:		SFEwildmidi
 IPS_Package_Name:	media/wildmidi
 Summary:	Software MIDI synthesizer
 Group:		Applications/Sound and Video
-Version:	0.2.3.4
+Version:	0.2.3.5
 License:	LGPLv3
 Source:		%{sf_download}/wildmidi/wildmidi-%{version}.tar.gz
 Patch1:		wildmidi-01-solaris.diff
@@ -56,7 +56,7 @@ export LDFLAGS="%{_ldflags}"
 	    --disable-temps		\
 	    --with-oss
 
-make -j$CPUS 
+make
 
 %install
 rm -rf %{buildroot}
@@ -79,6 +79,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 0.2.3.5
 * Mon Jul 25 2011 - N.B.Prashanth
 - Added SUNW_Copyright
 * Sun Dec 26 2010 - Milan Jurik
