@@ -9,7 +9,7 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 1.20
+%define tarball_version 2.30
 %define tarball_name    TimeDate
 
 Name:		SFEperl-timedate
@@ -23,7 +23,7 @@ Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~gbarr/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{name}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/TimeDate-1.20.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/TimeDate-2.30.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Aug 16 2013 - Thomas Wagner
+- bump to 2.30
 * Wed Oct 24 2012 - Thomas Wagner
 - refresh spec file, bump version to 1.20 (was: 1.16)
 - replaces perl/SFEperl-time-date.spec (deleted)
