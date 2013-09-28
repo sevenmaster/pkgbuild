@@ -8,7 +8,7 @@
 
 Name:           gst-plugins-bad
 License:        GPL
-Version:        0.10.19
+Version:        0.10.23
 Release:        1
 Distribution:   Java Desktop System
 Vendor:         Sun Microsystems, Inc.
@@ -19,9 +19,7 @@ Source:         http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins
 Patch1:         gst-plugins-bad-01-gettext.diff
 Patch2:         gst-plugins-bad-02-gstapexraop.diff
 Patch3:         gst-plugins-bad-03-xvidmain.diff
-Patch5:         gst-plugins-bad-05-xsi_shell.diff
-Patch7:         gst-plugins-bad-07-videomeasure.diff
-Patch8:         gst-plugins-bad-08-gstdoc-scangobj.diff
+Patch4:		gst-plugins-bad-04-gstopenalsrc.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_defaultdocdir}/doc
 Autoreqprov:    on
@@ -41,8 +39,7 @@ plug-ins.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch5 -p1
-%patch8 -p1
+%patch4 -p1
 
 %build
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
@@ -106,7 +103,7 @@ bash ./configure \
   --disable-selector \
   --disable-zbar \
   --disable-wildmidi    \
-  %{gtk_doc_option}	\
+  --disable-gtk-doc	\
   --enable-external
 
 # FIXME: hack: stop the build from looping
@@ -162,6 +159,8 @@ GStreamer support libraries header files.
 %{_datadir}/gtk-doc
 
 %changelog
+* Sat Sep 24 2013 - Milan Jurik
+- bump to 0.10.23
 * Sun Feb 06 2011 - Milan Jurik
 - clean up of patching, enabling new modules
 * Fri Jun 18 2010 - brian.cameron@oracle.com
