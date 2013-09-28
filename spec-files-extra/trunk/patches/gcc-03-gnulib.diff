@@ -73,24 +73,23 @@ to older binaries.
 
 
 
---- gcc-4.5.2/gcc/config/sol2.h	2010-04-16 15:33:58.000000000 +0200
-+++ gcc-4.5.2/gcc/config/sol2.h	2011-03-04 20:41:27.986156059 +0100
-@@ -156,12 +156,12 @@
+--- gcc-4.6.4/gcc/config/sol2.h
++++ gcc-4.6.4/gcc/config/sol2.h
+@@ -163,12 +163,12 @@
     %{YP,*} \
     %{R*} \
     %{compat-bsd: \
--     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib} \
--             %{!p:%{!pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib:%R/usr/lib}}} \
--             -R %R/usr/ucblib} \
-+     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/lib:%R/usr/lib:%R/usr/gnu/lib} \
-+             %{!p:%{!pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib:%R/lib:%R/usr/lib:%R/usr/gnu/lib}}} \
-+             -R %R/usr/ucblib} \
+-     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib:%R/lib} \
+-             %{!p:%{!pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib:%R/usr/lib:%R/lib}}} \
++     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib:%R/lib:%R/usr/gnu/lib} \
++             %{!p:%{!pg:-Y P,%R/usr/ucblib:%R/usr/ccs/lib:%R/usr/lib:%R/lib:%R/usr/gnu/lib}}} \
+              -R %R/usr/ucblib} \
     %{!compat-bsd: \
--     %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib} \
--             %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/usr/lib}}}}"
-+     %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/lib:%R/usr/lib:%R/usr/gnu/lib} \
-+             %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/lib:%R/usr/lib:%R/usr/gnu/lib}}}}"
- 
+-     %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib:%R/lib} \
+-             %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/usr/lib:%R/lib}}}}"
++     %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/usr/lib:%R/lib:%R/usr/gnu/lib} \
++             %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/usr/lib:%R/lib:%R/usr/gnu/lib}}}}"
+
  #undef LINK_ARCH32_SPEC
  #define LINK_ARCH32_SPEC LINK_ARCH32_SPEC_BASE
 --- gcc-4.5.2/gcc/config/i386/sol2-10.h	2010-07-14 10:47:54.000000000 +0200
@@ -113,23 +112,22 @@ to older binaries.
  
  #undef LINK_ARCH64_SPEC
  #define LINK_ARCH64_SPEC LINK_ARCH64_SPEC_BASE
---- gcc-4.5.2/gcc/config/sparc/sol2-bi.h	2010-04-02 21:54:46.000000000 +0200
-+++ gcc-4.5.2/gcc/config/sparc/sol2-bi.h	2011-03-04 20:47:36.202790986 +0100
-@@ -195,12 +195,12 @@
+--- gcc-4.6.4/gcc/config/sparc/sol2-bi.h
++++ gcc-4.6.4/gcc/config/sparc/sol2-bi.h
+@@ -191,12 +191,12 @@
     %{YP,*} \
     %{R*} \
     %{compat-bsd: \
--     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9} \
--       %{!p:%{!pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/sparcv9}}} \
--     -R %R/usr/ucblib/sparcv9} \
-+     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/libp/sparcv9:%R/lib/sparcv9:%R/usr/lib/sparcv9:%R/usr/gnu/lib/sparcv9} \
-+       %{!p:%{!pg:-Y P,%R/usr/ucblib/sparcv9:%R/lib/sparcv9:%R/usr/lib/sparcv9:%R/usr/gnu/lib/sparcv9 -R %R/usr/ucblib/sparcv9}}} \
-+     } \
+-     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9} \
+-       %{!p:%{!pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9}}} \
++     %{!YP,*:%{p|pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9:%R/usr/gnu/lib/sparcv9} \
++       %{!p:%{!pg:-Y P,%R/usr/ucblib/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9:%R/usr/gnu/lib/sparcv9}}} \
+      -R %R/usr/ucblib/sparcv9} \
     %{!compat-bsd: \
--     %{!YP,*:%{p|pg:-Y P,%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9} \
--       %{!p:%{!pg:-Y P,%R/usr/lib/sparcv9}}}}"
-+     %{!YP,*:%{p|pg:-Y P,%R/usr/lib/libp/sparcv9:%R/lib/sparcv9:%R/usr/lib/sparcv9:%R/usr/gnu/lib/sparcv9} \
-+       %{!p:%{!pg:-Y P,%R/lib/sparcv9:%R/usr/lib/sparcv9:%R/usr/gnu/lib/sparcv9}}}}"
- 
+-     %{!YP,*:%{p|pg:-Y P,%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9} \
+-       %{!p:%{!pg:-Y P,%R/usr/lib/sparcv9:%R/lib/sparcv9}}}}"
++     %{!YP,*:%{p|pg:-Y P,%R/usr/lib/libp/sparcv9:%R/usr/lib/sparcv9:%R/lib/sparcv9:%R/usr/gnu/lib/sparcv9} \
++       %{!p:%{!pg:-Y P,%R/usr/lib/sparcv9:%R/lib/sparcv9:%R/usr/gnu/lib/sparcv9}}}}" 
+
  #define LINK_ARCH64_SPEC LINK_ARCH64_SPEC_BASE
  

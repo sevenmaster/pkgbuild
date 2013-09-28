@@ -7,6 +7,7 @@
 	* SFElibcaca.spec: bump to 0.99.beta18
 	* SFEopenal.spec: bump to 1.15.1
 	* SFEsshfs.spec: bump to 2.3
+	* SFEgcc.spec: bump to 4.6.4
 
 2013-09-09  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
