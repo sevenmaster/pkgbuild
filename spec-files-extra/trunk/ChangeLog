@@ -3,6 +3,7 @@
 	* base-specs/libvpx.spec: bump to 1.2.0
 	* base-specs/gst-plugins-bad.spec: bump to 0.10.23
 	* base-specs/gst-plugins-ugly.spec: bump to 0.10.19
+	* SFEwildmidi.spec: bump to 0.2.3.5
 
 2013-09-09  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
