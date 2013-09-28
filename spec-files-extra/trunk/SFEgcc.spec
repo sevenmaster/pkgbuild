@@ -125,7 +125,7 @@
 
 %if %{!?gcc_version:1}
 #make version bump *here* - this is the default version being built
-%define version 4.6.3
+%define version 4.6.4
 %else
 #gcc version is already defined from *outside*, from the pkgtool command line
 %define version %{gcc_version}
@@ -676,6 +676,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 4.6.4
 * Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
 - switch back to sun ld for gcc 4.7 but require SFEbinutils (for 4.7 only)
 * Sat Feb 23 2013 - Logan Bruns <logan@gedanken.org>
