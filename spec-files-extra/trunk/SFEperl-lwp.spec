@@ -6,8 +6,8 @@
 
 # Note: Sourcefile does not follow standard naming
 
-%define module_version 6.4
-%define module_version_download 6.04
+%define module_version 6.5
+%define module_version_download 6.05
 %define module_name libwww-perl
 %define module_name_major LWP
 %define module_package_name libwww-perl
@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 26 2013 - Thomas Wagner
+- bump to 6.05
 * Fri Feb 01 2013 - Thomas Wagner
 - change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
 * Sun May 27 2012 - Milan Jurik
