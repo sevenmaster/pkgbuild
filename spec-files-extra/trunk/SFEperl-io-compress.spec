@@ -9,13 +9,13 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 2.058
+%define tarball_version 2.062
 %define tarball_name    IO-Compress
 
 Name:		SFEperl-io-compress
 IPS_package_name: library/perl-5/io-compress
-Version:	2.058
-IPS_component_version: 2.58
+Version:	2.062
+IPS_component_version: 2.62
 Summary:	IO::Compress
 License:	perl
 Distribution:   OpenSolaris
@@ -83,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Sep 26 2013 - Thomas Wagner
+  bump to 2.062 (2.62 on IPS)
 * Mon Dec 10 2012 - Thomas Wagner
 - re-create spec file by script
   bump to 2.058 (2.58 on IPS)
