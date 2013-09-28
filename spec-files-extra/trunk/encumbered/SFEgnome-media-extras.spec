@@ -61,8 +61,13 @@ BuildRequires: SUNWbzip
 Requires: SUNWbzip
 Requires: SFEffmpeg
 BuildRequires: SFEffmpeg-devel
+%if %(/usr/bin/pkginfo -q SFEorc 2>/dev/null  && echo 1 || echo 0)
 Requires: SFEorc
 BuildRequires: SFEorc-devel
+%else
+BuildRequires: SUNWorc
+BuildRequires: SUNWorc-devel
+%endif
 ##### for gst-plugins-ugly #####
 Requires: SFEliba52
 BuildRequires: SFEliba52-devel
@@ -256,7 +261,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/gstreamer-*
 %{_datadir}/gstreamer-*/presets/*
-%{_datadir}/gstreamer-*/camera-apps/*
+%{_datadir}/glib-2.0/schemas/*
 
 %files devel
 %defattr (-, root, bin)
