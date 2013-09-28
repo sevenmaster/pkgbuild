@@ -19,7 +19,7 @@
 Name:		SFEopenal
 IPS_Package_Name:	library/audio/openal
 Summary:	OpenAL is a cross-platform 3D audio API
-Version:	1.14
+Version:	1.15.1
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 URL:		http://connect.creativelabs.com/openal/
 Patch1:		openal-01-cmake.diff
@@ -67,7 +67,7 @@ export LDFLAGS="%{_ldflags}"
 
 cd %{src_name}-%{version}
 cd build
-cmake -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 -DEXAMPLES:INTERNAL=OFF ..
+cmake -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 -DEXAMPLES:INTERNAL=OFF -DSSE=OFF ..
 make
 
 %install
@@ -85,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}
 %dir %attr(0755,root,bin) %{_libdir}
 %{_libdir}/lib*.so*
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/openal
 
 %files devel
 %defattr (-, root, bin)
@@ -94,6 +96,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 1.15.1
 * Sun Aug 19 2012 - Thomas Wagner
 - change to BuildRequires to %{pnm_buildrequires_SUNWaudh}, %include packagenamacros.inc
 - add standard CFLAGS, LDFLAGS
