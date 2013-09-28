@@ -4,7 +4,7 @@
 
 Name:		libvpx
 License:	BSD
-Version:	1.1.0
+Version:	1.2.0
 Source:		http://webm.googlecode.com/files/%{name}-v%{version}.tar.bz2
 Patch1:		libvpx-01-shared.diff
 Patch2:		libvpx-02-mapfile.diff
@@ -51,6 +51,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Sep 28 2013 - Milan Jurik
+- bump to 1.2.0
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 1.1.0
 * Sun Oct 23 2011 - Milan Jurik
