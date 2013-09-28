@@ -84,6 +84,12 @@
 %define osbuild $( uname -v | sed -e 's/s12_//' )
 %endif
 
+#quick and dirty hack, only works on OI hipster printing "illumos" with "uname -v". DON'T USE ON ANY OTHER OSDISTRO PLEASE!
+%if %( uname -v | egrep '^illumos-' > /dev/null && echo 1 || echo 0 )
+%define osbuild 151
+%endif
+
+
 # see if we are on old SVR4 release
 %define SXCE %( egrep "Solaris Express Community Edition" /etc/release > /dev/null 2>&1 && echo 1 || echo 0 )
 
@@ -405,6 +411,8 @@
 
 
 %changelog
+* Sat Sep 28 2013 - Thomas Wagner
+- quick solution to workaound differen uname -v output on OI hipster
 * Thu Sep 19 2013 - Ian Johnson
 - fix egrep "Oracle Solaris 11" to really detect (S11.1)
 * Mon Jul  1 2013 - Thomas Wagner
