@@ -33,7 +33,6 @@ SUNW_Copyright: easytag.copyright
 Group:          Applications/Sound and Video
 Source:         %{sf_download}/easytag/%{src_name}-%{version}.tar.bz2
 Patch1:        	easytag-01-configure.diff
-Patch2:        	easytag-02-mp4_missing_u_intnn_t.diff
 URL:            http://easytag.sourceforge.net
 BuildRoot:      %{_tmppath}/%{src_name}-%{version}-build
 
@@ -58,8 +57,8 @@ BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
 Requires:      %{pnm_requires_SUNWspeex}
 BuildRequires: SFElibid3tag-devel
 Requires:      SFElibid3tag
-BuildRequires: SFElibmp4v2-devel
-Requires:      SFElibmp4v2
+#2.1.8 uses taglib BuildRequires: SFElibmp4v2-devel
+#2.1.8 uses taglib Requires:      SFElibmp4v2
 #C++ by studio compilers:
 BuildRequires: SUNWid3lib-devel
 Requires:      SUNWid3lib
@@ -81,7 +80,6 @@ EasyTAG - Tag editor for MP3, Ogg Vorbis files and more
 %prep 
 %setup -q -n %{src_name}-%{version}
 %patch1 -p 1
-%patch2 -p 1
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 # Build-Section 
@@ -159,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Aug  4 2013 - Thomas Wagner
+- remove obsolete dependency on SFElibmp4v2
+  might require you to uninstall SFElibmp4v2 library/video/libmp4v2 before compiling this spec file
+- remove patch2 easytag-02-mp4_missing_u_intnn_t.diff (uses taglib now)
 * Sun Apr 21 2012 - Thomas Wagner
 - Bump to 2.1.7
 - re-enable mp4v2 (easytag 2.1.7 has a fix to enable mp4v2)
