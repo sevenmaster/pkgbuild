@@ -7,6 +7,8 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %include packagenamemacros.inc
 
 Name:		SFEnagios
@@ -21,6 +23,9 @@ Patch1:		nagios-01-cc.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires: 	%{pnm_buildrequires_perl_default}
 
 BuildRequires:	%{pnm_buildrequires_SUNWsndm_devel}
 Requires:	%{pnm_requires_SUNWsndm}
@@ -76,7 +81,11 @@ may compile against.
 
 
 %prep
-%setup -q -n nagios-%{version}
+%setup -q -c -T -n nagios-%{version}
+#source comes with directory nagios/
+gzip -d < %{SOURCE} | tar xf -
+mv nagios nagios.temp.$$
+mv nagios.temp.$$/* .
 %patch1 -p1
 
 %build
@@ -85,7 +94,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export CFLAGS="%{optflags}"
+export CC=gcc
+export CXX=g++
+
+export CFLAGS="%{optflags} -I%{_prefix}/%{perl_default_includedir}"
 export LDFLAGS="%{_ldflags}"
 
 ./configure \
@@ -212,6 +224,10 @@ user ftpuser=false gcos-field="Nagios Reserved UID" username="nagios" password=N
 %{_includedir}/nagios
 
 %changelog
+* Thr Aug  9 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_perl_default}
+- export CC=gcc, CXX=g++, CFLAGS with perl
+- cc_is_gcc = 1 
 * Sat Aug  4 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWSUNWsndm_devel}, %{pnm_requires_SUNWapch22}, %include packagenamemacros.inc
 * Sat Aug  4 2012 - Thomas Wagner
