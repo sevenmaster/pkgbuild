@@ -15,9 +15,9 @@
 # we suggest you applying the patch above.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define with_hal %(pkginfo -q SUNWhal && echo 1 || echo 0)
-%define osbuild %(uname -v | sed -e 's/[A-z_]//g')
 
 %use libcdio = libcdio.spec
 
@@ -34,7 +34,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWlexpt
-Requires: SUNWlibC
+BuildRequires: %{pnm_buildrequires_SUNWlibC}
+Requires: %{pnm_buildrequires_SUNWlibC}
 BuildRequires: SUNWlibms
 Requires: SUNWlibms
 Requires: SUNWdbus
@@ -42,13 +43,8 @@ Requires: SFElibcddb
 BuildRequires: SFElibcddb
 Requires: SFElibiconv
 
-%if %(expr %{osbuild} '>=' 100)
-BuildRequires: SUNWncurses-devel
-Requires: SUNWncurses
-%else
-BuildRequires: SFEncurses-devel
-Requires: SFEncurses
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 
 %if %with_hal
 Requires: SUNWhal
@@ -118,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/cdio
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibC}, %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Thu Oct 06 2011 - Milan Jurik
 - clean up, add IPS package name
 * Thu Jul 21 2011 - Milan Jurik

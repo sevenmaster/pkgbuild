@@ -14,11 +14,10 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SFEncurses
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 BuildRequires: SFElibpcap-devel
-BuildRequires: SFElibpcap
-Requires: SFEncurses
-Requires: SFElibpcap
+Requires:      SFElibpcap
 
 %prep
 %setup -q -n jnettop-%version
@@ -65,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/jnettop/*
 
 %changelog
-* 
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Wed Nov 08 2006 - Eric Boutilier
 - Initial spec
