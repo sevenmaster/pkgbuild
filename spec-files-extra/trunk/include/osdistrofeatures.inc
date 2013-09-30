@@ -22,13 +22,21 @@
 #defaults to off, e.g. on Solaris 10
 %define etc_security_directorylayout 0
 #%if %{?SXCE}%{?solaris11express}%{?solaris12}%{?openindiana}
-%if %{?os2nnn}%{?SXCE}
+#%if %{?os2nnn}%{?SXCE}
+%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 )
 #we have /etc/security/ *.d directories
 %define etc_security_directorylayout 1
 %endif
 #END >= 151
 
+%if %{?SXCE}
+%define etc_security_directorylayout 1
+%endif
+#END SXCE
+
 %changelog
+* Tue Aug  6 2013 - Thomas Wagner
+- temporary fix for IPS based OS for etc_security_directorylayout
 * Fri Jun 21 2013 - Thomas Wagner
 - fix logic, test with SXCE, S11, S12, openindiana
 * Thu Jun 20 2013 - Thomas Wagner
