@@ -4,10 +4,12 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name tumbler
 %define src_url http://archive.xfce.org/src/xfce/%{src_name}/0.1/
-%define with_ffmpeg %(pkginfo -q SFEffmpeg && echo 1 || echo 0)
+#%(pkginfo -q SFEffmpeg && echo 1 || echo 0)
+%define with_ffmpeg 1
  
 Name:           SFEtumbler
 IPS_Package_Name:	xfce/tumbler
@@ -24,9 +26,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SUNWgnome-base-libs-devel
 Requires:	SUNWgnome-base-libs
 BuildRequires: 	SUNWdbus
-BuildRequires:	SUNWgtk-doc
+BuildRequires: %{pnm_buildrequires_SUNWgtk_doc}
 BuildRequires:	SUNWgnome-xml-share
-%if %with_ffmpeg 
+%if %{with_ffmpeg}
 BuildRequires:	SFEffmpeg-devel
 Requires: 	SFEffmpeg
 %endif
@@ -65,8 +67,6 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
-
-export PATH=/usr/gnu/bin:$PATH
 
 ./configure --prefix=%{_prefix}		\
 	--libdir=%{_libdir}		\
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
  
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- use ffmpeg anytime
+- change to BuildRequires: %{pnm_buildrequires_SUNWgtk_doc}, %include packagenamemacros.inc
 * Tue Aug 28 2012 - Ken Mays <kmays2000@gmail.com>
 - Improved pkg check for SFEffmpeg
 * Thu Aug 23 2012 - Ken Mays <kmays2000@gmail.com>
