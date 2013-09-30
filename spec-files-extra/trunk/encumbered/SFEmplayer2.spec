@@ -24,7 +24,11 @@
 %define cc_is_gcc 1
 %include base.inc
 
-%define snap 20130929
+################################################################################
+# For snap, use date of the latest revision of the repository at	       #
+#	http://git.mplayer2.org/mplayer2/				       #
+################################################################################
+%define snap 20130428
 
 %define with_fribidi %(pkginfo -q SFElibfribidi && echo 1 || echo 0)
 #%define with_ladspa %(pkginfo -q SFEladspa && echo 1 || echo 0)
@@ -225,6 +229,8 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Mon Sep 30 2013 - Alex Viskovatoff
+- make %snap date of latest commit to the git repository, to ease maintenance
 * Mon Sep 30 2013 - Milan Jurik
 - bump to the latest mplayer2 snapshot
 * Sat Jan 12 2013 - Thomas Wagner
