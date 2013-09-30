@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFExmms1-scrobbler
 Summary:             XMMS Scrobbler is a plugin for xmms that reports your music listening to last.fm.
@@ -22,7 +23,8 @@ SUNW_BaseDir:            %{_basedir}
 Requires: %name
 Requires: SUNWopenssl-libraries
 Requires: SFExmms1
-Requires: SFElibmusicbrainz3
+BuildRequires: %{pnm_buildrequires_SUNWlibmusicbrainz_devel}
+Requires:      %{pnm_requires_SUNWmusicbrainz}
 Requires: SFEtaglib
 BuildRequires: SFEtaglib-devel
 BuildRequires: SFExmms1-devel
@@ -59,5 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec  9 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibmusicbrainz_devel}, %include packagenamemacros.inc
 * Thu May 1 - andras.barna@gmail.com
 - Initial spec.
