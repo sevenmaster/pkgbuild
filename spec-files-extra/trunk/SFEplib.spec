@@ -5,8 +5,8 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
-%define osbuild %(uname -v | sed -e 's/[A-z_]//g')
 %define src_name plib
 
 Name:           SFEplib
@@ -21,15 +21,10 @@ SUNW_Copyright: %{name}.copyright
 SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include	default-depend.inc
-#Requires: 	SFEfreeglut
 Requires: 	SUNWxorg-mesa
 Requires: 	SUNWxwice
 
-%if %(expr %{osbuild} '>=' 134)
-BuildRequires:	system/header/header-audio
-%else
-BuildRequires:	SUNWaudh
-%endif
+BuildRequires:	%{pnm_buildrequires_SUNWaudh}
 
 %package devel
 Summary:		 %summary - developer files
@@ -74,6 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plib
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWaudh}, %include packagenamemacros.inc
 * Mon Dec 05 2011 - Milan Jurik
 - small clean up, add IPS package name
 * May 18 2010 - Gilles Dauphin
