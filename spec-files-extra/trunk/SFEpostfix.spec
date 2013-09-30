@@ -892,7 +892,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %if %(test %{with_sasl} -ge 1 && echo 1 || echo 0)
 %dir %attr (0755, root, bin) %{gnu_dir}
 %dir %attr (0755, root, bin) %{gnu_libdir}
-%dir %attr (0755, root, bin) %{gnu_libdir}/sasl2
+%dir %attr (0755, root, other) %{gnu_libdir}/sasl2
 %class(renamenew) %{gnu_libdir}/sasl2/smtpd.conf
 %endif
 
