@@ -4,11 +4,10 @@
 # includes module(s): bullet
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	bullet
 %define src_url		http://bullet.googlecode.com/files
-
-%define SFEfreeglut  %(/usr/bin/pkginfo -q SFEfreeglut && echo 1 || echo 0)
 
 Name:		SFEbullet
 IPS_Package_Name:	library/bullet
@@ -24,13 +23,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}b-build
 %include default-depend.inc
 BuildRequires: SFEjam
-%if %SFEfreeglut
-BuildRequires: SFEfreeglut-devel
-Requires: SFEfreeglut
-%else
-BuildRequires: x11/library/freeglut
-Requires: x11/library/freeglut
-%endif
+BuildRequires: %{pnm_buildrequires_x11_library_freeglut}
+Requires:      %{pnm_requires_x11_library_freeglut}
 BuildRequires: SFEcmake
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
@@ -72,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_x11_library_freeglut}, %include packagenamemacros.inc
 * Tue Jul 26 2011 - Alex Viskovatoff
 - add -fpermissive to CXXFLAGS to allow build with gcc 4.6
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
