@@ -37,13 +37,16 @@ SUNW_BaseDir:            /usr
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:      SFEmaven
-BuildRequires:      developer/build/ant
+BuildRequires:      %{pnm_buildrequires_SUNWant}
 BuildRequires:      SFEcmake
 BuildRequires:      SFEgcc
+BuildRequires:      %{pnm_requires_java_runtime_default}
 BuildRequires:      SFEsnappy
 BuildRequires:      SFEprotobuf-devel
+#make package dependency resolver happy (autobuild)
+Requires:           SFEprotobuf
 Requires:           SFEgccruntime
-Requires:           %pnm_requires_java_runtime_default
+Requires:           %{pnm_requires_java_runtime_default}
 Requires:           SFEsnappy
 
 Requires: %name-root
@@ -84,7 +87,7 @@ export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS"
 #export LDFLAGS="%_ldflags"
 export LDFLAGS="-L/usr/jdk/latest/jre/lib/i386/"
 export JAVA_HOME=/usr/java
-mvn package -Pdist,native -DskipTests -Dtar -Dversion=%{version}-alpha -Drequire.snappy
+mvn -B package -Pdist,native -DskipTests -Dtar -Dversion=%{version}-alpha -Drequire.snappy
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -169,6 +172,11 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/hadoop.xml
 
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWant}, %{pnm_requires_java_runtime_default}, %{pnm_requires_java_runtime_default}
+- add Requires: SFEprotobuf to make autobuild happy
+* Mon Dec 10 2012 - Thomas Wagner
+- run maven in batch mode (exits in case of problems instead waiting indefinitly)
 * Sun Nov 11 2012 - Logan Bruns <logan@gedanken.org>
 - Bumped to 2.0.2-alpha. Updated patches, dependencies and packaging rules.
 * Mon Jun 18 2012 - Logan Bruns <logan@gedanken.org>
