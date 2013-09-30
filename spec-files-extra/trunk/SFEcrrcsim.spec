@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:           SFEcrrcsim
 Summary:        crrcsim flight simulator
@@ -26,7 +27,8 @@ SUNW_Copyright:	%{name}.copyright
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include	default-depend.inc
 #Requires:	%name-root
-Requires: 	SFEfreeglut
+BuildRequires: %{pnm_buildrequires_x11_library_freeglut}
+Requires:      %{pnm_requires_x11_library_freeglut}
 Requires: 	SUNWxorg-mesa
 Requires: 	SUNWxwice
 Requires: 	SFEplib
@@ -123,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_x11_library_freeglut}, %include packagenamemacros.inc
 * Mar 2010
 - try to move it in /usr/SFE
 * Nov 2 2008 - Gilles Dauphin ( Gilles DOT Dauphin AT enst DOT fr)
