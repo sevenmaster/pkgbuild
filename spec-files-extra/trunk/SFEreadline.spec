@@ -4,9 +4,12 @@
 # includes module(s): GNU readline
 #
 %include Solaris.inc
+%include usr-gnu.inc
+%include base.inc
 
 Name:                    SFEreadline
-Summary:                 GNU readline - library for editing typed command lines
+IPS_Package_Name:	 library/gnu/readline
+Summary:                 GNU readline - library for editing typed command lines (/usr/gnu)
 Version:                 6.2
 Source:			 http://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
@@ -33,8 +36,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-export CFLAGS32="%optflags -I/usr/sfw/include -DANSICPP"
-export CFLAGS64="%optflags64 -I/usr/sfw/include -DANSICPP"
+#export CFLAGS32="%optflags -I/usr/sfw/include -DANSICPP"
+#export CFLAGS64="%optflags64 -I/usr/sfw/include -DANSICPP"
+export CFLAGS32="%optflags -DANSICPP"
+export CFLAGS64="%optflags64 -DANSICPP"
 export LDFLAGS32="%_ldflags -lcurses"
 export LDFLAGS64="%_ldflags -lcurses"
 
@@ -93,6 +98,9 @@ rm $RPM_BUILD_ROOT%{_datadir}/info/dir
 
 rm $RPM_BUILD_ROOT%{_libdir}/lib*a
 
+#looks empty
+rmdir $RPM_BUILD_ROOT%{_bindir}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -119,6 +127,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
+#%dir %attr (0755, root, bin) %{_bindir}
+#%{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %dir %attr(0755, root, sys) %{_datadir}
@@ -136,9 +146,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
+%dir %attr(0755, root, sys) %{_datadir}
+%{_datadir}/*
+
 
 %changelog
-* Tue Jun 7 2011- Ken Mays <kmays2000@gmail.com>
+* Wed Aug 14 2013 - Thomas Wagner
+- fix %files
+* Sun Dec 16 2012 - Thomas Wagner
+- move to /usr/gnu to avoid duplicate files with OS provided readline
+- add IPS_Package_Name
+* Tue Jun  7 2011 - Ken Mays <kmays2000@gmail.com>
 - Bump to 6.2
 * Mon May 14 2007 - dougs@truemail.co.th
 - Forced to link with libcurses
