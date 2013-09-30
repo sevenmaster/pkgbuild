@@ -1,75 +1,84 @@
 #
-# spec file for package SFEperl-extutils-cbuilder
+# spec file for package: SFEperl-extutils-cbuilder
 #
-# includes module(s): ExtUtils-CBuilder
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
 #
-
-##TODO## IPS complatible version numbers!
-%define module_version 0.2603
-%define module_name ExtUtils-CBuilder
-%define module_name_major ExtUtils
-%define module_package_name extutils-cbuilder
-#still unused: %define module_name_minor CBuilder
-
-
+# includes module(s):
+#
 %include Solaris.inc
 %include packagenamemacros.inc
-Name:                    SFEperl-%{module_package_name}
-IPS_Package_Name:	library/perl-5/extutils-cbuilder
-Summary:                 %{module_name}-%{module_version} PERL module
-Version:                 %{perl_version}.%{module_version}
-Source:                   http://www.cpan.org/modules/by-module/%{module_name_major}/%{module_name}-%{module_version}.tar.gz
-Group:		Development/Perl
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-BuildRequires:           %{pnm_buildrequires_perl_default}
-Requires:                %{pnm_requires_perl_default}
-BuildRequires:           %{pnm_buildrequires_SUNWsfwhea}
 
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
-%include default-depend.inc
+%define tarball_version 0.280205
+%define tarball_name    ExtUtils-CBuilder
+
+Name:		SFEperl-extutils-cbuilder
+IPS_package_name: library/perl-5/extutils-cbuilder
+Version:	0.280205
+IPS_component_version: 0.280205
+Summary:	ExtUtils::CBuilder
+License:	Artistic
+Distribution:   OpenSolaris
+Vendor:         OpenSolaris Community
+Url:		http://search.cpan.org/~dagolden/%{tarball_name}-%{tarball_version}
+SUNW_Basedir:	%{_basedir}
+SUNW_Copyright: %{name}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/ExtUtils-CBuilder-%{tarball_version}.tar.gz
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires:	%{pnm_requires_perl_default}
+
+Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
+Meta(info.upstream):            David Golden <dagolden@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~dagolden/%{tarball_name}-%{tarball_version}
+Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
+
+%description
+ExtUtils::CBuilder
 
 %prep
-%setup -q	-c -n %name-%version
+%setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-cd %{module_name}-%{module_version}
-/usr/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL installdirs=vendor
-CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC ./Build
+perl Makefile.PL \
+    PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
+    INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
+    INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd %{module_name}-%{module_version}
-./Build install destdir=$RPM_BUILD_ROOT create_packlist=0
+make install
 
-#rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
-
-%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
+find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
+%defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{module_name_major}
-%{_prefix}/%{perl_path_vendor_perl_version}/%{module_name_major}/*
-
-#/usr/perl5/5.12/bin and /usr/perl5/5.12/man/man<1|3>
-#/usr/perl5/5.8.4/bin and /usr/perl5/5.8.4/man/man<1|3>
-%{_prefix}/perl%{perl_major_version}/%{perl_version}/*
-#%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto
-#%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto/*
-#%dir %attr(0755, root, sys) %{_datadir}
-#%dir %attr(0755, root, bin) %{_mandir}
-#%dir %attr(0755, root, bin) %{_mandir}/man3
-#%{_mandir}/man3/*
+%{_prefix}/%{perl_path_vendor_perl_version}/*
+#%dir %attr(0755,root,bin) %{_bindir}
+#%{_bindir}/*
+%dir %attr(0755,root,sys) %{_datadir}
+%dir %attr(0755, root, bin) %{_mandir}
+%dir %attr(0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*
+%dir %attr(0755, root, bin) %{_mandir}/man3
+%{_mandir}/man3/*
 
 %changelog
+* Fri Feb  1 2013 - Thomas Wagner
+- Bump version to 0.280205, recreated by script
+* Mon Dec 10 2012 - Thomas Wagner
+- add (Build)Requires, remove redundant definition for perl_dir
 * Sat May 12 2012 - Thomas Wagner
 - changed to use Build because old build system ended up in wrong
   target directories with perl 5.12
