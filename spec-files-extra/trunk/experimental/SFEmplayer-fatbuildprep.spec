@@ -2,7 +2,7 @@
 # spec file for building a full features mplayer-snap from SVN
 #
 
-%include osdistro.inc
+%include packagenamemacros.inc
 
 
 #NOTE auto-install of the OS provided packages on an IPS system does *not* work currently
@@ -14,7 +14,7 @@
 %define requiresforfatbuild experimental/SFEmplayer-fatbuildprep.spec SUNWlibsndfile SFEfaad2 SFElibfribidi SFEladspa SFEopenal SFEliba52 SFElame SFEtwolame SFElibmad SFElibmpcdec SFExvid SFElibx264 SFEopenjpeg SFEgiflib SFEliveMedia SFElibcdio SFElibcdio-devel
 
 #supplement (do not list those, who are already listed in SFEmplayer-snap iteself
-%define requiresforfatbuildsupplement SUNWsmbau SUNWgnome-audio SUNWgscr
+%define requiresforfatbuildsupplement %{pnm_buildrequires_SUNWsmba} SUNWgnome-audio SUNWgscr
 
 # place specs excluded from above *here* and do not delete them.
 #
@@ -131,6 +131,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 24 2012 - Thomas Wagner
+- change SUNWsmba to %{pnm_buildrequires_SUNWsmba} to build the depencies early enough
 * Fri Nov 05 2010  - Thomas Wagner
 - broken is autoinstall of OS provided required packages
 - added SFEmplayer-snap itself to get it build
