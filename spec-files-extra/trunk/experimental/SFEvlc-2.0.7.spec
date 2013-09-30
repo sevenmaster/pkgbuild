@@ -90,7 +90,7 @@ BuildRequires:	%{pnm_buildrequires_SUNWgsed}
 
 #we have new X-org with x11-xcb CR 6667057
 ##TODO## check if other solarish OS do have same x11-xcb integrated with build 153
-%if %( expr %{osbuild} '>=' 153 )
+%if %( expr %{osbuild} '>=' 153 '|' %{solaris12} '>=' 1 )
 %define enable_x11_xcb 1
 # more fresh builds all use IPS long package names
 BuildRequires: x11/library/libxcb
@@ -239,8 +239,8 @@ BuildRequires: SFElibid3tag-devel
 Requires: SFElibid3tag
 BuildRequires: SFEfaad2-devel
 Requires: SFEfaad2
-BuildRequires: SFEfaac-devel
-Requires: SFEfaac
+BuildRequires: SFEfaac-gpp-devel
+Requires: SFEfaac-gpp
 BuildRequires: SFElame-devel
 Requires: SFElame
 BuildRequires: SFElibdvdcss-devel
@@ -431,10 +431,7 @@ perl -w -pi.bak_live555 -e 's?(/include)(/\w*)?/lib/live\2\1?g if /CPPFLAGS_live
 #./configure --help | gegrep -i3 ffm prints only --enable-merge-ffmpeg   merge FFmpeg-based plugins (default disabled)
 
 %if %{solaris12}
-echo "don't remove tdestroy test in configure.ac"
-#at the very end, add -L/lib -R/lib to find new libc with tdestroy in it
-# (avoid searching those dir first and find wrong gcc runtime lib)
-export LDFLAGS="${LDFLAGS} -L/lib -R/lib -lc"
+gsed -ibak_tdestroy_c_ac -e '/^AC_REPLACE_FUNCS.*tdestroy/ s? *tdestroy??' configure.ac  
 %else
 #gsed -ibak_tdestroy -e 's?^#define HAVE_TDESTROY 1?/* #undef HAVE_TDESTROY */?' config.h
 gsed -ibak_tdestroy_c_ac -e '/^AC_REPLACE_FUNCS.*tdestroy/ s? *tdestroy??' configure.ac  
@@ -618,6 +615,12 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Aug 11 2013 - Thomas Wagner
+- change (Build)Requires: SFEfaac(-gpp)
+* Sun Aug  4 2013 - Thomas Wagner
+- enable_x11_xcb on S12
+- remove extra -L -R/lib from LDFLAGS
+- remove tdestroy from func tests in configure.ac (OS provided doesn't link properly)
 * Sun Jul 21 2013 - Thomas Wagner
 - add (Build)Requires to %{pnm_buildrequires_SUNWgsed}
 - force to SFEgcc-46 and SFEgccruntime-46 for the moment. With 4.7 running into errors.
