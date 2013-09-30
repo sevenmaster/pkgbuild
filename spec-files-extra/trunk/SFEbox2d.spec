@@ -3,9 +3,9 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1
-%define pythonver 2.6
 %include base.inc
 
 Name:                SFEbox2d
@@ -18,8 +18,8 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-Requires: SFEfreeglut
-BuildRequires: SFEfreeglut-devel
+BuildRequires: %{pnm_buildrequires_x11_library_freeglut}
+Requires:      %{pnm_requires_x11_library_freeglut}
 BuildRequires: SUNWcmake
 
 
@@ -67,5 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/Box2D/*
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_x11_library_freeglut}, %include packagenamemacros.inc
 * Sat Oct 23 2010 - brian.cameron@oracle.com
 - Initial spec based on 2.1.2.
