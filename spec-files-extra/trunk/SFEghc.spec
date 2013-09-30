@@ -57,7 +57,6 @@ Haskell home page at http://haskell.org/.
 
 %define SFEgmp          %(/usr/bin/pkginfo -q SUNWgnu-mp && echo 0 || echo 1)
 %define SFEmpfr         %(/usr/bin/pkginfo -q SUNWgnu-mpfr && echo 0 || echo 1)
-%define SFEncurses      %(/usr/bin/pkginfo -q SUNWncurses && echo 0 || echo 1)
 
 %include default-depend.inc
 
@@ -87,11 +86,8 @@ BuildRequires: SUNWesu
 BuildRequires:  %{pnm_requires_library_readline}
 Requires:  %{pnm_requires_library_readline}
 
-%if %SFEncurses
-BuildRequires: SFEncurses
-%else
-BuildRequires: SUNWncurses
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 
 %package prof
 Summary:                 %{summary} - profiling libraries
@@ -199,6 +195,8 @@ rm -rf /var/tmp/ghc-%bootstrap-bin
 
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}
 * Sat Jan 12 2013 - Thomas Wagner
 - change to pnm_buildrequires_SFExz_gnu
 * Sat Dec 15 2012 - Thomas Wagner
