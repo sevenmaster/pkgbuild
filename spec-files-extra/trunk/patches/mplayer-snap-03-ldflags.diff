@@ -16,7 +16,7 @@
  echocheck "kstat"
  _kstat=no
 @@ -3576,15 +3584,6 @@
- test "$_w32threads" = yes && def_threads='#define HAVE_THREADS 1'
+ fi
  echores "$_w32threads"
  
 -echocheck "rpath"

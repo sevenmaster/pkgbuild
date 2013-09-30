@@ -24,7 +24,7 @@
 %define cc_is_gcc 1
 %include base.inc
 
-%define snap 20111029
+%define snap 20130929
 
 %define with_fribidi %(pkginfo -q SFElibfribidi && echo 1 || echo 0)
 #%define with_ladspa %(pkginfo -q SFEladspa && echo 1 || echo 0)
@@ -51,10 +51,6 @@ Source: http://git.mplayer2.org/mplayer2/snapshot/mplayer2-master.tar.bz2
 Patch3:                  mplayer-snap-03-ldflags.diff
 Patch4:                  mplayer2-04-realplayer.diff
 Patch5:                  mplayer2-05-cpudetect.diff
-#https://bugs.archlinux.org/task/28759
-Patch7:			mplayer2-07-liveMedia.diff
-Patch8:			mplayer2-08-liveMedia-config.diff
-Patch9:			mplayer2-09-rpath.diff
 Group:		Applications/Sound and Video
 SUNW_BaseDir:            %_basedir
 BuildRoot:               %_tmppath/%name-build
@@ -70,10 +66,8 @@ Requires: SUNWogg-vorbis
 Requires: SUNWlibtheora
 BuildRequires: %{pnm_buildrequires_SUNWsmba}
 Requires: %{pnm_requires_SUNWsmba}
-BuildRequires: SFEffmpeg
+BuildRequires: SFEffmpeg-devel
 Requires: SFEffmpeg
-Requires: SFEliveMedia
-BuildRequires: SFEliveMedia
 Requires: SFElibcdio
 Requires: SFElibdvdnav
 BuildRequires: SFEfaad2-devel
@@ -105,7 +99,7 @@ BuildRequires: SFElibfribidi-devel
 Requires: SFEladspa
 BuildRequires: SFEladspa-devel
 Requires: SFEmpg123
-BuildRequires: SFEmpg123
+BuildRequires: SFEmpg123-devel
 Requires: SFEliba52
 BuildRequires: SFEliba52-devel
 %if %with_openal
@@ -145,9 +139,6 @@ BuildRequires: SFEpython3
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -179,15 +170,11 @@ bash ./configure				\
 	    --mandir=%_mandir			\
             --libdir=%_libdir			\
             --confdir=%_sysconfdir		\
-            --extra-cflags="-I/usr/lib/live" \
-            --extra-ldflags="-L/usr/lib/live/liveMedia -R/usr/lib/live/liveMedia -L/usr/lib/live/groupsock -R/usr/lib/live/groupsock -L/usr/lib/live/UsageEnvironment -R/usr/lib/live/UsageEnvironment -L/usr/lib/live/BasicUsageEnvironment -R/usr/lib/live/BasicUsageEnvironment -Wl,-Mmapfile" \
-            --extra-libs="-lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++ -liconv" \
             --enable-faad			\
             --disable-mad			\
             --disable-gl			\
             --enable-3dnow			\
             --enable-3dnowext			\
-            --enable-live			\
             --enable-rpath			\
             --enable-runtime-cpudetection	\
 	    --enable-crash-debug		\
@@ -198,13 +185,13 @@ gmake -j$CPUS
 
 %install
 rm -rf %buildroot
-gmake install DESTDIR=%buildroot
+gmake install-no-man DESTDIR=%buildroot
 %if %rename
-mkdir %buildroot/%_datadir/mplayer2
+mkdir -p %buildroot/%_datadir/mplayer2
 ln -s /usr/openwin/lib/X11/fonts/TrueType/FreeSerif.ttf \
       %buildroot/%_datadir/mplayer2/subfont.ttf
 %else
-mkdir %buildroot/%_datadir/mplayer
+mkdir -p %buildroot/%_datadir/mplayer
 # The following font is not supplied by OpenIndiana
 #ln -s /usr/openwin/lib/X11/fonts/TrueType/FreeSerif.ttf \
 ln -s /usr/share/fonts/TrueType/dejavu/DejaVuSans.ttf \
@@ -214,25 +201,11 @@ ln -s /usr/share/fonts/TrueType/dejavu/DejaVuSans.ttf \
 %if %rename
 cd %buildroot/%_bindir
 mv mplayer mplayer2
-cd ../share/man/man1
-mv mplayer.1 mplayer2.1
-%endif
-
-# nroff does not understand macros used by mplayer man page
-# See http://www.mplayerhq.hu/DOCS/tech/manpage.txt
-#mkdir %buildroot/%_datadir/man/cat1
-cd %buildroot/%_datadir/man
-#cd ..
-mkdir cat1
-%if %rename
-groff -mman -Tutf8 -rLL=78n man1/mplayer2.1 | col -bxp > cat1/mplayer2.1
-%else
-groff -mman -Tutf8 -rLL=78n man1/mplayer.1 | col -bxp > cat1/mplayer.1
 %endif
 
 rm -rf %buildroot/%_libdir
 rm -rf %buildroot/%_sysconfdir
-mkdir %buildroot%_docdir
+mkdir %buildroot/%_docdir
 
 %clean
 rm -rf %buildroot
@@ -245,8 +218,6 @@ rm -rf %buildroot
 %dir %attr (0755, root, other) %dir %_docdir
 %doc README AUTHORS LICENSE
 %_bindir/*
-%_mandir/man1
-%_mandir/cat1
 %if %rename
 %_datadir/mplayer2/subfont.ttf
 %else
@@ -255,7 +226,7 @@ rm -rf %buildroot
 
 %changelog
 * Mon Sep 30 2013 - Milan Jurik
-- revert previous patch, it is buggy. We have SFEliveMedia
+- bump to the latest mplayer2 snapshot
 * Sat Jan 12 2013 - Thomas Wagner
 - change (Build)Requires from liveMedia to livemedia
 * Sun Apr 29 2012 - Pavel Heimlich
