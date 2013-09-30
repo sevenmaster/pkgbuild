@@ -3,6 +3,8 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
 
 %define cc_is_gcc 1
 %define _gpp /usr/sfw/bin/g++
@@ -10,6 +12,8 @@
 
 
 Name:                    SFEmp3c
+IPS_Package_Name:	 media/mp3c
+Group:			Applications/Sound and Video
 Summary:                 mp3c - ripp audio cd
 URL:                     http://wspse.de/WSPse/Linux-MP3c.php3
 Version:                 0.31
@@ -26,8 +30,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 
-BuildRequires: SUNWncurses-devel
-Requires: SUNWncurses
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 #BuildRequires: SFElame-devel
 Requires: SFElame
 #BuildRequires: SFElibcdio
@@ -78,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
+* Sun Mar 31 2013 - Thomas Wagner
+- add IPS_package_name, add Group
 * Sat Oct  1 2011 - Thomas Wagner
 - fix permissions /usr/share/doc
 - LDFLAGS add %{gnu_lib_path} to have ncurses found
