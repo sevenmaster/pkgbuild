@@ -116,7 +116,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://postfix.org/
-Version:                 2.9.7
+Version:                 2.9.8
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -904,6 +904,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon Sep 30 2013 - Milan Jurik
+- bump to 2.9.8
 * Sun Aug 11 2013 - Thomas Wagner
 - Bump to 2.9.7
 * Wed Feb 20 2013 - Ken Mays <kmays2000@gmail.com>
