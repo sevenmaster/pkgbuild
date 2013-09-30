@@ -70,10 +70,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}
+mv $RPM_BUILD_ROOT%{_prefix}/man $RPM_BUILD_ROOT%{_datadir}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- fix %files for man pages
 * Wed Jan 9 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.8.3
 * Thu Feb 23 2012 - Ken Mays <kmays2000@gmail.com>
