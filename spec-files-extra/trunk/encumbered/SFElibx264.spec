@@ -125,7 +125,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %libx264.install -d %name-%version/%{base_arch}
-#find $RPM_BUILD_ROOT%{_libdir} -name \*.la -exec rm {} \;
+find $RPM_BUILD_ROOT%{_libdir} -name \*.la -exec rm {} \;
 #mkdir $RPM_BUILD_ROOT%{_bindir}/%{base_isa}
 #mv $RPM_BUILD_ROOT%{_bindir}/x264  $RPM_BUILD_ROOT%{_bindir}/%{base_isa}/
 #cd $RPM_BUILD_ROOT%{_bindir} && cp -p /usr/lib/isaexec x264
