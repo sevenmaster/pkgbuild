@@ -5,7 +5,8 @@
 #
 
 %include Solaris.inc
-#%define cc_is_gcc 1
+%include packagenamemacros.inc 
+%define cc_is_gcc 1
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -23,8 +24,6 @@
 %use lame = lame.spec
 %use toolame = toolame.spec
 
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
-
 
 Name:		SFElame
 IPS_Package_Name:	audio/lame
@@ -38,19 +37,16 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+BuildRequires: SFEgcc
+Requires: SFEgccruntime
 BuildRequires: SUNWlibms
 Requires: SUNWlibms
 
-%if %SFElibsndfile
-BuildRequires:	SFElibsndfile-devel
-Requires:	SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires:	%{pnm_buildrequires_SFElibsndfile_devel}
+Requires:	%{pnm_requires_SFElibsndfile}
 
-BuildRequires: SUNWncurses-devel
-Requires: SUNWncurses
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 
 # we don't build the GTK frontend but autotools needs the macros
 BuildRequires: SUNWgnome-common-devel
@@ -140,6 +136,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
+##TODO## include and link against correct libsndfile
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}
 * Mon Oct 10 2011 - Milan Jurik
 - add IPS package name
 - remove GCC dependency
