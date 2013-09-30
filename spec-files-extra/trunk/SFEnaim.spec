@@ -9,7 +9,7 @@
 #
 
 %include Solaris.inc
-
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 
@@ -27,10 +27,10 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-Requires: SFEncurses
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
+BuildRequires: SFEgettext
 Requires: SFEgettext
-BuildRequires: SUNWncurses-devel
-BuildRequires: SFEncurses-devel
 
 
 %prep
@@ -86,5 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 30 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Sat May 08 2010 - jchoi42@pha.jhu.edu
 - initial spec
