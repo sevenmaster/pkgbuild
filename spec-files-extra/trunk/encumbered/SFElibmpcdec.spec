@@ -4,8 +4,8 @@
 # includes module(s): libmpcdec
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 
 Name:                    SFElibmpcdec
 IPS_Package_Name:	library/audio/libmpcdec 
@@ -19,13 +19,8 @@ Patch1:			 libmpcdec-01-configure.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
-%if %SFElibsndfile
-BuildRequires: SFElibsndfile-devel
-Requires: SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+Requires:      %{pnm_requires_SFElibsndfile}
 
 %include default-depend.inc
 
@@ -74,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
+##TODO## include and link against correct libsndfile
 * Mon Oct 10 2011 - Milan Jurik
 - add IPS package name
 * Thu Jul 21 2011 - Alex Viskovatoff
