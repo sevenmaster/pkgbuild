@@ -6,9 +6,13 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
+%include usr-gnu.inc
+
 %use gnupg = gnupg2.spec
 
 Name:          SFEgnupg2
+IPS_component_version: crypto/gnupg2
 Summary:       %{gnupg.summary}
 Version:       %{gnupg.version}
 Patch1:        gnupg2-01-asschk.diff
@@ -20,10 +24,8 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: SUNWbzip
 Requires: SUNWzlib
-#Requires: SFEreadline
-Requires: SUNWgnu-readline
-#BuildRequires: SFEreadline-devel
-BuildRequires: SUNWgnu-readline
+Requires: %{pnm_requires_library_readline}
+BuildRequires: %{pnm_buildrequires_library_readline}
 BuildRequires: SFElibksba
 BuildRequires: SFEpth
 BuildRequires: SFElibassuan
@@ -38,6 +40,7 @@ Requires: SFElibiconv
 
 %if %build_l10n
 %package l10n
+IPS_component_version: sfe/crypto/gnupg2-l10n
 Summary:        %{summary} - l10n files
 SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
@@ -49,19 +52,19 @@ rm -rf %name-%version
 mkdir -p %name-%version
 %gnupg.prep -d %name-%version
 cd %name-%version
-%patch1 -p0
-%patch2 -p0
-%patch3 -p0
-%patch4 -p0
+#%patch1 -p0
+#%patch2 -p0
+#%patch3 -p0
+#%patch4 -p0
 cd ..
 
 %build
 export PATH="$PATH:%{_bindir}"
 export CFLAGS="%optflags"
 export MSGFMT="/usr/bin/msgfmt"
-export LDFLAGS="%_ldflags -lsocket"
+export LDFLAGS="%{gnu_lib_path} %_ldflags -lsocket"
 %if %build_l10n
-LDFLAGS="$LDFLAGS -L/usr/gnu/lib -R/usr/gnu/lib -lintl -liconv"
+LDFLAGS="$LDFLAGS -lintl -liconv"
 LIBINTL="/usr/gnu/lib/libintl.so"
 %endif
 %gnupg.build -d %name-%version
@@ -77,10 +80,10 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/info
 # Rename 2 files to be compatible with SFEgnupg (GnuPG version 1.x)
 # package.
 #
-mv $RPM_BUILD_ROOT%{_datadir}/gnupg/FAQ \
-    $RPM_BUILD_ROOT%{_datadir}/gnupg/FAQ2
-mv $RPM_BUILD_ROOT%{_datadir}/gnupg/faq.html \
-    $RPM_BUILD_ROOT%{_datadir}/gnupg/faq2.html
+mv $RPM_BUILD_ROOT%{_docdir}/gnupg/FAQ \
+    $RPM_BUILD_ROOT%{_docdir}/gnupg/FAQ2
+mv $RPM_BUILD_ROOT%{_docdir}/gnupg/faq.html \
+    $RPM_BUILD_ROOT%{_docdir}/gnupg/faq2.html
 
 %if %build_l10n
 %else
@@ -100,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/gnupg
+%dir %attr (0755, root, other) %{_docdir}
+%dir %attr (0755, root, other) %{_docdir}/gnupg
+%{_docdir}/gnupg/*
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
@@ -112,6 +118,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}, %include packagenamemacros.inc
+* Thu May 17 2012 - Thomas Wagner
+- add IPS package name
 * Mars 24 2010 - Gilles dauphin
 - look at _bindir in PATH , (where it install)
 - some software is here...
