@@ -5,9 +5,11 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
-%define _prefix %_basedir/g++
 %define srcname libebml
 
 Name:		SFElibebml-gpp
@@ -26,11 +28,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:	SUNWgmake
-%if %(/usr/bin/pkginfo -q SFEcoreutils 2>/dev/null  && echo 1 || echo 0)
-BuildRequires:	SFEcoreutils
-%else
-BuildRequires:	SUNWgnu-coreutils
-%endif
+BuildRequires:	%{pnm_buildrequires_SUNWgnu_coreutils}
 BuildRequires:	SUNWloc
 
 BuildRequires:	SFEgcc
@@ -79,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Thu Jul 11 2013 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWgnu_coreutils}, %include packagenamemacros.inc
+- %include usr-g++.inc
 * Sun Jul 24 2012 - Thomas Wagner
 - change IPS_package_name: library/g++/ebml
 * Sun Jul 29 2012 - Milan Jurik
