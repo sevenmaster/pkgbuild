@@ -4,6 +4,7 @@
 # includes module(s): quesoglc
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 
@@ -22,7 +23,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:	SUNWfontconfig
-BuildRequires:	SFEfreeglut-devel
+BuildRequires: %{pnm_buildrequires_x11_library_freeglut}
+Requires:      %{pnm_requires_x11_library_freeglut}
 BuildRequires:  SFElibfribidi-devel
 BuildRequires:	SFElibglew-devel
 BuildRequires:	SUNWdoxygen
@@ -84,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*.pc
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_x11_library_freeglut}, %include packagenamemacros.inc
 * Sun May 16 2010 - Milan Jurik
 - initial import to SFE, update to 0.7.2
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.7.1-3
