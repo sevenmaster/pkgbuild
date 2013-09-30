@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name xmms2
 %define src_url	 %{sf_download}/%{src_name}
@@ -27,8 +28,8 @@ BuildRequires: SFElibmpcdec-devel
 Requires: SFElibmpcdec
 BuildRequires: SFEfaad2-devel
 Requires: SFEfaad2
-BuildRequires: SFElibdiscid-devel
-Requires: SFElibdiscid
+BuildRequires: %{pnm_buildrequires_SUNWlibdiscid_devel}
+Requires:      %{pnm_requires_SUNWlibdiscid}
 BuildRequires: SFEffmpeg-devel
 Requires: SFEffmpeg
 BuildRequires: SFElibmad-devel
@@ -92,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Dec  9 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibdiscid_devel}, %include packagenamemacros.inc
 * Tue Feb 12 2008 - pradhap(at)gmail.com
 - Fixed links
 * Sun Jan 06 2008 - moinak.ghosh@sun.com
