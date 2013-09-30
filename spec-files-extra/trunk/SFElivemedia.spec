@@ -22,7 +22,7 @@
 #format isn't [0-9]{4}.[0-9]{1,2}.[0-9]{1,2} (e.g. 2007.11.03)
 #we could as well use whatever liveMedia version is as tarball in $SOURCES ##TODO##
 #but then we would miss updated version because silently the old version would be used
-%define version_detected %( /usr/bin/echo %{version} | egrep "^[0-9]{4}.[0-9]{1,2}.[0-9]{1,2}$" || echo "0.0.0downloadfailed" )
+%define version_detected %( /usr/bin/echo "%{version}" | egrep "^[0-9]{4}.[0-9]{1,2}.[0-9]{1,2}$" || echo "0.0.0downloadfailed" )
 
 ##TODO## step 2 of 2 (open): eventualls just use version stored in local SOURCES
 #but with the disadvantage that future version update do not popup by outdated
@@ -30,7 +30,7 @@
 
 ##TODO## improvement: change letters to numbers. e.g. 1.2.3a -> 1.2.3,1  (b -> .2, c -> .3)
 #for now just cut out all char [A-z]
-IPS_component_version: $( echo %{version} | sed -e s'/[A-z]//' )
+IPS_component_version: %( /usr/bin/echo "%{version}" | sed -e s'/[A-z]//' )
 
 Name:		SFElivemedia
 IPS_Package_Name:	library/video/livemedia 
@@ -77,6 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Thu Jul 11 2013 - Thomas Wagner
+- fix code to generate IPS_component_version out of %{version}
 * Sun Jan 27 2013 - Thomas Wagner
 - rename to all lower case package name
 * Thu Oct 06 2011 - Milan Jurik
