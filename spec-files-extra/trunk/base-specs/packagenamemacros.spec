@@ -72,7 +72,9 @@ echo "
 pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
-pnm: solaris111111	%{solaris111111} Solaris 11 11/11 (beta setting, see also solaris11express)
+pnm: solaris12       	%{solaris12} Solaris 12
+pnm: s110100         	%{s110100} Solaris 11.1
+pnm: s110000         	%{s110000} Solaris 11.0
 pnm: solaris11express	%{solaris11express} Solaris 11 Express yes/no
 pnm: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g. 166)
 pnm: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
@@ -114,6 +116,30 @@ pnm: mysql_version				%{mysql_version}
 pnm: mysql_major_version				%{mysql_major_version}
 pnm: mysql_major_minor_version			%{mysql_major_minor_version}
 
+        OS:  (note: /usr, do not specify %%{_prefix})
+pnm: pnm_buildrequires_ruby_default: 		%{pnm_buildrequires_ruby_default}
+pnm: pnm_requires_ruby_default: 			%{pnm_requires_ruby_default}
+pnm: ruby_version number is:       		%{ruby_version}
+pnm: ruby_major_version number is:       		%{ruby_major_version}
+pnm: ruby_major_minor_version number is: 		%{ruby_major_minor_version}
+pnm: ruby_major_minor_micro_version number is: 		%{ruby_major_minor_micro_version}
+
+        SFE: (note: /usr/gnu, do not specify %%{_prefix})
+pnm: pnm_buildrequires_sfe_ruby_default: 		%{pnm_buildrequires_sfe_ruby_default}
+pnm: pnm_requires_sfe_ruby_default: 			%{pnm_requires_sfe_ruby_default}
+pnm: sfe_ruby_version number is:       		%{sfe_ruby_version}
+pnm: sfe_ruby_major_version number is:       		%{sfe_ruby_major_version}
+pnm: sfe_ruby_major_minor_version number is: 		%{sfe_ruby_major_minor_version}
+pnm: sfe_ruby_major_minor_micro_version number is: 		%{sfe_ruby_major_minor_micro_version}
+
+pnm: ruby_default_prefix		%{ruby_default_prefix}
+pnm: ruby_default_includedir		%{ruby_default_includedir}
+pnm: ruby_default_libdir		%{ruby_default_libdir}
+
+pnm: sfe_ruby_default_prefix		%{sfe_ruby_default_prefix}
+pnm: sfe_ruby_default_includedir		%{sfe_ruby_default_includedir}
+pnm: sfe_ruby_default_libdir		%{sfe_ruby_default_libdir}
+
 see include/packagenames.define.allbuilds.inc for detailed usage instructions!
 pnm: pnm_buildrequires_postgres_default		%{pnm_buildrequires_postgres_default}
 pnm: pnm_requires_postgres_default		%{pnm_requires_postgres_default}
@@ -137,6 +163,8 @@ pnm: pnm_buildrequires_SUNWsmbar                 %{pnm_buildrequires_SUNWsmbar}
 pnm: pnm_requires_SUNWsmba                 %{pnm_requires_SUNWsmba}
 pnm: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
 pnm: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
+pnm: featureflags
+pnm: etc_security_directorylayout		%{etc_security_directorylayout}
 " >/dev/null
 
 
@@ -164,11 +192,19 @@ requesting package ncurses w/o the SUNW prefix in the name resolves on %{osdistr
 requesting package library/ncurses resolves on %{osdistrelname} build %{osbuild}:
   BuildRequires for library/ncurses is contained in  %{pnm_buildrequires_library_ncurses}
        Requires for library/ncurses is contained in  %{pnm_requires_library_ncurses}
+
+requesting package x11/library/freeglut resolves on %{osdistrelname} build %{osbuild}:
+  BuildRequires for x11/library/freeglut is contained in  %{pnm_buildrequires_SFEfreeglut}
+       Requires for x11/library/freeglut is contained in  %{pnm_requires_SFEfreeglut}
 " >/dev/null
 
 
 
 %changelog
+* Mon Jul 1 2013 - Thomas Wagner
+- add Solaris 11.0 11.1 12 (new variables)
+- add featureflags: etc_security_directorylayout              %{etc_security_directorylayout}
+- add example for freeglut package names 
 * Sat Jan  5 2013 - Thomas Wagner
 - add postgres examples
 - add (incomplete) Solaris 11 11/11 examples
