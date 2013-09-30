@@ -582,3 +582,11 @@ basename   link   usr/lib/libruby.so          pkg:/sfe/runtime/ruby-18@1.8.7.371
 basename   link   usr/lib/libruby.so          pkg:/runtime/ruby-19@1.9.3-0.11.0
 basename   link   usr/ruby/1.8/lib/libruby.so pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
 
+73)
+make a script which searches for files shared between SFE IPS repos and different
+versions of a Operating System IPS repository. To be used for finding conflicting
+files *early* and before a OS upgrade happens.
+
+74)
+re-visit this change:  svn diff -r 4965:5412  SFElibx264.spec
+it disables isaexec, should be enabled. why "cp" instead of "hardlink" to isaexec?
