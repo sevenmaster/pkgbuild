@@ -75,7 +75,7 @@ BuildRequires: SUNWspeex-devel
 Requires: SUNWspeex
 BuildRequires: SFEopencore-amr-devel
 Requires: SFEopencore-amr
-BuildRequires: SUNWgsed
+BuildRequires: %{pnm_buildrequires_SUNWgsed}
 BuildRequires: SFEopenjpeg-devel
 Requires: SFEopenjpeg
 BuildRequires: SFElibschroedinger-devel
@@ -179,6 +179,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 11 2013 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWgsed} (S12)
 * Sun Sep 30 2012 - Milan Jurik
 - bump to 1.0
 * Sun Jun 24 2012 - Thomas Wagner
