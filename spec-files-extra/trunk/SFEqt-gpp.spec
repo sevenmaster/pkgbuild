@@ -18,7 +18,7 @@
 
 Name:                SFEqt-gpp
 IPS_Package_Name:	library/desktop/g++/qt
-Summary:             Cross-platform development framework/toolkit
+Summary:             Cross-platform development framework/toolkit (g++)
 Group:               Desktop (GNOME)/Libraries
 URL:                 http://qt-project.org
 License:             LGPLv2
@@ -49,14 +49,15 @@ Patch9:		qt-gpp-09-qdbus.patch
 Patch10:		qt-gpp-10-yield.diff
 Patch11:		qt-gpp-11-pthread_getattr.diff
 Patch12:		qt-gpp-12-plt.diff
+Patch13:		qt-gpp-13-fix-namespace-tr1.diff
 
 
 SUNW_Copyright:	     qt.copyright
-SUNW_BaseDir:        %_basedir
-BuildRoot:           %_tmppath/%name-%version-build
+SUNW_BaseDir:        %{_basedir}
+BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:		SFEgcc
-Requires:		SFEgccruntime
+BuildRequires:		SFEgcc-46
+Requires:		SFEgccruntime-46
 
 # Guarantee X/freetype environment concisely (hopefully):
 BuildRequires: SUNWgtk2
@@ -87,7 +88,7 @@ SUNW_BaseDir:   %{_basedir}
 Requires: %name
 
 %prep
-%setup -q -n %srcname-%version
+%setup -q -n %{srcname}-%{version}
 
 %if %{run_autotests}
 # Unroll the extra source for the autotests
@@ -103,6 +104,7 @@ tar xzf %{SOURCE1}
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 %if %{run_autotests}
 %patch4
 %patch5
@@ -115,18 +117,21 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 %define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
 %define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir}/mysql -R%{standard_prefix}/%{mysql_default_libdir}/mysql
 
-export CC=gcc
-export CXX=g++
+export CC=/usr/gcc/4.6/bin/gcc
+export CXX=/usr/gcc/4.6/bin/g++
 export CFLAGS="%optflags -fPIC"
 export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
+
+#/usr/gcc/bin/gcc -v 2>&1| egrep "gcc version 4\."
+$CC -v -v 2>&1| egrep "gcc version 4\.[7-]" && export CFLAGS="$CFLAGS -std=gnu++11" && export CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 # On some Intel CPUs, ffmpeg incorrectly applies AMD optimizations
 #%define noamd3d %(prtdiag -v | grep CPU | grep -q Intel && echo 1 || echo 0)
 # prtdiag -v doesn't work in zones but psrinfo -pv does 
 %define noamd3d %(psrinfo -pv | grep CPU | grep -q Intel && echo 1 || echo 0)
 
-#export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads"
-export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads -fPIC"
+#export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads"
+export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads -fPIC"
 
 # Assume i386 CPU is not higher than Pentium 4
 # This can be changed locally if your CPU is newer
@@ -134,17 +139,19 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthread
            -confirm-license \
            -opensource \
            -platform solaris-g++ \
-           -docdir %_docdir/qt \
-	   -bindir %_bindir \
-	   -libdir %_libdir \
-           -headerdir %_includedir/qt \
-           -plugindir %_libdir/qt/plugins \
-           -datadir %_datadir/qt \
-           -translationdir %_datadir/qt/translations \
+           -docdir %{_docdir}/qt \
+	   -bindir %{_bindir} \
+	   -libdir %{_libdir} \
+           -headerdir %{_includedir}/qt \
+           -plugindir %{_libdir}/qt/plugins \
+           -datadir %{_datadir}/qt \
+           -translationdir %{_datadir}/qt/translations \
+           -examplesdir %{_datadir}/qt/examples \
+           -demosdir %{_datadir}/qt/demos \
            -nomake examples \
            -nomake demos \
+           -sysconfdir %{_sysconfdir} \
 	   -webkit \
-           -sysconfdir %_sysconfdir \
            -L /usr/gnu/lib \
            -R /usr/gnu/lib \
 	   -optimized-qmake \
@@ -187,53 +194,62 @@ vncserver -kill :1
 
 
 %install
-rm -rf %buildroot
+rm -rf $RPM_BUILD_ROOT
 
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
 
-rm %buildroot%_libdir/lib*.la
+rm ${RPM_BUILD_ROOT}%{_libdir}/*.la
 rm -rf %buildroot%_prefix/examples
 rm -rf %buildroot%_prefix/demos
 rm -rf %buildroot%_prefix/tests
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %_libdir
-%_libdir/lib*.so*
-%_libdir/lib*.prl
-%dir %attr (0755, root, bin) %_libdir/qt
-%_libdir/qt/*
-%dir %attr (0755, root, sys) %_datadir
-%_datadir/qt/phrasebooks
-%_datadir/qt/translations
+#devel %dir %attr (0755, root, bin) %{_bindir}
+#devel %{_bindir}/*
+%dir %attr (0755, root, bin) %{_libdir}
+%{_libdir}/lib*.so*
+%{_libdir}/lib*.prl
+%dir %attr (0755, root, bin) %{_libdir}/qt
+%{_libdir}/qt/*
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/qt/phrasebooks
+%{_datadir}/qt/translations
 
 %files devel
 %defattr (-, root, bin)
-%_bindir
-%dir %attr (0755, root, bin) %_includedir
-%dir %attr (0755, root, other) %_includedir/qt
+%{_bindir}
+%dir %attr (0755, root, bin) %{_includedir}
+%dir %attr (0755, root, other) %{_includedir}/qt
 %{_includedir}/qt/*
-%dir %attr (0755, root, bin) %dir %_libdir
-%dir %attr (0755, root, other) %_libdir/pkgconfig 
-%_libdir/pkgconfig/*
-%_libdir/libQtUiTools.a
-%dir %attr (0755, root, sys) %_datadir
-%_datadir/qt/mkspecs
-%dir %attr (0755, root, other) %_prefix/imports
-%_prefix/imports/*
+%dir %attr (0755, root, bin) %dir %{_libdir}
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig 
+%{_libdir}/pkgconfig/*
+%{_libdir}/libQtUiTools.a
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/qt/mkspecs
+%dir %attr (0755, root, other) %{_prefix}/imports
+%{_prefix}/imports/*
 
 %files doc
 %defattr (-, root, bin)
-%dir %attr (0755, root, sys) %_datadir
-%_datadir/qt/q3porting.xml
-%dir %attr (0755, root, other) %_datadir/doc
-%_datadir/doc/*
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/qt/q3porting.xml
+%{_datadir}/qt/demos/*
+%{_datadir}/qt/examples/*
+%dir %attr (0755, root, other) %{_datadir}/doc
+%{_datadir}/doc/*
 
 
 %changelog
+* Sun Jun 30 2013 - Thomas Wagner
+- add patch13 qt-gpp-13-fix-namespace-tr1.diff - or get TypeTraits.h:173:69: error: 'std::tr1' has not been declared with gcc 4.7.x __GXX_EXPERIMENTAL_CXX0X__
+- for the time now, BuildRequires SFEgcc-46 and SFEgcc-46-runtime to get around errors when compiling with c++11 enabled gcc 4.7.x
+* Mon Jan 21 2013 - Thomas Wagner
+- align SFEqt-gpp.spec and SFEqt.spec
 * Wed Dec  5 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 4.8.4.
 * Mon Jul  9 2012 - Thomas Wagner
