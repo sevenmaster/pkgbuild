@@ -21,8 +21,8 @@ Patch1:        libtunepimp-01-statvfs.diff
 SUNW_BaseDir:  %{_prefix}
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires:      SFEreadline
-BuildRequires: SFEreadline-devel
+Requires:  %{pnm_requires_library_readline}
+BuildRequires:  %{pnm_buildrequires_library_readline}
 Requires:      SFEtaglib
 BuildRequires: SFEtaglib-devel
 Requires:      SFElibiconv
@@ -110,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/tunepimp/plugins/wma.tpp
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}
 * Thu Dec 13 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWmusicbrainz_devel}, %include packagenamemacros.inc
 * Fri Jan 18 2008 - moinak.ghosh@sun.com
