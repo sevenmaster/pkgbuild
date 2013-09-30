@@ -66,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so*
 %dir %attr (0755, root, other)  %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*.pc
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_datadir}/locale
 
 %files devel
 %defattr (-, root, bin)
@@ -73,6 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Dec  9 2012 - Thomas Wagner
+- fix %files for /usr/share/locale
 * Sun Jun 29 2008 - river@wikimedia.org
 - force /usr/sfw/bin/gcc, use gcc cflags instead of studio
 * Thu Jan 24 2008 - moinak.ghosh@sun.com
