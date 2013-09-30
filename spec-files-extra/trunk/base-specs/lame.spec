@@ -22,6 +22,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
+export CC=gcc
+
 export CFLAGS="%optflags -I%gnu_inc"
 export MSGFMT="/usr/bin/msgfmt"
 export LD_OPTIONS="%gnu_lib_path"
@@ -45,6 +47,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Okt  1 2013 - Thomas Wagner
+- use CC=gcc
 * Fri Jun 22 2012 - Milan Jurik
 - bump to 3.99.5
 * Mon Oct 10 2011 - Milan Jurik

@@ -136,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Tue Okt  1 2013 - Thomas Wagner
+- use CC=gcc
 * Fri Jul  5 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
 ##TODO## include and link against correct libsndfile
