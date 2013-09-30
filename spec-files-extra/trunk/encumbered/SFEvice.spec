@@ -4,6 +4,7 @@
 # includes module(s): vice
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	vice
 %define src_url		http://www.zimmers.net/anonftp/pub/cbm/crossplatform/emulators/VICE
@@ -19,8 +20,8 @@ Patch3:			vice-03-locale.diff
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SFEreadline-devel
-Requires: SFEreadline
+BuildRequires: %{pnm_buildrequires_library_readline}
+Requires:      %{pnm_requires_library_readline}
 BuildRequires: SFElame-devel
 Requires: SFElame
 
@@ -110,5 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}, %include packagenamemacros.inc
 * Thu Apr 26 2006 - dougs@truemail.co.th
 - Initial version
