@@ -6,8 +6,8 @@
 # bugdb: http://sourceforge.net/tracker/index.php?func=detail&group_id=136040&atid=735435&aid=
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 
 Name:		SFEtwolame
 IPS_Package_Name:	audio/twolame
@@ -21,13 +21,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-%if %SFElibsndfile
-BuildRequires: SFElibsndfile-devel
-Requires: SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+Requires:      %{pnm_requires_SFElibsndfile}
 BuildRequires:	SUNWgnome-common-devel
 
 Requires: SUNWlibms
@@ -88,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
+##TODO## include and link against correct libsndfile
 * Mon Oct 10 2011 - Milan Jurik
 - bump to 0.3.13, add IPS package name
 * Mon Jul 25 2011 - N.B.Prashanth
