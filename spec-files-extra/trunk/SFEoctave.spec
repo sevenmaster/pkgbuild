@@ -4,8 +4,7 @@
 #
 
 %include Solaris.inc
-
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
+%include packagenamemacros.inc
 
 Name:           SFEoctave
 IPS_Package_Name:	math/octave
@@ -19,27 +18,24 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include	default-depend.inc
 #Requires:	%name-root
 
-%if %SFElibsndfile
-BuildRequires: 	SFElibsndfile-devel
-Requires: 	SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+Requires:      %{pnm_requires_SFElibsndfile}
 
-Requires: 	SUNWgsed
+BuildRequires: 	%{pnm_buildrequires_SUNWgsed}
 Requires: 	SUNWgmake
 Requires: 	SUNWgnu-gperf
-# gnuplot is delivered in b133
-#Requires: 	SFEgnuplot
-Requires: 	gnuplot
-Requires:	SUNWncurses
-Requires:	library/fftw-3
-Requires:	SUNWfftw3
+Requires: 	SFEgnuplot
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
+BuildRequires:  %{pnm_buildrequires_SUNWfftw3_devel}
+Requires:	%{pnm_buildrequires_SUNWfftw3}
 Requires:	SFExblas
 Requires:	SFElapack
 Requires:	SUNWzlib
-Requires:	SUNWgnu-readline
+Requires:       %{pnm_requires_library_readline}
+BuildRequires:  %{pnm_buildrequires_library_readline}
+##TODO## go for pnm_macros for python
+#try pnm_requires_python_default
 BuildRequires: 	runtime/python-26
 #TODO
 #Requires: suitesparse examples/octave.desktop
@@ -74,18 +70,17 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 %define enable64 no
-#export CFLAGS="%optflags"
-#export LDFLAGS="%_ldflags"
-export LDFLAGS=" "
+export CFLAGS="%optflags"
+export LDFLAGS="%_ldflags"
 export CC=gcc 
 export CXX=g++
 export F77=gfortran
 export FC=gfortran
 #export EXTERN_CXXFLAGS="-library=stlport4"
-export EXTERN_CFLAGS=" "
+export EXTERN_CFLAGS=""
 #export CXXFLAGS="-library=stlport4"
-export CFLAGS=" "
 #export XTRA_CRUFT_SH_LDFLAGS="-library=stlport4"
+
 cd octave-%{version}
 ./configure --enable-shared --disable-static --enable-64=%enable64 \
 	--with-blas=-lblas		\
@@ -144,6 +139,10 @@ rm -rf $RPM_BUILD_ROOT
 #%endif
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to  %{pnm_buildrequires_SFElibsndfile_devel}/{*library_readline}/{*gsed}/{*fftw3]/{*ncurses}, %include packagenamemacros.inc
+* Jun 25 2012 - Thomas Wagner
+- change Requires to SFEgnuplot, we want the more fresh version in SFE
 * Sat Dec 08 2012 - Milan Jurik
 - bump to 3.6.3
 * May 06 2012 - Pavel Heimlich
