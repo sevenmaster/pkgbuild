@@ -70,10 +70,10 @@ Requires: SUNWogg-vorbis
 Requires: SUNWlibtheora
 BuildRequires: %{pnm_buildrequires_SUNWsmba}
 Requires: %{pnm_requires_SUNWsmba}
-BuildRequires: SFEffmpeg-devel
+BuildRequires: SFEffmpeg
 Requires: SFEffmpeg
-Requires: SFElivemedia
-BuildRequires: SFElivemedia
+Requires: SFEliveMedia
+BuildRequires: SFEliveMedia
 Requires: SFElibcdio
 Requires: SFElibdvdnav
 BuildRequires: SFEfaad2-devel
@@ -105,7 +105,7 @@ BuildRequires: SFElibfribidi-devel
 Requires: SFEladspa
 BuildRequires: SFEladspa-devel
 Requires: SFEmpg123
-BuildRequires: SFEmpg123-devel
+BuildRequires: SFEmpg123
 Requires: SFEliba52
 BuildRequires: SFEliba52-devel
 %if %with_openal
@@ -254,6 +254,8 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Mon Sep 30 2013 - Milan Jurik
+- revert previous patch, it is buggy. We have SFEliveMedia
 * Sat Jan 12 2013 - Thomas Wagner
 - change (Build)Requires from liveMedia to livemedia
 * Sun Apr 29 2012 - Pavel Heimlich
