@@ -4,6 +4,7 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -12,8 +13,6 @@
 
 %include base.inc
 %use libsamplerate = libsamplerate.spec
-
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 
 Name:                SFElibsamplerate
 IPS_Package_Name:    library/audio/libsamplerate
@@ -28,14 +27,8 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:  SUNWaudh
-#if build, examples will require libsndfile
-%if %SFElibsndfile
-BuildRequires: SFElibsndfile-devel
-Requires: SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+Requires:      %{pnm_requires_SFElibsndfile}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -109,6 +102,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jul  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
 * Fri Jun 22 2012 - Logan Bruns <logan@gedanken.org>
 - added ips package name.
 * Thu Jul 21 2011 - Alex Viskovatoff
