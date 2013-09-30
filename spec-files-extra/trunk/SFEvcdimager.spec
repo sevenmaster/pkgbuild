@@ -4,6 +4,7 @@
 # includes module(s): vcdimager
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define	src_url	ftp://mirrors.kernel.org/gnu/vcdimager
 
@@ -28,10 +29,10 @@ Requires: SFElibcdio
 
 BuildRequires: SUNWlibms
 Requires: SUNWlibms
-BuildRequires: SUNWlibpopt-devel
-Requires:      SUNWlibpopt
-BuildRequires: SUNWlxml-devel
-Requires:      SUNWlxml
+BuildRequires: %{pnm_buildrequires_SUNWlibpopt_devel}
+Requires:      %{pnm_requires_SUNWlibpopt}
+BuildRequires: %{pnm_buildrequires_SUNWlxml_devel}
+Requires:      %{pnm_requires_SUNWlxml}
 BuildRequires: SUNWzlib
 Requires:      SUNWzlib
 
@@ -117,6 +118,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Thu Jul 11 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibpopt_devel} %{pnm_buildrequires_SUNWlxml_devel}, %include packagenamemacros.inc
 * Sat Aug 18 2012 - Milan Jurik
 - bump to 0.7.24
 * Wed Auf 19 2009 - Thomas Wagner
