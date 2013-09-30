@@ -1,7 +1,7 @@
 #
-# spec file for package SFEliveMedia
+# spec file for package SFElivemedia
 #
-# includes module(s): liveMedia
+# includes module(s): livemedia
 #
 
 
@@ -32,8 +32,8 @@
 #for now just cut out all char [A-z]
 IPS_component_version: $( echo %{version} | sed -e s'/[A-z]//' )
 
-Name:		SFEliveMedia
-IPS_Package_Name:	library/video/liveMedia 
+Name:		SFElivemedia
+IPS_Package_Name:	library/video/livemedia 
 Summary:	liveMedia - live555 Streaming Media
 License:	LGPLv2
 SUNW_Copyright:	livemedia.copyright
@@ -77,6 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Sun Jan 27 2013 - Thomas Wagner
+- rename to all lower case package name
 * Thu Oct 06 2011 - Milan Jurik
 - clean up, add IPS package name
 * Sat Jul 23 2011 - Alex Viskovatoff
