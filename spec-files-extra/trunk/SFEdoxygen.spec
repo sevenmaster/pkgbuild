@@ -30,7 +30,6 @@ mkdir -p %name-%version
 %doxygen.build -d %name-%version
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %doxygen.install -d %name-%version
 
 %clean
@@ -43,6 +42,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Sat Jan 12 2013 - Thomas Wagner
+- fix %files for man pages
 * Wed Jan 9 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.8.3
 * Thu Feb 23 2012 - Ken Mays <kmays2000@gmail.com>
