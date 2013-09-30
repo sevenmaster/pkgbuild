@@ -4,6 +4,7 @@
 # includes module(s): afterstep
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %include base.inc
 %use afterstep = afterstep.spec
@@ -18,8 +19,8 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 Requires: SFEfltk
-BuildRequires: SFEreadline-devel
-Requires: SFEreadline
+BuildRequires:  %{pnm_buildrequires_library_readline}
+Requires:       %{pnm_requires_library_readline}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -61,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}, %include packagenamemacros.inc
 * Fri Aug 15 2008 - glynn.foster@sun.com
 - Add licensing and grouping.
 * Sat Apr 28 2007 - dougs@truemail.co.th
