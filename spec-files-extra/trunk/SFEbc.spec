@@ -4,6 +4,7 @@
 # includes module(s): GNU bc
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                    SFEbc
 Summary:                 GNU bc - arbitrary precision numeric processing language
@@ -16,9 +17,9 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: SUNWlibms
 Requires: SUNWpostrun
-Requires: SFEreadline
+Requires: %{pnm_requires_library_readline}
 Requires: SUNWtexi
-BuildRequires: SFEreadline-devel
+BuildRequires:  %{pnm_buildrequires_library_readline}
 
 %prep
 %setup -q -n bc-%version
@@ -101,6 +102,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Sat Dec 15 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_readline}, %include packagenamemacros.inc
 * Mon Jan 15 2007 - daymobrew@users.sourceforge.net
 - Add SUNWtexi dependency.
 * Sun Nov  5 2006 - laca@sun.com
