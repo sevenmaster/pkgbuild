@@ -12,6 +12,7 @@
 Name:                    SFEid3lib-gpp
 IPS_package_name:	 library/audio/g++/id3lib
 Summary:                 id3lib (g++) - a software library for manipulating ID3v1/v1.1 and ID3v2 tags (g++)
+URL:                     http://id3lib.sourceforge.net/
 Version:                 3.8.3
 Source:                  %{sf_download}/id3lib/id3lib-%{version}.tar.gz
 Patch1:                  id3lib-01-wall.diff
@@ -21,8 +22,9 @@ Patch4:		id3lib-04-iconv.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+BuildRequires: SFEgcc
+Requires: SFEgccruntime
 Requires: SUNWzlib
-Requires: SUNWlibC
 Requires: SUNWlibms
 
 %package devel
@@ -46,10 +48,10 @@ fi
 
 export ACLOCAL_FLAGS="-I %{_std_datadir}/aclocal"
 export CC=gcc
-export CFLAGS="%{gcc_optflags}"
+export CFLAGS="%{optflags}"
 export CXX=g++
 #oi151a4 g++ 4.6.3 needs -fpermissiv, s11 doesn't (can't tell why)
-export CXXFLAGS="%{gcc_cxx_optflags} -fpermissive"
+export CXXFLAGS="%{cxx_optflags} -fpermissive"
 export LDFLAGS="%{_ldflags}"
 export LD_OPTIONS="-i -L%{_libdir} -R%{_libdir}"
 
@@ -88,6 +90,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sat Jun 29 2013 - Thomas Wagner
+- use std macros for *FLAGS, cc_is_gcc switches content for us
+- remove dependency on SUNWlibC (we use gcc)
+- add URL
+- add (Build)Requires: SFEgcc(runtime)  (or get pkgtool 1.3.105 fail with broken depend line in manifest: depend fmri=depend fmri=pkg:/sfe/system/library/gcc-47-runtime@4.7.3-5.12.0.0.0.24.1 fmri=pkg:/system/library/gcc-45-runtime@4.5.2-5.12.0.0.0.24.1 type=require-any type=require
 * Sun Jun 24 2012 - Thomas Wagner
 - add -fpermissive to CXXFLAGS, oi151a4 g++ 4.6.3 needs -fpermissiv, s11 doesn't (can't tell why)
 * Sat Apr 21 2012 - Thomas Wagner
