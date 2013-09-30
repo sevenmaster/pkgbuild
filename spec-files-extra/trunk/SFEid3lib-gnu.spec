@@ -12,7 +12,8 @@
 
 Name:                    SFEid3lib-gnu
 IPS_package_name:	 library/audio/id3lib-gnu
-Summary:                 software library for manipulating ID3v1/v1.1 and ID3v2 tags
+Summary:                 id3lib - a software library for manipulating ID3v1/v1.1 and ID3v2 tags
+URL:                     http://id3lib.sourceforge.net/
 Version:                 3.8.3
 Source:                  %{sf_download}/id3lib/id3lib-%{version}.tar.gz
 Patch1:                  id3lib-01-wall.diff
@@ -85,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sat Jun 29 2013 - Thomas Wagner
+- align Summary with SFEid3lib-gpp.spec
+- add URL
 * Sat Apr 21 2012 - Thomas Wagner
 - create pure studio compiled lib, for g++ see %name-gpp
 - copy from SFEid3lib.spec (was gcc) and set *Studio compiler
