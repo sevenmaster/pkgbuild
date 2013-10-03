@@ -91,7 +91,6 @@ Requires: SUNWopenssl-libraries
 #pkgbuild: Requires: SFEperl-archive-tar
 #pkgbuild: Requires: SFEperl-io-zlib
 
-#we have in SFE a special naming mess for the perl modules. :)
 Requires: SFEperl-io-compress
 Requires: SFEperl-archive-tar
 #Requires: SFEperl-io-zlib
@@ -101,6 +100,15 @@ Requires: %{pnm_requires_SFEgnupg2}
 
 BuildRequires: SFEperl-netaddr-ip
 Requires: SFEperl-netaddr-ip
+
+BuildRequires: SFEperl-io-socket-inet6
+Requires: SFEperl-io-socket-inet6
+
+BuildRequires: SFEperl-io-socket-ssl
+Requires: SFEperl-io-socket-ssl
+
+BuildRequires: SFEperl-http-date
+Requires: SFEperl-http-date
 
 #INSTALL file says this is highly recommended:
 #DB_File
@@ -210,14 +218,15 @@ cp -p %{SOURCE2} spamassassin.xml
 ##DEVEL##	CONTACT_ADDRESS=%{contact_address_spamreport} \
 ##DEVEL##	--no-online-tests
 perl Makefile.PL \
-    PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    PREFIX=%{_prefix} \
     CONFDIR=%{_sysconfdir}/%{src_name} \
-    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
-    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
-    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
-    INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
+    DESTDIR=$RPM_BUILD_ROOT \
+    LIB=%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITELIB=%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITEARCH=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLSITEMAN1DIR=%{_mandir}/man1 \
+    INSTALLSITEMAN3DIR=%{_mandir}/man3 \
+    INSTALLMAN1DIR=%{_mandir}/man1 \
     ENABLE_SSL=yes \
     CONTACT_ADDRESS=%{contact_address_spamreport} \
     --no-online-tests
@@ -237,7 +246,7 @@ make install
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 cp spamassassin.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
 
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/%{src_name}
+#mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/%{src_name}
 
 #remove perllocal.pod 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
@@ -251,7 +260,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 #%doc README Changes sample-nonspam.txt sample-spam.txt INSTALL LICENSE TRADEMARK USAGE UPGRADE
-%dir %attr (0755, root, sys) %{_prefix}
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
 %dir %attr(0755, root, sys) %{_datadir}
@@ -276,6 +284,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Oct  3 2013 - Thomas Wagner
 - svn add missing patch spamassassin-01-3.3.1-sa-compile-env-cc.diff
+- set DESTDIR=$RPM_BUILD_ROOT to get rules/* copied to packaging dir,
+  fix path arguments to Makefile.PL
 * Fri Feb 01 2013 - Thomas Wagner
 - change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
 - add (Build)Requires: SFEperl-netaddr-ip
