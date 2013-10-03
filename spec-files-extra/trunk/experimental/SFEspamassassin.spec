@@ -260,6 +260,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 #%doc README Changes sample-nonspam.txt sample-spam.txt INSTALL LICENSE TRADEMARK USAGE UPGRADE
+%dir %attr(0755, root, bin) %{_prefix}/perl%{perl_major_version}
+%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl}
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
 %dir %attr(0755, root, sys) %{_datadir}
@@ -286,6 +288,7 @@ rm -rf $RPM_BUILD_ROOT
 - svn add missing patch spamassassin-01-3.3.1-sa-compile-env-cc.diff
 - set DESTDIR=$RPM_BUILD_ROOT to get rules/* copied to packaging dir,
   fix path arguments to Makefile.PL
+- fix %files directory group
 * Fri Feb 01 2013 - Thomas Wagner
 - change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
 - add (Build)Requires: SFEperl-netaddr-ip
