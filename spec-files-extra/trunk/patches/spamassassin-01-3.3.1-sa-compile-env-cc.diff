@@ -1,0 +1,13 @@
+--- Mail-SpamAssassin-3.3.1/sa-compile.raw.orig	2010-03-16 15:49:25.000000000 +0100
++++ Mail-SpamAssassin-3.3.1/sa-compile.raw	2012-05-11 16:30:35.594994782 +0200
+@@ -280,7 +280,10 @@
+       close ZERO  or die "error closing $dirpath/log: $!";
+     }
+ 
++    my $cccommand="";
++    $cccommand=$ENV{CC} if scalar $ENV{CC};
+     run(get_perl()." Makefile.PL ".
++          " CC=$cccommand ".
+           "PREFIX=$dirpath/ignored INSTALLSITEARCH=$installdir $log");
+ 
+     run("make $log");
