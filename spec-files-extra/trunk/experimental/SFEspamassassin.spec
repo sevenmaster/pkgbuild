@@ -274,6 +274,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
+* Thu Oct  3 2013 - Thomas Wagner
+- svn add missing patch spamassassin-01-3.3.1-sa-compile-env-cc.diff
 * Fri Feb 01 2013 - Thomas Wagner
 - change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
 - add (Build)Requires: SFEperl-netaddr-ip
