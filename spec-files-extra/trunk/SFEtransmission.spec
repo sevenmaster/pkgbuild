@@ -5,9 +5,12 @@
 ################################################################################
 #				  Note on GTK+                                 #
 #                                                                              #
-#  Version 2.33 is the last Transmission version that uses GTK+ 2 and not      #
+#  Version 2.60 is the last Transmission version that uses GTK+ 2 and not      #
 #  GTK+ 3.  This means that there is no point in "bumping" this package to a   #
 #  newer version until GTK+ 3 is built on Solaris.                             #
+#                                                                              #
+# EDIT: Unless someone wants to hack the GTK2 interface onto newer versions... #
+#                                                                              #
 ################################################################################
 
 %include Solaris.inc
@@ -20,8 +23,9 @@
 Name:			SFEtransmission
 IPS_package_name:	sfe/desktop/torrent/transmission
 Summary:		GTK and console BitTorrent client
-Version:		2.33
+Version:		2.60
 Source:			http://download.m0k.org/transmission/files/transmission-%version.tar.bz2
+Patch0:			transmission-2.60-gtkversion.patch
 License:		MIT
 URL:			http://transmission.m0k.org/
 SUNW_Copyright:		transmission.copyright
@@ -58,26 +62,23 @@ Requires:        %{name}
 
 %prep
 %setup -q -n %{source_name}-%{version}
+%patch -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CC=/usr/gnu/bin/gcc
-export CXX=/usr/gnu/bin/g++
+export CC=gcc
+export CXX=g++
 #export CFLAGS="%optflags -mt -D__inline=inline -xc99"
-export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags"
-#export CFLAGS="$CFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
-#export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include -L/usr/gnu/lib -R/usr/gnu/lib -lintl"
-export CFLAGS="$CFLAGS -I/usr/gnu/include"
-export CXXFLAGS="$CXXFLAGS -I/usr/gnu/include"
+export CFLAGS="%optflags -I/usr/gnu/include"
+export CXXFLAGS="%cxx_optflags -I/usr/gnu/include"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -liconv"
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig
 
 ./configure --prefix=%{_prefix}   \
             --datadir=%{_datadir} \
 	    --mandir=%{_mandir}   \
-	    --disable-wx	\
+	    --with-gtk=2	  \
             --program-prefix=""
 
 make -j$CPUS
@@ -143,6 +144,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Sep 20 2013 - Ian Johnson
+- Bump to 2.60
+- Add configure.ac patch to drop GTK2_MINIMUM version to the one included in Solaris
+- Add --with-gtk=2 to build GTK2 GUI
+- Remove obsolete configure option --disable-wx
 * Thu Sep 19 2013 - Ian Johnson
 - change (Build)Requires %{pnm_buildrequires_SUNWgtk2_devel}, %{pnm_buildrequires_SUNWopenssl_include}, %{pnm_buildrequires_SUNWgnome_panel_devel}, %{pnm_buildrequires_SUNWdbus_glib_devel}, %{pnm_buildrequires_SUNWcurl}, %{pnm_buildrequires_SUNWgnu_gettext}, %include packagenamemacros.inc
 - add (Build)Requires: SFEgcc(runtime)
