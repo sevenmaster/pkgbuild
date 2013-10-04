@@ -24,6 +24,10 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Requires:	%{pnm_requires_perl_default}
 BuildRequires:	%{pnm_buildrequires_perl_default}
+BuildRequires:  SFEperl-encode
+Requires:       SFEperl-encode
+BuildRequires:  SFEperl-encode-locale
+Requires:       SFEperl-encode-locale
 BuildRequires:  SFEperl-http-message	
 Requires:       SFEperl-http-message	
 BuildRequires:	SFEperl-io-compress
@@ -93,7 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Oct  4 2013 - Thomas Wagner
-- add (Build)Requires SFEperl-http-message
+- add (Build)Requires SFEperl-http-message, SFEperl-encode, SFEperl-encode-locale
 * Thu Sep 26 2013 - Thomas Wagner
 - bump to 6.05
 * Fri Feb 01 2013 - Thomas Wagner
