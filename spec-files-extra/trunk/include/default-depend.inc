@@ -16,5 +16,6 @@ Requires: SUNWcsd
 Requires: SUNWcsl
 %endif
 
+%changelog
 * Fri Oct  4 2013 - Thomas Wagner
 - try making package name resolve faster on IPS systems
