@@ -1,0 +1,38 @@
+#
+# Packages which got a rename
+#
+# left: old name, if non-empty make a rename package to the
+# name in the name given the most right
+#
+# if the IPS old name is given, then make another renamed package
+# redirecting to the IPS new name
+#
+
+#Name old  Name new  IPS old   IPS new
+# pkgbuild:[4782]
+SFEbzr		SFEbzr		developer/versioning/bzr	developer/versioning/bazaar   
+#SFEqt-gpp-devel	SFEqt-gpp	
+SFElibaudioio	SFElibaudioio	-	library/audio/libaudioio
+#IPS name added
+SFElibevent	SFElibevent	-	library/libevent2
+SFEfusefs	SFEfusefs	-	system/file-system/fusefs
+SFEmpg123	SFEmpg123	-	audio/mpg123
+SFElibevent	SFElibevent	-	library/libevent2
+#want lowercase package names
+SFESimGear	SFEsimgear	-	library/simgear
+SFER		SFEr		-	math/r
+#changed hierarchy
+SFElibmatroska	SFElibmatriska	library/g++/video/libmatroska	library/video/g++/libmatroska       
+SFElibebml-gpp	SFElibebml-gpp	library/g++/libebml	library/g++/ebml
+#CHECK if really spec was renamed SFEilmbase	SFEilmbase-gpp	?	?
+SFEliveMedia	SFElivemedia	library/video/liveMedia	library/video/livemedia
+SFElibsndfile	SFElibsndfile	-	library/gnu/libsndfile
+#SFEperl-io-compress-base SFEperl-compress-raw-zlib -->> SFEperl-io-compress.spec
+#  546  pfexec pkgrm SFEperl-io-compress
+#  549  pfexec pkgrm SFEperl-io-compress-zlib
+#  552  pfexec pkgrm SFEperl-io-compress-base
+SFEperl-io-compress-raw-zlib	SFEperl-io-compress	-	library/perl-5/io-compress
+SFEperl-io-compress-zlib	SFEperl-io-compress	-	library/perl-5/io-compress
+SFEperl-io-compress-base	SFEperl-io-compress	-	library/perl-5/io-compress
+SFElibassuan	SFElibassuan	system/library/security/libassuan	library/security/gnu/libassuan
+SFEperl-http-message	SFEperl-http-message	library/perl-5/libwww-perl-http-message	library/perl-5/http-message
