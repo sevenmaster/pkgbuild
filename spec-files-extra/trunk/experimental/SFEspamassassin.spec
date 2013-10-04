@@ -74,8 +74,9 @@ Requires: SFEperl-razor-agents
 
 #optional perl modules for improvements/special features
 
-BuildRequires: SUNWopenssl-include
-Requires: SUNWopenssl-libraries
+BuildRequires:          %{pnm_buildrequires_SUNWopenssl_include}
+Requires:               %{pnm_requires_SUNWopenssl_libraries}
+
 
 #obsolete pkgbuild: Requires: SFEperl-mail-spf-query
 #pkgbuild: Requires: SFEperl-ip-country
@@ -284,6 +285,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
+* Sat Oct  5 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWopenssl_include}
 * Thu Oct  3 2013 - Thomas Wagner
 - svn add missing patch spamassassin-01-3.3.1-sa-compile-env-cc.diff
 - set DESTDIR=$RPM_BUILD_ROOT to get rules/* copied to packaging dir,
