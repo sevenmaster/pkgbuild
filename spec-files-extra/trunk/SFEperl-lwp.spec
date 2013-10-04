@@ -36,6 +36,8 @@ BuildRequires:	SFEperl-html-parser
 Requires:	SFEperl-html-parser
 BuildRequires:	SFEperl-uri
 Requires:	SFEperl-uri
+BuildRequires:  SFEperl-net-http
+Requires:       SFEperl-net-http
 
 %ifarch sparc
 %define perl_dir sun4-solaris-64int
@@ -96,6 +98,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct  5 2013 - Thomas Wagner
+- add (Build)Requires SFEperl-net-http
 * Fri Oct  4 2013 - Thomas Wagner
 - add (Build)Requires SFEperl-http-message, SFEperl-encode, SFEperl-encode-locale
 * Thu Sep 26 2013 - Thomas Wagner
