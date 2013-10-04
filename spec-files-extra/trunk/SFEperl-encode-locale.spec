@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-http-message
+# spec file for package: SFEperl-encode-locale
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -9,32 +9,34 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 6.06
-%define tarball_name    HTTP-Message
+%define tarball_version 1.03
+%define tarball_name    Encode-Locale
 
-Name:		SFEperl-http-message
-IPS_package_name: library/perl-5/http-message
-Version:	6.06
-IPS_component_version: 6.6
-Summary:	Base class for Request/Response
+Name:		SFEperl-encode-locale
+IPS_package_name: library/perl-5/encode-locale
+Version:	1.03
+IPS_component_version: 1.3
+Summary:	Encode::Locale
 License:	Artistic
 Distribution:   OpenSolaris
 Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: perl.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTTP-Message-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/Encode-Locale-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:  SFEperl-encode
+Requires:       SFEperl-encode
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Gisle Aas <gisle@ActiveState.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Base class for Request/Response
+Encode::Locale
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -76,6 +78,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Oct  4 2013 - Thomas Wagner
-- bump to 6.06 (6.6 on IPS)
-* Sun May 27 2012 - Milan Jurik
 - initial spec
