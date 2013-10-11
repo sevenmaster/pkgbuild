@@ -8,7 +8,7 @@
 %if %{?os2nnn:%{os2nnn}}%{?!os2nnn:0}
 Requires: system/library 
 Requires: system/kernel 
-Requires: system/core-os
+#paused# Requires: system/core-os
 %else
 Requires: SUNWcsr
 Requires: SUNWcsu
@@ -17,5 +17,7 @@ Requires: SUNWcsl
 %endif
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- pause require system/core-os
 * Fri Oct  4 2013 - Thomas Wagner
 - try making package name resolve faster on IPS systems
