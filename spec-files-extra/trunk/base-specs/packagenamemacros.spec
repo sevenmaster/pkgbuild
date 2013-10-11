@@ -18,13 +18,14 @@
 # second EXAMPLE SUNWncurses/SUNWncurses-devel and "ncurses" and library/ncurses
 
 
-
 #already included before?
-%if %{?packagenamemacros}
+%if %{?packagenamemacros:%{packagenamemacros}}%{?!packagenamemacros:0}
 #we are already included
 %else
 %include packagenamemacros.inc
 %endif
+
+%include pkgbuild-features.inc
 
 # help the demo: pkgtool --interactive prep base-specs/packagenamemacros.spec
 Name: packagenamemacros
@@ -89,6 +90,9 @@ pnm: os200811 		%{os200811}
 pnm: osdistrelnumber 	%{osdistrelnumber}
 pnm: osdistrelname   	%{osdistrelname}
 pnm: osdet299999 		%{osdet299999}
+pnm: pkgbuild_ver		%{pkgbuild_ver}
+pnm: pkgbuild_ips_legacy	%{pkgbuild_ips_legacy}
+pnm: pkgbuild_renamed_to	%{pkgbuild_renamed_to}
 pnm: pnm_buildrequires_perl_default: 		%{pnm_buildrequires_perl_default}
 pnm: pnm_requires_perl_default: 			%{pnm_requires_perl_default}
 pnm: perl_version number is:       		%{perl_version}
@@ -201,6 +205,8 @@ requesting package x11/library/freeglut resolves on %{osdistrelname} build %{osb
 
 
 %changelog
+* Mon Oct  7 2013 - Thomas Wagner
+- add pkgbuild_ver / *, include pkgbuild-features.inc
 * Mon Jul 1 2013 - Thomas Wagner
 - add Solaris 11.0 11.1 12 (new variables)
 - add featureflags: etc_security_directorylayout              %{etc_security_directorylayout}
