@@ -9,6 +9,7 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -34,8 +35,8 @@ SUNW_BaseDir:	%{_basedir}/%{_subdir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWlibm
-Requires: SUNWlibm
+BuildRequires: %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_buildrequires_SUNWlibm}
 
 %package devel
 Summary:	%{summary} - development files
@@ -110,6 +111,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Thu Jun 26 2013 - Thomas Wagner
 - bump to 5.1.2
 - remove obsolete patch1 gmp-5.1.1-01-solaris.diff

@@ -65,8 +65,8 @@ BuildRequires: SUNWaalib
 Requires: SUNWaalib
 BuildRequires: SUNWlibsdl-devel
 Requires: SUNWlibsdl
-BuildRequires: SUNWlibm
-Requires: SUNWlibm
+BuildRequires: %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_buildrequires_SUNWlibm}
 Requires: SFElivemedia
 BuildRequires: SFElivemedia
 Requires: SFElibcdio
@@ -244,6 +244,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/256x256/apps/*
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}
 * Sat Jan 12 2013 - Thomas Wagner
 - change (Build)Requires from liveMedia to livemedia
 * Tue Aug  8 2012 - Thomas Wagner

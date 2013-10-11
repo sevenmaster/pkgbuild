@@ -4,6 +4,7 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFEguile
 URL:                 http://www.gnu.org/software/guile/
@@ -18,7 +19,8 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 Requires: SUNWgnu-mp
 Requires: SUNWlibtool
 Requires: SUNWltdl
-Requires: SUNWlibm
+BuildRequires: %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_buildrequires_SUNWlibm}
 
 %package devel
 Summary:       %{summary} - development files
@@ -111,6 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Sun Jan 18 2009 - halton.huo@sun.com
 - Change SFEgmp to SUNWgnu-mp
 - Add patch autoconf.diff to fix AM_INTL_SUBDIR not found issue

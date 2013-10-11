@@ -9,6 +9,7 @@
 #
 %include Solaris.inc
 %include usr-g++.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1
 
@@ -36,8 +37,8 @@ SUNW_BaseDir:	%{_basedir}/%{_subdir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWlibm
-Requires: SUNWlibm
+BuildRequires: %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_buildrequires_SUNWlibm}
 
 %package devel
 Summary:	%{summary} - development files
@@ -116,6 +117,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Thu Feb 21 2013 - Logan Bruns <logan@gedanken.org>
 - Fork to create g++ version of gmp.
 * Wed Feb 13 2013 - Ken Mays <kmays2000@gmail.com>

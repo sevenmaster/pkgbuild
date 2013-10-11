@@ -11,6 +11,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %use libmms = libmms.spec
 
@@ -26,7 +27,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires:	SUNWgnome-base-libs
-Requires:	SUNWlibm
+BuildRequires: %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_buildrequires_SUNWlibm}
 BuildRequires:	SUNWgnome-base-libs-devel
 Conflicts:	SUNWmmsu
 BuildRequires:	SUNWgnome-common-devel
@@ -68,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Oct 11 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Wed Jul 20 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Tue Sep 02 2008 - halton.huo@sun.com
