@@ -5,7 +5,7 @@
 #
 
 Summary:                 A very fast video and audio converter
-Version:                 1.2.3
+Version:                 2.0.2
 Source:                  http://www.ffmpeg.org/releases/ffmpeg-%version.tar.bz2
 URL:                     http://www.ffmpeg.org/index.html
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
@@ -60,18 +60,19 @@ bash ./configure	\
     --enable-x11grab	\
     --enable-libspeex   \
     --enable-pthreads	\
-    --enable-libopencore-amrnb \
-    --enable-libopencore-amrwb \
-    --enable-version3	\
-    --disable-static	\
+    --enable-libopencore-amrnb	\
+    --enable-libopencore-amrwb	\
     --enable-libschroedinger	\
     --enable-libopenjpeg	\
     --enable-librtmp	\
+    --enable-avresample	\
     --enable-vdpau	\
     --enable-libass	\
     --enable-openssl	\
     --enable-openal	\
-    --enable-shared
+    --enable-shared	\
+    --disable-static	\
+    --enable-version3
 
 gmake -j$CPUS
 
@@ -101,7 +102,9 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Thu Sep 12 2013 - Alex Viskovtoff
+* Fri Oct 11 2013 - Alex Viskovatoff
+- bump to 2.0.2; enable avresample
+* Thu Sep 12 2013 - Alex Viskovatoff
 - update to 1.2.3
 - remove --enable-runtime-cpudetect: that belongs in the spec file calling this
 * Sat Feb 09 2013 - Milan Jurik
