@@ -19,12 +19,6 @@
 %define arch_opt --cpu=prescott --enable-runtime-cpudetect --enable-mmx --enable-mmxext --enable-sse --enable-ssse3 --enable-sse4 --enable-sse42 --enable-avx --enable-amd3dnow --enable-amd3dnowext --enable-fma4
 %endif
 
-# On some Intel CPUs, ffmpeg incorrectly builds libraries for AMD
-%define noamd3d %(prtdiag -v | grep CPU | grep -q Intel && echo 1 || echo 0)
-%if %noamd3d
-%define arch_opt --cpu=prescott --enable-runtime-cpudetect --enable-mmx --enable-mmxext --enable-sse --enable-ssse3 --enable-sse4 --enable-sse42
-%endif
-
 %define extra_gcc_flags
 
 %use ffmpeg = ffmpeg.spec
@@ -37,15 +31,12 @@ License:		GPLv2+ and LGPLv2.1+
 SUNW_Copyright:		ffmpeg.copyright
 URL:			%{ffmpeg.url}
 Group:			System/Multimedia Libraries
-Patch12:		ffmpeg-12-unoverride.diff
 
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 Autoreqprov:		on
 
 %include default-depend.inc
-BuildRequires: SFEgcc
-Requires:      SFEgccruntime
 BuildRequires: SFEyasm
 BuildRequires: SUNWtexi
 BuildRequires: %pnm_buildrequires_perl_default
@@ -107,11 +98,6 @@ mkdir %name-%version
 mkdir %name-%version/%base_arch
 %ffmpeg.prep -d %name-%version/%base_arch
 
-%if %noamd3d
-cd %name-%version/%base_arch
-%patch12 -p1
-%endif
-
 %build
 %ffmpeg.build -d %name-%version/%base_arch
 
@@ -154,15 +140,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libpostproc
 %{_includedir}/libswscale
 %{_includedir}/libswresample
+%_includedir/libavresample
 %dir %attr(0755, root, bin) %{_datadir}/ffmpeg
 %{_datadir}/ffmpeg/examples
+%dir %attr(0755, root, bin) %{_mandir}/man3
+%{_mandir}/man3/*
 
 
 %changelog
+* Fri Oct 11 2013 - Alex Viskovatoff
+- Update to work with ffmpeg 2.0.2; Do not give special treatment to Intel
+  processors: this is unnecessary, since runtime cpu detection is used
 * Wed Sep 11 2013 - Alex Viskovatoff
 - Update to work with ffmpeg 1.2.3
 - Change cpu from pentiumpro to prescott
-- Remove dependency on alsa-lib, which is not of use on Solaris
+- Remove dependency on alsa-lib, which is of no use on Solaris
 * Tue Jan 24 2012 - James Choi
 - Add libass, openal dependency
 * Tue Nov  1 2011 - Alex Viskovatoff
