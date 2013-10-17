@@ -2,8 +2,8 @@
 # spec file for package SFEurxvt
 #
 
-%define src_version 9.11
-%define version 9.11
+%define src_version 9.18
+%define version 9.18
 
 #include perl
 %define with_perl 1
@@ -26,20 +26,17 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
-%define _gpp /usr/sfw/bin/g++
 %include base.inc
 
 
 Name:                    SFEurxvt
+IPS_Package_Name:        terminal/urxvt
+Group:                   Applications/System Utilities
 Summary:                 urxvt - X Terminal Client (+multiscreen Server) with unicode support, derived from rxvt
 URL:                     http://software.schmorp.de
 Version:                 %{version}
 Source:                  http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-%{src_version}.tar.bz2
 Patch10:		 urxvt-10-terminfo_enacs.diff
-Patch11:		 urxvt-11-remove-tic.diff
-Patch12:		 urxvt-12-configure-bash.diff
-#already in svn code, check on next version update if this one can be removed
-Patch16:		 urxvt-16-ioctl-tty-I_PUSH.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{src_version}-build
 
@@ -48,11 +45,16 @@ BuildRoot:               %{_tmppath}/%{name}-%{src_version}-build
 
 #old gcc is enough BuildRequires: SFEgcc
 #old gcc is enough Requires:      SFEgccruntime
-BuildRequires: SUNWgcc
-Requires:      SUNWgccruntime
+#let the IPS dependency resolve do it for us
+##TODO## need automatic setting of build/runtime dependeny on gcc runtime
+#BuildRequires: SUNWgcc
+#Requires:      SUNWgccruntime
 
 
 %description
+Note: Remember to set your LC_CYTPE *before* running rxvt, see file
+%{_docdir}README.FAQ
+
 urxvt is a Multiscreenserver and Client for Terminal emulation. Supports Unicode
 charsets and has tons of nice features. With "compiz" you can enable traparent 
 backgrounds (unmodified or shaded background inside the Terminal window)
@@ -61,29 +63,26 @@ To add the terminal controls to /etc/termcap run this command after package inst
 grep "^rxvt-unicode" /etc/termcap || \
  TERMINFO=/usr/share/lib/terminfo infocmp -C rxvt-unicode >> /etc/termcap 
 
-infos about perl to use several helpers in urxvt:
+Infos about perl extentions as helpers in urxvt:
 e.g. http://www.jukie.net/bart/blog/urxvt-url-yank
 
 
 %prep
 %setup -q -n rxvt-unicode-%{src_version}
 %patch10 -p1
-%patch11 -p1
-%patch12 -p1
-#already in svn code, check on next version update if this one can be removed
-%patch16 -p1
+#%patch11 -p1
+
+perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure
 
 
 %build
-export CC=/usr/sfw/bin/gcc
-export CXX=/usr/sfw/bin/g++
+export CC=gcc
+export CXX=g++
 export LDFLAGS="%_ldflags"
-#export LD_OPTIONS="-i -L/usr/X11/lib -R/usr/X11/lib -L/usr/openwin/lib -R/usr/openwin/lib"
-#export LD=/opt/jdsbld/bin/ld-wrapper
-#export CFLAGS="%optflags -D_XPG5 -D_XOPEN_SOURCE=500 -D__EXTENSIONS__"
-#export CXXFLAGS="%cxx_optflags -D_XPG5 -D_XOPEN_SOURCE=500 -D__EXTENSIONS__"
 export CFLAGS="%optflags -L/usr/X11/lib -R/usr/X11/lib -lX11 -lXext -lXrender"
 export CXXFLAGS="%cxx_optflags"
+
+export TIC=/usr/bin/tic
 
 ./configure \
             --prefix=%{_prefix} \
@@ -149,16 +148,16 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
 
 ##TODO## do older systems have /usr/share/terminfo at all?
 #else: just set with /lib/ on any os release
-TERMINFO="$RPM_BUILD_ROOT/%{_datadir}/terminfo/"
-[ -d %{_datadir}/lib/terminfo ] && TERMINFO="%{_datadir}/lib/terminfo/"
+THISOSTERMINFO="$RPM_BUILD_ROOT/%{_datadir}/terminfo/"
+[ -d %{_datadir}/lib/terminfo ] && THISOSTERMINFO="%{_datadir}/lib/terminfo/"
 
-mkdir -p "$RPM_BUILD_ROOT/$TERMINFO"
-#only at package creation time
-TERMINFO="$RPM_BUILD_ROOT/$TERMINFO"  tic -v doc/etc/rxvt-unicode.terminfo
+mkdir -p "$RPM_BUILD_ROOT/$THISOSTERMINFO"
+#need TERMINFO tewaked only at make install time to influence "tic"'s target directory
+export TERMINFO="$RPM_BUILD_ROOT/$THISOSTERMINFO"
+make install DESTDIR=$RPM_BUILD_ROOT
 
 #in case old pkgbuild does not automaticly place %doc files there
 test -d $RPM_BUILD_ROOT%{_docdir} || mkdir $RPM_BUILD_ROOT%{_docdir}
@@ -198,6 +197,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 17 2013 - Thomas Wagner
+- bump to 9.18
+- replace Patch12 with perl call in %prep, Patch16 (now in the source)
+- set gcc compiler free: CC=gcc CXX=g++, remove (Build)Requires and let IPS dependency resolver do for now
+- use TIC=/usr/bin/tic, export TERMINFO set to our $DESTDIR, then make install, remove patch11
+- add IPS_Package_Name, Group
 * Thu Aug 16 2012 - Thomas Wagner
 - enable perl helper
 * Sat Mar 31 2012 - Pavel Heimlich
