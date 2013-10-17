@@ -36,3 +36,4 @@ SFEperl-io-compress-zlib	SFEperl-io-compress	-	library/perl-5/io-compress
 SFEperl-io-compress-base	SFEperl-io-compress	-	library/perl-5/io-compress
 SFElibassuan	SFElibassuan	system/library/security/libassuan	library/security/gnu/libassuan
 SFEperl-http-message	SFEperl-http-message	library/perl-5/libwww-perl-http-message	library/perl-5/http-message
+SFEurxvt	SFEurxvt	-	terminal/urxvt
