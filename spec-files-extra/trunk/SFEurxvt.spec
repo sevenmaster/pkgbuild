@@ -72,7 +72,9 @@ e.g. http://www.jukie.net/bart/blog/urxvt-url-yank
 %patch10 -p1
 #%patch11 -p1
 
-perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure
+perl -w -pi.bak_bash -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure
+
+gsed -i.bak_XOPEN_SOURCE -e '/define _XOPEN_SOURCE 500.*confdefs.h/ s?^?#?' configure
 
 
 %build
@@ -197,6 +199,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fru Oct 18 2013 - Thomas Wagner
+- remove _XOPEN_SOURCE 500 from configure
 * Thu Oct 17 2013 - Thomas Wagner
 - bump to 9.18
 - replace Patch12 with perl call in %prep, Patch16 (now in the source)
