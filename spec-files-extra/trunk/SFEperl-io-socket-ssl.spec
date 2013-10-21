@@ -23,7 +23,7 @@ Vendor:         OpenSolaris Community
 #Url:		http://search.cpan.org/~sullr/%{tarball_name}-%{tarball_version}
 URL:		http://search.cpan.org/dist/IO-Socket-SSL/
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: perl.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
