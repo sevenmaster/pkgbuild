@@ -27,7 +27,7 @@
 
 Name:		SFEgmp-gpp
 IPS_Package_Name:	sfe/library/g++/gmp
-Summary:	GNU Multiple Precision Arithmetic Library
+Summary:	GNU Multiple Precision Arithmetic Library (/usr/g++)
 Group:		Development/Libraries
 Version:	%{gmp.version}
 License:	GPLv3+
@@ -61,18 +61,18 @@ mkdir -p %name-%version/%base_arch
 export CC=gcc
 export CXX=g++
 
-# %ifarch amd64 sparcv9
-# %gmp_64.build -d %name-%version/%_arch64
-# %endif
+%ifarch amd64 sparcv9
+%gmp_64.build -d %name-%version/%_arch64
+%endif
 
 %gmp.build -d %name-%version/%{base_arch}
 
 
 %install
 rm -rf %{buildroot}
-# %ifarch amd64 sparcv9
-# %gmp_64.install -d %name-%version/%_arch64
-# %endif
+%ifarch amd64 sparcv9
+%gmp_64.install -d %name-%version/%_arch64
+%endif
 
 %gmp.install -d %name-%version/%{base_arch}
 
@@ -106,10 +106,10 @@ rm -rf %{buildroot}
 %{_libdir}/lib*.so*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/info
-# %ifarch amd64 sparcv9
-# %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
-# %{_libdir}/%{_arch64}/lib*.so*
-# %endif
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/lib*.so*
+%endif
 
 %files devel
 %defattr (-, root, bin)
@@ -117,6 +117,9 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Mon Oct 21 2013 - Thomas Wagner
+- bump to 5.1.3 (small bug fixes)
+- enable 32/64-bit build
 * Sat Oct 11 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Thu Feb 21 2013 - Logan Bruns <logan@gedanken.org>

@@ -25,7 +25,7 @@
 
 Name:		SFEgmp
 IPS_Package_Name:	sfe/library/gmp
-Summary:	GNU Multiple Precision Arithmetic Library
+Summary:	GNU Multiple Precision Arithmetic Library (/usr/gnu)
 Group:		Development/Libraries
 Version:	%{gmp.version}
 License:	GPLv3+
@@ -111,6 +111,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Mon Oct 21 2013 - Thomas Wagner
+- bump to 5.1.3 (small bug fixes)
 * Sat Oct 11 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Thu Jun 26 2013 - Thomas Wagner
