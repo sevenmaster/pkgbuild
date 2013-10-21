@@ -12,7 +12,7 @@
 %define _infodir           %{_datadir}/info
 
 Name:		gmp
-Version:	5.1.2
+Version:	5.1.3
 Source:		http://ftp.sunet.se/pub/gnu/gmp/gmp-%{version}.tar.bz2
 %if %cc_is_gcc
 %else
@@ -71,6 +71,8 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Oct 21 2013 - Thomas Wagner
+- bump to 5.1.3 (small bug fixes)
 * Thu Jun 26 2013 - Thomas Wagner
 - bump to 5.1.2
 - remove obsolete patch1 gmp-5.1.1-01-solaris.diff
