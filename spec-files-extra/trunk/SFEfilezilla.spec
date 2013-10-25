@@ -11,8 +11,8 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
-%define _gpp /usr/gnu/bin/g++
 %include base.inc
 %use filezilla = filezilla.spec
 
@@ -32,7 +32,7 @@ Requires: SUNWgnome-vfs
 Requires: SUNWgnome-component
 Requires: SUNWgnome-config
 Requires: SUNWgnutls
-Requires: SUNWgnu-idn
+Requires:      %{pnm_buildrequires_SUNWgnu_idn}
 Requires: SFEwxwidgets-gpp
 Requires: SUNWxdg-utils
 BuildRequires: SUNWgnome-libs-devel
@@ -41,7 +41,7 @@ BuildRequires: SUNWgnome-vfs-devel
 BuildRequires: SUNWgnome-component-devel
 BuildRequires: SUNWgnome-config-devel
 BuildRequires: SUNWgnutls-devel
-BuildRequires: SUNWgnu-idn
+BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
 BuildRequires: SFEwxwidgets-gpp-devel
 BuildRequires: SUNWxdg-utils
 
@@ -112,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 25 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNEgnu_idn}, %include packagenamacros.inc
 * Fri Jun 29 2012 - Thomas Wagner
 - change (Build)Requires to SFEwxwidgets-gpp(-devel) (g++)
 - adapt to new usr-g++.inc -> CPPFLAGS change g++ include location,
