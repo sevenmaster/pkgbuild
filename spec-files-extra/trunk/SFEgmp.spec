@@ -55,6 +55,8 @@ mkdir -p %name-%version/%base_arch
 
 
 %build
+export AR=/usr/bin/ar
+
 %ifarch amd64 sparcv9
 %gmp_64.build -d %name-%version/%_arch64
 %endif
@@ -111,6 +113,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Fri Oct 25 2013 - Thomas Wagner
+- export AR=/usr/bin/ar or get libtool saying no valid object
 * Mon Oct 21 2013 - Thomas Wagner
 - bump to 5.1.3 (small bug fixes)
 * Sat Oct 11 2013 - Thomas Wagner
