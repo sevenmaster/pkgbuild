@@ -1,0 +1,23 @@
+This fix was obtained here:
+http://stackoverflow.com/questions/2197918/cross-platform-way-of-testing-whether-a-file-is-a-directory
+
+--- qupzilla-1.4.4/src/lib/3rdparty/processinfo.cpp.orig	Sun Sep  1 07:17:48 2013
++++ qupzilla-1.4.4/src/lib/3rdparty/processinfo.cpp	Sun Oct 27 13:53:27 2013
+@@ -66,6 +66,7 @@
+     char* chrptr_StringToCompare = NULL ;
+     pid_t pid_ProcessIdentifier = (pid_t) - 1 ;
+     struct dirent* de_DirEntity = NULL ;
++    struct stat s;
+     DIR* dir_proc = NULL ;
+ 
+     dir_proc = opendir("/proc/") ;
+@@ -76,7 +77,8 @@
+ 
+     // Loop while not NULL
+     while ((de_DirEntity = readdir(dir_proc))) {
+-        if (de_DirEntity->d_type == DT_DIR) {
++        stat(de_DirEntity->d_name, &s);
++        if (S_ISDIR(s.st_mode)) {
+             if (IsNumeric(de_DirEntity->d_name)) {
+                 strcpy(chrarry_CommandLinePath, "/proc/") ;
+                 strcat(chrarry_CommandLinePath, de_DirEntity->d_name) ;
