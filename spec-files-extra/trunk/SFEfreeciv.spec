@@ -11,7 +11,7 @@ Name:		SFEfreeciv
 IPS_Package_Name:	games/freeciv
 Summary:	freeciv - a multiplayer strategy game
 URL:		http://freeciv.wikia.com/
-Version:	2.3.0
+Version:	2.4.0
 Group:		Amusements/Games
 Source:		%{sf_download}/freeciv/freeciv-%{version}.tar.bz2
 # date:2008-12-23 type:bug owner:halton bugid:40661
@@ -90,8 +90,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, sys)
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %{_sysconfdir}/ggz.modules
+%{_sysconfdir}/freeciv
 
 %changelog
+* Mon Oct 28 2013 - Milan Jurik
+- bump to 2.4.0
 * Sat Oct 22 2011 - Milan Jurik
 - bump to 2.3.0
 * Wed Mar 30 2011 - Milan Jurik
