@@ -113,6 +113,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Oct 26 2013 - Thomas Wagner
+- use %{_arch64} aware %{gnu_lib_path} in CFLAGS/CXXFLAGS/LDFLAGS
 * Fri Oct 25 2013 - Thomas Wagner
 - export AR=/usr/bin/ar or get libtool saying no valid object
 * Mon Oct 21 2013 - Thomas Wagner

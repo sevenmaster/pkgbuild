@@ -32,9 +32,9 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-export CFLAGS="%optflags -L/usr/gnu/lib -R/usr/gnu/lib"
-export CXXFLAGS="%cxx_optflags -L/usr/gnu/lib -R/usr/gnu/lib"
-export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
+export CFLAGS="%optflags %{gnu_lib_path}"
+export CXXFLAGS="%cxx_optflags %{gnu_lib_path}"
+export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export ABI=64
@@ -60,6 +60,9 @@ fi
 make -j$CPUS 
 
 #Make Check
+#note: SFEgmp-gpp.spec needs a gcc with -zinterpose for libgcc_s.so libstdc++.so.6
+# _or_ get test program t-rand and other tests segfault.
+#Studio compiled gmp is not affected
 make check
 
 %install
@@ -71,6 +74,8 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Oct 26 2013 - Thomas Wagner
+- use %{_arch64} aware %{gnu_lib_path} in CFLAGS/CXXFLAGS/LDFLAGS
 * Mon Oct 21 2013 - Thomas Wagner
 - bump to 5.1.3 (small bug fixes)
 * Thu Jun 26 2013 - Thomas Wagner
