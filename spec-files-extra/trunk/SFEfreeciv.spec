@@ -34,6 +34,11 @@ SUNW_BaseDir:	/
 %include default-depend.inc
 Requires: SUNWpostrun-root
 
+%package l10n
+Summary:        %{summary} - l10n files
+SUNW_BaseDir:   %{_basedir}
+Requires:       %{name}
+
 %prep
 %setup -q -n freeciv-%version
 %patch4 -p1
@@ -52,10 +57,7 @@ export LDFLAGS="%{_ldflags}"
 	    --mandir=%{_mandir}			\
             --libdir=%{_libdir}			\
             --libexecdir=%{_libexecdir}		\
-            --sysconfdir=%{_sysconfdir}		\
-            --disable-nls			\
-            --enable-shared			\
-	    --disable-static
+            --sysconfdir=%{_sysconfdir}
 
 make -j$CPUS 
 
@@ -91,6 +93,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %{_sysconfdir}/ggz.modules
 %{_sysconfdir}/freeciv
+
+%files l10n
+%defattr (-, root, bin)
+%dir %attr (0755, root, sys) %dir %{_datadir}
+%attr (-, root, other) %{_datadir}/locale
 
 %changelog
 * Mon Oct 28 2013 - Milan Jurik
