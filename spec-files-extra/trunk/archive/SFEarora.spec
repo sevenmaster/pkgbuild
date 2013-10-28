@@ -110,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 28 2013 - Alex Viskovatoff
+- Archive: development stopped in January 2012
 * Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
 - Accept either SFEcoreutils or SUNWgnu-coreutils for buildrequires.
 * Fri Jul 29 2011 - Alex Viskovatoff

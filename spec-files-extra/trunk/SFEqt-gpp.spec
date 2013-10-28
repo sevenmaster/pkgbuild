@@ -1,8 +1,3 @@
-#
-# Copyright 2008 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
-
 ##TODO## verify new pnm_macro mysql dependencies on different osbuild/osdistro
 ##TODO## re-visit disabled (Build)Requires with check-deps script
 
@@ -22,7 +17,7 @@ Summary:             Cross-platform development framework/toolkit (g++)
 Group:               Desktop (GNOME)/Libraries
 URL:                 http://qt-project.org
 License:             LGPLv2
-Version:             4.8.4
+Version:             4.8.5
 Source:              http://releases.qt-project.org/qt4/source/%srcname-%version.tar.gz
 
 # These were obtained from http://solaris.bionicmutton.org/hg/kde4-specs-470/file/db0a8c7904f6/specs/gcc/patches/qt
@@ -54,7 +49,6 @@ Patch13:		qt-gpp-13-fix-namespace-tr1.diff
 
 SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:		SFEgcc-46
 Requires:		SFEgccruntime-46
@@ -110,6 +104,11 @@ tar xzf %{SOURCE1}
 %patch5
 %endif
 
+# Adding lxnet when lsocket and lnsl are included makes no sense
+cd mkspecs/solaris-g++
+sed "s/-lxnet //" qmake.conf > qmake.conf.new
+mv qmake.conf.new qmake.conf
+
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -117,20 +116,15 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 %define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
 %define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir}/mysql -R%{standard_prefix}/%{mysql_default_libdir}/mysql
 
-export CC=/usr/gcc/4.6/bin/gcc
-export CXX=/usr/gcc/4.6/bin/g++
+export CC=gcc
+export CXX=g++
 export CFLAGS="%optflags -fPIC"
-export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
+#export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
+export CXXFLAGS="%cxx_optflags -pthreads"
 
 #/usr/gcc/bin/gcc -v 2>&1| egrep "gcc version 4\."
 $CC -v -v 2>&1| egrep "gcc version 4\.[7-]" && export CFLAGS="$CFLAGS -std=gnu++11" && export CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
-# On some Intel CPUs, ffmpeg incorrectly applies AMD optimizations
-#%define noamd3d %(prtdiag -v | grep CPU | grep -q Intel && echo 1 || echo 0)
-# prtdiag -v doesn't work in zones but psrinfo -pv does 
-%define noamd3d %(psrinfo -pv | grep CPU | grep -q Intel && echo 1 || echo 0)
-
-#export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads"
 export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads -fPIC"
 
 # Assume i386 CPU is not higher than Pentium 4
@@ -159,16 +153,10 @@ export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthre
            -opengl desktop \
            -shared \
            -plugin-sql-mysql \
-%if %noamd3d
            -no-3dnow \
-           -no-sse4.1 -no-sse4.2 \
-%else
-           -no-ssse3 -no-sse4.1 -no-sse4.2 \
-%endif
+           -no-ssse3 -no-sse4.1 -no-sse4.2 -no-avx \
            %extra_includes \
            %extra_libs
-
-##TODO## make detection of opengl better, maybe leave switch out completely
 
 
 make -j$CPUS
@@ -182,7 +170,7 @@ export PATH=${PWD}/bin:${PATH}
 
 cd tests/auto
 
-gmake
+make
 vncserver -kill :1 || true
 vncserver :1
 export DISPLAY=:1
@@ -194,17 +182,17 @@ vncserver -kill :1
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
-make install INSTALL_ROOT=$RPM_BUILD_ROOT
+make install INSTALL_ROOT=%buildroot
 
-rm ${RPM_BUILD_ROOT}%{_libdir}/*.la
+rm %buildroot%_libdir/*.la
 rm -rf %buildroot%_prefix/examples
 rm -rf %buildroot%_prefix/demos
 rm -rf %buildroot%_prefix/tests
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
@@ -245,6 +233,11 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sun Oct 27 2013 - Alex Viskovatoff
+- bump to 4.8.5
+- do not compile with use of AVX instructions
+- unconditionally do not compile 3DNow! instructions: AMD has dropped support
+- do not hardcode path of gcc
 * Sun Jun 30 2013 - Thomas Wagner
 - add patch13 qt-gpp-13-fix-namespace-tr1.diff - or get TypeTraits.h:173:69: error: 'std::tr1' has not been declared with gcc 4.7.x __GXX_EXPERIMENTAL_CXX0X__
 - for the time now, BuildRequires SFEgcc-46 and SFEgcc-46-runtime to get around errors when compiling with c++11 enabled gcc 4.7.x
