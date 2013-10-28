@@ -78,6 +78,7 @@ autoconf
 make -j $CPUS
 
 %install
+rm -rf $RPM_BUILD_ROOT
 make -i install DESTDIR=$RPM_BUILD_ROOT
 
 # Clean up unpackaged files.
@@ -102,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Sun Oct 28 2013 - Thomas Wagner
+- cleanup target dir in %install
 * Sun Mar 07 2010 - Milan Jurik
 - update for 0.82
 * Mon Dec 22 2008 - Thomas Wagner
