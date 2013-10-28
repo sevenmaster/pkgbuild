@@ -114,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/cdio
 
 %changelog
+* Sun Oct 28 2013 - Thomas Wagner
+- cleanup target dir in %install
 * Fri Jul  5 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibC}, %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Thu Oct 06 2011 - Milan Jurik
