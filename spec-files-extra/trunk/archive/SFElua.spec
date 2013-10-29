@@ -50,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/lua/*
 
 %changelog
+* Tue Oct 29 2013 Alex Viskovatoff
+- Archive: replaced by SFElua-51.spec, which does not conflict with system lua
 * Thu Mar 05 2009 - sobotkap@gmail.com
 - Fix patch and bump to version 5.1.4
 * Tue Sep 11 2007 - Petr Sobotka sobotkap@centum.cz
