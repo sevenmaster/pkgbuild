@@ -104,11 +104,6 @@ tar xzf %{SOURCE1}
 %patch5
 %endif
 
-# Adding lxnet when lsocket and lnsl are included makes no sense
-cd mkspecs/solaris-g++
-sed "s/-lxnet //" qmake.conf > qmake.conf.new
-mv qmake.conf.new qmake.conf
-
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')

@@ -1,5 +1,7 @@
---- mkspecs/solaris-g++/qmake.conf.orig	2011-09-12 06:49:28.000000000 +0000
-+++ mkspecs/solaris-g++/qmake.conf	2011-10-27 22:10:41.160650935 +0000
+Adding lxnet when lsocket and lnsl are included makes no sense.
+
+--- mkspecs/solaris-g++/qmake.conf.orig	Wed Oct 30 19:12:45 2013
++++ mkspecs/solaris-g++/qmake.conf	Wed Oct 30 19:20:07 2013
 @@ -28,7 +28,7 @@
  QMAKE_CFLAGS_SHLIB	= -fPIC
  QMAKE_CFLAGS_STATIC_LIB	= $$QMAKE_CFLAGS_SHLIB
@@ -33,3 +35,12 @@
  
  QMAKE_LIBS		=
  QMAKE_LIBS_DYNLOAD	= -ldl
+@@ -73,7 +73,7 @@
+ QMAKE_LIBS_OPENGL	= -lGL
+ QMAKE_LIBS_OPENGL_QT	= -lGL
+ QMAKE_LIBS_THREAD	= -lpthread -lrt
+-QMAKE_LIBS_NETWORK      = -lresolv -lsocket -lxnet -lnsl
++QMAKE_LIBS_NETWORK      = -lresolv -lsocket -lnsl
+ 
+ QMAKE_MOC		= $$[QT_INSTALL_BINS]/moc
+ QMAKE_UIC		= $$[QT_INSTALL_BINS]/uic
