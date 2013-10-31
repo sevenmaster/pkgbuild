@@ -13,20 +13,20 @@
 
 %define with_fribidi %(pkginfo -q SFElibfribidi && echo 1 || echo 0)
 %define with_openjpeg %(pkginfo -q SFEopenjpeg && echo 1 || echo 0)
+# NVDAgraphics is the driver supplied directly by Nvidia
+%define with_system_nvidia %(pkginfo -q NVDAgraphics && echo 0 || echo 1)
 
 Name:			SFEmpv
 IPS_Package_Name:	media/mpv
 Summary:		mpv plays videos
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.1.7
+Version:		0.2.1
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-build
-
-# pkgbuild now takes care of install-time dependencies, so do not declare them
 
 BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibcdio-devel
@@ -34,7 +34,9 @@ BuildRequires: SFElibdvdnav-devel
 BuildRequires: SFEpython26-docutils
 BuildRequires: SUNWgroff
 BuildRequires: SUNWesu
+%if %with_system_nvidia
 BuildRequires: driver/graphics/nvidia
+%endif
 %if %with_fribidi
 BuildRequires: SFElibfribidi-devel
 %endif
@@ -44,6 +46,11 @@ BuildRequires: SFEliba52-devel
 BuildRequires: SFEopenjpeg-devel
 %endif
 BuildRequires: SFElibass-devel
+BuildRequires: SFElibquvi
+
+# pkgbuild now takes care of most install-time dependencies, so do not
+# declare them unless pkgbuild can't find them
+
 
 %description
 mpv is a movie player based on MPlayer and mplayer2. It supports a wide variety
@@ -59,9 +66,9 @@ files.
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 # Solaris headers do not define BYTE_ORDER or BIG_ENDIAN, breaking sound
-export CFLAGS="-O2 -march=prescott -fomit-frame-pointer -D__hidden=\"\" -DBYTE_ORDER=0 -DBIG_ENDIAN=1"
+export CFLAGS="-O3 -march=prescott -fomit-frame-pointer -DBYTE_ORDER=0 -DBIG_ENDIAN=1"
 
-export LDFLAGS="-L/usr/gnu/lib -R/usr/gnu/lib"
+export LDFLAGS="%gnu_lib_path"
 export CC=gcc
 
 # Enabling gl makes compilation fail.  When mplayer did compile with
@@ -87,7 +94,7 @@ make install DESTDIR=%buildroot
 # See http://www.mplayerhq.hu/DOCS/tech/manpage.txt
 cd %buildroot/%_datadir/man
 mkdir cat1
-groff -mman -Tutf8 -rLL=78n man1/mpv.1 | col -bxp > cat1/mpv.1
+groff -mman -Tutf8 -rLL=80n man1/mpv.1 | col -bxp > cat1/mpv.1
 
 
 %clean
@@ -100,9 +107,25 @@ rm -rf %buildroot
 %_bindir/*
 %_mandir/man1
 %_mandir/cat1
+%dir %attr (-, root, other) %_datadir/applications
+%_datadir/applications/mpv.desktop
+%dir %attr (-, root, other) %_datadir/icons
+%dir %attr (-, root, other) %_datadir/icons/hicolor
+%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16
+%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16/apps
+%_datadir/icons/hicolor/16x16/apps/*.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32
+%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32/apps
+%_datadir/icons/hicolor/32x32/apps/*.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
+%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
+%_datadir/icons/hicolor/64x64/apps/*.png
 
 
 %changelog
+* Mon Oct 28 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- Update to 0.2.1; use libquvi (for YouTube)
+- Do not unconditionally require system nvidia
 * Fri Oct 11 2013 - Alex Viskovatoff
 - Fork SFEmpv.spec off SFEmplayer2.spec
 * Thu Nov 17 2011 - Alex Viskovatoff
