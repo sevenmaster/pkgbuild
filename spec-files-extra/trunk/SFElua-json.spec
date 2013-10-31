@@ -7,7 +7,7 @@
 %define _pkg_docdir %_docdir/%upstreamname
 
 Name:           SFElua-json
-IPS_package_name: lua/lua-json
+IPS_package_name: lua-51/lua-json
 Version:        1.3.2
 Summary:        JSON Parser/Constructor for Lua
 Group:          Development/Libraries

@@ -5,7 +5,7 @@
 %define _pkg_docdir %_docdir/lua-lpeg
 
 Name:           SFElua-lpeg
-IPS_package_name: lua/lua-lpeg
+IPS_package_name: lua-51/lua-lpeg
 Version:        0.12
 Summary:        Parsing Expression Grammars for Lua
 Group:          Development/Libraries

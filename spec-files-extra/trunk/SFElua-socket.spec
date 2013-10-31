@@ -7,7 +7,7 @@
 %define _pkg_docdir %_docdir/%upstreamname
 
 Name:           SFElua-socket
-IPS_package_name: lua/lua-socket
+IPS_package_name: lua-51/lua-socket
 Version:        3.0
 Release:        0.4rc1
 Summary:        Network support for the Lua language

@@ -9,10 +9,10 @@
 Name:		SFEjson-glib
 IPS_Package_Name:	library/desktop/json-glib
 Summary:	JSON parser library for GLib
-Version:	0.12.6
+Version:	0.14.2
 License:	LGPL v2.1
 Group:		Desktop (GNOME)/Libraries
-Source:		http://ftp.gnome.org/pub/GNOME/sources/json-glib/0.12/json-glib-%{version}.tar.bz2
+Source:		http://ftp.gnome.org/pub/GNOME/sources/json-glib/0.14/json-glib-%{version}.tar.bz2
 Url:		http://live.gnome.org/JsonGlib
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -21,7 +21,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: SUNWgnome-common-devel
 BuildRequires: SUNWgtk-doc
-BuildRequires: SUNWgnome-base-libs-devel
+BuildRequires: SUNWgnome-base-libs
 Requires: SUNWgnome-base-libs
 
 %package devel
@@ -49,7 +49,6 @@ export LDFLAGS="%{_ldflags}"
             --libdir=%{_libdir}		\
             --includedir=%{_includedir}	\
 	    --mandir=%{_mandir}		\
-	    --enable-gtk-doc		\
 	    --disable-static
 
 gmake -j $CPUS
@@ -58,19 +57,20 @@ gmake -j $CPUS
 rm -rf $RPM_BUILD_ROOT
 gmake install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
+rm -rf %buildroot/%_datadir/locale
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%doc AUTHORS COPYING ChangeLog NEWS README
+#%doc AUTHORS COPYING ChangeLog NEWS README
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
-#%{_libdir}/girepository-1.0
+%{_libdir}/girepository-1.0
 %dir %attr (0755, root, sys) %{_datadir}
-#%{_datadir}/gir-1.0
-%dir %attr (0755, root, other) %{_docdir}
+%{_datadir}/gir-1.0
+#%dir %attr (0755, root, other) %{_docdir}
 
 %files devel
 %defattr (-, root, bin)
@@ -82,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Tue Oct 22 2013 - Alex Viskovatoff
+- bump to 0.14.2
+- do not build documentation, as doing so breaks the build - this goes
+  for version 0.12.6 as well
 * Sun Dec 11 2011 - Milan Jurik
 - bump to 0.12.6
 * Sat Oct 23 2010 - Brian Cameron <brian.cameron@oracle.com>
