@@ -8,14 +8,10 @@
 Name:                    cairomm
 License:		 LGPL
 Group:			 System/Libraries
-Version:                 1.8.6
+Version:                 1.10.0
 Release:		 1
-Distribution:		 Java Desktop System
-Vendor:			 Sun Microsystems, Inc.
-Summary:                 cairomm - C++ API for the Cairo Graphics Library
 URL:                     http://cairographics.org/cairomm/
 Source:                  http://cairographics.org/releases/cairomm-%{version}.tar.gz
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 Requires: cairo
 
 %package devel
@@ -32,8 +28,7 @@ fi
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --sysconfdir=%{_sysconfdir} 	\
-	    --disable-python 		\
-	    --disable-docs
+	    --disable-documentation
 make -j$CPUS 
 
 %install
@@ -66,6 +61,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- update to 1.10.0
 * Fri Aug  5 2011 - Alex Viskovatoff
 - update to 1.8.6
 * Tue Feb 19 2008 - ghee.teo@sun.com

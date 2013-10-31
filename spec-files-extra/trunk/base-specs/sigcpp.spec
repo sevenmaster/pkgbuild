@@ -5,18 +5,18 @@
 # Owner: elaine
 #
 
-%define major_minor      2.2
+%define major_minor      2.3
 
 Name:                    libsigc++
 License:                 LGPL
 Group:                   System/Libraries
-Version:                 2.2.10
+Version:                 2.3.1
 Release:                 1
 Distribution:            Java Desktop System
 Vendor:                  Sun Microsystems, Inc.
 Summary:                 Libsigc++ - a library that implements a typesafe callback system for standard C++
 URL:                     http://libsigc.sourceforge.net
-Source:                  http://ftp.gnome.org/pub/GNOME/sources/libsigc++/%major_minor/%{name}-%{version}.tar.bz2
+Source:                  http://ftp.gnome.org/pub/GNOME/sources/libsigc++/%major_minor/%{name}-%{version}.tar.xz
 #Patch1:                  sigcpp-01-build-fix.diff
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -46,6 +46,8 @@ popd
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- Bump to 2.3.1
 * Fri Aug  5 2011 - Alex Viskovatoff
 - Bump to 2.2.10
 * Mon Mar 10 2008 - damien.carbery@sun.com

@@ -11,12 +11,12 @@
 Name:         poppler
 License:      GPL
 Group:        System/Libraries
-Version:      0.14.5
+Version:      0.24.3
 Release:      1 
 Distribution: Java Desktop System
 Vendor:       Sun Microsystems, Inc.
 Summary:      PDF Rendering Library
-Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.gz
+Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 # date:2005-11-29 type:feature owner:laca bugzilla:9730
 Patch1:       poppler-01-uninstalled.pc.diff
 URL:          http://poppler.freedesktop.org/
@@ -25,17 +25,16 @@ Docdir:       %{_docdir}/%{name}
 Autoreqprov:  on
 Prereq:       /sbin/ldconfig
 
-%define cairo_version 0.5.0
-%define gtk2_version 2.4.0
+#%define cairo_version 0.5.0
+#%define gtk2_version 2.4.0
+%define cairo_version 1.10.2
+%define gtk2_version 2.20.1
 
 Requires:      cairo >= %{cairo_version}
 Requires:      gtk2 >= %{gtk2_version}
 
 BuildRequires: cairo-devel >= %{cairo_version}
 BuildRequires: gtk2-devel >= %{gtk2_version}
-
-Obsoletes:     xpdf <= 3.0
-Provides:      xpdf = 3.0
 
 %description
 Poppler is a fork of the xpdf PDF viewer developed by Derek Noonburg
@@ -112,31 +111,25 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-#libtoolize --force
-#aclocal $ACLOCAL_FLAGS -I . -I m4
-#autoheader
-#automake -a -c -f
-#autoconf
-#CFLAGS="$RPM_OPT_FLAGS"		\
+# Building documentation currently breaks build
 ./configure --prefix=%{_prefix}		\
 	    --datadir=%{_datadir}       \
             --libdir=%{_libdir}         \
 	    --sysconfdir=%{_sysconfdir} \
 	    --enable-poppler-glib	\
-            --disable-poppler-qt        \
-            --disable-poppler-qt4       \
+            --enable-poppler-qt4       \
+            --disable-poppler-qt5       \
             --disable-static            \
 	    --mandir=%{_mandir}	        \
             --enable-zlib               \
-            %{gtk_doc_option}
+	    --disable-gtk-doc
+#            %{gtk_doc_option}
 
 make -j $CPUS
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
-#rm $RPM_BUILD_ROOT%{_libdir}/*.a
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
-rm $RPM_BUILD_ROOT%{_bindir}/pdftoabw
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -161,6 +154,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- Update to 0.24.3; build poppler-qt4
 * Fri Aug  5 2011 - Alex Viskovatoff
 - Update to 0.14.5
 * Tue Dec 04 2007 - damien.carbery@sun.com
