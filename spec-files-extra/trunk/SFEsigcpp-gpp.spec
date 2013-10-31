@@ -17,7 +17,7 @@
 %use sigcpp = sigcpp.spec
 
 Name:                    SFEsigcpp-gpp
-IPS_Package_Name:	library/g++/sigcpp
+IPS_Package_Name:	 library/g++/sigcpp
 Summary:                 Library that implements typesafe callback system for standard C++ (g++-built)
 Group:                   Development/C++
 URL:                     http://libsigc.sourceforge.net/
@@ -73,10 +73,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/sigc++*
 %dir %attr (-, root, sys) %_datadir
 %dir %attr (-, root, other) %_datadir/doc
-%_datadir/doc/%{sigcpp.name}-%{sigcpp.major_minor}
+%_datadir/doc/%{sigcpp.name}-2.2
 %_datadir/devhelp
 
 %changelog
+- adapt to updated base spec
 * Fri Aug  5 2011 - Alex Viskovatoff
 - use new g++ path layout; add SUNW_Copyright
 * Thu Jun 26 2008 - river@wikimedia.org

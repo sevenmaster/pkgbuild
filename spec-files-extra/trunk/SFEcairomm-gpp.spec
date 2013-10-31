@@ -17,20 +17,19 @@
 %use cairomm = cairomm.spec
 
 Name:                    SFEcairomm-gpp
-IPS_Package_Name:	library/desktop/g++/cairomm
+IPS_Package_Name:	 library/desktop/g++/cairomm
 Summary:                 C++ API for the Cairo Graphics Library (g++-built)
 Group:                   Desktop (GNOME)/Libraries
 License:                 LGPLv2
 SUNW_Copyright:          cairomm.copyright
 Version:                 %{cairomm.version}
 SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: SUNWgnome-base-libs
 BuildRequires: SUNWgnome-base-libs-devel
+Buildrequires: cairo
 Requires: SFEsigcpp-gpp
 BuildRequires: SFEsigcpp-gpp-devel
-BuildRequires: SUNWsigcpp-devel
 
 %package devel
 Summary:                 %{summary} - development files
@@ -87,12 +86,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 %_libdir/cairomm-1.0
 %_includedir
-%dir %attr (0755, root, sys) %_datadir
-%dir %attr (0755, root, other) %dir %_docdir
-%_datadir/doc/cairomm-1.0
-%_datadir/devhelp
+#%dir %attr (0755, root, sys) %_datadir
+#%dir %attr (0755, root, other) %dir %_docdir
+#%_datadir/doc/cairomm-1.0
+#%_datadir/devhelp
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- adapt to updated base spec
 * Fri Aug  5 2011 - Alex Viskovatoff
 - use new g++ path layout add SUNW_Copyright
 * Wed Apr 23 2008 - laca@sun.com

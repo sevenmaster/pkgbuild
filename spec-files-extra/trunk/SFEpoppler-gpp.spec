@@ -16,21 +16,19 @@
 %use poppler = poppler.spec
 
 Name:                    SFEpoppler-gpp
-IPS_Package_Name:	library/g++/poppler
+IPS_Package_Name:	 library/g++/poppler
 Summary:                 PDF rendering library (g++-built)
 URL:                     http://poppler.freedesktop.org
 License:                 GPLv2
 SUNW_Copyright:          poppler.copyright
 Version:                 %{poppler.version}
 SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWgnome-base-libs
 BuildRequires: SUNWgnome-base-libs-devel
-Requires: SFEsigcpp-gpp
-BuildRequires: SFEsigcpp-gpp-devel
-BuildRequires: SUNWsigcpp-devel
+BuildRequires: gtk2
+BuildRequires: cairo
 
 %package devel
 Summary:                 %{summary} - development files
@@ -52,6 +50,7 @@ export CXX=g++
 export CXXFLAGS="%cxx_optflags -fpermissive"
 export CFLAGS="%optflags"
 export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig"
+export PATH=/usr/g++/bin:$PATH
 export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib"
 export PERL_PATH=/usr/perl5/bin/perl
 %poppler.build -d %name-%version
@@ -64,11 +63,11 @@ find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
 # RUNPATH ends up getting incorrectly set, with /usr/g++/lib behind /usr/lib
 %define rpath 'dyn:runpath /usr/g++/lib:/usr/gnu/lib'
-pushd %buildroot%_libdir
-elfedit -e %rpath libpoppler-cpp.so.0.1.0
-elfedit -e %rpath libpoppler-glib.so.5.0.0
-elfedit -e %rpath libpoppler.so.7.0.0
-popd
+# pushd %buildroot%_libdir
+# elfedit -e %rpath libpoppler-cpp.so.0.1.0
+# elfedit -e %rpath libpoppler-glib.so.5.0.0
+# elfedit -e %rpath libpoppler.so.7.0.0
+# popd
 
 # REMOVE l10n FILES - included in Solaris
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
@@ -85,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*
+%_libdir/girepository-1.0
 
 %files devel
 %defattr (-, root, bin)
@@ -94,8 +94,11 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir
 %dir %attr (0755, root, sys) %{_datadir}
 %_datadir/gtk-doc
+%_datadir/gir-1.0
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- adapt to updated base spec
 * Fri Aug  5 2011 - Alex Viskovatoff
 - use new g++ path layout; add SUNW_Copyright
 * Wed Apr 23 2008 - laca@sun.com
