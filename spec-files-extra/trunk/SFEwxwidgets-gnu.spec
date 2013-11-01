@@ -126,6 +126,8 @@ rm -rf %{name}-%{version}
 %endif
 
 %changelog
+* Fri Nov  1 2013 - Thomas Wagner
+- use export PKG_CONFIG_PATH=%{_pkg_config_path} (before: was always using amd64/sparcv9)
 * Fri Jun 29 2012 - Thomas Wagner
 - rework 32/64-bit build system
 - Bump to 2.8.12

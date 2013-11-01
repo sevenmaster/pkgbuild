@@ -50,7 +50,7 @@ export CXXFLAGS="${CXXFLAGS} -fpermissive"
 export CPPFLAGS="-I%{xorg_inc}"
 
 #glib-2.0 need this or fails cast for pointers
-export PKG_CONFIG_PATH="/usr/lib/%{_arch64}/pkgconfig"
+export PKG_CONFIG_PATH=%{_pkg_config_path}
 
 #always use solaris LD
 export LD=`which ld-wrapper`
@@ -123,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Nov  1 2013 - Thomas Wagner
+- use export PKG_CONFIG_PATH=%{_pkg_config_path} (before: was always using amd64/sparcv9)
 * Mon Jul  9 2012 - Thomas Wanger
 - add -L|-R/usr/g++/lib to LDFLAGS to get /usr/g++/bin/wxrc use the right g++ libs
 * Sun Jul  8 2012 - Thomas Wagner

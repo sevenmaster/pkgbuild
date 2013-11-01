@@ -129,6 +129,8 @@ rm -rf %{name}-%{version}
 %endif
 
 %changelog
+* Fri Nov  1 2013 - Thomas Wagner
+- use export PKG_CONFIG_PATH=%{_pkg_config_path} (before: was always using amd64/sparcv9)
 * Mon Jul  9 2012 - Thomas Wanger
 - add -L|-R/usr/g++/lib to LDFLAGS to get /usr/g++/bin/wxrc use the right g++ libs
 * Fri Jun 29 2012 - Thomas Wagner
