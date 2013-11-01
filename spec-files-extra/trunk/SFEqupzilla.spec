@@ -13,13 +13,14 @@
 %define cc_is_gcc 1
 %include base.inc
 %define srcname qupzilla
+%define _pkg_docdir %_docdir/%srcname
 
 Name:		SFEqupzilla
 IPS_Package_Name: web/browser/qupzilla
 Summary:	Lightweight multiplatform QtWebKit browser
 URL:		http://www.qupzilla.com/
 License:	GPLv3
-#SUNW_Copyright:	%srcname.copyright
+SUNW_Copyright:	%srcname.copyright
 Group:		Applications/Internet
 Version:	1.4.4
 Source:		http://github.com/QupZilla/%srcname/archive/v%version.tar.gz
@@ -80,6 +81,7 @@ rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
+%doc AUTHORS CHANGELOG README.md
 %_bindir/%srcname
 %_libdir/libQupZilla.so*
 %_libdir/%srcname
@@ -87,28 +89,9 @@ rm -rf %buildroot
 %dir %attr (-, root, other) %_datadir/applications
 %_datadir/applications/%srcname.desktop
 %_datadir/bash-completion
-%dir %attr (-, root, other) %_datadir/icons
-%dir %attr (-, root, other) %_datadir/icons/hicolor
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16/apps
-%_datadir/icons/hicolor/16x16/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32/apps
-%_datadir/icons/hicolor/32x32/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48/apps
-%_datadir/icons/hicolor/48x48/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
-%_datadir/icons/hicolor/64x64/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128/apps
-%_datadir/icons/hicolor/128x128/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256
-%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256/apps
-%_datadir/icons/hicolor/256x256/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/pixmaps
-%_datadir/pixmaps/%srcname.png
+%defattr (-, root, other)
+%_datadir/icons
+%_datadir/pixmaps
 %_datadir/%srcname/themes
 
 %if %build_l10n
@@ -120,5 +103,7 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- add copyright file
 * Sun Oct 27 2013 - Alex Viskovatoff <herzen@imapmail.org>
-- Initial spec
+- initial spec

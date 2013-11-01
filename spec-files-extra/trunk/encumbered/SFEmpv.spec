@@ -10,6 +10,8 @@
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
+%define srcname mpv
+%define _pkg_docdir %_docdir/%srcname
 
 %define with_fribidi %(pkginfo -q SFElibfribidi && echo 1 || echo 0)
 %define with_openjpeg %(pkginfo -q SFEopenjpeg && echo 1 || echo 0)
@@ -104,25 +106,18 @@ rm -rf %buildroot
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %_datadir
-%_bindir/*
-%_mandir/man1
-%_mandir/cat1
-%dir %attr (-, root, other) %_datadir/applications
-%_datadir/applications/mpv.desktop
-%dir %attr (-, root, other) %_datadir/icons
-%dir %attr (-, root, other) %_datadir/icons/hicolor
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16/apps
-%_datadir/icons/hicolor/16x16/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32/apps
-%_datadir/icons/hicolor/32x32/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
-%_datadir/icons/hicolor/64x64/apps/*.png
+%_bindir/%srcname
+%_mandir
+%defattr (-, root, other)
+%doc README.md
+%doc -d DOCS edl.rst encoding.rst tech-overview.txt OUTDATED-tech/formats.txt OUTDATED-tech/general.txt OUTDATED-tech/hwac3.txt OUTDATED-tech/libao2.txt OUTDATED-tech/libvo.txt OUTDATED-tech/mpsub.sub OUTDATED-tech/swscaler_filters.txt OUTDATED-tech/swscaler_methods.txt
+%_datadir/applications/%srcname.desktop
+%_datadir/icons
 
 
 %changelog
+* Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- Add documentation
 * Mon Oct 28 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - Update to 0.2.1; use libquvi (for YouTube)
 - Do not unconditionally require system nvidia
