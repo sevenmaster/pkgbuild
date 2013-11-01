@@ -3,36 +3,29 @@
 #
 # includes module(s): stellarium
 #
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
-#
-
-### NOTE ### (Alex Viskovatoff)
-###
-### The only way I can get this to link successfully is to remove
-### libgcc_s.so* and libstdc++.* from /usr/sfw/lib while building.
 
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
+%define srcname stellarium
+%define _pkg_docdir %_docdir/%srcname
 
 Name:		SFEstellarium
-Version:	0.11.1
+IPS_Package_Name:	image/stellarium
+Version:	0.12.4
 Summary:	Photo-realistic night sky renderer
-Group:		Applications/Games
+Group:		Scientific/Astronomy
 License:	GPLv2+
-SUNW_Copyright:	stellarium.copyright
+SUNW_Copyright:	GPLv2.copyright
 URL:		http://stellarium.free.fr/
-Source:		%{sf_download}/stellarium/stellarium-%{version}.tar.gz
-#Patch1:		stellarium-01-sunstudio.diff
+Source:		%sf_download/%srcname/%srcname-%version.tar.gz
 Patch2:		stellarium-02-gcc-name-conflict.diff
-SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
 BuildRequires: SFEsdl-mixer-devel
 Requires: SFEsdl-mixer
-#BuildRequires: SUNWimagick
+BuildRequires: SUNWimagick
 BuildRequires: SFEcmake
 BuildRequires: SFEqt-gpp-devel
 Requires: SFEqt-gpp
@@ -53,14 +46,10 @@ Requires:	%{name}
 
 %prep
 %setup -q -n stellarium-%{version}
-#%patch1 -p1
 %patch2 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 # pod2man
 export CC=gcc
@@ -80,17 +69,15 @@ make -j$CPUS
 cd ../..
 convert -size 32x32 data/icon.bmp stellarium.png
 
+
 %install
-rm -rf %{buildroot}
+rm -rf %buildroot
 cd builds/unix
-make install DESTDIR=%{buildroot} INSTALL="%{_bindir}/ginstall -c -p"
+make install DESTDIR=%buildroot INSTALL="%_bindir/ginstall -c -p"
 cd ../..
 
 # Setting CMAKE_LIBRARY_PATH does not do any good
-elfedit -e 'dyn:runpath /usr/gnu/lib:/usr/g++/lib' %buildroot/%_bindir/stellarium
-
-mkdir -p %{buildroot}%{_datadir}/pixmaps/
-ginstall -m 0644 -p data/stellarium.png %{buildroot}%{_datadir}/pixmaps/stellarium.png
+/usr/bin/elfedit -e 'dyn:runpath /usr/gnu/lib:/usr/g++/lib' %buildroot/%_bindir/stellarium
 
 %if %build_l10n
 %else
@@ -98,17 +85,23 @@ ginstall -m 0644 -p data/stellarium.png %{buildroot}%{_datadir}/pixmaps/stellari
 rm -rf %{buildroot}%{_datadir}/locale
 %endif
 
+
 %clean
-rm -rf %{buildroot}
+rm -rf %buildroot
 
 %files
 %defattr(-, root, bin)
-%{_bindir}
-%dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/stellarium
-%dir %attr (0755, root, other) %{_datadir}/pixmaps
-%{_datadir}/pixmaps/stellarium.png
-%{_mandir}/man1/stellarium.1
+%doc AUTHORS ChangeLog CHANGES-FROM-TRUNK.txt README
+%_bindir
+%dir %attr (0755, root, sys) %_datadir
+%_datadir/%srcname
+%dir %attr (0755, root, bin) %_mandir
+%dir %attr (0755, root, bin) %_mandir/man1
+%_mandir/man1/stellarium.1
+%defattr (-, root, other)
+%_datadir/applications/%srcname.desktop
+%_datadir/pixmaps/%srcname.xpm
+%_datadir/icons
 
 %if %build_l10n
 %files l10n
@@ -118,6 +111,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Oct 31 2013 - Alex Viskovatoff
+- update to 0.12.4; undo unexplained move to archive/
 * Sun Jan 1 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 0.11.1
 * Wed Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
