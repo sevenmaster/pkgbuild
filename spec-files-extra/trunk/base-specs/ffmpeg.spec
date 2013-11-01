@@ -5,7 +5,7 @@
 #
 
 Summary:                 A very fast video and audio converter
-Version:                 2.0.2
+Version:                 2.1
 Source:                  http://www.ffmpeg.org/releases/ffmpeg-%version.tar.bz2
 URL:                     http://www.ffmpeg.org/index.html
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
@@ -102,6 +102,8 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Nov  1 2013 - Alex Viskovatoff
+- bump to 2.1
 * Fri Oct 11 2013 - Alex Viskovatoff
 - bump to 2.0.2; enable avresample
 * Thu Sep 12 2013 - Alex Viskovatoff

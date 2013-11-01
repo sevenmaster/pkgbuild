@@ -11,8 +11,8 @@
 ################################################################################
 #  x264_build MUST CORRESPOND to libx264.so.<number> as produced by the build  #
 ################################################################################
-%define x264_build       136
-%define snap             20130910
+%define x264_build       138
+%define snap             20131031
 
 %define snaph            2245-stable
 %define src_name         x264-snapshot
@@ -27,11 +27,13 @@ Patch2:		libx264-02-version.diff
 Patch6:		libx264-06-gpac.diff
 BuildRoot:	%_tmppath/%name-%version-build
 
+
 %prep
 %setup -q -n %src_name-%snap-%snaph
 
 %patch2 -p1
 %patch6 -p1
+
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -56,7 +58,7 @@ fi
 
 # Don't build cli, because
 #   (1) It's useless, since it can only read raw streams at present
-#   (2) It creates a perverse circular dependency with ffmpeg
+#   (2) It creates a perverse circular dependency on ffmpeg
 # (The reason that wasn't a problem before is that the old version
 #  of pkgbuild didn't do a dependency check when creating IPS packages.)
 ./configure	\
@@ -68,10 +70,10 @@ fi
     --extra-ldflags="$LDFLAGS"	\
     --disable-cli		\
     --enable-visualize		\
-    --enable-shared		\
-    --disable-static
+    --enable-shared
 
 make -j$CPUS
+
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -80,6 +82,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Nov  1 2013 - Alex Viskovotoff
+- update to 20131031, updating x264_build to 138
 * Wed Sep 11 2013 - Alex Viskovatoff
 - update to 20130910
 - do not build the cli, because that complicates builds with the new pkgbuild

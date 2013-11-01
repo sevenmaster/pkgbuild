@@ -14,13 +14,12 @@ Summary:	MPlayer front-end using Qt
 Group:		Applications/Sound and Video
 URL:		http://smplayer.sourceforge.net
 Meta(info.upstroam):	Ricardo Villalba
-Version:	0.6.9
+Version:	0.8.6
 License:	GPL
 Source:		%sf_download/%srcname/%srcname-%version.tar.bz2
 Patch1:		smplayer-01-std-namespace.diff
 SUNW_Copyright:	smplayer.copyright
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include	default-depend.inc
 
 BuildRequires:	SFEqt-gpp-devel
@@ -44,10 +43,10 @@ gmake -j$CPUS PREFIX=%_basedir
 %install
 rm -rf $RPM_BUILD_ROOT
 
-gmake install PREFIX=%_basedir DOC_PATH=%_docdir/%srcname DESTDIR=$RPM_BUILD_ROOT
+gmake install PREFIX=%_basedir DOC_PATH=%_docdir/%srcname DESTDIR=%buildroot
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files
@@ -74,9 +73,26 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
 %dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
 %_datadir/icons/hicolor/64x64/apps/%pkgname.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128
+%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128/apps
+%_datadir/icons/hicolor/128x128/apps/*.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/192x192
+%dir %attr (-, root, other) %_datadir/icons/hicolor/192x192/apps
+%_datadir/icons/hicolor/192x192/apps/%srcname.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256
+%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256/apps
+%_datadir/icons/hicolor/256x256/apps/%srcname.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/512x512
+%dir %attr (-, root, other) %_datadir/icons/hicolor/512x512/apps
+%_datadir/icons/hicolor/512x512/apps/%srcname.png
+%dir %attr (-, root, other) %_datadir/icons/hicolor/scalable
+%dir %attr (-, root, other) %_datadir/icons/hicolor/scalable/apps
+%_datadir/icons/hicolor/scalable/apps/%srcname.svg
 
 
 %changelog
+* Wed Oct 30 1013 - Alex Viskovatoff
+- Update to 0.8.6
 * Mon Jul 25 2011 - N.B.Prashanth
 - Add SUNW_Copyright
 * Fri Jan 28 2011 - Alex Viskovatoff
