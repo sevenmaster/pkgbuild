@@ -9,18 +9,24 @@
 #
 
 %include Solaris.inc
-
+%include usr-g++.inc
 %define cc_is_gcc 1
 %include base.inc
-%define _prefix %_basedir/g++
+%include packagenamemacros.inc
+
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use sigcpp_64 = sigcpp.spec
+%endif
+%include base.inc
 
 %use sigcpp = sigcpp.spec
 
 Name:                    SFEsigcpp-gpp
 IPS_Package_Name:	 library/g++/sigcpp
-Summary:                 Library that implements typesafe callback system for standard C++ (g++-built)
+Summary:                 %{sigcpp.summary} (/usr/g++)
 Group:                   Development/C++
-URL:                     http://libsigc.sourceforge.net/
+URL:                     %{sigcpp.url}
 License:                 LGPLv2
 SUNW_Copyright:          sigcpp.copyright
 Version:                 %{sigcpp.version}
@@ -28,8 +34,9 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-BuildRequires: SFEgccruntime
-Requires: SFEgccruntime
+BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
+BuildRequires:  SFEgcc
+Requires: 	SFEgccruntime
 
 %package devel
 Summary:                 %{summary} - development files
@@ -38,23 +45,33 @@ SUNW_BaseDir:            %{_basedir}
 Requires: %name
 
 %prep
-rm -rf %name-%version
-mkdir %name-%version
-%sigcpp.prep -d %name-%version
-cd %{_builddir}/%name-%version
+rm -rf %{name}-%{version}
+mkdir %{name}-%{version}
+
+%ifarch amd64 sparcv9
+mkdir -p %{name}-%{version}/%{_arch64}
+%sigcpp_64.prep -d %{name}-%{version}/%{_arch64}
+%endif
+
+mkdir -p %{name}-%{version}/%{base_arch}
+%sigcpp.prep -d %{name}-%{version}/%{base_arch}
+
+
 
 %build
-export CC=gcc
-export CXX=g++
-export CXXFLAGS="%cxx_optflags"
-export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
-%sigcpp.build -d %name-%version
+%ifarch amd64 sparcv9
+%sigcpp_64.build -d %{name}-%{version}/%{_arch64}
+%endif
+
+%sigcpp.build -d %{name}-%{version}/%{base_arch}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%sigcpp.install -d %name-%version
-rm $RPM_BUILD_ROOT%{_libdir}/lib*a
+%ifarch amd64 sparcv9
+%sigcpp_64.install -d %{name}-%{version}/%{_arch64}
+%endif
+
+%sigcpp.install -d %{name}-%{version}/%{base_arch}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -62,22 +79,40 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/lib*
+%{_libdir}/lib*.so*
+#unusual place for an include file...
+%{_libdir}/sigc*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
+
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/lib*.so*
+#unusual place for an include file...
+%{_libdir}/%{_arch64}/sigc*
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%{_libdir}/%{_arch64}/pkgconfig/*
+%endif
+
 
 %files devel
 %defattr (-, root, bin)
-%_includedir
-%dir %attr (0755, root, bin) %{_libdir}
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
-%{_libdir}/pkgconfig/*
-%{_libdir}/sigc++*
-%dir %attr (-, root, sys) %_datadir
-%dir %attr (-, root, other) %_datadir/doc
-%_datadir/doc/%{sigcpp.name}-2.2
-%_datadir/devhelp
+%dir %attr (0755, root, bin) %{_includedir}
+%{_includedir}/*
+%dir %attr (0755, root, sys) %{_datadir}
+%defattr (-, root, other)
+%{_datadir}/doc
+%{_datadir}/devhelp
 
 %changelog
-- adapt to updated base spec
+* Sun Nov  3 2013 - Thomas Wagner
+- %use usr-g++.inc
+- add BuildRequires: %{pnm_buildrequires_SFExz_gnu}, %include packagenamemacros.inc
+- use manual xz unpacking for older pkgbuild versions
+- use %{gnu_lib_path}
+- make it 32/64-bit
+* Wed Oct 30 2013 - Alex Viskovatoff
+- Bump to 2.3.1
 * Fri Aug  5 2011 - Alex Viskovatoff
 - use new g++ path layout; add SUNW_Copyright
 * Thu Jun 26 2008 - river@wikimedia.org
