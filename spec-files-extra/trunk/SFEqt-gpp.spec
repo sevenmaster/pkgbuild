@@ -1,3 +1,11 @@
+#
+# spec file for package SFEqt-gpp
+#
+
+################################################################################
+# NOTE: Applications that use JavaScript and have it enabled currently crash.  #
+################################################################################
+
 ##TODO## verify new pnm_macro mysql dependencies on different osbuild/osdistro
 ##TODO## re-visit disabled (Build)Requires with check-deps script
 
@@ -18,7 +26,8 @@ Group:               Desktop (GNOME)/Libraries
 URL:                 http://qt-project.org
 License:             LGPLv2
 Version:             4.8.5
-Source:              http://releases.qt-project.org/qt4/source/%srcname-%version.tar.gz
+Source:              http://download.qt-project.org/official_releases/qt/4.8/%version/%srcname-%version.tar.gz
+Source1:	     qt-webkit-StackBounds.cpp
 
 # These were obtained from http://solaris.bionicmutton.org/hg/kde4-specs-470/file/db0a8c7904f6/specs/gcc/patches/qt
 # patches only got new names on Aug  2 2011 and moved out of subdirectory patches/qt-gpp/
@@ -45,10 +54,10 @@ Patch10:		qt-gpp-10-yield.diff
 Patch11:		qt-gpp-11-pthread_getattr.diff
 Patch12:		qt-gpp-12-plt.diff
 Patch13:		qt-gpp-13-fix-namespace-tr1.diff
-
+Patch14:		qt-gpp-14-webcore-sql.patch
 
 SUNW_Copyright:	     qt.copyright
-SUNW_BaseDir:        %{_basedir}
+SUNW_BaseDir:        %_basedir
 %include default-depend.inc
 BuildRequires:		SFEgcc-46
 Requires:		SFEgccruntime-46
@@ -67,8 +76,9 @@ Requires: %{pnm_requires_mysql_default}
 BuildRequires: SUNWdbus
 Requires: SUNWdbus
 
+# Follow example of developer/icu for IPS package name
 %package devel
-IPS_package_name:	library/desktop/g++/qt/header-qt
+IPS_package_name:	developer/desktop/g++/qt
 Summary:        %{summary} - development files
 SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
@@ -99,10 +109,14 @@ tar xzf %{SOURCE1}
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
 %if %{run_autotests}
 %patch4
 %patch5
 %endif
+# Use StackBounds.cpp from WebKit trunk revision 151817, which is supposed
+# to fix this bug: https://bugs.webkit.org/show_bug.cgi?id=114978
+cp -p %SOURCE1 src/3rdparty/webkit/Source/JavaScriptCore/wtf/StackBounds.cpp
 
 
 %build
@@ -228,6 +242,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- use WebKit source for one JavaScript source file, as a partial fix for crashes
 * Sun Oct 27 2013 - Alex Viskovatoff
 - bump to 4.8.5
 - do not compile with use of AVX instructions
