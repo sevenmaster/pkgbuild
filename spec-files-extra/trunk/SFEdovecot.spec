@@ -14,6 +14,7 @@
 # maybe set to nullstring outside release-candidates (example: 1.1/rc  or just 1.1)
 #%define downloadversion	 1.1/rc
 %define downloadversion	 2.2
+%define _pkg_docdir %_docdir/%src_name
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
@@ -41,10 +42,11 @@
 
 Name:		SFEdovecot
 IPS_Package_Name:	service/network/imap/dovecot
-Summary:	dovecot - A Maildir based pop3/imap email daemon
+Group:		System/Services
+Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.2.5
+Version:	2.2.6
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -58,16 +60,16 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:      SFEgcc
 Requires:           SFEgccruntime
 %endif
-BuildRequires: SUNWzlib
-Requires: SUNWzlib
-BuildRequires: SUNWbzip
-Requires: SUNWbzip
-BuildRequires: SUNWlexpt
-Requires: SUNWlexpt
-BuildRequires: SUNWgnu-idn
-Requires: SUNWgnu-idn
-BuildRequires: SUNWcurl
-Requires: SUNWcurl
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires: %{pnm_requires_SUNWzlib}
+BuildRequires: %{pnm_buildrequires_SUNWbzip}
+Requires: %{pnm_requires_SUNWbzip}
+BuildRequires: %{pnm_buildrequires_SUNWlexpt}
+Requires: %{pnm_requires_SUNWlexpt}
+BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
+Requires: %{pnm_requires_SUNWgnu_idn}
+BuildRequires: %{pnm_buildrequires_SUNWcurl}
+Requires: %{pnm_requires_SUNWcurl}
 #help Solaris 10 and SVR4 Nevada to workaround multiple package renames
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
@@ -212,8 +214,9 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_docdir}
-%{_docdir}/%{src_name}/*
+%_pkg_docdir/*.*
+%_pkg_docdir/example-config
+%_pkg_docdir/wiki
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
@@ -233,6 +236,10 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- fix packaging of documentation
+* Thu Oct 24 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
+- bump to 2.2.6
 * Mon Sep 9 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 2.2.5
 * Fri Jun 21 2013 - Logan Bruns <logan@gedanken.org>
