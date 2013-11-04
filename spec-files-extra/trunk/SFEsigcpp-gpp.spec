@@ -102,6 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %defattr (-, root, other)
 %{_datadir}/doc
+%defattr (-, root, bin)
 %{_datadir}/devhelp
 
 %changelog
@@ -111,6 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 - use manual xz unpacking for older pkgbuild versions
 - use %{gnu_lib_path}
 - make it 32/64-bit
+- fix permissions for %{_datadir}/devhelp
 * Wed Oct 30 2013 - Alex Viskovatoff
 - Bump to 2.3.1
 * Fri Aug  5 2011 - Alex Viskovatoff
