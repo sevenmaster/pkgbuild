@@ -3,8 +3,11 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
 Name:                    SFEgrip
 IPS_Package_Name:	desktop/audio/grip
+Group:			media/grip
 Summary:                 Cd-player and cd-ripper for the Gnome desktop
 URL:                     http://nostatic.org/grip/
 Version:                 3.3.1
@@ -13,12 +16,13 @@ Patch1:			 grip-01-i386.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
-BuildRequires: SUNWcurl
-Requires:      SUNWcurl
+
+BuildRequires: %{pnm_buildrequires_SUNWcurl}
+Requires:      %{pnm_requires_SUNWcurl}
 BuildRequires: SUNWfontconfig
 Requires:      SUNWfontconfig
-BuildRequires: SUNWfreetype2
-Requires:      SUNWfreetype2
+BuildRequires: %{pnm_buildrequires_SUNWfreetype2}
+Requires:      %{pnm_requires_SUNWfreetype2}
 BuildRequires: SUNWgnome-base-libs-devel
 Requires:      SUNWgnome-base-libs
 BuildRequires: SUNWgnome-component-devel
@@ -31,24 +35,24 @@ BuildRequires: SUNWgnome-terminal-devel
 Requires:      SUNWgnome-terminal
 BuildRequires: SUNWgnome-vfs-devel
 Requires:      SUNWgnome-vfs
-BuildRequires: SUNWgnu-idn
-Requires:      SUNWgnu-idn
+BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
+Requires:      %{pnm_buildrequires_SUNWgnu_idn}
 Requires:      SUNWgss
 Requires:      SUNWlibmsr
-BuildRequires: SUNWlibpopt-devel
-Requires:      SUNWlibpopt
-BuildRequires: SUNWmlibe
-BuildRequires: SUNWmlibh
-Requires:      SUNWmlib
-BuildRequires: SUNWopenssl-include
-Requires:      SUNWopensslr
+BuildRequires: %{pnm_buildrequires_SUNWlibpopt_devel}
+Requires:      %{pnm_requires_SUNWlibpopt}
+BuildRequires: %{pnm_buildrequires_SUNWmlib}
+Requires:      %{pnm_requires_SUNWmlib}
+BuildRequires: %{pnm_buildrequires_SUNWopenssl}
+Requires:      %{pnm_requires_SUNWopenssl}
 Requires:      SUNWxorg-clientlibs
 Requires:      SUNWxwice
-Requires:      SUNWxwplt
+BuildRequires: %{pnm_buildrequires_SUNWxwplt}
+Requires:      %{pnm_requires_SUNWxwplt}
 BuildRequires: SUNWxwxft
 Requires:      SUNWxwxft
-BuildRequires: SUNWzlib
-Requires:      SUNWzlibr
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
 
 %include default-depend.inc
 
@@ -111,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 25 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWSUNWgnu_idn}, SUNWcurl, SUNWfreetype2, SUNWlibpopt, SUNWmlib, SUNWopenssl, SUNWxwplt, SUNWzlib, %include packagenamacros.inc
+- add Group media/grip
 * Mon Feb 25 2009 - Thomas Wagner
 - fix permission problem with newer pkgbuild (honouring %doc)
 - add dependencies
