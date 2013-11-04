@@ -11,14 +11,14 @@
 
 
 #already included before?
-%if %{?osdistro}
+%if %{?osdistro:%{osdistro}}%{?!osdistro:0}
 #yes, osdistro.inc is already included
 %else
 %include osdistro.inc
 %endif
 
 #already included before?
-%if %{?osdistrofeatures}
+%if %{?osdistrofeatures:%{osdistrofeatures}}%{?!osdistrofeatures:0}
 #yes, osdistrofeatures.inc is already included
 %else
 %include osdistrofeatures.inc
@@ -90,6 +90,8 @@
 %include packagenames.define.allbuilds.inc
 
 %changelog
+* Mon Nov  4 2013 - Thomas Wagner
+- make check for osdistrofeatures.inc robust against non-defined %{osdistrofeatures} variable
 * Fri Jun 28 2013 - Thomas Wagner
 - first s12 support
 * Thu Jun 20 2013 - Thomas Wagner
