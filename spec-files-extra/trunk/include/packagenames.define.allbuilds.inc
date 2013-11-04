@@ -615,13 +615,13 @@
 
 #libdiscid
 #note for S10: add SFElibdiscid if necessary
-%define pnm_buildrequires_library_musicbrainz_libdiscid SUNWlibdiscidlibdiscid-devel
-%define pnm_requires_library_musicbrainz_libdiscid	SUNWlibdiscidlibdiscid
-%define pnm_buildrequires_SUNWlibdiscid_devel		SUNWlibdiscidlibdiscid-devel
-%define pnm_buildrequires_SUNWlibdiscid			SUNWlibdiscidlibdiscid-devel
-%define pnm_requires_SUNWlibdiscid			SUNWlibdiscidlibdiscid
-%define pnm_buildrequires_libdiscid			SUNWlibdiscidlibdiscid-devel
-%define pnm_requires_libdiscid				SUNWlibdiscidlibdiscid
+%define pnm_buildrequires_library_musicbrainz_libdiscid SUNWlibdiscid-devel
+%define pnm_requires_library_musicbrainz_libdiscid	SUNWlibdiscid
+%define pnm_buildrequires_SUNWlibdiscid_devel		SUNWlibdiscid-devel
+%define pnm_buildrequires_SUNWlibdiscid			SUNWlibdiscid-devel
+%define pnm_requires_SUNWlibdiscid			SUNWlibdiscid
+%define pnm_buildrequires_libdiscid			SUNWlibdiscid-devel
+%define pnm_requires_libdiscid				SUNWlibdiscid
 
 #libmusicbrainz
 %define pnm_buildrequires_library_musicbrainz_libmusicbrainz	SUNWmusicbrainz-devel
@@ -716,7 +716,25 @@
 %define pnm_requires_SUNWgnu_readline				SFEreadline
 %define pnm_buildrequires_gnu_readline				SFEreadline-devel
 %define pnm_requires_gnu_readline				SFEreadline
+#which SXCE build brought us SUNWgnu_readline ?
+#just a guess, enter the correct osbuild
+%if %( expr %{osbuild} '>=' 130 )
+%define pnm_buildrequires_library_readline			SUNWgnu-readline
+%define pnm_requires_library_readline				SUNWgnu-readline
+%define pnm_buildrequires_SUNWgnu_readline_devel		SUNWgnu-readline
+%define pnm_buildrequires_SUNWgnu_readline			SUNWgnu-readline
+%define pnm_requires_SUNWgnu_readline				SUNWgnu-readline
+%define pnm_buildrequires_gnu_readline				SUNWgnu-readline
+%define pnm_requires_gnu_readline				SUNWgnu-readline
+%endif
 
+%define pnm_buildrequires_SUNWlibm_devel			SUNWlibm
+%define pnm_buildrequires_SUNWlibm				SUNWlibm
+%define pnm_requires_SUNWlibm					SUNWlibm
+
+%define pnm_buildrequires_SUNWgnome_games_devel			SUNWgnome-games-devel
+%define pnm_buildrequires_SUNWgnome_games			SUNWgnome-games-devel
+%define pnm_requires_SUNWgnome_games				SUNWgnome-games
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -2105,6 +2123,12 @@
 
 
 %changelog
+* Sun Oct  3 2013 - Thomas Wagner
+- handle SUNWlibm and SUNWgnome_games_devel for SXCE
+* Thu Oct 17 2013 - Thomas Wagner
+- typo, s/libdiscidlibdiscid/libdiscid/
+* Wed Sep 18 2013 - Thomas Wagner
+- special handling SUNWgnu-readline (SXCE >=130)
 * Sat Sep 14 2013 - Thomas Wagner
 - first implementation steps for pnm_requires_ruby_default (unfinished and needs fixed SFEruby.spec)
 * Wed Aug 14 2013 - Thomas Wagner
