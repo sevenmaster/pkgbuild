@@ -23,7 +23,7 @@ IPS_Package_Name:	media/mpv
 Summary:		mpv plays videos
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.2.1
+Version:		0.2.2
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
@@ -116,6 +116,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.2.2
 * Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - Add documentation
 * Mon Oct 28 2013 - Alex Viskovatoff <herzen@imapmail.org>
