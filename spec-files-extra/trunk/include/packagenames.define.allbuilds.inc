@@ -133,19 +133,19 @@
 #for now, we always default to the SFE version 1.0.25 located in /usr/gnu
 #for every platform
 #SFElibsndfile/SFElibsndfile-devel or SUNWlibsndfile (no -devel)
-%define pnm_buildrequires_library_gnu_libsndfile		library/gnu/libsndfile
-%define pnm_requires_library_gnu_libsndfile			library/gnu/libsndfile
-%define pnm_buildrequires_SFElibsndfile_devel			library/gnu/libsndfile
-%define pnm_buildrequires_SFElibsndfile				library/gnu/libsndfile
-%define pnm_requires_SFElibsndfile				library/gnu/libsndfile
+%define pnm_buildrequires_library_gnu_libsndfile		SFElibsndfile
+%define pnm_requires_library_gnu_libsndfile			SFElibsndfile
+%define pnm_buildrequires_SFElibsndfile_devel			SFElibsndfile
+%define pnm_buildrequires_SFElibsndfile				SFElibsndfile
+%define pnm_requires_SFElibsndfile				SFElibsndfile
 #Devel-Package SUNWlibsndfile_devel doesn't really exist, but define it anyways:
-%define pnm_buildrequires_library_libsndfile			library/gnu/libsndfile
-%define pnm_requires_library_libsndfile				library/gnu/libsndfile
-%define pnm_buildrequires_libsndfile				library/gnu/libsndfile
-%define pnm_requires_libsndfile					library/gnu/libsndfile
-%define pnm_buildrequires_SUNWlibsndfile_devel			library/gnu/libsndfile
-%define pnm_buildrequires_SUNWlibsndfile			library/gnu/libsndfile
-%define pnm_requires_SUNWlibsndfile				library/gnu/libsndfile
+%define pnm_buildrequires_library_libsndfile			SFElibsndfile
+%define pnm_requires_library_libsndfile				SFElibsndfile
+%define pnm_buildrequires_libsndfile				SFElibsndfile
+%define pnm_requires_libsndfile					SFElibsndfile
+%define pnm_buildrequires_SUNWlibsndfile_devel			SFElibsndfile
+%define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile
+%define pnm_requires_SUNWlibsndfile				SFElibsndfile
 
 ##TODO## Add your packages here in case you specify an old
 
@@ -735,6 +735,10 @@
 %define pnm_buildrequires_SUNWgnome_games_devel			SUNWgnome-games-devel
 %define pnm_buildrequires_SUNWgnome_games			SUNWgnome-games-devel
 %define pnm_requires_SUNWgnome_games				SUNWgnome-games
+
+%define pnm_buildrequires_SUNWmlib_devel			SUNWmlib-devel,SUNWmlibe
+%define pnm_buildrequires_SUNWmlib				SUNWmlib,SUNWmlibe
+%define pnm_requires_SUNWmlib					SUNWmlib,SUNWmlibe
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -2123,6 +2127,9 @@
 
 
 %changelog
+* Mon Oct  4 2013 - Thomas Wagner
+- handle SUNWmlib for SXCE
+- change for os2nnn target library/gnu/libsndfile to SFElibsndfile (pkgtool can't resolve otherwise)
 * Sun Oct  3 2013 - Thomas Wagner
 - handle SUNWlibm and SUNWgnome_games_devel for SXCE
 * Thu Oct 17 2013 - Thomas Wagner
