@@ -368,9 +368,10 @@ check those packages, they share files with others:
 OI151a4 S11.0
   X      ?     SFElibdiscid
   X      ?     SFElibotr
-  X      ?     SFEreadline-devel
+#done#  X      ?     SFEreadline-devel
 deprecate netatalk (2.x) for netatalk3 in buildlists .. eliminates being files shared
-
+  ?      X     SFElibassuan  (different version S11 2.0.1, SFE 2.0.3) (already relocated to /usr/gnu/)
+  ?      X     SFEpth        (currently same version S11=SFE=2.0.7)   (already relocated to /usr/gnu/)
 
 
 49)
@@ -514,6 +515,7 @@ Review C++11 decltype keyword support for GCC 4.6.3/4.7.2 (N3276)
 provide 32/64 bit packages
 specfile:           32       64        comment
 SFElibiconv.spec    OK     missing     https://sourceforge.net/p/pkgbuild/spec-files-extra/25/
+SFExmlrpc-c.spec    OK     missing     check deps as well
 
 
 63)
@@ -590,3 +592,31 @@ files *early* and before a OS upgrade happens.
 74)
 re-visit this change:  svn diff -r 4965:5412  SFElibx264.spec
 it disables isaexec, should be enabled. why "cp" instead of "hardlink" to isaexec?
+
+75)
+-z now for gcc_s | RTLD_NOW in elf header
+
+76)
+make pkg operations resistant against locks, failures, ... instead
+of just failing the while package!
+
+77)
+create include file for local preferences, empty, never changed.
+if users wants a default selection of features, place
+the setting into the preferences file.
+examples:
+no_build_renamed_packages
+mplayer2_slimbuild
+
+78)
+think on reversing the default for l10n subpackages.
+current: don't build l10n (only if a spec file honours that switch), but endusers usually want them by default
+future: build them by default, developers may switch them off to save time
+
+79)
+try to name separate "header" packages in IPS as "developer/*" instead "*/header"
+SFEqt.spec
+SFEqt-gpp.spec      done (rev 5541)
+SFEqt-stdcxx.spec
+SFEboost-gpp.spec
+SFEboost-stdcxx.spec
