@@ -1,3 +1,7 @@
+2013-11-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEclamav.spec: updated to 0.98
+
 2013-10-28 Milan Jurik <sfnet@xylab.cz>
 
 	* SFEfreeciv.spec: bump to 2.4.0
