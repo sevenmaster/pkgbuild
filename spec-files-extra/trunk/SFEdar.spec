@@ -81,7 +81,7 @@ export CFLAGS="%{optflags} -I%{gnu_inc} -D__EXTENSIONS__ -DHAVE_GETOPT_IN_UNISTD
 export CXXFLAGS="%{cxx_optflags} -I%{gnu_inc} -D__EXTENSIONS__ -DHAVE_GETOPT_IN_UNISTD_H=1"
 
 #export LD=ld-wrapper
-export LDFLAGS="%_ldflags %picflags %gnu_lib_path"
+export LDFLAGS="%_ldflags %picflags"
 
 export CC=gcc
 export CXX=g++
@@ -148,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov  5 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- do not add %gnu_lib_path to LDFLAGS: dar does not use any libraries there
 * Mon Nov  4 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - update to 2.4.11
 * Sun Jun 07 2009 - Thomas Wagner
