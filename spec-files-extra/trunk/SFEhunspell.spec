@@ -55,16 +55,15 @@ Patch1:		hunspell-01-dict-path.diff
 
 %include default-depend.inc
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
-BuildRequires:	SUNWgmake
-BuildRequires:	SUNWaconf
-BuildRequires:	SUNWgnu-automake-19
-BuildRequires:	SFElibiconv-devel
-BuildRequires:	SUNWncurses
-Requires:	SUNWncurses
-Requires:	SUNWgnu-readline
-Requires:	SFElibiconv
-Requires:	SUNWmyspell-dictionary-en
+
+#BuildRequires:	system/library/iconv/unicode
+BuildRequires:	ncurses
+Requires:	ncurses
+BuildRequires:	readline
+Requires:	readline
+#Requires:	SFElibiconv
+#Requires:	system/library/iconv/unicode
+Requires:	library/myspell/dictionary/en
 
 %package devel
 Summary:	%summary - development files
@@ -78,16 +77,16 @@ Requires:	%name
 %patch1 -p1
 
 %build
-
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
-export CFLAGS="%optflags"
 
-export CXXFLAGS="%cxx_optflags -I/usr/include/ncurses"
+export CFLAGS="%optflags"
+export CXXFLAGS="%cxx_optflags %picflags -I/usr/include/ncurses"
 export LIBS="-lsocket -lpthread -lCrun"
-export LDFLAGS="%_ldflags %gnu_lib_path"
+export LDFLAGS="%_ldflags %picflags %gnu_lib_path"
+sed -i 's/-lcurses/-lncurses/g' configure
 ./configure --prefix=%_prefix --enable-threads=solaris --disable-static --with-ui --with-readline
 
-gmake -j$CPUS
+make -j$CPUS
 
 
 %install
@@ -119,6 +118,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Oct 30 2013 - Alex Viskovatoff
+- add hack to prevent picking up of /lib/libcurses.so.1
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
 - added License and SUNW_Copyright tags
 * Sat Jul 23 2011 - Alex Viskovatoff
