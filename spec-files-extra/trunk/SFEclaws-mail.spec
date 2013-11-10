@@ -28,7 +28,9 @@ Requires: SUNWlibmsr
 Requires: SUNWgnome-base-libs
 Requires: SUNWopenssl-libraries
 %if %SFEgnupg2
-Requires: SFEpth
+#Requires: SFEpth
+#SUNWpth 2.0.7 is good enough
+Requires: SUNWpth
 Requires: SFElibassuan
 Requires: SFEgnupg2
 %else
@@ -78,8 +80,14 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-export CFLAGS="%optflags -xc99"
-export LDFLAGS="%_ldflags -lsocket -lnsl"
+export CFLAGS="%optflags -xc99 %{gnu_inc}"
+export LDFLAGS="%_ldflags %{gnu_lib} -lsocket -lnsl"
+
+%if %SFEgnupg2
+#in real we need to find libassuan in /usr/gnu
+export CFLAGS="$CFLAGS %{gnu_inc}"
+export LDFLAGS="$LDFLAGS %{gnu_lib}"
+%endif
 
 ./configure --prefix=%{_prefix}          \
             --bindir=%{_bindir}         \
@@ -152,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Oct  2 2013 Thomas Wagner
+- add /usr/gnu to CFLAGS LDFLAGS 
+- change (Build)Requires to SUNWpth (2.0.7 is good enough)
 * Tue Sep 14 2011 - kmays2000@gmail.com
 - Bumped to 3.7.10
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>

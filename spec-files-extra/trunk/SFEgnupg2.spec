@@ -13,7 +13,7 @@
 
 Name:          SFEgnupg2
 IPS_component_version: crypto/gnupg2
-Summary:       %{gnupg.summary}
+Summary:       %{gnupg.summary} (/usr/gnu)
 Version:       %{gnupg.version}
 Patch1:        gnupg2-01-asschk.diff
 Patch2:        gnupg2-02-inittests.diff
@@ -27,10 +27,12 @@ Requires: SUNWzlib
 Requires: %{pnm_requires_library_readline}
 BuildRequires: %{pnm_buildrequires_library_readline}
 BuildRequires: SFElibksba
-BuildRequires: SFEpth
+#BuildRequires: SFEpth
+BuildRequires: SUNWpth
 BuildRequires: SFElibassuan
 Requires: SFElibksba
-Requires: SFEpth
+#Requires: SFEpth
+Requires: SUNWpth
 Requires: SFElibassuan
 Requires: SUNWcurl
 %if %build_l10n
@@ -60,7 +62,7 @@ cd ..
 
 %build
 export PATH="$PATH:%{_bindir}"
-export CFLAGS="%optflags"
+export CFLAGS="%optflags %{gnu_inc}"
 export MSGFMT="/usr/bin/msgfmt"
 export LDFLAGS="%{gnu_lib_path} %_ldflags -lsocket"
 %if %build_l10n
@@ -118,6 +120,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Oct 14 2013 - Thomas Wagner
+- bump to 2.0.22
+* Wed Oct  2 2013 - Thomas Wagner
+- add %{gnu_inc} to CFLAGS (find SFElibassuan)
+- change (Build)Requires to SUNWpth (2.0.7 is good enough)
 * Sat Dec 15 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_library_readline}, %include packagenamemacros.inc
 * Thu May 17 2012 - Thomas Wagner

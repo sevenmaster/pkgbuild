@@ -3,7 +3,7 @@
 #
 
 Name:         gnupg
-Version:      2.0.8
+Version:      2.0.22
 Release:      1
 Summary:      gnupg - GNU Utility for data encryption and digital signatures.
 License:      GPL
@@ -32,24 +32,26 @@ these versions of PGP 2.
 %if %build_l10n
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
                         --prefix=%{_prefix} \
-                        --disable-agent       \
                         --libexecdir=%{_libexecdir} \
-                        --mandir=%{_mandir} \
-                        --infodir=%{_datadir}/info \
-                        --with-included-gettext
+                        --mandir=%{_mandir}         \
+                        --infodir=%{_datadir}/info  \
+                        --with-included-gettext     \
+#  --with-libassuan-prefix=PFX
 %else
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
                         --prefix=%{_prefix} \
-			--disable-agent       \
                         --libexecdir=%{_libexecdir} \
-			--mandir=%{_mandir} \
-			--infodir=%{_datadir}/info
+			--mandir=%{_mandir}         \
+			--infodir=%{_datadir}/info  \
+#  --with-libassuan-prefix=PFX
 %endif
 
 make 
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
+make DESTDIR=$RPM_BUILD_ROOT install
+cd doc
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
@@ -85,6 +87,8 @@ fi
 %attr (0755,root,root) %{_libexecdir}/gnupg/*
 
 %changelog -n gnupg
+* Mon Oct 14 2013 - Thomas Wagner
+- bump to 2.0.22
 * Mon Jan 21 2008 - moinak.ghosh@sun.com
 - Fixed l10n build.
 * Sat Dec 29 2007 - jijun.yu@sun.com
