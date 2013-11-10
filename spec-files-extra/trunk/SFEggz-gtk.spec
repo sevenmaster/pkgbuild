@@ -31,8 +31,8 @@ BuildRequires: SUNWgnome-common-devel
 BuildRequires:	SFElibggz-devel
 Requires:	SFElibggz
 %else
-BuildRequires:	SUNWgnome-games-devel
-Requires:	SUNWgnome-games
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_games_devel}
+Requires:	%{pnm_buildrequires_SUNWgnome_games}
 %endif
 
 %package devel
@@ -99,5 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Oct  3 2013 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWgnome_games_devel, %include packagenamemacros.inc
 * Tue Jan 15 2009 - halton.huo@sun.com
 - Initial version
