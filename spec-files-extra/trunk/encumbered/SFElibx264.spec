@@ -20,6 +20,7 @@
 
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1 
 %ifarch amd64 sparcv9
@@ -29,8 +30,6 @@
 
 %include base.inc
 %use libx264 = libx264.spec
-
-%define with_gpac %(pkginfo -q SFEgpac && echo 1 || echo 0)
 
 Name:                    SFElibx264
 IPS_Package_Name:	library/video/x264 
@@ -44,17 +43,8 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-%define SFEmpfr         %(/usr/bin/pkginfo -q SFEmpfr 2>/dev/null  && echo 1 || echo 0)
-
-%if %SFEmpfr
 BuildRequires: SFEmpfr-devel
 Requires: SFEmpfr
-#workaround on IPS which is wrong with BASEdir as "/" -> then assume /usr/gnu
-%define SFEmpfrbasedir %(pkgparam SFEmpfr BASEDIR 2>/dev/null | sed -e 's+^/$+/usr/gnu+')
-%else
-BuildRequires: SUNWgnu-mpfr
-Requires: SUNWgnu-mpfr
-%endif
 
 %ifarch i386 amd64
 BuildRequires: SFEyasm
@@ -65,7 +55,7 @@ BuildRequires: SFEgpac-devel
 Requires: SFEgpac
 %endif
 
-BuildRequires: text/gawk
+BuildRequires: %{pnm_buildrequires_SUNWgawk_devel}
 
 %description
 x264 is a free software library and application for encoding video streams into
@@ -168,6 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 30 2013 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWgawk}, %include packagenamemacros.inc
+- remove autdetection and make mandatory: SFEmpfr (already present by SFEgcc), SFEgpac
 * Wed Sep 11 2013 - Alex Viskovatoff
 - do not build and install cli, since that creates a circular dependency in builds
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
