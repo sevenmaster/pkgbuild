@@ -64,8 +64,15 @@
 #add more sections of new pkgbuild version add new feature
 #so they can be excluded in case older pkgbuild version is active
 
+#bailout, we weren't able to detect the pkgbuild version!
+%if %(expr %{pkgbuild_ver_numeric} '=' 0 )
+not able to detect supported pkgbuild version. fix include/pkgbuild-features.inc
+%endif
+#END not %{pkgbuild_ver_numeric}
 
 %changelog
+* Tue Oct  8 2013 - Thomas Wagner
+- add bail-out if pkgbuild version can't be detected or is unknown
 * Mon Oct  7 2013 - Thomas Wagner
 - add faster version detection for pkgbuild
 - fix %define pkgbuild_ver being empty
