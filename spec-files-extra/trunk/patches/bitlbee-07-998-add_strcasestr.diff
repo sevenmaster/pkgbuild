@@ -1,0 +1,40 @@
+
+Older Solaris does not have strcasestr
+Solaris 11 has
+
+--- bitlbee/lib/http_client.c.orig	2013-11-09 23:51:59.000000000 +0100
++++ bitlbee/lib/http_client.c	2013-11-10 00:27:44.658120092 +0100
+@@ -30,6 +30,33 @@
+ #include "url.h"
+ #include "sock.h"
+ 
++char *strcasestr (char *h, char *n)
++{
++       char *hp, *np = n, *match = 0;
++
++       if(!*np) {
++               return hp;
++       }
++
++       for (hp = h; *hp; hp++) {
++               if (toupper(*hp) == toupper(*np)) {
++                       if (!match) {
++                               match = hp;
++                       }
++                       if(!*++np) {
++                               return match;
++                       }
++               } else {
++                       if (match) { 
++                               match = 0;
++                               np = n;
++                       }
++               }
++       }
++
++       return NULL; 
++}
++
+ 
+ static gboolean http_connected( gpointer data, int source, b_input_condition cond );
+ static gboolean http_ssl_connected( gpointer data, int returncode, void *source, b_input_condition cond );
