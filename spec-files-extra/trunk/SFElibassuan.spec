@@ -4,10 +4,12 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include usr-gnu.inc
+%include base.inc
 
 Name:		SFElibassuan
-IPS_Package_Name:	system/library/security/libassuan
-Summary:	An IPC libbray used by GnuPG 2, GPGME etc. 
+IPS_Package_Name:	system/library/security/gnu/libassuan
+Summary:	An IPC libbray used by GnuPG 2, GPGME etc. (/usr/gnu)
 Version:	2.0.3
 URL:		http://www.gnupg.org/related_software/libassuan/
 Source:		ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-%{version}.tar.bz2
@@ -19,6 +21,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+BuildRequires: SUNWpth
+Requires: SUNWpth
 BuildRequires: SUNWlibgpg-error
 Requires: SUNWlibgpg-error
 Requires: SUNWtexi
@@ -60,7 +64,7 @@ make -j$CPUS
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm ${RPM_BUILD_ROOT}%{_libdir}/*.la
-rm -rf $RPM_BUILD_ROOT/usr/share/info/dir
+[ -e $RPM_BUILD_ROOT%{_datadir}/info/dir ] && rm $RPM_BUILD_ROOT%{_datadir}/info/dir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -100,10 +104,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/*
-%dir %attr(0755, root, bin) %{_datadir}/info
+#%dir %attr(0755, root, bin) %{_datadir}/info
 %{_datadir}/info/*
 
 %changelog
+* Wed Oct  2 2013 - Thomas Wagner
+- %include usr-gnu.inc (S11 implements ver 2.0.1)
+- change IPS_Package_Name, add /gnu/
+- remove info/dir as it can't me merged with other existing content
+- add (Build)Requires SUNWpth (2.0.7)
 * Tue Feb 07 2012 - Milan Jurik
 - bump to 2.0.3
 * Wed Dec 01 2010 - Milan Jurik
