@@ -1,3 +1,7 @@
+2013-11-10 Milan Jurik <sfnet@xylab.cz>
+
+	* SFEbinutils-gpp.spec: bump to 2.23.2
+
 2013-11-04  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEclamav.spec: updated to 0.98
