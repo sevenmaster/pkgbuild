@@ -13,7 +13,7 @@ Version:	0.12
 Source:		%{sf_download}/xclip/xclip/%{version}/xclip-%{version}.tar.gz
 URL:		http://sourceforge.net/projects/xclip/
 License:	GPL
-SUNW_Copyright:	xclip.copyright
+SUNW_Copyright:	GPLv2.copyright
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -64,6 +64,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Wed Nov  6 2013 - Thomas Wagner
+- fix copyright file (shared, GPLv2)
 * Mon Jul 25 2011 - N.B.Prashanth
 - Added SUNW_Copyright
 * Sat Jun 18 2011 - Thomas Wagner
