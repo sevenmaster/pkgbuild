@@ -4,8 +4,9 @@
 # Gilles Dauphin
 #
 
-%define _basedir /usr/g++
 %include Solaris.inc
+%include packagenamemacros.inc
+%include usr-g++.inc
 %define cc_is_gcc 1
 %include base.inc
 
@@ -13,7 +14,7 @@
 
 Name:           SFEplib-gpp
 IPS_Package_Name:	library/g++/plib
-Summary:        plib , compile with gcc43
+Summary:        plib - Suite of Portable Game Libraries (/usr/g++)
 Version:        1.8.5
 Source:		http://plib.sourceforge.net/dist/%{src_name}-%{version}.tar.gz
 Patch1:		plib-01-sharelibs.diff
@@ -24,10 +25,9 @@ SUNW_Copyright: SFEplib.copyright
 SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include	default-depend.inc
-#Requires: 	SFEfreeglut
 Requires: 	SUNWxorg-mesa
 Requires: 	SUNWxwice
-BuildRequires:	SUNWaudh
+BuildRequires:	%{pnm_buildrequires_SUNWaudh}
 
 %package devel
 Summary:	%summary - developer files
@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/plib
 
 %changelog
+* Wed Dec 19 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWaudh}, %include packagenamemacros.inc
+- %include usr-g++.inc, add (/usr/g++) to summary
 * May 18 2010 - Gilles Dauphin
 - fork plib with gcc 4.3, needed for Flightgear and al..
 * Mon May 03 2010 - Milan Jurik
