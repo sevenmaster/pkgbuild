@@ -56,11 +56,12 @@
 
 Name:                SFEqt-stdcxx
 IPS_Package_Name:	library/desktop/stdcxx/qt
-Summary:             Cross-platform development framework/toolkit
-URL:                 http://trolltech.com/products/qt
+Summary:             Cross-platform development framework/toolkit (stdcxx)
+URL:                 http://qt-project.org
 License:             LGPLv2
 Version:             4.7.4
-Source:              ftp://ftp.trolltech.com/qt/source/%srcname-%version.tar.gz
+%define major_minor_version $( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
+Source:		http://download.qt-project.org/archive/qt/%{major_minor_version}/qt-everywhere-opensource-src-%{version}.tar.gz
 Source1:	     qmake.conf
 Patch1:		     qt47/qt471-01-configure-ext.diff
 Patch2:		     qt47/qt471-02-ext.diff
@@ -120,28 +121,34 @@ Requires:      %{pnm_requires_SUNWlibstdcxx4}
 # Guarantee X/freetype environment concisely (hopefully):
 BuildRequires: SUNWgtk2
 Requires:      SUNWgtk2
-Requires: SUNWxwplt
+BuildRequires: %{pnm_buildrequires_SUNWxwplt}
+Requires: %{pnm_requires_SUNWxwplt}
 # The above bring in many things, including SUNWxwice and SUNWzlib
 Requires: SUNWxwxft
 # The above also pulls in SUNWfreetype2
 
-%package -n %name-devel
-IPS_package_name:	library/desktop/stdcxx/qt/header-qt
-Summary:        %summary - development files
-SUNW_BaseDir:   %_basedir
-%include default-depend.inc
-Requires: %name
+BuildRequires: %{pnm_buildrequires_mysql_default}
+Requires: %{pnm_requires_mysql_default}
+BuildRequires: SUNWdbus
+Requires: SUNWdbus
 
-%package -n %name-doc
+# Follow example of developer/icu for IPS package name
+%package devel
+IPS_package_name:       developer/desktop/stdcxx/qt
+Summary:        %{summary} - development files
+SUNW_BaseDir:   %{_basedir}
+%include default-depend.inc
+Requires: %{name}
+
+%package doc
 IPS_package_name:	library/desktop/stdcxx/qt/documentation
-Summary:        %summary - documentation files
-SUNW_BaseDir:   %_basedir
+Summary:        %{summary} - documentation files
+SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
-Requires: %name
-
+Requires: %{name}
 
 %prep
-%setup -q -n %{srcname}-%version
+%setup -q -n %{srcname}-%{version}
 # Don't pass --fuzz=0 to patch
 %define _patch_options --unified
 %patch1 -p0
@@ -188,37 +195,46 @@ Requires: %name
 %patch43 -p0
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags -library=stdcxx4 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -D_REENTRANT -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_POSIX_PTHREAD_SEMANTICS -DSOLARIS -DNO_DEBUG -D_UNICODE -DUNICODE -D_RWSTD_REENTRANT -D_XOPEN_SOURCE=500 -D__EXTENSIONS__ -D_XPG5 -features=anachronisms,except,rtti,export,extensions,nestedaccess,tmplife,tmplrefstatic,zla -xlang=c99 -instances=global -template=geninlinefuncs -xalias_level -xbuiltin -xustr=ascii_utf16_ushort -s -xdebugformat=dwarf -Qoption ccfe  ++boolflag:sunwcch=false"
-export LDFLAGS="%_ldflags -library=stdcxx4"
+%define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
+%define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir}/mysql -R%{standard_prefix}/%{mysql_default_libdir}/mysql
 
+export CFLAGS="%{optflags} -I/usr/include/libpng14"
+export CXXFLAGS="%{cxx_optflags} -library=stdcxx4 -I/usr/include/libpng14 -D_REENTRANT -DNDEBUG -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_POSIX_PTHREAD_SEMANTICS -DSOLARIS -DNO_DEBUG -D_UNICODE -DUNICODE -D_RWSTD_REENTRANT -D_XOPEN_SOURCE=500 -D__EXTENSIONS__ -D_XPG5 -features=anachronisms,except,rtti,export,extensions,nestedaccess,tmplife,tmplrefstatic,zla -xlang=c99 -instances=global -template=geninlinefuncs -xalias_level -xbuiltin -xustr=ascii_utf16_ushort -s -xdebugformat=dwarf -Qoption ccfe  ++boolflag:sunwcch=false"
+export LDFLAGS="%{_ldflags} -library=stdcxx4"
 
-# 4.6.3 runs into trouble with examples, so disable examples and demos.
-# 4.7.0 runs into trouble with phonon, so don't build that.
+./configure -prefix %{_prefix} \
+           -confirm-license \
+           -opensource \
+           -platform solaris-cc \
+           -docdir %{_docdir}/qt \
+	   -bindir %{_bindir} \
+	   -libdir %{_libdir} \
+           -headerdir %{_includedir}/qt \
+           -plugindir %{_libdir}/qt/plugins \
+           -datadir %{_datadir}/qt \
+           -translationdir %{_datadir}/qt/translations \
+           -examplesdir %{_datadir}/qt/examples \
+           -demosdir %{_datadir}/qt/demos \
+           -nomake examples \
+           -nomake demos \
+           -sysconfdir %{_sysconfdir} \
+           -L /usr/gnu/lib \
+           -R /usr/gnu/lib \
+	   -optimized-qmake \
+           -reduce-relocations \
+           -opengl desktop \
+           -shared \
+           -plugin-sql-mysql \
+           %{extra_includes} \
+           %{extra_libs}
 
-# Assume i386 CPU is not higher than Pentium
-./configure -prefix %_prefix \
-	-no-mmx -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 \
-	-platform solaris-cc \
-	-opensource \
-	-confirm-license \
-	-docdir %_docdir/qt \
-	-headerdir %_includedir/qt \
-	-plugindir %_libdir/qt/plugins \
-	-datadir %_datadir/qt \
-	-translationdir %_datadir/qt/translations \
-	-nomake examples \
-	-nomake demos \
-	-no-exceptions \
-	-plugin-sql-sqlite \
-	-system-sqlite \
-	-no-sql-sqlite2 \
-	-sysconfdir %_sysconfdir
+##TODO##	-no-mmx -no-3dnow -no-sse -no-sse2 -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 \
+##TODO##	-no-exceptions \
+##TODO##	-plugin-sql-sqlite \
+##TODO##	-system-sqlite \
+##TODO##	-no-sql-sqlite2 \
 
 # Elliminate -Winline, which Solaris Studio 12.2 rejects
 cd src/gui
@@ -237,16 +253,16 @@ rm ${RPM_BUILD_ROOT}%{_libdir}/*.la
 
 # Eliminate QML imports stuff for now:
 # Who is Nokia to create a new subdirectary in /usr?
-rm -r ${RPM_BUILD_ROOT}%_prefix/imports
+rm -r ${RPM_BUILD_ROOT}%{_prefix}/imports
 
 # Create qmake.conf for building against this library
-cd ${RPM_BUILD_ROOT}%_datadir/qt/mkspecs/solaris-cc
+cd ${RPM_BUILD_ROOT}%{_datadir}/qt/mkspecs/solaris-cc
 sed 's/ -O2/ -xO3 -xspace/' qmake.conf > qmake.conf.new
 mv qmake.conf.new qmake.conf
 cd ..
 mkdir solaris-cc-stdcxx
 cd solaris-cc-stdcxx
-install %SOURCE1 .
+install %{SOURCE1} .
 cp -p ../solaris-cc-stlport/qplatformdefs.h .
 cd ..
 %patch41 -p0
@@ -256,8 +272,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
+#see devel %dir %attr (0755, root, bin) %{_bindir}
+#see devel %{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %{_libdir}/lib*.prl
@@ -267,8 +283,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/qt
 
-%files -n %name-devel
+
+%files -n devel
 %defattr (-, root, bin)
+#see devel %dir %attr (0755, root, bin) %{_bindir}
+#see devel %{_bindir}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %dir %attr (0755, root, other) %{_includedir}/qt
 %{_includedir}/qt/*
@@ -276,7 +295,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig 
 %{_libdir}/pkgconfig/*
 
-%files -n %name-doc
+%files doc
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
@@ -284,6 +303,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct  1 2013 - Thomas Wagner
+- new URL, new Source download URL
+- rename library/desktop/stdcxx/qt/header-qt to developer/desktop/stdcxx/qt
+- align SFEqt-stdcxx.spec with SFEqt-gpp.spec SFEqt.spec
+* Mon Nov  5 2012 - Thomas Wagner
+- align SFEqt-stdcxx.spec / SFEqt.spec / SFEqt-gpp.spec
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}
 * Sat Jan 07 2012 - Milan Jurik
