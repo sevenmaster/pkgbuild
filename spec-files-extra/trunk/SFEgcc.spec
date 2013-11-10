@@ -300,6 +300,7 @@ Requires: SUNWpostrun
 
 %if %build_l10n
 %package -n SFEgcc-l10n
+IPS_package_name: sfe/developer/gcc-%{majorminornumber}/locale
 Summary:                 %{summary} - l10n files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
