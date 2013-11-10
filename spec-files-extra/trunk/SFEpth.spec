@@ -4,9 +4,11 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include usr-gnu.inc
 
 Name:                SFEpth
-Summary:             The GNU Portable Threads 
+IPS_Package_Name:    library/gnu/pth
+Summary:             The GNU Portable Threads (/usr/gnu)
 Version:             2.0.7
 Source:              ftp://ftp.gnu.org/gnu/pth/pth-%{version}.tar.gz
 
@@ -79,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Wed Oct  2 2013 - Thomas Wagner
+- %include usr-gnu.inc (S11 currently ships ver 2.0.7)
+- add IPS_Package_Name
 * Mar 16 2010 - Gilles dauphin
 - install in /opt/SFE
 * Sat Dec 29 2007 - jijun.yu@sun.com
