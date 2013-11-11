@@ -23,7 +23,7 @@ IPS_Package_Name:	media/mpv
 Summary:		mpv plays videos
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.2.2
+Version:		0.2.3
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
@@ -62,7 +62,7 @@ files.
 
 
 %prep
-%setup -q -n mpv-%version
+%setup -q -n %srcname-%version
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -82,6 +82,7 @@ bash ./configure			\
         --confdir=%_sysconfdir		\
         --extra-libs="-lsocket -lnsl -lvdpau" \
         --disable-gl			\
+	--disable-alsa			\
         --enable-rpath			\
 	--enable-vdpau
 
@@ -116,6 +117,9 @@ rm -rf %buildroot
 
 
 %changelog
+* Sat Nov  9 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.2.3
+- disable alsa: stupid alsa errors show up on the console
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - bump to 0.2.2
 * Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
