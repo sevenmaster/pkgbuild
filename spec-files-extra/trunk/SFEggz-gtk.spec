@@ -11,6 +11,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %use ggzgtk = ggz-gtk-client.spec
 
