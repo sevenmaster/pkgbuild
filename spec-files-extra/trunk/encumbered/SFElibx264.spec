@@ -43,8 +43,8 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SFEmpfr-devel
-Requires: SFEmpfr
+BuildRequires: SFEgcc
+Requires: SFEgccruntime
 
 %ifarch i386 amd64
 BuildRequires: SFEyasm
@@ -158,6 +158,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 10 2013 - Alex Viskovatoff
+- add missing dependency on SFEgcc, which pulls in SFEmpfr
 * Mon Sep 30 2013 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgawk}, %include packagenamemacros.inc
 - remove autdetection and make mandatory: SFEmpfr (already present by SFEgcc), SFEgpac
