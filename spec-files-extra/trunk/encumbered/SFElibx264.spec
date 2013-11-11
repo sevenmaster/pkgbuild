@@ -50,10 +50,8 @@ Requires: SFEgccruntime
 BuildRequires: SFEyasm
 %endif
 
-%if %with_gpac
 BuildRequires: SFEgpac-devel
 Requires: SFEgpac
-%endif
 
 BuildRequires: %{pnm_buildrequires_SUNWgawk_devel}
 
@@ -160,6 +158,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Nov 10 2013 - Alex Viskovatoff
 - add missing dependency on SFEgcc, which pulls in SFEmpfr
+- fix build (definition of with_gpac was removed but reference to it was kept)
 * Mon Sep 30 2013 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgawk}, %include packagenamemacros.inc
 - remove autdetection and make mandatory: SFEmpfr (already present by SFEgcc), SFEgpac
