@@ -1,10 +1,8 @@
 #
 # spec file for package SFEemacs
 #
-# includes module(s): GNU emacs
-#
-%include Solaris.inc
 
+%include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
 
@@ -19,13 +17,11 @@ IPS_Package_Name:	 sfe/editor/gnu-emacs
 Summary:                 GNU Emacs - an operating system in a text editor
 Version:                 24.3.1
 License:                 GPLv3+
-SUNW_Copyright:          emacs.copyright
+SUNW_Copyright:          GPLv3.copyright
 %define emacs_version    24.3
-%define src_version      24.3
 Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.gz
 URL:                     http://www.gnu.org/software/emacs/emacs.html
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
+SUNW_BaseDir:            %_basedir
 %include default-depend.inc
 
 %define _with_gtk 1
@@ -66,7 +62,7 @@ SUNW_BaseDir:            /
 %include default-depend.inc
 
 %prep
-%setup -q -n emacs-%src_version
+%setup -q -n emacs-%emacs_version
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
