@@ -1,16 +1,22 @@
 #
 # spec file for package SFEarora
 #
-# includes module: arora
-#
+
+# Call pkgbuild/tool with --with-CC to build with Sun Studio/stdcxx
+%define with_gcc %{!?_with_CC:1}%{?_with_CC:0}
 
 %include Solaris.inc
+%if %with_gcc
 %define cc_is_gcc 1
 %include base.inc
+IPS_Package_Name:	web/browser/arora
+%else
+IPS_Package_Name:	web/browser/stdcxx/arora
+%end
 %define srcname arora
 
 Name:		SFEarora
-IPS_Package_Name:	web/browser/arora
+%
 Summary:	Lightweight Web browser using QtWebKit
 URL:		http://code.google.com/p/arora
 License:	GPLv2
@@ -19,20 +25,15 @@ SUNW_Copyright:	arora.copyright
 Version:	0.11.0
 Source:		http://%srcname.googlecode.com/files/%srcname-%version.tar.gz
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWgmake
-%if %(/usr/bin/pkginfo -q SFEcoreutils 2>/dev/null  && echo 1 || echo 0)
-BuildRequires:	SFEcoreutils
-%else
-BuildRequires:	SUNWgnu-coreutils
-%endif
-BuildRequires: SUNWgtar
+%if %with_gcc
 BuildRequires: SFEqt-gpp-devel
-
 Requires: SFEqt-gpp
-Requires: SUNWzlib
+%else
+BuildRequires: SFEqt-stdcxx-devel
+Requires: SFEqt-stdcxx
+%end
 
 
 %if %build_l10n
@@ -49,31 +50,34 @@ Requires:       %name
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CC=/usr/gnu/bin/gcc
-export CXX=/usr/gnu/bin/g++
+%if %with_gcc
+export CC=gcc
+export CXX=g++
 export PATH=/usr/g++/bin:$PATH
 export QMAKESPEC=solaris-g++
 export QTDIR=/usr/g++
-qmake PREFIX=$RPM_BUILD_ROOT%_basedir
+%else
+export PATH=/usr/stdcxx/bin:$PATH
+export QMAKESPEC=solaris-cc-stdcxx
+export QTDIR=/usr/stdcxx
+%end
+qmake PREFIX=%buildroot%_basedir
 gmake -j$CPUS
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 gmake install
 
 %if %build_l10n
 %else
-rm -rf $RPM_BUILD_ROOT%_datadir/%srcname
+rm -rf %buildroot%_datadir/%srcname
 %endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files
@@ -110,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov  3 2013 - Alex Viskovatoff
+- Allow selection of g++ or CC to do the build (since the main use of this
+  spec now is for testing QtWebKit)
 * Mon Oct 28 2013 - Alex Viskovatoff
 - Archive: development stopped in January 2012
 * Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>

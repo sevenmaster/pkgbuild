@@ -4,11 +4,6 @@
 # includes module: qupzilla
 #
 
-# NOTE (herzen): This program CRASHES when built and run on OI hipster,
-#		 unless JavaScript is disabled.
-#		 The problem  probably lies in QtWebKit, not QupZilla
-#		 itself, since Arora exhibits the same behavior.
-
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc

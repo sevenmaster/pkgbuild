@@ -9,7 +9,7 @@
 # build against libcStd.
 
 # This package does not conflict with library/icu because its base directory
-# is /usr/stdcxx.
+# is /usr/g++.
 
 %define _basedir /usr/g++
 %include Solaris.inc

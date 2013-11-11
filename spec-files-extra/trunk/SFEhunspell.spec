@@ -1,15 +1,13 @@
 #
 # spec file for package SFEhunspell
 #
-# includes module: hunspell
-#
 
 ####				USING WITH EMACS			    ####
 #
 # NOTE: To use Hunspell under Emacs, at least Emacs 23 is required.
-# NOTE: For some reason, unless Emacs is started from the command line, hunspell
-# WILL NOT FIND THE DICTIONARIES.  Also, for languages other than English,
-# ispell often fails, complaining of "misalignment".
+# NOTE: For languages other than English, ispell often fails, complaining
+# of "misalignment".
+#
 # It is necessary to redefine ispell's dictionary definitions, which are
 # intended for aspell.  For example, place this in your .emacs file:
 #
@@ -23,9 +21,6 @@
 #     ("french"
 #      "[A-Za-zÀÂÆÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]" "[^a-zÀÂÆÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]"
 #      "[']" t ("-d" "fr_FR") nil utf-8)
-#     ("portugese" ; Brazilian Portugese
-#      "[a-zàáâãçéêíóôõúüA-ZÀÁÂÃÇÉÊÍÓÔÕÚÜ]" "[^a-zàáâãçéêíóôõúüA-ZÀÁÂÃÇÉÊÍÓÔÕÚÜ]"
-#      "" nil ("-d" "pt_BR") nil utf-8)
 #     ("russian"
 #      "[А-Яа-яёЁ]" "[^А-Яа-яёЁ]" "[']" t ("-d" "ru_RU") nil utf-8)
 # ))
@@ -40,6 +35,7 @@
 
 %include Solaris.inc
 %define srcname hunspell
+%define _pkg_docdir %_docdir/%srcname
 
 Name:		SFEhunspell
 IPS_Package_Name:	library/spell-checking/hunspell
@@ -56,13 +52,10 @@ Patch1:		hunspell-01-dict-path.diff
 %include default-depend.inc
 SUNW_BaseDir:	%_basedir
 
-#BuildRequires:	system/library/iconv/unicode
-BuildRequires:	ncurses
+BuildRequires:	library/ncurses
 Requires:	ncurses
-BuildRequires:	readline
+BuildRequires:	library/readline
 Requires:	readline
-#Requires:	SFElibiconv
-#Requires:	system/library/iconv/unicode
 Requires:	library/myspell/dictionary/en
 
 %package devel
@@ -80,11 +73,11 @@ Requires:	%name
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags %picflags -I/usr/include/ncurses"
+export CXXFLAGS="%cxx_optflags -I/usr/include/ncurses"
 export LIBS="-lsocket -lpthread -lCrun"
-export LDFLAGS="%_ldflags %picflags %gnu_lib_path"
+export LDFLAGS="%_ldflags %gnu_lib_path"
 sed -i 's/-lcurses/-lncurses/g' configure
-./configure --prefix=%_prefix --enable-threads=solaris --disable-static --with-ui --with-readline
+./configure --prefix=%_prefix --enable-threads=posix --disable-static --with-ui --with-readline
 
 make -j$CPUS
 
@@ -94,6 +87,9 @@ rm -rf %buildroot
 
 gmake install DESTDIR=%buildroot
 
+iconv -f iso-8859-1 -t utf-8 ChangeLog.O > ChangeLog.O.new
+mv ChangeLog.O.new ChangeLog.O
+
 rm -f %buildroot%_libdir/lib*a
 
 %clean
@@ -102,11 +98,13 @@ rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
+%doc ABOUT-NLS AUTHORS AUTHORS.myspell BUGS ChangeLog ChangeLog.O README README.myspell THANKS TODO
 %_bindir/*
 %_libdir/*.so*
 %dir %attr (-, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/%srcname.pc
 %dir %attr (-, root, sys) %_datadir
+%dir %attr (-, root, other) %_datadir/doc
 %dir %attr (-, root, other) %_datadir/locale
 %attr (-, root, other) %_datadir/locale/*
 %_mandir
@@ -118,6 +116,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Nov  7 2013 - Alex Viskovatoff
+- add documentation
 * Wed Oct 30 2013 - Alex Viskovatoff
 - add hack to prevent picking up of /lib/libcurses.so.1
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
@@ -125,7 +125,7 @@ rm -rf %buildroot
 * Sat Jul 23 2011 - Alex Viskovatoff
 - Use SUNWncurses instead of SFEncursesw
 * Fri Jun 10 2011 - Alex Viskovatoff <herzen@imap.cc>
-- don't create separate IPS devel package
+- do not create separate IPS devel package
 * Sun Apr  3 2011 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 1.3.2
 * Wed Mar 23 2011 - Alex Viskovatoff
