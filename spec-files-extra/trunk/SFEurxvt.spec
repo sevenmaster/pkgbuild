@@ -304,7 +304,6 @@ rm -rf $RPM_BUILD_ROOT
 #on the branch version printed by pkg info release/name
 %actions
 depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
-depend fmri=SFEurxvtotherold@%{ips_version_release_renamedbranch} type=optional
 #depend fmri=SFEotheroldnamesgohere@%{ips_version_release_renamedbranch} type=optional
 
 
