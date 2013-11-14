@@ -78,21 +78,32 @@ BuildRoot:               %{_tmppath}/%{name}-%{src_version}-build
 Requires: SFExclip
 Requires: SFEperl-clipboard
 
-#example 'category/newpackagename = *'
-#example 'category/newpackagename >= 1.1.1'
+
+#START automatic renamed package  (remember %actions)
+# create automatic package with old name and "renamed=true" in it
+
+#example 'category/newpackagename = *'   (without the >'< !)
+#example 'category/newpackagename >= 1.1.1'   (without the >'< !)
 #do not omit version equation!
 %define renamed_from_oldname_1      %{name}
-#%define renamed_to_newnameversion_1 'terminal/urxvt = *'
-%define renamed_to_newnameversion_1 '%{IPS_Package_Name} = *'
-#add more and different old names here
-#%define renamed_from_oldname_1      %{name}
+%define renamed_to_newnameversion_1 terminal/urxvt = *
+
+#add more and different old names here (increment the counter at the end)
+#%define renamed_from_oldname_2      %{name}
 #%define renamed_to_newnameversion_2 ''
 
+#STRONG NOTE:
+#remember to set in this spec file the %action which
+#adds the depend rule in a way that the new package 
+#depends on the old package in a slightly updated branch
+#version and has the flag "renamed=true" in it
+
 %include pkg-renamed.inc
+#END automatic renamed package
 
 %description
 Note: Remember to set your LC_CYTPE *before* running rxvt, see file
-%{_docdir}README.FAQ
+file://%{_docdir}/README.FAQ
 
 urxvt is a Multiscreenserver and Client for Terminal emulation. Supports Unicode
 charsets and has tons of nice features. With "compiz" you can enable traparent 
@@ -105,7 +116,7 @@ grep "^rxvt-unicode" /etc/termcap || \
  TERMINFO=/usr/share/lib/terminfo infocmp -C rxvt-unicode >> /etc/termcap 
 
 
-added extra perl extension scripts: mark-url-yank, mark-and-yank, urxvtclip
+added extra perl extension scripts: mark-url-yank, mark-and-yank, urxvtclip, clipboard, url-select
 -----------------------------------
 
 mark-url-yank, mark-and-yank ( bundled extension - needs your $HOME/.Xdefaults be setup)
@@ -115,7 +126,7 @@ e.g. http://www.jukie.net/bart/blog/urxvt-url-yank
 
 
 urxvtclip ( bundled extension - needs your $HOME/.Xdefaults be setup)
--------
+---------
 https://github.com/fixje/dotfiles/tree/master/scripts
 (read the ../Xdefaults file on github to get the keyboard shortcuts below)
 clipboard features for urxvt. <C-v> to copy and <C-S-v> to paste.
@@ -125,6 +136,11 @@ Xdefaults needs this at minimum:
 URxvt.keysym.Shift-Control-V: perl:clipboard:paste
 ! add "," separated more modules e.g. thismodule,urxvtclip,othermodule
 URxvt.perl-ext-common: urxvtclip
+
+clipboard, url-select ( bundled extension - needs your $HOME/.Xdefaults be setup)
+---------
+https://github.com/muennich/urxvt-perls/blob/master/README.md
+
 
 
 %prep
@@ -262,18 +278,16 @@ rm -rf $RPM_BUILD_ROOT
 #TODO# postinstall with TERMINFO=/usr/share/lib/terminfo infocmp -C rxvt-unicode >> /etc/termcap if !grep "^rxvt-unicode" /etc/termcap
 #TODO# postinstall display note to user to really read the README.FAQ with tons of usefull hints
 
-#to prevent old name SFEurxvt and new name terminal/urxvt
-#be installed at the same time
+# automatic uninstall oldpkg on upgrade or on install newpkg
+
 #list *all* old package names here which could be installed on
 #user's systems
+#stay in sync with section above controlling the "renamed" packages
+#SFEurxvt@9.18-5.11,0.0.175.0.0.0.2.1 (note: last digit is incremented calculated
+#on the branch version printed by pkg info release/name
 %actions
-#TAKE THIS: if you forget to include pkg:/ then this is a no-op!
-depend fmri=pkg://localhosts11/SFEurxvt@9.18 type=optional
-#example###TODO## check if the same name Solaris library library/libsndfile
-#example##is matched as well, if we don't want this, needs a pkgmogrify rule then!
-#example##we need to put the publisher here: fmri=pkg:/localhost<name>/library/libsndfile 
-#example## depend fmri=sfe_publisher_name_keep_current/library/libsndfile type=optional
-#example##depend fmri=library/libsndfile type=optional
+depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
+#depend fmri=SFEotheroldnamesgohere@%{ips_version_release_renamedbranch} type=optional
 
 
 %files
@@ -305,6 +319,8 @@ depend fmri=pkg://localhosts11/SFEurxvt@9.18 type=optional
 
 
 %changelog
+* Thu Nov 14 2013 - Thomas Wagner
+- improve renamed package (oldpkg now with incremented IPS_Vendor_version aka branch)
 * Tue Nov  5 2013 - Thomas Wagner
 - add perl exensions mark-url-yank, mark-and-yank, urxvtclip
 - add pkg-renamed.inc, define old package names and some examples
