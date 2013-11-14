@@ -1,4 +1,6 @@
-#/* vim: set filetype=spec : */ 
+# /* vim: set filetype=spec : */ 
+
+##TODO## check added leading "0." for branch with different versions of pkgbuild!
 
 # include file to help creating packages with the
 # "renamed=true" flag in case a package name has
@@ -38,6 +40,14 @@
 
 
 
+#already included before?
+%if %{?osdistro:%{osdistro}}%{?!osdistro:0}
+#yes, osdistro.inc is already included
+%else
+%include osdistro.inc
+%endif
+
+
 
 
 #calculate an incemented-by-one IPS_Vendor_version (aka branch number)
@@ -74,7 +84,7 @@
 
 %define ips_branch_renamed_package 999999
 
-#ATTENTION# we are editing 0.175 -> 0.0.175  (to match what pkgtool/pkgbuild does internally)
+#ATTENTION# we are editing 0.175 -> 0.0.175 for Solaris 11 (to match what pkgtool/pkgbuild does internally)
 %define ips_branch_raw %( LC_ALL=C pkg info release/name | grep Branch | sed -e 's?.* ??' -e 's?^0\.175?0.0.175?' )
 
 #case: 7 numbers branch sanity check
@@ -91,122 +101,31 @@
 %endif
 #END %{ips_branch_raw} sanity check 0.0.175.0.0.0.1.0
 
+#case: 4 (5) numbers branch sanity check (OI: 0.0.151.1.4 or 0.0.151.1.8)
+# oi151a8:  LC_ALL=C pkg info release/name | grep Branch
+#        Branch: 0.151.1.8
+##TODO## Hipster support! might be 0.151.1.8.1 ??
+%if %{openindiana}
+#we have 4 or 5 numbers, add the leading zero by awk, add trailing numbers by awk including increment
+%if %( echo %{ips_branch_raw} | egrep "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.{0,1}[0-9]*+$" > /dev/null && echo 1 || echo 0 )
+#add plus one on the last number. As Hipster added randomly another .number to branch,
+# we show that we can do even worse. We simply append .0.0.0.1 in any case!
+# 0.151.1.8 -> 0.0.151.1.8.0.0.0.1   0.151.1.8.1 -> 0.0.151.1.8.1.0.0.0.1 (note more numbers!)
+%define ips_branch_renamed_package %( echo %{ips_branch_raw} | awk -F'.' '{ print "0."$1"."$2"."$3"."$4"."0+$5"."0+$6"."0+$7"."1+$8 }' )
+%else
+%endif
+#END %{ips_branch_raw} sanity check 0.0.175.0.0.0.1.0
+%else
+%endif
+#END %{openindiana}
+
 #example: uname -r 5.11  0.175.0.0.0.1.0 or uname -r 5.12  5.12.0.0.0.32.2
 #-->>        9.18,5.11-0.0.175.0.0.0.1.1         9.18,5.12-5.12.0.0.0.32.3
-%define ips_version_release_renamedbranch %( echo "%{version},`uname -r`-%{ips_branch_renamed_package}" )
+%define ips_version_release_renamedbranch %( echo "%{version},`uname -r`-%{ips_branch_renamed_package}" | tee /tmp/ips_branch_renamed_package )
 %else
 %endif
 #END pkgbuild_ips_legacy
 
-
-
-%if %{pkgbuild_ips_legacy}
-
-#handle the first old package name "_1"
-%if %( test -n "%{renamed_to_newnameversion_1}" && echo 1 || echo 0 )
-
-%package -n renamed_1_noinst
-Summary:                 %{summary} - was renamed to %{renamed_to_newnameversion_1}
-
-#STRONG NOTE: put the old name which is going away into IPS_Package_Name !!!
-#this might be SFEurxvt -> terminal/urxvt then use "SFEurxvt"
-IPS_package_name:	 %{renamed_from_oldname_1}
-
-###make it faster
-##%define _use_internal_dependency_generator 0
-
-IPS_legacy: false
-#example: SUNW_Pkg: SFEurxvt
-SUNW_Pkg: %{renamed_from_oldname_1}
-
-Meta(pkg.renamed): true
-
-#NOTE: you need a version rule, or get ignored. >= 1.1.1 or = * 
-#example_minversion: Renamed_To: terminal/urxvt >= %{version}
-#example_allversion: Renamed_To: terminal/urxvt = *
-Renamed_To: %{renamed_to_newnameversion_1}
-
-#not allowed to place a depend into a obsoleted package! #Meta(pkg.obsolete): true
-Meta(variant.opensolaris.zone): global, nonglobal
-PkgBuild_Make_Empty_Package: true
-
-IPS_Vendor_Version: %{ips_branch_renamed_package}
-
-%endif
-#END renamed_to_newnameversion_1
-
-
-#handle the first old package name "_2"
-%if %( test -n "%{renamed_to_newnameversion_2}" && echo 1 || echo 0 )
-
-%package -n renamed_2_noinst
-Summary:                 %{summary} - was renamed to %{renamed_to_newnameversion_2}
-
-#STRONG NOTE: put the old name which is going away into IPS_Package_Name !!!
-#this might be SFEurxvt -> terminal/urxvt then use "SFEurxvt"
-IPS_package_name:	 %{renamed_from_oldname_2}
-
-###make it faster
-##%define _use_internal_dependency_generator 0
-
-IPS_legacy: false
-#example: SUNW_Pkg: SFEurxvt
-SUNW_Pkg: %{renamed_from_oldname_2}
-
-Meta(pkg.renamed): true
-
-#NOTE: you need a version rule, or get ignored. >= 1.1.1 or = * 
-#example_minversion: Renamed_To: terminal/urxvt >= %{version}
-#example_allversion: Renamed_To: terminal/urxvt = *
-Renamed_To: %{renamed_to_newnameversion_2}
-
-#not allowed to place a depend into a obsoleted package! #Meta(pkg.obsolete): true
-Meta(variant.opensolaris.zone): global, nonglobal
-PkgBuild_Make_Empty_Package: true
-
-IPS_Vendor_Version: %{ips_branch_renamed_package}
-
-%endif
-#END renamed_to_newnameversion_2
-
-
-#handle the first old package name "_3"
-%if %( test -z "%{renamed_to_newnameversion_3}"; && echo 1 || echo 0 )
-
-%package -n renamed_3_noinst
-Summary:                 %{summary} - was renamed to %{renamed_to_newnameversion_3}
-
-#STRONG NOTE: put the old name which is going away into IPS_Package_Name !!!
-#this might be SFEurxvt -> terminal/urxvt then use "SFEurxvt"
-IPS_package_name:	 %{renamed_from_oldname_3}
-
-###make it faster
-##%define _use_internal_dependency_generator 0
-
-IPS_legacy: false
-#example: SUNW_Pkg: SFEurxvt
-SUNW_Pkg: %{renamed_from_oldname_3}
-
-Meta(pkg.renamed): true
-
-#NOTE: you need a version rule, or get ignored. >= 1.1.1 or = * 
-#example_minversion: Renamed_To: terminal/urxvt >= %{version}
-#example_allversion: Renamed_To: terminal/urxvt = *
-Renamed_To: %{renamed_to_newnameversion_3}
-
-#not allowed to place a depend into a obsoleted package! #Meta(pkg.obsolete): true
-Meta(variant.opensolaris.zone): global, nonglobal
-PkgBuild_Make_Empty_Package: true
-
-IPS_Vendor_Version: %{ips_branch_renamed_package}
-
-%endif
-#END renamed_to_newnameversion_3
-
-
-
-%endif
-#END pkgbuild_ips_legacy
 
 
 
@@ -214,6 +133,8 @@ IPS_Vendor_Version: %{ips_branch_renamed_package}
 * Wed Nov 14 2013 - Thomas Wagner
 - fixed branch calculation
 - fixed detection which renamed_<n> set is defined by the calling spec file
+- split out section %package into extra include file, because it can't be wrapped
+  by %if and must always be in the calling spec file
 * Wed Nov 13 2013 - Thomas Wagner
 - fix logic that checks if %{renamed_to_newnameversion_1} is set to a package name
 - add calculation to get an always higher IPS_Vendor_version (aka branch) for the renamed=true package
