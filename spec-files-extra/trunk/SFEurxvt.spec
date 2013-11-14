@@ -1,3 +1,8 @@
+
+
+%define _use_internal_dependency_generator 0
+
+
 #
 # spec file for package SFEurxvt
 #
@@ -81,16 +86,7 @@ Requires: SFEperl-clipboard
 
 #START automatic renamed package  (remember %actions)
 # create automatic package with old name and "renamed=true" in it
-
-#example 'category/newpackagename = *'   (without the >'< !)
-#example 'category/newpackagename >= 1.1.1'   (without the >'< !)
-#do not omit version equation!
-%define renamed_from_oldname_1      %{name}
-%define renamed_to_newnameversion_1 terminal/urxvt = *
-
-#add more and different old names here (increment the counter at the end)
-#%define renamed_from_oldname_2      %{name}
-#%define renamed_to_newnameversion_2 ''
+%include pkg-renamed.inc
 
 #STRONG NOTE:
 #remember to set in this spec file the %action which
@@ -98,7 +94,28 @@ Requires: SFEperl-clipboard
 #depends on the old package in a slightly updated branch
 #version and has the flag "renamed=true" in it
 
-%include pkg-renamed.inc
+%package %{name}-1-noinst
+#if oldname is same as the "Name:"-tag in this spec file:
+#example_ab# %define renamed_from_oldname      %{name}
+#example_ab# %define renamed_from_oldname      SFEstoneoldpkgname
+#
+#example_a#  %define renamed_to_newnameversion category/newpackagename = *
+#or
+#example_b#  %define renamed_to_newnameversion category/newpackagename >= 1.1.1
+#
+#do not omit version equation!
+%define renamed_from_oldname      %{name}
+%define renamed_to_newnameversion terminal/urxvt = *
+%include pkg-renamed-package.inc
+
+
+
+#example# %package %{name}-2-noinst
+#example# #add more and different old names here (increment the counter at the end)
+#example# %define renamed_from_oldname      SFEstoneoldpkgname
+#example# %define renamed_to_newnameversion terminal/urxvt >= 1.23
+#example# %include pkg-renamed-package.inc
+
 #END automatic renamed package
 
 %description
@@ -287,6 +304,7 @@ rm -rf $RPM_BUILD_ROOT
 #on the branch version printed by pkg info release/name
 %actions
 depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
+depend fmri=SFEurxvtotherold@%{ips_version_release_renamedbranch} type=optional
 #depend fmri=SFEotheroldnamesgohere@%{ips_version_release_renamedbranch} type=optional
 
 
@@ -321,6 +339,7 @@ depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
 %changelog
 * Thu Nov 14 2013 - Thomas Wagner
 - improve renamed package (oldpkg now with incremented IPS_Vendor_version aka branch)
+- re-sort include logic to get %package working (would be a no-op if hidden inside an %include or %use)
 * Tue Nov  5 2013 - Thomas Wagner
 - add perl exensions mark-url-yank, mark-and-yank, urxvtclip
 - add pkg-renamed.inc, define old package names and some examples
