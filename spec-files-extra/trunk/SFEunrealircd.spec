@@ -114,8 +114,6 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username=%{daemonuser} uid=%{
 %attr (0644,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/LICENSE
 %dir %attr (0755,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/aliases
 %attr (0644,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/aliases/*
-%dir %attr (0755,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/doc
-%attr (0644,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/doc/*
 %dir %attr (0755,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/ircdcron
 %attr (0755,%{daemonuser},%{daemongroup}) %{_sysconfdir}/unreal/ircdcron/*
 %{_sysconfdir}/unreal/ircd.log
