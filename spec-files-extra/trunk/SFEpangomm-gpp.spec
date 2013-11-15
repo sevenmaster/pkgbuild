@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Nov 15 2013 - Thomas Wagner
-- change (Build)Requires to %{pnm_requires_SUNWpango_devel}, pnm_requires_SUNWcairomm_devel, %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWpango_devel}, pnm_buildrequires_SUNWcairomm_devel, %include packagenamemacros.inc
 - cleanup (Build)Requires
 - standardize CFLAGS, LDFLAGS, CXXFLAGS
 * Thu Oct 24 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
