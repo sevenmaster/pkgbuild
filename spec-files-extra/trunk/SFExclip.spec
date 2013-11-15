@@ -4,6 +4,7 @@
 # includes module(s): xclip
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:		SFExclip
 IPS_Package_Name:	x11/library/xclip
@@ -18,8 +19,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWxwplt 
-Requires: SUNWxwplt 
+BuildRequires:  %{pnm_buildrequires_SUNWxwplt}
+Requires:       %{pnm_requires_SUNWxwplt}
 
 %description
 xclip is a command line interface to the X11 clipboard. It can also be used for copying files, as an alternative to sftp/scp, thus avoiding password prompts when X11 forwarding has already been setup.
@@ -64,6 +65,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Fri Nov 14 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWxwplt}, %include packagenamemacros.inc
 * Wed Nov  6 2013 - Thomas Wagner
 - fix copyright file (shared, GPLv2)
 * Mon Jul 25 2011 - N.B.Prashanth
