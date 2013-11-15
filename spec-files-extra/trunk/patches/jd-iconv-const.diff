@@ -1,0 +1,12 @@
+diff -urN jd-2.8.6-130518.orig/src/jdlib/jdiconv.cpp jd-2.8.6-130518/src/jdlib/jdiconv.cpp
+--- jd-2.8.6-130518.orig/src/jdlib/jdiconv.cpp	2010-10-14 11:45:52.000000000 -0400
++++ jd-2.8.6-130518/src/jdlib/jdiconv.cpp	2013-10-24 17:12:46.584102320 -0400
+@@ -99,7 +99,7 @@
+         std::cout << "byte_left_out = " << byte_left_out << std::endl;
+ #endif
+     
+-        const int ret = iconv( m_cd, ( ICONV_CONST char**)&m_buf_in_tmp, &m_byte_left_in, &buf_out, &byte_left_out );
++        const int ret = iconv( m_cd, ( char**)&m_buf_in_tmp, &m_byte_left_in, &buf_out, &byte_left_out );
+ 
+ #ifdef _DEBUG
+         std::cout << "--> ret = " << ret << std::endl;
