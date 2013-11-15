@@ -1,0 +1,52 @@
+--- Unreal3.2.10.1.orig/src/modules/Makefile.in	2013-04-05 10:29:24.000000000 -0400
++++ Unreal3.2.10.1/src/modules/Makefile.in	2013-09-23 20:53:06.907851195 -0400
+@@ -58,27 +58,28 @@
+ 	 m_sasl.so
+ 
+ #note change of .c to .o
+-COMMANDS=m_sethost.o m_chghost.o m_chgident.o m_setname.o m_setident.o \
+-	 m_sdesc.o m_svsmode.o m_swhois.o m_svsmotd.o m_svsnline.o \
+-	 m_who.o m_mkpasswd.o m_away.o m_svsnoop.o m_svso.o m_svsnick.o \
+-	 m_adminchat.o m_akill.o m_chgname.o m_guest.o m_htm.o m_kill.o \
+-	 m_lag.o m_message.o webtv.o m_nachat.o m_oper.o m_pingpong.o \
+-	 m_quit.o m_rakill.o m_rping.o m_sendumode.o m_sqline.o \
+-	 m_tsctl.o m_unkline.o m_unsqline.o m_unzline.o m_whois.o \
+-	 m_tkl.o m_vhost.o m_cycle.o m_svsjoin.o m_svspart.o \
+-	 m_svslusers.o m_svswatch.o m_svssilence.o m_sendsno.o \
+-	 m_svssno.o m_sajoin.o m_sapart.o m_samode.o m_kick.o m_topic.o \
+-	 m_invite.o m_list.o m_time.o m_svskill.o m_sjoin.o \
+-	 m_pass.o m_userhost.o m_ison.o m_silence.o m_knock.o m_umode2.o \
+-	 m_squit.o m_protoctl.o m_addmotd.o m_addomotd.o \
+-	 m_wallops.o m_admin.o m_globops.o m_locops.o m_chatops.o \
+-	 m_trace.o m_netinfo.o m_links.o m_help.o m_rules.o \
+-	 m_close.o m_map.o m_eos.o m_server.o m_stats.o \
+-	 m_svsfline.o m_dccdeny.o m_undccdeny.o m_whowas.o \
+-	 m_connect.o m_dccallow.o m_userip.o m_nick.o m_user.o \
+-	 m_mode.o m_watch.o m_part.o m_join.o m_motd.o m_opermotd.o \
+-	 m_botmotd.o m_lusers.o m_names.o m_svsnolag.o m_starttls.o \
+-	 m_nopost.o m_issecure.o m_cap.o m_sasl.o
++#changed back for Sun Studio on Solaris
++COMMANDS=m_sethost.c m_chghost.c m_chgident.c m_setname.c m_setident.c \
++	 m_sdesc.c m_svsmode.c m_swhois.c m_svsmotd.c m_svsnline.c \
++	 m_who.c m_mkpasswd.c m_away.c m_svsnoop.c m_svso.c m_svsnick.c \
++	 m_adminchat.c m_akill.c m_chgname.c m_guest.c m_htm.c m_kill.c \
++	 m_lag.c m_message.c webtv.c m_nachat.c m_oper.c m_pingpong.c \
++	 m_quit.c m_rakill.c m_rping.c m_sendumode.c m_sqline.c \
++	 m_tsctl.c m_unkline.c m_unsqline.c m_unzline.c m_whois.c \
++	 m_tkl.c m_vhost.c m_cycle.c m_svsjoin.c m_svspart.c \
++	 m_svslusers.c m_svswatch.c m_svssilence.c m_sendsno.c \
++	 m_svssno.c m_sajoin.c m_sapart.c m_samode.c m_kick.c m_topic.c \
++	 m_invite.c m_list.c m_time.c m_svskill.c m_sjoin.c \
++	 m_pass.c m_userhost.c m_ison.c m_silence.c m_knock.c m_umode2.c \
++	 m_squit.c m_protoctl.c m_addmotd.c m_addomotd.c \
++	 m_wallops.c m_admin.c m_globops.c m_locops.c m_chatops.c \
++	 m_trace.c m_netinfo.c m_links.c m_help.c m_rules.c \
++	 m_close.c m_map.c m_eos.c m_server.c m_stats.c \
++	 m_svsfline.c m_dccdeny.c m_undccdeny.c m_whowas.c \
++	 m_connect.c m_dccallow.c m_userip.c m_nick.c m_user.c \
++	 m_mode.c m_watch.c m_part.c m_join.c m_motd.c m_opermotd.c \
++	 m_botmotd.c m_lusers.c m_names.c m_svsnolag.c m_starttls.c \
++	 m_nopost.c m_issecure.c m_cap.c m_sasl.c
+ 
+ 
+ MODULES=commands.so cloak.so $(R_MODULES)
