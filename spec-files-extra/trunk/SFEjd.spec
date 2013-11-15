@@ -10,7 +10,7 @@
 
 Name:                SFEjd
 IPS_Package_Name:	desktop/2ch/jd
-License:             GPL
+License:             GPLv2
 Summary:             2ch browser (gtkmm/GTK+)
 Version:             2.8.6
 Source:              http://iij.dl.sourceforge.jp/jd4linux/58841/jd-%{version}-%{srcdate}.tgz
@@ -18,7 +18,7 @@ Patch0:              jd-timegm.diff
 Patch1:              jd-iconv-const.diff
 URL:                 http://sourceforge.jp/projects/jd4linux
 SUNW_BaseDir:        %{_basedir}
-SUNW_Copyright:      %{name}.copyright
+SUNW_Copyright:      %{license}.copyright
 Group:		     Applications/Internet
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/*
 
 %changelog
+* Fri Nov 15 2013 - Thomas Wagner
+- commit patches, set GPLv2 shared copyright file
 * Thu Nov 14 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
 - Use standard CFLAGS / CXXFLAGS / LDFLAGS
 - Add %description

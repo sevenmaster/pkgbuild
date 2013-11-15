@@ -1,0 +1,77 @@
+diff -urN jd-2.8.6-130518.orig/src/jdlib/misctime.cpp jd-2.8.6-130518/src/jdlib/misctime.cpp
+--- jd-2.8.6-130518.orig/src/jdlib/misctime.cpp	2012-03-02 10:45:58.000000000 -0500
++++ jd-2.8.6-130518/src/jdlib/misctime.cpp	2013-10-24 17:11:19.338978320 -0400
+@@ -12,6 +12,7 @@
+ 
+ #include <sstream>
+ #include <cstdio>
++#include <cstdlib>
+ #include <cstring>
+ #include <sys/time.h>
+ #include <vector>
+@@ -24,6 +25,31 @@
+           (_result) )
+ #endif
+ 
++#ifdef NO_TIMEGM
++//
++// timegm
++//
++// Solarisの場合はtimegmが存在しないため、代替コードを宣言する(by kohju)
++// 原典：linux の man timegm
++//
++time_t timegm (struct tm *tm)
++{
++    time_t ret;
++    char *tz;
++
++    tz = getenv("TZ");
++    setenv("TZ", "", 1);
++    tzset();
++    ret = mktime(tm);
++    if (tz)
++ 	setenv("TZ", tz, 1);
++    else
++ 	unsetenv("TZ");
++    tzset();
++    return ret;
++}
++#endif
++
+ //
+ // gettimeofday()の秒を文字列で取得
+ //
+@@ -181,33 +207,6 @@
+ }
+ 
+ 
+-#ifdef NO_TIMEGM
+-//
+-// timegm
+-//
+-// Solarisの場合はtimegmが存在しないため、代替コードを宣言する(by kohju)
+-// 原典：linux の man timegm
+-//
+-time_t timegm (struct tm *tm)
+-{
+-    time_t ret;
+-    char *tz;
+-
+-    tz = getenv("TZ");
+-    setenv("TZ", "", 1);
+-    tzset();
+-    ret = mktime(tm);
+-    if (tz)
+- 	setenv("TZ", tz, 1);
+-    else
+- 	unsetenv("TZ");
+-    tzset();
+-    return ret;
+-}
+-#endif
+-
+-
+-
+ // 実行時間測定用
+ 
+ std::vector< struct timeval > tv_measurement;
