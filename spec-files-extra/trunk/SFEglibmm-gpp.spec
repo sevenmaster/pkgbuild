@@ -8,10 +8,11 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1
 %include base.inc
-%define _prefix /usr/g++
+%include usr-g++.inc
 
 %use glibmm = glibmm.spec
 
@@ -26,19 +27,17 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-Requires: SUNWgnome-base-libs
-BuildRequires: SUNWgnome-base-libs-devel
-Requires: SFEsigcpp-gpp
-BuildRequires: SFEsigcpp-gpp-devel
+BuildRequires:   %{pnm_buildrequires_SUNWgnome_base_libs_devel}
+Requires:        %{pnm_requires_SUNWgnome_base_libs}
+BuildRequires:   SFEsigcpp-gpp-devel
+Requires:        SFEsigcpp-gpp
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %name
-Requires: SUNWgnome-base-libs-devel
-Requires: SFEsigcpp-gpp-devel
-Requires: SUNWsigcpp-devel
+Requires: %{pnm_buildrequires_SUNWgnome_base_libs_devel}
 
 %prep
 rm -rf %name-%version
@@ -92,6 +91,12 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/devhelp
 
 %changelog
+* Thu Nov 14 2013 - Thomas Wagner
+- fix dependencies to be g++ compiled SFEsigcpp-gpp.spec (we are fully in g++ world)
+- change (Build)Requires to %{pnm_requires_SUNWgnome_base_libs_devel}, %include packagenamemacros.inc
+- change _prefix to %include usr-g++.inc
+* Thu Oct 24 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
+- Change Requires: SUNW* to %{pnm_requires_SUNW*}
 * Fri Aug  5 2011 - Alex Viskovatoff
 - use new g++ path layout; add SUNW_Copyright
 * Fri Nov 06 2009 - jchoi42@pha.jhu.edu
