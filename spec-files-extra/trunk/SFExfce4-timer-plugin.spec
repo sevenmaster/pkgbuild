@@ -8,9 +8,9 @@
 
 Name:			SFExfce4-timer-plugin
 Summary:		Timer Plugin for Xfce
-Version:		1.0.0
+Version:		1.5.0
 URL:			http://goodies.xfce.org/projects/panel-plugins/xfce4-timer-plugin
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-timer-plugin/1.0/xfce4-timer-plugin-%{version}.tar.bz2
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-timer-plugin/1.5/xfce4-timer-plugin-%{version}.tar.bz2
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
 BuildRoot:		%{_tmppath}/%{src_name}-%{version}-build
@@ -79,6 +79,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}
 
 %changelog
+* Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.5.0
 * Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.0.0
 * Sat Oct 8 2011 - Ken Mays <kmays2000@gmail.com>
