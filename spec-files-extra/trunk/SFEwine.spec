@@ -14,6 +14,7 @@
 # Confirmed build of Wine 1.4rc2 on oi_151/GCC 3.4.3 02/03/12   - Ken Mays
 # Confirmed build of Wine 1.4 on oi_151a/GCC 3.4.3 03/07/12   - Ken Mays
 # Confirmed build of Wine 1.4.1 on oi_151a/GCC 4.6.2 06/16/12   - Ken Mays
+# Confirmed build of Wine 1.6.1 on oi_151a/GCC 4.6.4 11/15/13   - Ken Mays
 #
 %include Solaris.inc
 
@@ -21,13 +22,13 @@
 
 # To attempt building a certain wine version, as opposed to the latest
 # Wine version available from Sourceforge, pass the version as an argument.
-# example version number: 1.1.44
-# $ pkgtool build SFEwine --define 'version 1.1.44'
+# example version number: 1.6.1
+# $ pkgtool build SFEwine --define 'version 1.6.1'
 
 # In case of an unstable wine version, temporarily set this to the
 # last-known-good version. This should be reverted the next stable version.
 # %if %{!?version:1}
-# 	%define version 1.3.31
+# 	%define version 1.7.6
 # %endif
 
 #%if %{!?version:1}
@@ -38,7 +39,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.5.22
+Version:                1.7.6
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -48,8 +49,8 @@ Source:                 http://downloads.sourceforge.net/project/wine/Source/win
 # See http://wiki.winehq.org/Gecko for which version to use.
 #
 Source1:		http://winetricks.org/winetricks
-Source2:                %{src_url}/%{sname}_gecko-1.9-x86.msi
-Source3:		%{src_url}/%{sname}_gecko-1.9-x86_64.msi
+Source2:                %{src_url}/%{sname}_gecko-2.24-x86.msi
+Source3:		%{src_url}/%{sname}_gecko-2.24-x86_64.msi
 Source4:    		http://kegel.com/wine/wisotool
 Source100:              wine.directory
 Source101:              winetricks.desktop
@@ -269,6 +270,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.6
 * Sat Jan 19 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.5.22
 * Fri Jan 4 2013 - Ken Mays <kmays2000@gmail.com>
