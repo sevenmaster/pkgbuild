@@ -5,11 +5,11 @@
 
 %include Solaris.inc
 
-#%define xfce_version 4.4.0
+#%define xfce_version 4.10.0
 
 Name:			SFExfce4-weather-plugin
 Summary:		Weather applet for Xfce
-Version:		0.8.2
+Version:		0.8.3
 URL:			http://www.xfce.org/
 Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-weather-plugin/0.8/xfce4-weather-plugin-%{version}.tar.bz2
 Group:			User Interface/Desktops
@@ -82,6 +82,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/icons
 
 %changelog
+* Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.8.3
 * Mon Nov 26 2012 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.8.2
 * Sun Mar 2 2007 - dougs@truemail.co.th
