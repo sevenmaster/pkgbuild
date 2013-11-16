@@ -1,6 +1,6 @@
 #
 # Initial xfce-cpufreq-plugin spec by Ken Mays
-# Copyright 2011
+# Copyright 2011,2012,2013
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
@@ -10,9 +10,9 @@
 
 Name:			SFExfce4-cpufreq-plugin
 Summary:		CPU Frequency applet for Xfce
-Version:		1.0.0
+Version:		1.1.0
 URL:			http://www.xfce.org/
-Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-cpufreq-plugin/1.0/xfce4-cpufreq-plugin-%{version}.tar.bz2
+Source0:		http://archive.xfce.org/src/panel-plugins/xfce4-cpufreq-plugin/1.1/xfce4-cpufreq-plugin-%{version}.tar.bz2
 Patch1:			xfce4-cpufreq-plugin-01-solaris.diff
 Group:			User Interface/Desktops
 SUNW_BaseDir:		%{_basedir}
@@ -85,5 +85,7 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/icons
 
 %changelog
+* Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.1.0
 * Sat Jun 11 2011 - Ken Mays <kmays2000@gmail.com>
 - Initial version (1.0.0)
