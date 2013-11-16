@@ -19,7 +19,7 @@
 #default version for most osdistros
 %define cairomm_osspecific_version    1.8.6
 
-%if %( expr '%openindiana'+'%solaris12' '>=' 1 && echo 1 || echo 0 )
+%if %( expr '%openindiana' + '%solaris12' '>=' 1 && echo 1 || echo 0 )
 ##TODO## improve version detection
 %define cairo_version              $( LC_ALL=C pkg info cairo | grep -i Version | gsed -e 's?.*Version: *??' )
 #%define cairo_version_major_minor  $( echo %{cairo_version} | gsed -e 's?^\([0-9]*\.[0-9]*\).*?\1?' )
