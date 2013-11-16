@@ -1,3 +1,9 @@
+2013-11-15 Ken Mays <kmays2000@gmail.com>
+
+	* SFEwine.spec: Bump to 1.7.6
+	* SFExfce4-timer-plugin.spec: Bump to 1.5.0
+	* SFExfce4-cpufreq-plugin.spec: Bump to 1.1.0
+
 2013-11-10 Milan Jurik <sfnet@xylab.cz>
 
 	* SFEbinutils-gpp.spec: bump to 2.23.2
