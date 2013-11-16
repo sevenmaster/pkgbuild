@@ -8,6 +8,8 @@
 %define cc_is_gcc 1
 %include base.inc
 
+%include packagenamemacros.inc
+
 Name:                    SFEdar
 IPS_package_name:	 compress/dar
 Group:			 Applications/System Utilities
@@ -22,9 +24,9 @@ SUNW_BaseDir:            %{_basedir}
 
 BuildRequires: SFEgcc
 BuildRequires: SUNWbzip
-BuildRequires: library/lzo
+BuildRequires: SFElzo
 Requires: SFEgccruntime
-Requires: SUNWperl584core
+Requires:      %{pnm_requires_perl_default}
 Requires: SUNWbash
 Requires: SUNWbzip
 
@@ -148,6 +150,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov 15 2013 - Thomas Wagner
+- change Requires to %{pnm_requires_perl_default}, SFElzo, %include packagenamemacros.inc
 * Tue Nov  5 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - do not add %gnu_lib_path to LDFLAGS: dar does not use any libraries there
 * Mon Nov  4 2013 - Alex Viskovatoff <herzen@imapmail.org>
