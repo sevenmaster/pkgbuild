@@ -5,14 +5,15 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
+
 Name:                    cairomm
 License:		 LGPL
 Group:			 System/Libraries
-Version:                 1.10.0
+#see calling spec file Version:                 1.10.0
+Version:	%{cairomm_osspecific_version}
 Release:		 1
 URL:                     http://cairographics.org/cairomm/
 Source:                  http://cairographics.org/releases/cairomm-%{version}.tar.gz
-Requires: cairo
 
 %package devel
 Summary:                 %{summary} - development files
@@ -61,6 +62,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat  1 Nov 2013 - Thomas Wagner
+- move "Version:" to calling spec file and calculate version based on what osdistro provides for library/desktop/cairo
 * Wed Oct 30 2013 - Alex Viskovatoff
 - update to 1.10.0
 * Fri Aug  5 2011 - Alex Viskovatoff
