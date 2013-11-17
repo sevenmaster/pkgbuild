@@ -1,5 +1,5 @@
 #
-# Copyright 2007 Sun Microsystems, Inc.
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -7,13 +7,12 @@
 %include Solaris.inc
 
 %define src_name gtk-xfce-engine
-#%define src_url http://archive.xfce.org/xfce/4.8/src/
 %define src_url http://archive.xfce.org/src/xfce/gtk-xfce-engine/3.0/
 
 Name:		SFEgtk-xfce-engine
 IPS_Package_Name:	gnome/theme/gtk2-xfce-engine
 Summary:	Port of xfce engine to GTK+-2.0
-Version:	3.0.0
+Version:	3.0.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		User Interface/Desktops
@@ -62,6 +61,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/themes*
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 3.0.1
 * Thu Aug 23 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.0.0
 * Thu Apr 9 2011 - kmays2000@gmail.com
