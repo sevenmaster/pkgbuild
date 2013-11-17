@@ -12,7 +12,7 @@
 Name:		SFExfce4-panel
 IPS_Package_Name:	xfce/xfce-panel
 Summary:	Xfce Panel
-Version:	4.10.0
+Version:	4.10.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		Applications/Panels and Applets
@@ -146,6 +146,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Sat Sep 22 2011 - Ken Mays <kmays2000@gmail.com>
