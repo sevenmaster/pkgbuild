@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006 Sun Microsystems, Inc.
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -12,7 +12,7 @@
 Name:		SFExfce4-appfinder
 IPS_Package_Name:	xfce/xfce-appfinder
 Summary:	Appfinder for the Xfce Desktop Environment
-Version:	4.10.0
+Version:	4.10.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		Applications/Accessories
@@ -115,6 +115,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Mon Jul 25 2011 - N.B.Prashanth
