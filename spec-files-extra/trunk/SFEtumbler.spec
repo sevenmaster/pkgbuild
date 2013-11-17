@@ -1,4 +1,5 @@
 #
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -14,7 +15,7 @@
 Name:           SFEtumbler
 IPS_Package_Name:	xfce/tumbler
 Summary:        Thumbnail management for Xfce
-Version:        0.1.25
+Version:        0.1.29
 Group:		Applications/Plug-ins and Run-times
 URL:            http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
@@ -122,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
  
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 0.1.29
 * Sun Aug 11 2013 - Thomas Wagner
 - use ffmpeg anytime
 - change to BuildRequires: %{pnm_buildrequires_SUNWgtk_doc}, %include packagenamemacros.inc
