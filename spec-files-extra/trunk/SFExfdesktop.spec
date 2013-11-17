@@ -12,7 +12,7 @@
 Name:		SFExfdesktop
 IPS_Package_Name:	xfce/xfce-desktop
 Summary:	Desktop manager for the Xfce Desktop Environment
-Version:	4.10.0
+Version:	4.10.2
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 License: 	GPLv2
@@ -128,6 +128,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.2
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Wed Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
