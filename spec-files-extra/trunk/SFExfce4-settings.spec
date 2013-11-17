@@ -1,5 +1,5 @@
 #
-# Copyright 2007 Sun Microsystems, Inc.
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -12,7 +12,7 @@
 Name:		SFExfce4-settings
 IPS_Package_Name:	xfce/config/xfce-settings
 Summary:	Various gtk widgets for xfce
-Version:	4.10.0
+Version:	4.10.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 License:	GPLv2
@@ -108,6 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Sat Sep 24 2011 - Ken Mays <kmays2000@gmail.com>
