@@ -1,4 +1,5 @@
 #
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -10,7 +11,7 @@
 
 Name:		SFEgarcon
 IPS_Package_Name:	library/desktop/garcon
-Version:	0.2.0
+Version:	0.2.1
 Summary:	Implementation of the freedesktop.org menu specification
 License:	LGPLv2+ and GFDLv1.1
 SUNW_Copyright:	garcon.copyright
@@ -117,6 +118,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 0.2.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 0.2.0
 * Thu Aug 23 2012 - Ken Mays <kmays2000@gmail.com>
