@@ -1,5 +1,5 @@
 #
-# Copyright 2007 Sun Microsystems, Inc.
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -14,7 +14,7 @@ IPS_Package_Name:	library/desktop/libxfceutil
 Summary:	Utility library for the Xfce desktop environment
 License:	LGPLv2+
 SUNW_Copyright:	libxfce4util.copyright
-Version:	4.10.0
+Version:	4.10.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 Group:		Desktop (GNOME)/Libraries
@@ -101,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Sun Sep 25 2011 -Milan Jurik
