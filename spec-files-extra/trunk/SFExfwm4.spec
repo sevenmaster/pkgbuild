@@ -1,5 +1,5 @@
 #
-# Copyright 2007 Sun Microsystems, Inc.
+# Copyright (c) 2013 Oracle Corporation
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -12,7 +12,7 @@
 Name:		SFExfwm4
 IPS_Package_Name:	xfce/window-manager
 Summary:	Next generation window manager for Xfce
-Version:	4.10.0
+Version:	4.10.1
 URL:		http://www.xfce.org/
 Source:		%{src_url}/%{src_name}-%{version}.tar.bz2
 License:	GPLv2
@@ -127,6 +127,8 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %endif
 
 %changelog
+* Sun Nov 17 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 4.10.1
 * Sat Nov 10 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 4.10.0
 * Tue Jan 17 2012 - Ken Mays <kmays2000@gmail.com>
