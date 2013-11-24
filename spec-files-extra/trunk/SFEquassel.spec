@@ -10,7 +10,7 @@
 
 
 Name:			SFEquassel
-IPS_package_name:	desktop/irc/%srcname
+IPS_package_name:	desktop/irc/quassel
 Group:			Applications/Internet
 Summary:		Graphical IRC client based on a client-server model
 Version:		0.9.1
