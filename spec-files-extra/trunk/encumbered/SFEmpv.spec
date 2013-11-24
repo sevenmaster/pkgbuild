@@ -35,7 +35,6 @@ BuildRequires: SFElibcdio-devel
 BuildRequires: SFElibdvdnav-devel
 BuildRequires: SFEpython26-docutils
 BuildRequires: SUNWgroff
-BuildRequires: SUNWesu
 %if %with_system_nvidia
 BuildRequires: driver/graphics/nvidia
 %endif
