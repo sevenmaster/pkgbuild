@@ -12,6 +12,7 @@
 %define python_version 2.6
 
 Name:		SFEsonata
+IPS_package_name: audio/mpd/sonata
 Version:	1.6.2.1
 Summary:	An elegant music client for MPD
 Group:		Applications/Sound and Video

@@ -21,7 +21,7 @@
 %define src_name mpd
 
 Name:                SFEmpd
-IPS_Package_Name:    media/mpd
+IPS_package_name:    audio/mpd
 Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright

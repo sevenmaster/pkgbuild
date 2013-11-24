@@ -8,7 +8,7 @@
 %define srcname libmpdclient
 
 Name:		SFElibmpdclient
-IPS_Package_Name:	library/audio/libmpdclient
+IPS_package_name:	library/audio/mpd/libmpdclient
 Summary:	Asynchronous API library for interfacing to MPD
 URL:		http://mpd.wikia.com/wiki/ClientLib:libmpdclient
 Meta(info.upstream):	Max Kellermann <max@duempel.org>

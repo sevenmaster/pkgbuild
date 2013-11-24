@@ -6,7 +6,7 @@
 %include Solaris.inc
 
 Name:                SFEmpc
-IPS_package_name:    sfe/media/mpc
+IPS_package_name:    audio/mpd/mpc
 Summary:             Command line tool and client for Music Player Daemon
 License:             GPLv2
 SUNW_Copyright:	     mpc.copyright

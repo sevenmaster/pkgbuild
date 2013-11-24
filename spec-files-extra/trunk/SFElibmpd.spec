@@ -14,14 +14,15 @@
 
 
 Name:                SFElibmpd
+IPS_Package_Name:    library/audio/mpd/libmpd
 Summary:             libmpd for gmpc
 URL:                 http://mpd.wikia.com/wiki/Music_Player_Daemon_Wiki
 License:             GPLv2
 SUNW_Copyright:	     libmpd.copyright
-Version:             0.20.0
+Version:             11.8.17
 #needed for download-URL:
-%define gmpc_version 0.20.0
-Source:              http://download.sarine.nl/Programs/gmpc/%{gmpc_version}/libmpd-%{version}.tar.gz
+%define gmpc_version 11.8.16
+Source:              http://download.sarine.nl/Programs/gmpc/%gmpc_version/libmpd-%version.tar.gz
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -41,10 +42,7 @@ Requires: %name
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 #export CFLAGS="-O4 -fPIC -DPIC -Xlinker -i -fno-omit-frame-pointers"
 export CFLAGS="%optflags"
@@ -87,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 25 2013 - Alex Viskovatoff
+- update to 11.8.17; rename
 * Tue Jan 10 2012 - Thomas Wagner
 - set CC=gcc CXX=g++ instead of full specified path to /usr/sfw/
 - cc_is_gcc 1  or it fails with bad compiler switches
