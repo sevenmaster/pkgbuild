@@ -5,12 +5,10 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
-Summary:                gmpc-%{pluginname} - This plugin allows you to to listen to Last.FM radio stations with mpd. 
+IPS_package_name:	audio/mpd/gmpc/lastfm
+Summary:                Last.FM metadata fetcher
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
- 
-BuildRequires: SFEgcc
-Requires: SFEgccruntime
 
 BuildRequires: SFEgmpc-devel
 Requires: SFEgmpc

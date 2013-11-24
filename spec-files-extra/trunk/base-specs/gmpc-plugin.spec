@@ -33,8 +33,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export LDFLAGS="-lX11"
-export CC=/usr/sfw/bin/gcc
-export CXX=/usr/sfw/bin/g++
+export CC=gcc
+export CXX=g++
 
 CC=$CC CXX=$CXX XGETTEXT=/bin/gxgettext MSGFMT=/bin/gmsgfmt ./configure --prefix=%{_prefix} \
 	--mandir=%{_mandir} \

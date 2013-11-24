@@ -15,7 +15,7 @@
 %define SFEgtkmm 0
 
 Name:                    SFEgmpc
-IPS_package_name:	 gnome/media/gmpc
+IPS_package_name:	 audio/mpd/gmpc
 Summary:                 Gnome Music Player Daemon client
 URL:                     http://sarine.nl/gmpc/
 Version:                 0.20.0
