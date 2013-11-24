@@ -1,0 +1,12 @@
+Linux defines TIOCGWINSZ in ioctl.h, but Solaris doesn't
+
+--- quvi-0.9.4/src/sig.c.orig	Wed Jun 19 11:06:19 2013
++++ quvi-0.9.4/src/sig.c	Tue Oct 22 17:19:32 2013
+@@ -21,6 +21,7 @@
+ #include "config.h"
+ 
+ #include <sys/ioctl.h>
++#include <termios.h>
+ #include <glib/gstdio.h>
+ 
+ #include "sig.h"

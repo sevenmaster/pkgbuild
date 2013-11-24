@@ -10,7 +10,7 @@ License:        AGPLv3+
 URL:            http://quvi.sourceforge.net
 Source0:        http://downloads.sourceforge.net/project/quvi/0.9/%srcname/%srcname-%version.tar.xz
 BuildArch:      noarch
-BuildRequires:	SFElua-socket, SFElua-json
+BuildRequires:	SFElua-socket, SFElua-json, SFElua-expat
 Requires:       lua-socket
 Requires:       lua-json
 Requires:	lua-expat
