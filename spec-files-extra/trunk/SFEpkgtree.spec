@@ -2,6 +2,7 @@
 # spec file for package SFEpkgtree
 #
 
+%define _use_internal_dependency_generator 0
 
 %include Solaris.inc
 %include packagenamemacros.inc
@@ -16,7 +17,7 @@
 #  -> https://github.com/quattor/pkgtree/commit/261c60c12323bc97975192823c5c3de1c32bb49f
 %define commit1 261c60c12323bc97975192823c5c3de1c32bb49f
 #remember to increas with every changed commit1 value
-%define increment_version_helper 1
+%define increment_version_helper 4
 %define shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 #
 
@@ -43,6 +44,12 @@ Each view may be affected by applying a variety of filters. See 'pkgtree -h' for
 
 Perl libraries are also available in this distribution providing APIs for obtaining and manipulating information about IPS packages from within a Perl script.
 
+example:
+pkgtree depends pkgtree
+  |------(    require)--pkg://localhosts11/package/pkgtree@0.0.0.0.0.4,5.11-0.0.175.0.0.0.2.0:20131125T224942Z
+  | pkg://solaris/system/library@0.5.11-0.175.0.0.0.2.1
+  | pkg://solaris/system/kernel@0.5.11-0.175.0.0.0.2.1
+
 
 %prep
 %setup -q -n %{githubproject1}-%{commit1}
@@ -59,8 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 cp -p bin/pkgtree $RPM_BUILD_ROOT%{_bindir}
-mkdir -p $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/%{perl_version}/
-cp -pr lib/* $RPM_BUILD_ROOT%{_prefix}/perl5/vendor_perl/%{perl_version}/
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}
+cp -pr lib/perl5/* $RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}
 
 
 
@@ -75,8 +82,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{perl_path_vendor_perl_version}/*
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_docdir}
+
 
 
 %changelog
-* Fri Nov 22 2013  - Thomas Wagner
+* Mon Nov 25 2013 - Thomas Wagner
+- fix install location for perl modules (tested: S11, S12, oi151a8)
+- fix datadir/docdir owner/group
+* Fri Nov 22 2013 - Thomas Wagner
 - Initial spec
