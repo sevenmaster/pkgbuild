@@ -104,6 +104,8 @@ Requires:       SFElibgsm
 Requires:       SFEmpg123
 Requires:       SFEopenal
 Requires:       SUNWaudh
+BuildRequires:	SFElcms2
+Requires:	SFElcms2
 
 %package devel
 Summary:                 wine - developer files, /usr
