@@ -1,0 +1,10 @@
+--- fail2ban-0.8.4-OpenSolaris-e065f64b14699758a28fdbf4622fca884753e68f/files/solaris-10-svc-fail2ban.orig	2013-04-14 21:51:16.000000000 +0200
++++ fail2ban-0.8.4-OpenSolaris-e065f64b14699758a28fdbf4622fca884753e68f/files/solaris-10-svc-fail2ban	2013-11-30 22:07:34.661021254 +0100
+@@ -24,6 +24,7 @@
+ case $1 in
+ 	start)
+ 		echo "Starting fail2ban-server with $F2B_CONF"
++                [ ! -d /var/run/fail2ban ] && mkdir /var/run/fail2ban
+ 		eval $ENV /usr/bin/fail2ban-client start &
+ 	;;
+ 	stop)
