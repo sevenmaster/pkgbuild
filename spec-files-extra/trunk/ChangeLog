@@ -1,6 +1,10 @@
+2013-12-01 Ken Mays <kmays2000@gmail.com>
+
+        * SFEwine.spec: Bump to 1.7.7
+
 2013-11-16 Ken Mays <kmays2000@gmail.com>
 
-	* SFExfce: Bumped to Xfce 4.10.2 (Gtk 2.24 and Glib 2.30 required)
+	* SFExfce: Bumped to Xfce 4.10.2 (Gtk 2.24 and Glib 2.30 optional)
 
 2013-11-15 Ken Mays <kmays2000@gmail.com>
 
