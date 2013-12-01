@@ -620,3 +620,10 @@ SFEqt-gpp.spec      done (rev 5541)
 SFEqt-stdcxx.spec
 SFEboost-gpp.spec
 SFEboost-stdcxx.spec
+
+80)
+add handy macros %{gpp_inc} %{gpp_lib} %{gpp_lib_path} in case the spec file
+does not %include usr-g++.inc but needs to find the g++ libs in /usr/g++/<include|lib>
+
+81)
+add profile to support SFEfail2ban.spec
