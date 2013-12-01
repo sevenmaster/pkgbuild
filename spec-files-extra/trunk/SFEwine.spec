@@ -28,7 +28,7 @@
 # In case of an unstable wine version, temporarily set this to the
 # last-known-good version. This should be reverted the next stable version.
 # %if %{!?version:1}
-# 	%define version 1.7.6
+# 	%define version 1.7.7
 # %endif
 
 #%if %{!?version:1}
@@ -39,7 +39,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.6
+Version:                1.7.7
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -272,6 +272,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Dec 1 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.7
 * Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.6
 * Sat Jan 19 2013 - Ken Mays <kmays2000@gmail.com>
