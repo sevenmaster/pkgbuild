@@ -27,7 +27,7 @@
 
 
 Name:                    SFEfail2ban
-IPS_Package_Name:        package/fail2ban
+IPS_Package_Name:        network/fail2ban
 Group:                   Network
 Summary:                 monitor logfiles for invalid login attempts and ban source IP-addresses - (github version %{commit1})
 Version:                 0.0.0.0.0.%{increment_version_helper}
@@ -105,6 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, bin)
 %doc COPYING ChangeLog PKG-INFO README README.Solaris README.md TODO
+%dir %attr (0755, root, sys) %{_basedir}
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
 %dir %attr (0755, root, bin) /lib/svc/method
@@ -123,9 +124,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_localstatedir}
 %class(manifest) %attr (0444, root, sys) %{svcdir}/*
 %define svcdir /var/svc/manifest/network/fail2ban
-#              /var/svc/manifest/site/dovecot.xml
 
 
 %changelog
+* Sun Dec  1 2013 - Thomas Wagner
+- fix permissions for _basedir
+- rename IPS package name to network/fail2ban
 * Sat Nov 30 2013 - Thomas Wagner
 - Initial spec
