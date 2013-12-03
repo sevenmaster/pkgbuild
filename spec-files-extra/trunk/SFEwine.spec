@@ -15,7 +15,8 @@
 # Confirmed build of Wine 1.4 on oi_151a/GCC 3.4.3 03/07/12   - Ken Mays
 # Confirmed build of Wine 1.4.1 on oi_151a/GCC 4.6.2 06/16/12   - Ken Mays
 # Confirmed build of Wine 1.6.1 on oi_151a/GCC 4.6.4 11/15/13   - Ken Mays
-#
+# Confirmed build of Wine 1.7.7 on oi_151a/GCC 4.6.4 12/03/13   - Ken Mays
+
 %include Solaris.inc
 
 %define src_url		%{sf_download}/%{sname}
@@ -64,6 +65,7 @@ Source108:              wine-winefile.desktop
 Source109:              wine-winemine.desktop
 Source110:              wine-wordpad.desktop
 Source1000:             wine-svg-icons.tar.bz2
+Patch1:			wine-01-solaris.diff
 NoSource:		1
 Group:			System/Virtualization
 License:		LGPL
@@ -116,6 +118,7 @@ Requires: %name
 %prep
 %setup -q -n %{sname}-%{version}
 %setup -n %{sname}-%{version} -D -T -a 1000
+%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -274,6 +277,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Dec 1 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.7
+- Added patches/wine-01-solaris.diff
 * Fri Nov 15 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.6
 * Sat Jan 19 2013 - Ken Mays <kmays2000@gmail.com>
