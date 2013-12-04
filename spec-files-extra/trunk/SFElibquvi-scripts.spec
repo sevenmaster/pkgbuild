@@ -3,8 +3,8 @@
 %define _pkg_docdir %_docdir/%srcname
 
 Name:           SFElibquvi-scripts
-IPS_package_name: video/libquvi-scripts
-Version:        0.9.20131012
+IPS_package_name: library/video/libquvi-scripts
+Version:        0.9.20131130
 Summary:        Embedded lua scripts that libquvi uses for parsing the media details
 License:        AGPLv3+
 URL:            http://quvi.sourceforge.net
@@ -43,6 +43,8 @@ rm -rf %buildroot
 %_mandir/man7/quvi-modules*.7*
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Bump to 0.9.20131130
 * Wed Oct 30 2013 Alex Viskovatoff
 - Import Fedora spec
 * Thu Sep 26 2013 Christopher Meng <rpm@cicku.me> - 0.9.20130903-1

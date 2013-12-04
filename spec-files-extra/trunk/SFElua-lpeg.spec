@@ -1,11 +1,11 @@
 %include Solaris.inc
-%define luaver 5.1
+%define luaver 5.2
 %define lualibdir %{_libdir}/lua/%{luaver}
 %define luapkgdir %{_datadir}/lua/%{luaver}
 %define _pkg_docdir %_docdir/lua-lpeg
 
 Name:           SFElua-lpeg
-IPS_package_name: lua-51/lua-lpeg
+IPS_package_name: library/lua/lpeg
 Version:        0.12
 Summary:        Parsing Expression Grammars for Lua
 Group:          Development/Libraries
@@ -14,8 +14,8 @@ URL:            http://www.inf.puc-rio.br/~roberto/lpeg/
 Source0:        http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-%{version}.tar.gz
 BuildRoot:      %_tmppath/%name-%version-root
 
-BuildRequires:  SFElua-51
-Requires:       lua-51
+BuildRequires:  runtime/lua
+Requires:       lua
 
 %description
 LPeg is a new pattern-matching library for Lua, based on Parsing Expression
@@ -23,14 +23,13 @@ Grammars (PEGs).
 
 %prep
 %setup -q -n lpeg-%{version}
-sed -i -e "s|/usr/bin/env lua5.1|%{_bindir}/lua|" test.lua
 # strict module not part of our Lua 5.1.4
 sed -i -e 's|require"strict"|-- require"strict"|' test.lua
 chmod -x test.lua
 
 %build
 #make %{?_smp_mflags} COPT="%{optflags}"
-make LUADIR=/usr/include/lua-5.1 COPT="%gcc_optflags"
+make LUADIR=/usr/include/lua COPT="%gcc_optflags"
 
 %install
 rm -rf %{buildroot}
@@ -57,6 +56,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Use Lua 5.2
 * Tue Oct 22 2013 - Alex Viskovatoff
 - Import Fedora spec
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.12-2

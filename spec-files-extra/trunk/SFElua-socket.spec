@@ -1,5 +1,5 @@
 %include Solaris.inc
-%define luaver 5.1
+%define luaver 5.2
 %define lualibdir %{_libdir}/lua/%{luaver}
 %define luapkgdir %{_datadir}/lua/%{luaver}
 %define baseversion 3.0-rc1
@@ -7,7 +7,7 @@
 %define _pkg_docdir %_docdir/%upstreamname
 
 Name:           SFElua-socket
-IPS_package_name: lua-51/lua-socket
+IPS_package_name: library/lua/socket
 Version:        3.0
 Release:        0.4rc1
 Summary:        Network support for the Lua language
@@ -15,15 +15,9 @@ Group:          Development/Libraries
 License:        MIT
 URL:            http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/
 Source0:        http://github.com/diegonehab/%{upstreamname}/archive/v%{baseversion}.tar.gz
-#Patch0:		    luasocket-optflags.patch
-# All changes in the upstream repo from %{baseversion} tag to the
-# current master. Seems to be harmless.
-#Patch1:         luasocket-no-global-vars.patch
 
-BuildRequires:  SFElua-51
-#BuildRequires:  /usr/bin/iconv
-#BuildRequires: system/library/iconv/unicode
-Requires:       lua-51
+BuildRequires:  runtime/lua
+Requires:       lua
 
 %package devel
 Summary:    Development files for %{name}
@@ -52,7 +46,7 @@ Lua using %{name}
 
 %build
 #make %{?_smp_mflags} OPTFLAGS="%{optflags} -fPIC" linux
-make LUAINC_linux=/usr/include/lua-5.1 OPTFLAGS="%optflags" linux
+make LUAINC_linux=/usr/include/lua OPTFLAGS="%optflags" linux
 /usr/bin/iconv -f ISO8859-1 -t UTF8 LICENSE >LICENSE.UTF8
 mv -f LICENSE.UTF8 LICENSE
 
@@ -85,7 +79,9 @@ rm -rf %buildroot
 
 
 %changelog
-* Sun Oct 20 2013 Alex Viskovatoff
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Use Lua 5.2
+* Sun Oct 20 2013 - Alex Viskovatoff
 - Import Fedora spec
 * Mon Sep 09 2013 Matěj Cepl <mcepl@redhat.com> - 3.0-0.4rc1
 - Add -devel package.

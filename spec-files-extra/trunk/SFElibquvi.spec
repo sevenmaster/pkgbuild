@@ -4,13 +4,13 @@
 
 Name:           SFElibquvi
 IPS_package_name: library/video/libquvi
-Version:        0.9.3
+Version:        0.9.4
 Summary:        A cross-platform library for parsing flash media streams
 License:        AGPLv3+
 URL:            http://quvi.sourceforge.net
 Source0:        http://downloads.sourceforge.net/project/quvi/0.9/%srcname/%srcname-%version.tar.xz
 #Patch1:		libquvi-01-luaL-register.patch  # for Lua 5.2
-BuildRequires:  SFElua-51 SFElua-socket
+BuildRequires:  runtime/lua SFElua-socket
 BuildRequires:  glib2
 BuildRequires:  curl libgcrypt libproxy SFElibquvi-scripts
 BuildRequires:  doxygen
@@ -48,6 +48,7 @@ find %buildroot -name '*.la' -delete
 
 # Building with gcc produces this errror:
 # "ERROR:quvi.c:102:test_version: stderr of child process (23784) failed to match: v?.?*"
+
 %check
 make check
 
@@ -73,6 +74,8 @@ rm -rf %buildroot
 %{_mandir}/man7/quvi-object.7*
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Bump to 0.9.4
 * Sun Oct 13 2013 Alex Viskovatoff
 - Import Fedora spec
 * Mon Aug 26 2013 Christopher Meng <rpm@cicku.me> - 0.9.2-1
