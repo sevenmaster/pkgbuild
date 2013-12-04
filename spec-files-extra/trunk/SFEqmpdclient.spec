@@ -10,7 +10,7 @@
 %define srcname qmpdclient
 
 Name:		SFEqmpdclient
-IPS_Package_Name: media/qmpdclient
+IPS_Package_Name: audio/mpd/qmpdclient
 Summary:	Qt4 based Music Player Daemon client
 URL:		http://bitcheese.net/wiki/QMPDClient
 License:	GPLv2
