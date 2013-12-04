@@ -4,7 +4,7 @@
 
 Name:           SFEquvi
 IPS_package_name: video/quvi
-Version:        0.9.4
+Version:        0.9.5
 Summary:        Command line tool for parsing video download links
 Group:          Applications/Internet
 License:        LGPLv2+
@@ -54,6 +54,8 @@ rm -rf %buildroot
 %_mandir/man5/%{srcname}rc.5
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Bump to 0.9.5
 * Tue Oct 22 2013 - Alex Viskovatoff
 - Import Fedora spec
 * Fri Aug 30 2013 Peter Robinson <pbrobinson@fedoraproject.org> 0.9.3.1-1

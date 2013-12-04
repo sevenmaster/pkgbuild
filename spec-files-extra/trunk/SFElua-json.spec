@@ -1,5 +1,5 @@
 %include Solaris.inc
-%define luaver 5.1
+%define luaver 5.2
 %define luapkgdir %{_datadir}/lua/%{luaver}
 %define commit 7a86bc22066858afeb23845a191a6ab680b46233
 %define shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -7,19 +7,19 @@
 %define _pkg_docdir %_docdir/%upstreamname
 
 Name:           SFElua-json
-IPS_package_name: lua-51/lua-json
+IPS_package_name: library/lua/json
 Version:        1.3.2
 Summary:        JSON Parser/Constructor for Lua
 Group:          Development/Libraries
 License:        MIT
 URL:            http://luaforge.net/projects/luajson/
 Source0:        http://github.com/harningt/luajson/archive/%{commit}/luajson-%{version}-%{shortcommit}.tar.gz
-#Patch0:		luajson-lua-5.2.patch
+Patch0:		luajson-lua-5.2.patch
 BuildRoot:      %_tmppath/%name-%version-root
-BuildRequires:  SFElua-51, SFElua-lpeg
+BuildRequires:  runtime/lua, library/lua/lpeg
 # for checks
 #BuildRequires:  SFElua-filesystem, SFElua-lunit
-Requires:       lua-51
+Requires:       lua
 BuildArch:      noarch
 
 %description
@@ -27,7 +27,7 @@ LuaJSON is a customizable JSON decoder/encoder, using LPEG for parsing.
 
 %prep
 %setup -q -n luajson-%{commit}
-#%patch0 -p1 -b .lua-52
+%patch0 -p1 -b .lua-52
 
 %build
 
@@ -53,6 +53,8 @@ rm -rf %buildroot
 %{luapkgdir}/*
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Use Lua 5.2
 * Tue Oct 22 2013 - Alex Viskovatoff
 - Import Fedora spec
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.2-2

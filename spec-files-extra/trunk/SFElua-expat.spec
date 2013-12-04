@@ -1,10 +1,10 @@
 %include Solaris.inc
-%define luaver 5.1
+%define luaver 5.2
 %define lualibdir %_libdir/lua/%luaver
 %define luapkgdir %_datadir/lua/%luaver
 
 Name:           SFElua-expat
-IPS_package_name: lua-51/lua-expat
+IPS_package_name: library/lua/expat
 Version:        1.2.0
 Summary:        SAX XML parser based on the Expat library
 Group:          Development/Libraries
@@ -12,40 +12,40 @@ License:        MIT
 URL:            http://www.keplerproject.org/luaexpat/
 Source0:        http://matthewwild.co.uk/projects/luaexpat/luaexpat-%{version}.tar.gz
 # http://code.matthewwild.co.uk/lua-expat/rev/e981a82571cf
-#Patch0:		lua-expat-lua-5.2.patch
+Patch0:		lua-expat-lua-5.2.patch
 # http://code.matthewwild.co.uk/lua-expat/rev/b2a77ebe7aed
-#Patch1:		lua-expat-lua-5.2-test-fix.patch
+Patch1:		lua-expat-lua-5.2-test-fix.patch
 
-BuildRequires:  SFElua-51
+BuildRequires:  runtime/lua
 BuildRequires:  expat
-Requires:       lua-51
+Requires:       lua
 
 %description
 LuaExpat is a SAX XML parser based on the Expat library.
 
 %prep
 %setup -q -n luaexpat-%{version}
-#%patch0 -p1 -b .lua-52
-#%patch1 -p1 -b .testfix
+%patch0 -p1 -b .lua-52
+%patch1 -p1 -b .testfix
 
 
 %build
-make PREFIX=%_prefix LUA_LIBDIR=%lualibdir LUA_DIR=%luapkgdir LUA_INC=%_includedir/lua-%luaver EXPAT_INC=%_includedir CC=cc CFLAGS="%optflags -KPIC -I%_includedir/lua-%luaver"  LUA_VERSION_NUM=501
+make PREFIX=%_prefix LUA_LIBDIR=%lualibdir LUA_DIR=%luapkgdir LUA_INC=%_includedir/lua-%luaver EXPAT_INC=%_includedir CC=cc CFLAGS="%optflags -KPIC -I%_includedir/lua-%luaver"  LUA_VERSION_NUM=502
 /usr/bin/iconv -f ISO8859-1 -t UTF8 README >README.UTF8
 mv -f README.UTF8 README
 
 
 %install
 rm -rf %buildroot
-make install PREFIX=%_prefix LUA_LIBDIR=%buildroot%lualibdir LUA_DIR=%buildroot%luapkgdir LUA_VERSION_NUM=501
+make install PREFIX=%_prefix LUA_LIBDIR=%buildroot%lualibdir LUA_DIR=%buildroot%luapkgdir LUA_VERSION_NUM=502
 
 
 %check
 pushd src
 ln -s lxp.so.* lxp.so
 popd
-lua-5.1 -e 'package.cpath="./src/?.so;"..package.cpath; dofile("tests/test.lua");'
-lua-5.1 -e 'package.cpath="./src/?.so;" .. package.cpath; package.path="./src/?.lua;" .. package.path; dofile("tests/test-lom.lua");'
+lua -e 'package.cpath="./src/?.so;"..package.cpath; dofile("tests/test.lua");'
+lua -e 'package.cpath="./src/?.so;" .. package.cpath; package.path="./src/?.lua;" .. package.path; dofile("tests/test-lom.lua");'
 
 %clean
 rm -rf %buildroot
@@ -59,6 +59,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Dec  4 2013 - Alex Viskovatoff
+- Use Lua 5.2
 * Wed Oct 30 2013 - Alex Viskovatoff
 - Import Fedora spec
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-6
