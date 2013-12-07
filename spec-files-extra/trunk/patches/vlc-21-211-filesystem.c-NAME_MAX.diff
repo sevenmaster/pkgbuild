@@ -1,0 +1,24 @@
+--- vlc-2.1.1/src/text/filesystem.c.orig	2013-06-24 20:00:40.000000000 +0200
++++ vlc-2.1.1/src/text/filesystem.c	2013-12-06 19:38:55.353007660 +0100
+@@ -35,6 +35,9 @@
+ #include <assert.h>
+ 
+ #include <stdio.h>
++#if !defined(NAME_MAX) && defined(_POSIX_NAME_MAX)
++# define NAME_MAX _POSIX_NAME_MAX
++#endif
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+--- vlc-2.1.1/src/posix/filesystem.c.orig	2013-06-24 20:00:39.000000000 +0200
++++ vlc-2.1.1/src/posix/filesystem.c	2013-12-06 19:43:06.289112634 +0100
+@@ -29,6 +29,9 @@
+ 
+ #include <stdio.h>
+ #include <limits.h> /* NAME_MAX */
++#if !defined(NAME_MAX) && defined(_POSIX_NAME_MAX)
++# define NAME_MAX _POSIX_NAME_MAX
++#endif
+ #include <errno.h>
+ 
+ #include <sys/types.h>

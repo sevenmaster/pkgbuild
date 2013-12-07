@@ -1,0 +1,12 @@
+--- vlc-2.1.1/modules/audio_output/oss.c.orig	2013-12-05 20:48:44.371184230 +0100
++++ vlc-2.1.1/modules/audio_output/oss.c	2013-12-05 20:49:31.983303156 +0100
+@@ -31,6 +31,9 @@
+ #include <math.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
++#ifdef sun
++#include <sys/file.h>
++#endif
+ #include <sys/ioctl.h>
+ #ifdef HAVE_SOUNDCARD_H
+ # include <soundcard.h>
