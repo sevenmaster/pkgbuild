@@ -41,7 +41,7 @@
 
 %include Solaris.inc
 %include base.inc
-%include osbuild.inc
+%include osdistro.inc
 
 ##TODO## should include/arch64.inc consider setting _arch64 that way?
 #        gcc builds 64-bit libs/binaries even on 32-bit CPUs/Kernels (e.g. ATOM CPU)
@@ -675,7 +675,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sat Dec  7 2013 - Thomas Wagner
-- %include osbuild.inc
+- %include osdistro.inc
 * Thu Oct 24 2013 - Thomas Wagner
 - add -zinterpose to gcc runtime libraries.
   NOTE: recompile all your libs and binaries working with g++
