@@ -41,8 +41,7 @@
 
 %include Solaris.inc
 %include base.inc
-
-%define osbuild %(uname -v | sed -e 's/[A-z_]//g')
+%include osbuild.inc
 
 ##TODO## should include/arch64.inc consider setting _arch64 that way?
 #        gcc builds 64-bit libs/binaries even on 32-bit CPUs/Kernels (e.g. ATOM CPU)
@@ -398,18 +397,14 @@ export PATH=/usr/g++/bin:$PATH
 export LD="/usr/gnu/bin/ld"
 %endif
 %define _ldflags
-%define ld_options
+#obsolete %define ld_options
 
 %else
 
-#avoid slipping in gnu ld
-#might be changed to plain /usr/bin/ld instead of CBE ld-wrapper
-#export LD=`which ld-wrapper`
-#it's actually better to really specify /usr/bin/ld and skip the
-#extra options from the wrapper instead of ending up on a system
-#without the SFE build-env and have no ld-wrapper installed there
-export LD=/usr/bin/ld
-%define ld_options      -zignore -zcombreloc -Bdirect -i
+export LD=`which ld-wrapper`
+
+##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
+#options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
 
 %endif
 
@@ -427,17 +422,17 @@ export BOOT_CFLAGS="-Os %gcc_picflags %gnu_lib_path"
 %else
 export BOOT_CFLAGS="$BOOT_CFLAGS -Xlinker -i"
 %endif
-export BOOT_LDFLAGS="%_ldflags -R%{_prefix}/lib %gnu_lib_path"
+export BOOT_LDFLAGS="-zinterpose %_ldflags -R%{_prefix}/lib %gnu_lib_path"
 
 # for target libraries (built with bootstrapped GCC)
-export CFLAGS_FOR_TARGET="-O2 %gcc_picflags"
+export CFLAGS_FOR_TARGET="-zinterpose -O2 %gcc_picflags"
+#export CXXFLAGS_FOR_TARGET=""
 %if %build_gcc_with_gnu_ld
 %else
 export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 %endif
-export LDFLAGS_FOR_TARGET="%_ldflags"
-export LDFLAGS="%_ldflags %gnu_lib_path"
-export LD_OPTIONS="%ld_options"
+export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
+export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
@@ -493,8 +488,10 @@ export PATH="$PATH:/usr/perl5/bin"
 
 gmake -j$CPUS bootstrap-lean \
              BOOT_CFLAGS="$BOOT_CFLAGS"                  \
+             BOOT_LDFLAGS="$BOOT_LDFLAGS"                \
              CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET"      \
-             CXXFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET"
+             CXXFLAGS_FOR_TARGET="$CXXFLAGS_FOR_TARGET"  \
+             LDFLAGS_FOR_TARGET="$LDFLAGS_FOR_TARGET"    \
 
 
 %install
@@ -677,6 +674,18 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Dec  7 2013 - Thomas Wagner
+- %include osbuild.inc
+* Thu Oct 24 2013 - Thomas Wagner
+- add -zinterpose to gcc runtime libraries.
+  NOTE: recompile all your libs and binaries working with g++
+  code to get this test succeed:
+  elfedit -re 'dyn:' yourlib_or_binary  -->> no LAZY for gcc-runtime_libs
+  libgcc_s.so and libstdc++.so.6, see setting INTERPOSE for FLAG1
+  eliminates binding libc C++ calls *before* gcc runtime, avoids breaking c++
+  exception handling for instance
+* Sun Nov 10 2013 - Milan Jurik
+- fix l10n IPS package name
 * Sat Sep 28 2013 - Milan Jurik
 - bump to 4.6.4
 * Sun Feb 24 2013 - Logan Bruns <logan@gedanken.org>
