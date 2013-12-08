@@ -48,6 +48,7 @@ perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
@@ -62,7 +63,7 @@ make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install
+make pure_install
 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
@@ -83,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sun Dec  8 2013 - Thomas Wagner
+- add INSTALLARCHLIB as it is sometimes empty on perl 5.10.x on OI, make complains on recoursive variable
 * Thu Sep 26 2013 - Thomas Wagner
   bump to 2.062 (2.62 on IPS)
 * Mon Dec 10 2012 - Thomas Wagner
