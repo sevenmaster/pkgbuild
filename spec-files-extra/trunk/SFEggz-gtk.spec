@@ -15,8 +15,6 @@
 
 %use ggzgtk = ggz-gtk-client.spec
 
-%define SFElibggz	%(/usr/bin/pkginfo -q SFElibggz && echo 1 || echo 0)
-
 Name:               SFEggz-gtk
 IPS_Package_Name:	games/library/ggz-gtk
 Summary:            ggz-gtk - Gtk+ client libraries for GGZ gaming zone
@@ -28,13 +26,8 @@ BuildRoot:          %{_tmppath}/%{name}-%{version}-build
 Requires: SUNWgnome-base-libs
 BuildRequires: SUNWgnome-base-libs-devel
 BuildRequires: SUNWgnome-common-devel
-%if %SFElibggz
-BuildRequires:	SFElibggz-devel
-Requires:	SFElibggz
-%else
-BuildRequires:	%{pnm_buildrequires_SUNWgnome_games_devel}
-Requires:	%{pnm_buildrequires_SUNWgnome_games}
-%endif
+BuildRequires:	%{pnm_buildrequires_SFElibggz_devel}
+Requires:	%{pnm_requires_SFElibggz}
 
 %package devel
 Summary:       %{summary} - development files
@@ -100,6 +93,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Dec  8 2013 - Thomas Wagner
+- change BuildRequires: to %{pnm_buildrequires_SFElibggz_devel} (S11, S12 has none, OI has)
+* Fri Nov 15 2013 - Thomas Wagner
+- require always SFElibggz as S11 has none
 * Sun Oct  3 2013 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SUNWgnome_games_devel, %include packagenamemacros.inc
 * Tue Jan 15 2009 - halton.huo@sun.com
