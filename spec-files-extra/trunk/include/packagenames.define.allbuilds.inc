@@ -740,6 +740,9 @@
 %define pnm_buildrequires_SUNWmlib				SUNWmlib,SUNWmlibe
 %define pnm_requires_SUNWmlib					SUNWmlib,SUNWmlibe
 
+%define pnm_buildrequires_SUNWlua				SUNWlua
+%define pnm_buildrequires_SUNWgsed				SUNWgsed
+
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
 
@@ -1108,6 +1111,23 @@
 #END >= 151
 %endif
 #END openindiana
+
+#-----------------------------------------------------------------
+#set defaults for SFElibggz
+#overwrite them in case the osdisto has its own libggz packaged in gnome-media or gnome-games
+#this is for OI 151 all builds (and SXCE)
+%define pnm_buildrequires_SFElibggz_devel	SUNWgnome-games-devel
+%define pnm_buildrequires_SFElibggz		SUNWgnome-games-devel
+%define pnm_requires_SFElibggz			SUNWgnome-games
+
+#cases Solaris 11 or Solaris 12 has no longer libggz in the
+#packages gnome/games
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%define pnm_buildrequires_SFElibggz_devel	SFElibggz-devel
+%define pnm_buildrequires_SFElibggz		SFElibggz-devel
+%define pnm_requires_SFElibggz			SFElibggz
+%endif
+#END solaris11express or solaris 12
 
 
 #-----------------------------------------------------------------
@@ -2127,6 +2147,9 @@
 
 
 %changelog
+* Sun Dev  1 2013 - Thomas Wagner
+- handle %define pnm_buildrequires_SFElibggz_devel	SUNWgnome-games-devel (OI, SXCE), SFElibggz-devel (S11, S12)
+- handle SUNWlua, SUNWgsed for SXCE
 * Mon Oct  4 2013 - Thomas Wagner
 - handle SUNWmlib for SXCE
 - change for os2nnn target library/gnu/libsndfile to SFElibsndfile (pkgtool can't resolve otherwise)
