@@ -14,7 +14,7 @@ Patch0:		quvi-01-termios.patch
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%srcname-build
 
-BuildRequires:  SFElibquvi-devel
+BuildRequires: SFElibquvi-devel
 BuildRequires: curl
 BuildRequires: glib2
 BuildRequires: SFEjson-glib-devel
