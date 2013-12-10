@@ -4,6 +4,8 @@
 # includes module(s): clamav
 #
 %include Solaris.inc
+%include packagenamemacros.inc
+
 
 %define	src_name clamav
 %define _pkg_docdir %_docdir/%src_name
@@ -22,8 +24,8 @@ Group:               Applications/System Utilities
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:	SUNWncurses-devel
-Requires:	SUNWncurses
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 BuildRequires:	SUNWsndmu
 Requires:	SUNWsndmu
 
@@ -134,6 +136,8 @@ user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=N
 %dir %attr (0755, root, other) %{_docdir}
 
 %changelog
+* Tue Dec 10 2013 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Mon Nov 4 2013 - Logan Bruns <logan@gedanken.org>
 - updated to 0.98
 * Sat Jun 29 2013 - Logan Bruns <logan@gedanken.org>
