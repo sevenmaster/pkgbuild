@@ -116,7 +116,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://postfix.org/
-Version:                 2.9.8
+Version:                 2.10.2
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -798,8 +798,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %{_sbindir}/postalias
 %{_sbindir}/postcat
 %{_sbindir}/postconf
-%attr (2755, root, %{rungroup}) %{_sbindir}/postqueue
-%attr (2755, root, %{rungroup}) %{_sbindir}/postdrop
+%attr (2755, root, %{rundropgroup}) %{_sbindir}/postqueue
+%attr (2755, root, %{rundropgroup}) %{_sbindir}/postdrop
 %{_sbindir}/postfix
 %{_sbindir}/postkick
 %{_sbindir}/postlock
@@ -902,8 +902,13 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/postfix.xml
 
 
+#For setups if sendmail is disabled and postfix enabled
+# pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Tue Dec 10 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.10.2
+- Fixed group issue for postqueue and postdrop
 * Mon Sep 30 2013 - Milan Jurik
 - bump to 2.9.8
 * Sun Aug 11 2013 - Thomas Wagner
