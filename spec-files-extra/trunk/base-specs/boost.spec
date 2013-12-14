@@ -9,7 +9,7 @@
 #
 
 %define        major      1
-%define        minor      53
+%define        minor      55
 %define        patchlevel 0
 %define        ver_boost  %{major}_%{minor}_%{patchlevel}
 
@@ -28,7 +28,7 @@ Patch2:       boost-gpp-01-cstdint.diff
 Patch3:       boost-stdcxx-01-stl.diff
 Patch4:       boost-stdcxx-02-wchar.diff
 # S9, S10, SXCE, Ticket #6659
-Patch5:       boost-05-remove-fchmodat.diff
+#Patch5:       boost-05-remove-fchmodat.diff
 URL:          http://www.boost.org/
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
@@ -45,9 +45,9 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 %endif
 
 #S9, S10, SXCE
-%if %{SXCE}
-%patch5 -p0
-%endif
+#%if %{SXCE}
+#%patch5 -p0
+#%endif
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -79,6 +79,8 @@ export LDFLAGS="%_ldflags"
 ./bjam install --prefix=$RPM_BUILD_ROOT%{_prefix}
 
 %changelog
+* Sat Dec 14 2013 - Ken Mays <kmays2000@gmail.com>
+- bump to 1.55.0
 * Thu Feb 21 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 1.53.0
 * Wed Feb  6 2013 - Thomas Wagner
