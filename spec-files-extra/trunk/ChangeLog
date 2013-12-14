@@ -1,5 +1,11 @@
 2013-12-01 Ken Mays <kmays2000@gmail.com>
 
+        * SFEwine.spec: Bump to 1.7.8
+	* SFEboost.spec: Bump to 1.55.0
+	* SFEpostfix.spec: Bump to 2.10.2
+
+2013-12-01 Ken Mays <kmays2000@gmail.com>
+
         * SFEwine.spec: Bump to 1.7.7
 
 2013-11-16 Ken Mays <kmays2000@gmail.com>
