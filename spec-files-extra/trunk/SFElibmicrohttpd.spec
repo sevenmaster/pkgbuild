@@ -7,8 +7,7 @@
 
 Name:		SFElibmicrohttpd
 IPS_package_name:  library/libmicrohttpd
-Version:	0.9.27
-
+Version:	0.9.33
 Summary:	Small Embeddable HTTP Server Library
 License:	GNU LGPL v2.1
 Group:		Development/Libraries
@@ -75,6 +74,7 @@ export LD=ld-wrapper
 	   --enable-messages \
 	   --enable-https \
 	   --enable-client-side \
+           --disable-epoll \
            --disable-static
 
 gmake -j$CPUS
@@ -107,6 +107,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sun Dec 22 2013 - Thomas Wagner
+- bump to 0.9.33
+* Sat Oct 19 2013 - Thomas Wagner
+- bump to 0.9.31
+* Fri Jul 19 2013 - Thomas Wagner
+- bump to 0.9.28
+- --disable-epoll (not available)
 * Sun May 26 2013 - Thomas Wagner
 - bump to 0.9.27
 * Fri Mar 29 2013 - Thomas Wagner
