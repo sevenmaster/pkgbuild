@@ -1,34 +1,18 @@
-diff --git a/dlls/wined3d/utils.c b/dlls/wined3d/utils.c
-index c37b677..433065a 100644
---- a/dlls/wined3d/utils.c
-+++ b/dlls/wined3d/utils.c
-@@ -3816,7 +3816,7 @@ void wined3d_ftoa(float value, char *s)
-         ++idx;
+diff --git a/dlls/mshtml/mshtml.inf b/dlls/mshtml/mshtml.inf
+index 4a650b4..738f9fd 100644
+--- a/dlls/mshtml/mshtml.inf
++++ b/dlls/mshtml/mshtml.inf
+@@ -207,6 +207,12 @@ HKCR,".mpe","Content Type",,"video/mpeg"
+ HKCR,".mpeg","Content Type",,"video/mpeg"
+ HKCR,".mpg","Content Type",,"video/mpeg"
  
-     sprintf(s, "%.8e", value);
--    if (isfinite(value))
-+    if (finite(value))
-         s[idx] = '.';
- }
- 
-diff --git a/include/wine/port.h b/include/wine/port.h
-index c5359dd..2fd4215 100644
---- a/include/wine/port.h
-+++ b/include/wine/port.h
-@@ -268,6 +268,16 @@ int isinf(double x);
- int isnan(double x);
- #endif
- 
-+#ifndef HAVE_FINITE
-+#ifndef finite /* Could be a macro */
-+#ifdef isfinite
-+#define finite(x) isfinite(x)
-+#else
-+#define finite(x) (!isnan(x)) /* At least catch some cases */
-+#endif
-+#endif
-+#endif
++;; PDF
++HKCR,"MIME\Database\Content Type\application/pdf","Extension",,".pdf"
++HKCR,".pdf",,2,"pdffile"
++HKCR,".pdf","Content Type",,"application/pdf"
++HKCR,"pdffile\shell\open\command",,,"winebrowser ""%%1"""
 +
- #ifndef HAVE_LSTAT
- int lstat(const char *file_name, struct stat *buf);
- #endif /* HAVE_LSTAT */
+ ;; PJPG
+ HKCR,"MIME\Database\Content Type\image/pjpeg","CLSID",,"%CLSID_HTMLDocument%"
+ HKCR,"MIME\Database\Content Type\image/pjpeg","Extension",,".jpg"
+

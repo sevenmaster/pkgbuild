@@ -5,17 +5,9 @@
 #
 # Owner: lewellyn
 #
-# Confirmed build of Wine 1.3.31 on oi_151/GCC 3.4.3 10/22/2011 - Ken Mays
-# Confirmed build of Wine 1.3.34 on oi_151/GCC 3.4.3 12/02/2011 - Ken Mays
-# Confirmed build of Wine 1.3.36 on oi_151/GCC 3.4.3 01/01/12   - Ken Mays
-# Confirmed build of Wine 1.3.37 on oi_151/GCC 3.4.3 01/15/12   - Ken Mays
-# Confirmed build of Wine 1.3.38 on oi_151/GCC 3.4.3 01/27/12   - Ken Mays
-# Confirmed build of Wine 1.4rc1 on oi_151/GCC 3.4.3 01/28/12   - Ken Mays
-# Confirmed build of Wine 1.4rc2 on oi_151/GCC 3.4.3 02/03/12   - Ken Mays
-# Confirmed build of Wine 1.4 on oi_151a/GCC 3.4.3 03/07/12   - Ken Mays
-# Confirmed build of Wine 1.4.1 on oi_151a/GCC 4.6.2 06/16/12   - Ken Mays
 # Confirmed build of Wine 1.6.1 on oi_151a/GCC 4.6.4 11/15/13   - Ken Mays
 # Confirmed build of Wine 1.7.7 on oi_151a/GCC 4.6.4 12/03/13   - Ken Mays
+# Confirmed build of Wine 1.7.9 on oi_151a/GCC 4.7.3 12/21/13   - Ken Mays
 
 %include Solaris.inc
 
@@ -29,7 +21,7 @@
 # In case of an unstable wine version, temporarily set this to the
 # last-known-good version. This should be reverted the next stable version.
 # %if %{!?version:1}
-# 	%define version 1.7.7
+# 	%define version 1.7.9
 # %endif
 
 #%if %{!?version:1}
@@ -40,12 +32,11 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.8
+Version:                1.7.9
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
-# See: http://lists.freedesktop.org/archives/tango-artists/2009-July/001973.html
-# Also: http://www.airwebreathe.org.uk/wine-icon/
+# See: http://lists.freedesktop.org/archives/tango-artists/2009-July/001974.html
 #
 # See http://wiki.winehq.org/Gecko for which version to use.
 #
@@ -133,7 +124,7 @@ export CXX=g++
 # I retuned for GCC 4.5.3/4.6 optimizations for wider usage. (kmays)
 #
 
-export CFLAGS="-g -Os -pipe -fno-omit-frame-pointer -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -i" 
+export CFLAGS="-std=c99 -pedantic-errors -fextended-identifiers -g -Os -pipe -fno-omit-frame-pointer -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -i" 
 export LDFLAGS="-L/lib -R/lib -L/usr/lib -R/usr/lib %{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
 export LD=/usr/ccs/bin/ld
 
@@ -275,6 +266,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Dec 20 2013 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.9
 * Mon Dec 9 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.8
 * Mon Dec 1 2013 - Ken Mays <kmays2000@gmail.com>
