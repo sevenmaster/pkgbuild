@@ -34,7 +34,7 @@ Requires:      %name
 %prep
 %setup -q -n libaudioio-%src_version
 %patch1 -p1
-for release in 2.10 2.11; do
+for release in 2.10 2.11 2.12; do
 	ln -s sys_i386solaris2.9.cc system/sys_%{base_arch}solaris$release.cc
 	ln -s sys_i386solaris2.9.h system/sys_%{base_arch}solaris$release.h
 done
@@ -75,6 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- add links to sys_i386solaris2.9.cc / sys_i386solaris2.9.h for S12
 * Wed May 05 2010 - Albert Lee  <trisk@opensolaris.org>
 - Add missing SUNWaudh dependency.
 * Tue Mar 24 2009 - andras.barna@gmail.com
