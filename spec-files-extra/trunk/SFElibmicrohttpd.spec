@@ -94,8 +94,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
+%dir %attr (0755, root, bin) %{_bindir}
+%{_bindir}/microspdy2http
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/libmicrohttpd.so*
+%{_libdir}/lib*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
@@ -107,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- fix %files
 * Sun Dec 22 2013 - Thomas Wagner
 - bump to 0.9.33
 * Sat Oct 19 2013 - Thomas Wagner
