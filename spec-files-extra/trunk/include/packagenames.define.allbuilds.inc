@@ -743,6 +743,12 @@
 %define pnm_buildrequires_SUNWlua				SUNWlua
 %define pnm_buildrequires_SUNWgsed				SUNWgsed
 
+%define pnm_buildrequires_SUNWgnu_idn library/libidn		SUNWgnu-idn
+%define pnm_requires_SUNWgnu_idn library/libidn			SUNWgnu-idn
+%define pnm_buildrequires_SUNWgnu_idn				SUNWgnu-idn
+%define pnm_requires_SUNWgnu_idn				SUNWgnu-idn
+
+
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
 
@@ -1453,7 +1459,7 @@
 %endif perl_major_minor_version '>=' 5.10
 #END various perl modules now bundled
 
-#START setting Python, defaults  - Part 1 of 1
+#START setting Python, defaults  - Part 1 of 2
 #define Python defaults, primarily shared settings and default versions and paths
 #NOTE: we start initially only with setting Python 2.6 for *ALL* osbuild / osdistro
 #this is to be extended in the future as required (for older osbuild/osdistro, *or* 
@@ -1486,7 +1492,21 @@
 #combinations.
 #Mind to write the same comments as for the perl section "Part n of m" to 
 #highlight that a value may be re-defined later on for special cases
-#END setting Python
+#END setting Python - Part 1 of 2
+
+#START setting python, changes with specific builds and distros  - Part 2 of 2
+# on S12 we don't have legacy package name SUNWPython26, so we need to
+# use runtime/python-26 instead
+%if %( expr %{solaris12} '>=' 1 )
+#note: the name is subject to change if we find a better one
+#_default string is not meant to be a part of the package name...
+%define pnm_buildrequires_python_default	runtime/python-26
+%define pnm_requires_python_default		runtime/python-26
+%endif
+#END %{solaris12}
+
+
+#END setting python, changes with specific builds and distros  - Part 2 of 2
 
 #which build number removed SUNWpysqlite and used the python 2.6/2.7 internal pysqlite?
 #if python is version 2.4, then we need SUNWpysqlite
@@ -2147,7 +2167,11 @@
 
 
 %changelog
-* Sun Dev  1 2013 - Thomas Wagner
+* Tue Dec 24 2013 - Thomas Wagner
+- %define pnm_buildrequires_python_default runtime/python-26 on S12 (no legacy package name SUNWPython26)
+* Mon Dec  9 2013 - Thomas Wagner
+- handle library/libidn SUNWgnu-idn (SXCE)
+* Sun Dec  1 2013 - Thomas Wagner
 - handle %define pnm_buildrequires_SFElibggz_devel	SUNWgnome-games-devel (OI, SXCE), SFElibggz-devel (S11, S12)
 - handle SUNWlua, SUNWgsed for SXCE
 * Mon Oct  4 2013 - Thomas Wagner
