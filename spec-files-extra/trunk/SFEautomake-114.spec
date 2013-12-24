@@ -20,6 +20,10 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+#automake 1.14 wants autoconf >= 2.65
+BuildRequires: SFEautoconf-gnu >= 2.65
+Requires: SFEautoconf-gnu >= 2.65
+
 %description
 additional package to get automake-%{version} added.
 Note: this package does not deliver all documentation,
@@ -64,6 +68,8 @@ rm -rf %{buildroot}
 %{_mandir}
 
 %changelog
+* Mon Dec 23 2013 - Thomas Wagner
+- add (Build)Requires: SFEautoconf-gnu >= 2.65
 * Fri Dec  6 2013 - Thomas Wagner
 - bump to 1.14
 * Tue Oct 11 2011 - Milan Jurik

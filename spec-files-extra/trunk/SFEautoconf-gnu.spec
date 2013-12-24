@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/autoconf
-%{_datadir}/info
+#%{_datadir}/info
 ##TODO## check if we need SFEemacs
 #%dir %attr (0755, root, root) %{_datadir}/emacs
 #%dir %attr (0755, root, root) %{_datadir}/emacs/site-lisp
@@ -110,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Tue Dev 24 2013 - Thomas Wagner
+- remove %{_datadir}/info from %files for the moment
 * Thu Dec  5 2013 - Thomas Wagner
 - bump to 2.69
 - un-archive spec file
