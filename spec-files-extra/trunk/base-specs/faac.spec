@@ -61,6 +61,10 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Dec 23 2013 - Thomas Wagner
+- export AR=/usr/bin/ar (or get C++ Symbol errors on S12) (SFEfaac.spec)
+- export LD=`which ld-wrapper` (SFEfaac.spec)
+- remove -Wall and -lstdc++ if built with Studio compiler (SFEfaac.spec)
 * Sun Aug 11 2013 - Thomas Wagner
 - fix linking to C++ libs %if %{cc_is_gcc}  ( s/-lCrun/-lstdc++/ )
 - %if %{cc_is_gcc} change Name, IPS_Package_Name to SFEfaac-gpp, audio/g++/faac

@@ -54,12 +54,18 @@ mkdir %name-%version
 %ifarch amd64 sparcv9
 mkdir %name-%version/%_arch64
 %faac_64.prep -d %name-%version/%_arch64
+gsed -i -e 's?-Wall??' -e 's?-lstdc++??' %name-%version/%_arch64/faac-%{version}/configure* %name-%version/%_arch64/faac-%{version}/common/mp4v2/Makefile* %name-%version/%_arch64/faac-%{version}/frontend/Makefile*
 %endif
 
 mkdir %name-%version/%{base_arch}
 %faac.prep -d %name-%version/%{base_arch}
+gsed -i -e 's?-Wall??' -e 's?-lstdc++??' %name-%version/%base_arch/faac-%{version}/configure* %name-%version/%base_arch/faac-%{version}/common/mp4v2/Makefile* %name-%version/%_arch64/faac-%{version}/frontend/Makefile*
 
 %build
+
+export AR=/usr/bin/ar
+export LD=`which ld-wrapper`
+
 %ifarch amd64 sparcv9
 %faac_64.build -d %name-%version/%_arch64
 %endif
@@ -94,6 +100,12 @@ rm -rf %{buildroot}
 %{_includedir}/*.h
 
 %changelog
+* Mon Dec 23 2013 - Thomas Wagner
+- export AR=/usr/bin/ar (or get C++ Symbol errors on S12)
+- export LD=`which ld-wrapper`
+- remove -Wall and -lstdc++ if built with Studio compiler
+* Mon Dec 23 2013 - Thomas Wagner
+- remove "-Wall" and "-lstdc++" from configure* mp4v2/Makefile* frontend/Makefile*
 * Sun Aug 11 2013 - Thomas Wagner
 - fix linking to C++ libs %if %{cc_is_gcc}  ( s/-lCrun/-lstdc++/ )
 - %if %{cc_is_gcc} change Name, IPS_Package_Name to SFEfaac-gpp, audio/g++/faac
