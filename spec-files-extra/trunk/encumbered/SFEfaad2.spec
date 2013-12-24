@@ -45,6 +45,7 @@ mkdir %name-%version/%{base_arch}
 
 
 %build
+export AR=/usr/bin/ar
 %ifarch amd64 sparcv9
 %faad2_64.build -d %name-%version/%_arch64
 %endif
@@ -79,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- libtoolize --force (S12) or get incomplete compiler command lines (base-specs/faad2.spec)
+- export AR=/usr/bin/ar (S12) (SFEfaad2.spec)
 * Sat Apr 28 2012 - Thomas Wagner
 - switch to renamed SFEid3lib-gpp (already gcc version but now with corrected name)
 * Sun Oct 16 2011 - Milan Jurik

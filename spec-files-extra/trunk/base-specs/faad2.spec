@@ -39,6 +39,9 @@ export CXXFLAGS="-norunpath -xO3 -xlibmil -xlibmopt -features=tmplife"
 
 autoreconf --install
 
+rm ltmain.sh
+libtoolize --force
+
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
             --libexecdir=%{_libexecdir}      \
@@ -58,6 +61,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- libtoolize --force (S12) or get incomplete compiler command lines (base-specs/faad2.spec)
+- export AR=/usr/bin/ar (S12) (SFEfaad2.spec)
 * Sun Oct 16 2011 - Milan Jurik
 - revert previous to do correct rebuild of auto files, otherwise build is broken
 * Sat Aug 13 2011 - Thomas Wagner
