@@ -5,11 +5,11 @@
 #
 
 Summary:                 A very fast video and audio converter
-Version:                 2.1
+Version:                 2.1.1
 Source:                  http://www.ffmpeg.org/releases/ffmpeg-%version.tar.bz2
 URL:                     http://www.ffmpeg.org/index.html
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
-Patch13:	ffmpeg-13-rpath-link.diff
+Patch13:		 ffmpeg-13-rpath-link.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 Autoreqprov:             on
@@ -102,6 +102,8 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 24 2013 - Ken Mays
+- bump to 2.1.1
 * Fri Nov  1 2013 - Alex Viskovatoff
 - bump to 2.1
 * Fri Oct 11 2013 - Alex Viskovatoff
