@@ -9,6 +9,12 @@
 %include base.inc
 %include packagenamemacros.inc
 
+#change version number only here.
+%define ffmpeg_version 2.1.1
+
+#older ffmpeg version can't use every patch
+%define enable_patch13 1
+
 %if %arch_sse2
 %define arch_opt --cpu=prescott --enable-mmx --enable-sse --enable-ssse3
 #make this empty
@@ -63,8 +69,8 @@ BuildRequires: SFElibx264-devel
 Requires: SFElibx264
 BuildRequires: SFEfaad2-devel
 Requires: SFEfaad2
-BuildRequires: SFEfaac-devel
-Requires: SFEfaac
+BuildRequires: SFEfaac-gpp-devel
+Requires: SFEfaac-gpp
 BuildRequires: SFElame-devel
 Requires: SFElame
 BuildRequires: SUNWogg-vorbis-devel
@@ -179,6 +185,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- change (Build)Requires to SFEfaac-gpp(-devel)
+- follow /usr/g++ directory layout, add to CFLAGS / LDFLAGS include /usr/g++/include and -R|-L/usr/g++/lib/%{arch}
+* Thu Nov 28 2013 - Thomas Wagner
+- make version controllable from calling spec, else keep default version
 * Thu Jul 11 2013 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgsed} (S12)
 * Sun Sep 30 2012 - Milan Jurik

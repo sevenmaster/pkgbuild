@@ -4,9 +4,10 @@
 # includes module(s): FFmpeg
 #
 
+
 Summary:                 A very fast video and audio converter
-Version:                 2.1.1
-Source:                  http://www.ffmpeg.org/releases/ffmpeg-%version.tar.bz2
+Version:                 %{ffmpeg_version}
+Source:                  http://www.ffmpeg.org/releases/ffmpeg-%{ffmpeg_version}.tar.bz2
 URL:                     http://www.ffmpeg.org/index.html
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
 Patch13:		 ffmpeg-13-rpath-link.diff
@@ -17,7 +18,10 @@ Autoreqprov:             on
 %prep
 %setup -q -n ffmpeg-%version
 %patch11 -p1
+#%if %{?enable_patch13:enable_patch13}%{?!enable_patch13:0}
+%if %{?enable_patch13:1}%{?!enable_patch13:0}
 %patch13 -p1
+%endif
 perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
 
 %build
@@ -27,14 +31,28 @@ export PATH=/usr/perl5/bin:$PATH
 export CC=gcc
 # All this is necessary to free up enough registers on x86
 %ifarch i386
-export CFLAGS="%optflags -Os %{extra_gcc_flags} -fno-rename-registers -fomit-frame-pointer -fno-PIC -UPIC -mpreferred-stack-boundary=4 -I%{xorg_inc} -I%{_includedir}"
+export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -fno-rename-registers -fomit-frame-pointer -fno-PIC -UPIC -mpreferred-stack-boundary=4 -I%{xorg_inc} -I%{_includedir}"
 %else
-export CFLAGS="%optflags -Os %{extra_gcc_flags} -I%{xorg_inc} -I%{_includedir}"
+export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -I%{xorg_inc} -I%{_includedir}"
 %endif
-export LDFLAGS="%_ldflags %{xorg_lib_path}"
+export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib %{xorg_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export LDFLAGS="$LDFLAGS -m64"
 fi
+
+#older ffmpeg versions do not know every option
+%if %( echo %{version} | grep "^0\.8\." > /dev/null && echo 1 || echo 0 )
+CONFIGUREOPTIONS="${CONFIGUREOPTIONS}" 
+%else
+#we have a newer ffmpeg version, add options
+CONFIGUREOPTIONS="${CONFIGUREOPTIONS}   \
+    --enable-libass	\
+    --enable-openssl	\
+    --enable-openal	\
+    --enable-avresample	\
+"
+%endif
+
 bash ./configure	\
     --prefix=%{_prefix} \
     --bindir=%{_bindir} \
@@ -65,16 +83,15 @@ bash ./configure	\
     --enable-libschroedinger	\
     --enable-libopenjpeg	\
     --enable-librtmp	\
-    --enable-avresample	\
     --enable-vdpau	\
-    --enable-libass	\
-    --enable-openssl	\
-    --enable-openal	\
     --enable-shared	\
     --disable-static	\
-    --enable-version3
+    --enable-version3   \
+    $CONFIGUREOPTIONS
 
 gmake -j$CPUS
+#echo "in rare cases parallel build doesn't succeed, just run gmake -j1 "
+#gmake -j1
 
 %install
 # for pod2man
@@ -102,6 +119,11 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 24 2013 - Thomas Wagner
+- change (Build)Requires to SFEfaac-gpp(-devel)
+- follow /usr/g++ directory layout, add to CFLAGS / LDFLAGS include /usr/g++/include and -R|-L/usr/g++/lib/%{arch}
+* Thu Nov 28 2013 - Thomas Wagner
+- make version controllable from calling spec, else keep default version
 * Tue Dec 24 2013 - Ken Mays
 - bump to 2.1.1
 * Fri Nov  1 2013 - Alex Viskovatoff
