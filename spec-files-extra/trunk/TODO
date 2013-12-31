@@ -298,8 +298,10 @@ who can tell). - SFEffmpeg.spec, SFEmplayer2.spec
 #DONE:  Use isainfo -x
 
 43)
+random collection
 make css a dependency in vlc
 add "easy-rsa2 scripts to openvpn package (convenient and common way to generte certificates)
+add packages for CACert.org root certificates. workout how to propperly integrate them into the OS cert bundle.
 
 44)
 verify that nvidia package does not change compile results of packages. If it doesn't,
