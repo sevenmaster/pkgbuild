@@ -3,8 +3,9 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
-%include Solaris.inc
+##TODO## verify that TLS 1.1 TLS 1.2 works/is compiled in
 
+%include Solaris.inc
 %include packagenamemacros.inc
 
 
@@ -14,12 +15,16 @@ Version:             1.5.22
 Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Patch1:              mutt-01-makefile.diff
 Patch2:              mutt-02-configure-gssapi-krb5.diff
+Patch3:              mutt-03-configure-unquoted-test.diff
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 Requires: %{name}-root
+
+##TODO## openssl libraries!
+#check dependencies on e.g. S11 or OI151a8, add new deps here
 
 BuildRequires: %{pnm_buildrequires_SUNWgnu_dbm}
 Requires:      %{pnm_requires_SUNWgnu_dbm}
@@ -30,11 +35,25 @@ Requires: SUNWslang
 BuildRequires: SFElibiconv-devel
 Requires: SFElibiconv
 
-#headers for sasl in SUNWhea/
-Requires: SUNWlibsasl
-
 BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
-Requires:      %{pnm_buildrequires_SUNWgnu_idn}
+Requires:      %{pnm_requires_SUNWgnu_idn}
+
+#headers for sasl in SUNWhea/
+#  dependency discovered: system/library/security/libsasl@0.5.11-0.175.0.0.0.2.1
+BuildRequires: SUNWlibsasl
+Requires:      SUNWlibsasl
+
+#  dependency discovered: library/security/openssl@1.0.0.5-0.175.0.0.0.2.537
+BuildRequires: %{pnm_buildrequires_SUNWopenssl_devel}
+Requires:      %{pnm_requires_SUNWopenssl}
+
+#  dependency discovered: system/library/security/gss@0.5.11-0.175.0.0.0.2.1
+BuildRequires: SUNWgss
+Requires:      SUNWgss
+
+#smime_keys wants perl, so pkgdepend finds the actual perl as dependency
+# dependency discovered: runtime/perl-512@5.12.3-0.175.0.0.0.2.537
+
 
 %package root
 Summary:                 %{summary} - / filesystem
@@ -45,6 +64,7 @@ SUNW_BaseDir:            /
 %setup -q -n mutt-%version
 %patch1 -p0
 %patch2 -p0
+%patch3 -p0
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
@@ -56,9 +76,19 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export EXTRAINCLUDES="-I/usr/include/sasl"
+%if %( echo  %{pnm_buildrequires_SUNWgnu_idn} | grep -i sfe >/dev/null && echo 1 || echo 0 )
+CONFIGURE_WITH_IDN="--with-idn=/usr/gnu"
+EXTRAINCLUDES="$EXTRAINCLUDES -I/usr/gnu/include/idn"
+%else
+CONFIGURE_WITH_IDN="--with-idn"
+EXTRAINCLUDES="$EXTRAINCLUDES -I/usr/include/idn"
+%endif
+echo "DEB: CONFIGURE_WITH_IDN $CONFIGURE_WITH_IDN"
+echo "DEB: EXTRAINCLUDES  $EXTRAINCLUDES"
 
-#export CFLAGS="%optflags -I/usr/include/idn"
+
+export EXTRAINCLUDES="$EXTRAINCLUDES -I/usr/include/sasl"
+
 export CFLAGS="%{optflags} $EXTRAINCLUDES -I%{gnu_inc}"
 export LDFLAGS="%{_ldflags} %{gnu_lib_path} -lgss"
 export CPPFLAGS="$EXTRAINCLUDES -I/usr/sfw/include"
@@ -73,14 +103,15 @@ export CPPFLAGS="$EXTRAINCLUDES -I/usr/sfw/include"
 	    --enable-pop \
 	    --enable-imap \
             --enable-hcache \
-            --with-idn=/usr/gnu \
+            $CONFIGURE_WITH_IDN \
             --with-libiconv-prefix=/usr/gnu \
             --enable-smtp \
             --with-sasl   \
             --without-qdbm \
+            --enable-debug \
+            --with-gdbm \
             --with-gss
 
-#            --with-idn \
 #  --without-wc-funcs      Do not use the system's wchar_t functions
 
 make -j$CPUS
@@ -112,8 +143,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
-* Fri Oct 25 2013 - Thomas Wagner
+* Tue Dec 31 2013 - Thomas Wagner
+- add patch3 mutt-03-configure-unquoted-test.diff
+- --enable-debug 
+- adjust gnu-idn location
+- add (Build)Requires %{pnm_buildrequires_SUNWopenssl_devel}, %{pnm_buildrequires_SUNWopenssl_devel}
+- add (Build)Requires SUNWgss, SUNWlibsasl
+* Mon Dec 30 2013 - Thomas Wagner
+- adjust gnu-idn location
 - change (Build)Requires to %{pnm_buildrequires_SUNWgnu_dbm}
+- add --enable-debug by default
 - bump to 1.5.22, bugfix release. Adds support for TLS 1.1/1.2. 
 - add patch mutt-02-configure-gssapi-krb5.diff (thanks to Meths for patch)
 * Fri Oct 25 2013 - Thomas Wagner
