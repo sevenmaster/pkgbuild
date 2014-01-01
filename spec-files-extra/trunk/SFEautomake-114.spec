@@ -4,6 +4,7 @@
 # includes module(s): automake
 #
 %include Solaris.inc
+##%include osdistro.inc
 
 ##TODO## make auto-rename package to upgrade automake-111 to this one here
 ##       if that works. old spec file would require -111 and automaticly
@@ -21,8 +22,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 #automake 1.14 wants autoconf >= 2.65
-BuildRequires: SFEautoconf-gnu >= 2.65
-Requires: SFEautoconf-gnu >= 2.65
+##%if %{os2nnn}
+###NOTE: version equation is currently a dummy
+##BuildRequires: developer/build/gnu/autoconf >= 2.65
+##Requires:      developer/build/gnu/autoconf >= 2.65
+##%else
+BuildRequires: SFEautoconf-gnu
+Requires:      SFEautoconf-gnu
+##%endif
+
 
 %description
 additional package to get automake-%{version} added.
@@ -68,6 +76,8 @@ rm -rf %{buildroot}
 %{_mandir}
 
 %changelog
+* Wed Jan  1 2014 - Thomas Wagner
+- try (Build)Requires: SFEautoconf-gnu unconditionally
 * Mon Dec 23 2013 - Thomas Wagner
 - add (Build)Requires: SFEautoconf-gnu >= 2.65
 * Fri Dec  6 2013 - Thomas Wagner
