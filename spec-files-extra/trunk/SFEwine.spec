@@ -6,8 +6,7 @@
 # Owner: lewellyn
 #
 # Confirmed build of Wine 1.6.1 on oi_151a/GCC 4.6.4 11/15/13   - Ken Mays
-# Confirmed build of Wine 1.7.7 on oi_151a/GCC 4.6.4 12/03/13   - Ken Mays
-# Confirmed build of Wine 1.7.9 on oi_151a/GCC 4.7.3 12/21/13   - Ken Mays
+# Confirmed build of Wine 1.7.10 on oi_151a/GCC 4.7.3 1/3/14   - Ken Mays
 
 %include Solaris.inc
 
@@ -21,7 +20,7 @@
 # In case of an unstable wine version, temporarily set this to the
 # last-known-good version. This should be reverted the next stable version.
 # %if %{!?version:1}
-# 	%define version 1.7.9
+# 	%define version 1.7.10
 # %endif
 
 #%if %{!?version:1}
@@ -32,7 +31,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.9
+Version:                1.7.10
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -266,6 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Jan 3 2014 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.10
 * Fri Dec 20 2013 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.9
 * Mon Dec 9 2013 - Ken Mays <kmays2000@gmail.com>
