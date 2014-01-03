@@ -1,3 +1,9 @@
+2014-01-03 Ken Mays <kmays2000@gmail.com>
+
+        * SFEwine.spec: Bump to 1.7.10
+	* base-specs/jack.spec: Bump to 1.121.3
+	* Note: Add Jack Audio Kit 1.9.9.5 integration (JACK2)
+
 2014-01-02  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEjena-fuseki.spec: initial spec.
