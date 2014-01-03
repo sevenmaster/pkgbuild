@@ -1,3 +1,9 @@
+2014-01-02  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEjena-fuseki.spec: initial spec.
+	* copyright/SFEjena-fuseki.copyright
+	* ext-sources/jena-fuseki.xml
+
 2013-12-01 Ken Mays <kmays2000@gmail.com>
 
         * SFEwine.spec: Bump to 1.7.8
