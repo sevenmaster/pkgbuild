@@ -134,6 +134,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Fri Jan 03 2014 - Thomas Wagner
+- add missing base-specs/lcms.spec
 - add 32/64-bit support
 * Sat Nov  5 2011 - Pavel Heimlich
 - initial spec
