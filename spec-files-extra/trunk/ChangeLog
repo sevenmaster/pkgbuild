@@ -1,3 +1,8 @@
+2014-01-03  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEjena.spec: initial spec.
+	* copyright/SFEjena.copyright
+
 2014-01-03 Ken Mays <kmays2000@gmail.com>
 
         * SFEwine.spec: Bump to 1.7.10
