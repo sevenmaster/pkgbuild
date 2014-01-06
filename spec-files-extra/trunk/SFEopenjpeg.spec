@@ -36,6 +36,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: SFEcmake
 
+BuildRequires: SFElcms2-gnu
+Requires:      SFElcms2-gnu
+
 #pkgdepend resolve returned 0
 #  dependency discovered: image/library/libpng@1.4.8-0.175.0.0.0.0.0
 #  dependency discovered: image/library/libtiff@3.9.5-0.175.0.0.0.0.0
@@ -107,14 +110,12 @@ rm -rf %{buildroot}
 %endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
-%{_libdir}/pkgconfig/*
+%{_libdir}/openjpeg-*
 
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
-%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
-%{_libdir}/%{_arch64}/pkgconfig/*
+%{_libdir}/%{_arch64}/openjpeg-*
 %endif
 %dir %attr (0755, root, sys) %{_datadir}
 %{_mandir}
@@ -125,18 +126,28 @@ rm -rf %{buildroot}
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
-#1.5.0 %dir %attr (0755, root, sys) %{_datadir}
-#1.5.0 %{_datadir}/openjpeg-%{major_minor_version}
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_docdir}
+#%{_datadir}/openjpeg-%{major_minor_version}
+%{_docdir}/openjpeg-*
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/openjpeg*
+%{_libdir}/pkgconfig/*
 
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
-%{_libdir}/%{_arch64}/openjpeg*
+%{_libdir}/%{_arch64}/pkgconfig/*
 %endif
 
 
 %changelog
+* Mon Jan  6 2014 - Thomas Wagner
+- bump to 1.5.1
+- fix %files
+* Fri Jan  3 2014 - Thomas Wagner
+- change (Build)Requires to SFElcms2-gnu, update CFLAGS/LDFLAGS to first search gnu_inc / gnu_lib_path
+* Wed Jan 01 2014 - Thomas Wagner
+- add (Build)Requires: SFElcms2
+- update 32/64-bit support
 * Sun Nov 17 2013 - Thomas Wagner
 - add 32/64-bit support
 * Sat Feb 18 2012 - Milan Jurik
