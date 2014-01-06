@@ -81,7 +81,7 @@
 %endif 
 
 %if %( uname -v | egrep '^s12_[0-9]' > /dev/null && echo 1 || echo 0 )
-%define osbuild $( uname -v | sed -e 's/s12_//' )
+%define osbuild %( uname -v | sed -e 's/s12_//' )
 %endif
 
 #quick and dirty hack, only works on OI hipster printing "illumos" with "uname -v". DON'T USE ON ANY OTHER OSDISTRO PLEASE!
@@ -411,6 +411,8 @@
 
 
 %changelog
+* Mon Jan  6 2014 - Thomas Wagner
+- typo in define osbuild for S12
 * Sat Sep 28 2013 - Thomas Wagner
 - quick solution to workaound differen uname -v output on OI hipster
 * Thu Sep 19 2013 - Ian Johnson
