@@ -131,10 +131,12 @@ rm -rf %{buildroot}
 #%{_datadir}/openjpeg-%{major_minor_version}
 %{_docdir}/openjpeg-*
 %dir %attr (0755, root, bin) %{_libdir}
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
 %{_libdir}/%{_arch64}/pkgconfig/*
 %endif
 
@@ -142,7 +144,7 @@ rm -rf %{buildroot}
 %changelog
 * Mon Jan  6 2014 - Thomas Wagner
 - bump to 1.5.1
-- fix %files
+- fix %files twice
 * Fri Jan  3 2014 - Thomas Wagner
 - change (Build)Requires to SFElcms2-gnu, update CFLAGS/LDFLAGS to first search gnu_inc / gnu_lib_path
 * Wed Jan 01 2014 - Thomas Wagner
