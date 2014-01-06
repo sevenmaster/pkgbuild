@@ -1307,6 +1307,12 @@
 %define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
 %define pnm_requires_SFEautomake_111			developer/build/automake-111
 
+#S12 lost the legacy name SUNWgnu-dbm
+%define pnm_buildrequires_SFEgdbm		library/database/gdbm
+%define pnm_requires_SFEgdbm		 	library/database/gdbm
+%define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
+%define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
+
 %endif
 #END solaris12
 
@@ -2167,6 +2173,8 @@
 
 
 %changelog
+* Mon Jan  6 2013 - Thomas Wagner
+- S12 has no legacy name for library/database/gdbm (SFEgdbm SUNWgnu-dbm)
 * Tue Dec 24 2013 - Thomas Wagner
 - %define pnm_buildrequires_python_default runtime/python-26 on S12 (no legacy package name SUNWPython26)
 * Mon Dec  9 2013 - Thomas Wagner
