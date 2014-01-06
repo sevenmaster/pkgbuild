@@ -1,0 +1,22 @@
+--- gpac/modules/oss_audio/Makefile.orig	2013-12-25 12:00:11.329737121 +0100
++++ gpac/modules/oss_audio/Makefile	2013-12-25 11:56:17.634477165 +0100
+@@ -35,7 +35,7 @@
+ all: $(LIB)
+ 
+ $(LIB): $(OBJS)
+-	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac $(OSS_LDFLAGS)
++	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac $(OSS_LDFLAGS)
+ ifeq ($(STATICBUILD),yes)
+ 	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/gm_oss_audio-static.$(DYN_LIB_SUFFIX) $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac_static $(OSS_LDFLAGS)
+ endif
+--- gpac/modules/pulseaudio/Makefile.orig	2013-12-25 11:59:57.206638903 +0100
++++ gpac/modules/pulseaudio/Makefile	2013-12-25 11:58:25.778718493 +0100
+@@ -25,7 +25,7 @@
+ all: $(LIB)
+ 
+ $(LIB): $(OBJS)
+-	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib -lpulse-simple
++	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib -lpulse-simple
+ 
+ 
+ %.o: %.c
