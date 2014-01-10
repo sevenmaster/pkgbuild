@@ -69,6 +69,7 @@ touch config.rpath
 aclocal $ACLOCAL_FLAGS -I ./m4 -I ./m4/ggz
 automake -a -c -f
 autoconf
+libtoolize --force
 ./configure --prefix=%{_prefix} 	\
 	    --sysconfdir=%{_sysconfdir} \
 	    --bindir=%{_bindir} \
@@ -88,6 +89,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Jan 10 2014 - Thomas Wagner
+- run libtoolize or get "../libtool: line 874: X--tag=CC: command not found"
 * Wed May 26 2010 - brian.cameorn@oracle.com
 - Add patch ggz-client-libs-05-m4.diff so the code will compile.
 * Fri Jun 06 2008 - Michal.Pryc@Sun.Com
