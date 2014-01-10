@@ -6,9 +6,13 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-%define owner migi
-#
+
+
+#TODO# rework to use platform default python version (synchronize with other packages containing python)
+
+
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define makeinstall make install DESTDIR=$RPM_BUILD_ROOT
 %use libggz = libggz.spec
@@ -25,8 +29,7 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: SUNWgtk2-devel
 BuildRequires: SUNWlibrsvg-devel
-BuildRequires: SUNWPython26-devel
-BuildRequires: SUNWpython26-setuptools
+BuildRequires: %{pnm_buildrequires_python_default}
 BuildRequires: SUNWgnome-libs-devel
 BuildRequires: SUNWgnome-vfs-devel
 BuildRequires: SUNWgnome-config-devel
@@ -37,7 +40,7 @@ Requires: SUNWgnome-libs
 Requires: SUNWgnome-config
 Requires: SUNWlibms
 Requires: SUNWlibrsvg
-Requires: SUNWPython26
+Requires: %{pnm_requires_python_default}
 Requires: SUNWdesktop-cache
 Requires: SUNWgnome-media
 Requires: %{name}-root
@@ -170,6 +173,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Jan 10 2014 - Thomas Wagner
+- run libtoolize or get "../libtool: line 874: X--tag=CC: command not found" (base-specs/ggz-client-libs.spec)
+* Mon Jan  6 2014 - Thomas Wagner
+- change (Build)Requires: %{pnm_buildrequires_SUNWPython26}
+* Sat Nov 16 2013 - Thomas Wagner
+- change (Build)Requires: %{pnm_buildrequires_SUNWpython26_setuptools}, Requires: %{pnm_requires_SUNWPython26}, %include packagenamemacros.inc
+* Sun Oct  3 2013 - Thomas Wagner
+- change (Build)Requires to %{}
 * Wed Jul 07 2010 - brian.cameron@oracle.com
 - Convert into SFElibggz.spec file.
 * Thu Apr 22 2010 - christian.kelly@oracle.com
