@@ -14,7 +14,6 @@
 # maybe set to nullstring outside release-candidates (example: 1.1/rc  or just 1.1)
 #%define downloadversion	 1.1/rc
 %define downloadversion	 2.2
-%define _pkg_docdir %_docdir/%src_name
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
@@ -46,7 +45,7 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.2.6
+Version:	2.2.10
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -61,18 +60,17 @@ BuildRequires:      SFEgcc
 Requires:           SFEgccruntime
 %endif
 BuildRequires: %{pnm_buildrequires_SUNWzlib}
-Requires: %{pnm_requires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_SUNWbzip}
-Requires: %{pnm_requires_SUNWbzip}
+Requires:      %{pnm_requires_SUNWbzip}
 BuildRequires: %{pnm_buildrequires_SUNWlexpt}
-Requires: %{pnm_requires_SUNWlexpt}
+Requires:      %{pnm_requires_SUNWlexpt}
 BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
-Requires: %{pnm_requires_SUNWgnu_idn}
+Requires:      %{pnm_requires_SUNWgnu_idn}
 BuildRequires: %{pnm_buildrequires_SUNWcurl}
-Requires: %{pnm_requires_SUNWcurl}
-#help Solaris 10 and SVR4 Nevada to workaround multiple package renames
+Requires:      %{pnm_requires_SUNWcurl}
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
-Requires: %{pnm_requires_SUNWopenssl_libraries}
+Requires:      %{pnm_requires_SUNWopenssl_libraries}
 %if %{with_clucene}
 BuildRequires: SFElibstemmer-devel
 Requires: SFElibstemmer
@@ -214,9 +212,7 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
-%_pkg_docdir/*.*
-%_pkg_docdir/example-config
-%_pkg_docdir/wiki
+%{_docdir}/%{src_name}/*
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
@@ -236,6 +232,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Fri Jan 10 2014 - Thomas Wagner
+- bump to 2.2.10
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - fix packaging of documentation
 * Thu Oct 24 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
