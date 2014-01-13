@@ -9,7 +9,12 @@
 %include base.inc
 %include packagenamemacros.inc
 
-%define SUNWlibsdl %(/usr/bin/pkginfo -q SUNWlibsdl && echo 1 || echo 0)
+#change version number only here.
+%define ffmpeg_version 2.1.1
+
+#older ffmpeg version can't use every patch
+%define enable_patch13 1
+
 
 %ifarch sparc
 %define arch_opt --disable-optimizations
@@ -25,7 +30,7 @@
 
 Name:			SFEffmpeg
 IPS_Package_Name:	video/ffmpeg
-Summary:		%{ffmpeg.summary}
+Summary:		%{ffmpeg.summary} (sse2-only)
 Version:		%{ffmpeg.version}
 License:		GPLv2+ and LGPLv2.1+
 SUNW_Copyright:		ffmpeg.copyright
@@ -43,23 +48,16 @@ BuildRequires: %pnm_buildrequires_perl_default
 BuildRequires: SUNWxwinc
 Requires: SUNWxwrtl
 Requires: SUNWzlib
-%if %SUNWlibsdl
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
-%else
-BuildRequires: SFEsdl-devel
-Requires: SFEsdl
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 BuildRequires: SFElibgsm-devel
 Requires: SFElibgsm
 BuildRequires: SFExvid-devel
 Requires: SFExvid
 BuildRequires: SFElibx264-devel
 Requires: SFElibx264
-BuildRequires: SFElibvpx-devel
-Requires: SFElibvpx
-BuildRequires: SFEfaac-devel
-Requires: SFEfaac
+BuildRequires: SFEfaac-gpp-devel
+Requires: SFEfaac-gpp
 BuildRequires: SFElame-devel
 Requires: SFElame
 BuildRequires: SUNWogg-vorbis-devel
@@ -70,7 +68,7 @@ BuildRequires: SUNWspeex-devel
 Requires: SUNWspeex
 BuildRequires: SFEopencore-amr-devel
 Requires: SFEopencore-amr
-BuildRequires: SUNWgsed
+BuildRequires: %{pnm_buildrequires_SUNWgsed}
 BuildRequires: SFEopenjpeg-devel
 Requires: SFEopenjpeg
 BuildRequires: SFElibschroedinger-devel
@@ -81,15 +79,16 @@ BuildRequires: SFElibass-devel
 Requires: SFElibass
 BuildRequires: SFEopenal-devel
 Requires: SFEopenal
-BuildRequires: driver/graphics/nvidia
-Requires: driver/graphics/nvidia
+BuildRequires: SFElibvpx-devel
+Requires: SFElibvpx
+BuildRequires: %{pnm_buildrequires_NVDAgraphics_devel}
+Requires:      %{pnm_requires_NVDAgraphics}
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %name
-
 
 %prep
 rm -rf %name-%version
@@ -148,6 +147,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 13 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_NVDAgraphics_devel}, %{pnm_buildrequires_SUNWlibsdl_devel}
+- change (Build)Requires to SFEfaac-gpp(-devel)
+- follow /usr/g++ directory layout, add to CFLAGS / LDFLAGS include /usr/g++/include and -R|-L/usr/g++/lib/%{arch}
+* Thu Nov 28 2013 - Thomas Wagner
+- make version controllable from calling spec
 * Fri Oct 11 2013 - Alex Viskovatoff
 - Update to work with ffmpeg 2.0.2; Do not give special treatment to Intel
   processors: this is unnecessary, since runtime cpu detection is used
