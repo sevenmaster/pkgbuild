@@ -12,7 +12,7 @@
 #  x264_build MUST CORRESPOND to libx264.so.<number> as produced by the build  #
 ################################################################################
 %define x264_build       138
-%define snap             20131031
+%define snap             20140111
 
 %define snaph            2245-stable
 %define src_name         x264-snapshot
@@ -82,6 +82,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Jan 12 2014 - Alex Viskovotoff
+- bump to 20140111
 * Fri Nov  1 2013 - Alex Viskovotoff
 - update to 20131031, updating x264_build to 138
 * Wed Sep 11 2013 - Alex Viskovatoff

@@ -1,11 +1,17 @@
 #
 # spec file for package SFEmpv
 #
-# includes module(s): mpv
-#
 
 # mpv is a movie player based on MPlayer and mplayer2.
-# Its name is a recursive acronym, as the Summary indicates.
+# For mnemonic purpsoses, its name can be considered to be a recursive acronym
+# for "mpv plays videos", although the developers deny that it is a recursive
+# acronym.
+
+# NOTE: To make man display the man page correctly, use
+#	export PAGER="/usr/bin/less -insR"
+#	This will allow less to display /usr/share/man/cat1/mpv.1 correctly,
+#	which is pre-formatted with groff (Solaris's man page is apparently
+#	hard-wired to use groff, which doesn't understand some nroff macros).
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -20,10 +26,10 @@
 
 Name:			SFEmpv
 IPS_Package_Name:	media/mpv
-Summary:		mpv plays videos
+Summary:		de facto successor of mplayer2, of which it is a fork
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.2.3
+Version:		0.3.2
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
@@ -53,6 +59,13 @@ BuildRequires: SFElibquvi
 # declare them unless pkgbuild can't find them
 
 
+Requires: %name-root
+%package root
+Summary:                 %{summary} - / filesystem
+SUNW_BaseDir:            /
+Requires: %name
+
+
 %description
 mpv is a movie player based on MPlayer and mplayer2. It supports a wide variety
 of video file formats, audio and video codecs, and subtitle types. Special input
@@ -75,7 +88,7 @@ export CC=gcc
 # Enabling gl makes compilation fail.  When mplayer did compile with
 # gl enabled, gl made it crash immediately.
 # Force vdpau, because vdpau.pc is missing from the nvidia package.
-bash ./configure			\
+bash ./old-configure			\
 	--prefix=%_prefix		\
 	--mandir=%_mandir		\
         --confdir=%_sysconfdir		\
@@ -94,10 +107,13 @@ make install DESTDIR=%buildroot
 
 # nroff does not understand macros used by mplayer man page
 # See http://www.mplayerhq.hu/DOCS/tech/manpage.txt
-cd %buildroot/%_datadir/man
+pushd %buildroot/%_datadir/man
 mkdir cat1
 groff -mman -Tutf8 -rLL=80n man1/mpv.1 | col -bxp > cat1/mpv.1
-
+popd
+cd %buildroot/%_sysconfdir
+mkdir %srcname
+mv encoding-profiles.conf %srcname
 
 %clean
 rm -rf %buildroot
@@ -109,13 +125,24 @@ rm -rf %buildroot
 %_bindir/%srcname
 %_mandir
 %defattr (-, root, other)
-%doc README.md
-%doc -d DOCS edl.rst encoding.rst tech-overview.txt OUTDATED-tech/formats.txt OUTDATED-tech/general.txt OUTDATED-tech/hwac3.txt OUTDATED-tech/libao2.txt OUTDATED-tech/libvo.txt OUTDATED-tech/mpsub.sub OUTDATED-tech/swscaler_filters.txt OUTDATED-tech/swscaler_methods.txt
+%doc README.md RELEASE_NOTES
+%doc -d DOCS encoding.rst tech-overview.txt OUTDATED-tech/formats.txt OUTDATED-tech/general.txt OUTDATED-tech/hwac3.txt OUTDATED-tech/libao2.txt OUTDATED-tech/libvo.txt OUTDATED-tech/mpsub.sub OUTDATED-tech/swscaler_filters.txt OUTDATED-tech/swscaler_methods.txt
 %_datadir/applications/%srcname.desktop
 %_datadir/icons
 
+%files root
+%defattr (-, root, sys)
+%dir %attr (-, root, sys) %_sysconfdir
+%attr (-, root, root) %_sysconfdir/%srcname/encoding-profiles.conf
+
 
 %changelog
+* Sun Jan 12 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- update to 0.3.2; configure is now called "old-configure", so call that
+- deliver encoding-profiles.conf to /etc/mpv as expected by upstream - inelegant
+- restore comment about options that must be passed to less for man page to work
+* Thu Dec 12 2013 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.2.4
 * Sat Nov  9 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - bump to 0.2.3
 - disable alsa: stupid alsa errors show up on the console
