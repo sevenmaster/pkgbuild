@@ -96,7 +96,10 @@ way.  Another example is cairo, which provides high quality 2D
 rendering.
 
 %prep
-%setup -q
+#don't unpack please
+%setup -q -c -T -n poppler-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+
 #%patch1 -p1
 
 %build
@@ -154,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Mon Jan 13 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFExz}, %include packagenamemacros.inc
+- use manual call to xz (older pkgbuild can't)
+- include usr-g++.inc
 * Wed Oct 30 2013 - Alex Viskovatoff
 - Update to 0.24.3; build poppler-qt4
 * Fri Aug  5 2011 - Alex Viskovatoff

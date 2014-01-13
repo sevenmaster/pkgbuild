@@ -8,10 +8,11 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
-%define _prefix /usr/g++
 
 %use poppler = poppler.spec
 
@@ -29,6 +30,7 @@ Requires: SUNWgnome-base-libs
 BuildRequires: SUNWgnome-base-libs-devel
 BuildRequires: gtk2
 BuildRequires: cairo
+BuildRequires:    %{pnm_buildrequires_SFExz_gnu}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -97,6 +99,10 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
+* Mon Jan 13 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFExz}, %include packagenamemacros.inc
+- use manual call to xz (older pkgbuild can't)
+- include usr-g++.inc
 * Wed Oct 30 2013 - Alex Viskovatoff
 - adapt to updated base spec
 * Fri Aug  5 2011 - Alex Viskovatoff
