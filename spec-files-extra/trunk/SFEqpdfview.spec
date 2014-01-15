@@ -15,7 +15,7 @@ URL:		https://launchpad.net/qpdfview
 License:	GPLv2
 SUNW_Copyright:	GPLv2.copyright
 Group:		Applications/Office
-Version:	0.4.6
+Version:	0.4.7
 Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%version.tar.gz
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
@@ -92,5 +92,7 @@ rm -rf %buildroot
 
 
 %changelog
+* Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.4.7
 * Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
-- Initial spec
+- initial spec
