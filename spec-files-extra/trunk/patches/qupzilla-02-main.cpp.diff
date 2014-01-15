@@ -1,0 +1,11 @@
+--- qupzilla-1.6.0/src/main/main.cpp.orig	Wed Jan  1 14:55:33 2014
++++ qupzilla-1.6.0/src/main/main.cpp	Tue Jan 14 10:45:42 2014
+@@ -20,7 +20,7 @@
+ 
+ #include <QMessageBox> // For QT_REQUIRE_VERSION
+ 
+-#if defined(Q_OS_LINUX) || defined(__GLIBC__)
++#if defined(Q_OS_LINUX) || defined(Q_OS_SOLARIS) || defined(__GLIBC__)
+ #include <iostream>
+ #include <signal.h>
+ #include <execinfo.h>

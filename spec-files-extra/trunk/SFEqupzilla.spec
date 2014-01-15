@@ -17,14 +17,15 @@ URL:		http://www.qupzilla.com/
 License:	GPLv3
 SUNW_Copyright:	%srcname.copyright
 Group:		Applications/Internet
-Version:	1.4.4
+Version:	1.6.0
 Source:		http://github.com/QupZilla/%srcname/archive/v%version.tar.gz
 Patch0:		qupzilla-01-d_type.patch
+Patch1:		qupzilla-02-main.cpp.diff
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
 BuildRequires:	SFEqt-gpp
-Requires:	SFEqt-gpp
+# Let pkgdepend take care of runtime dependencies
 
 %if %build_l10n
 %package l10n
@@ -38,6 +39,7 @@ Requires:       %name
 %prep
 %setup -q -n %srcname-%version
 %patch0 -p 1
+%patch1 -p 1
 
 # enable webgl support
 export USE_WEBGL=true
@@ -98,6 +100,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
+- update to 1.6.0, adding one patch
 * Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - add copyright file
 * Sun Oct 27 2013 - Alex Viskovatoff <herzen@imapmail.org>
