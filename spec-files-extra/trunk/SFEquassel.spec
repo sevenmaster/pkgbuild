@@ -13,7 +13,7 @@ Name:			SFEquassel
 IPS_package_name:	desktop/irc/quassel
 Group:			Applications/Internet
 Summary:		Graphical IRC client based on a client-server model
-Version:		0.9.1
+Version:		0.9.2
 URL:			http://quassel-irc.org/
 License:		GPLv2
 SUNW_Copyright:		GPLv2.copyright
@@ -84,5 +84,7 @@ rm -rf %buildroot
 
 
 %changelog
+* Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.9.2
 * Fri Nov  1 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - initial spec
