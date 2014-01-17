@@ -1,3 +1,8 @@
+2014-01-16  Logan O'Sullivan Bruns  <logan@gedanken.org>
+
+	* SFEjena.spec: rename softlink to tdbdump to jena-tdbdump to
+	avoid conflict with samba.
+
 2014-01-03  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEjena.spec: initial spec.
