@@ -54,6 +54,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/bin
 for f in $RPM_BUILD_ROOT%{_datadir}/jena/bin/* ; do 
   ln -s %{_datadir}/jena/bin/`basename $f` $RPM_BUILD_ROOT/usr/bin/`basename $f`
 done
+mv $RPM_BUILD_ROOT/usr/bin/tdbdump $RPM_BUILD_ROOT/usr/bin/jena-tdbdump 
 gsed -i -e 's|^java|%java_home/bin/java|g' $RPM_BUILD_ROOT%{_datadir}/jena/bin/*
 
 %clean
@@ -68,5 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/jena/*
 
 %changelog
+* Thu Jan 16 2013 - Logan Bruns <logan@gedanken.org>
+- Rename softlink to tdbdump to jena-tdbdump to avoid conflict with samba.
 * Fri Jan 3 2013 - Logan Bruns <logan@gedanken.org>
 - Initial spec.
