@@ -29,12 +29,11 @@ IPS_Package_Name:	media/mpv
 Summary:		de facto successor of mplayer2, of which it is a fork
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.3.2
+Version:		0.3.3
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
 SUNW_BaseDir:		%_basedir
-BuildRoot:		%_tmppath/%name-build
 
 BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibcdio-devel
@@ -137,7 +136,9 @@ rm -rf %buildroot
 
 
 %changelog
-* Sun Jan 12 2013 - Alex Viskovatoff <herzen@imapmail.org>
+* Mon Jan 20 2014 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.3.3
+* Sun Jan 12 2014 - Alex Viskovatoff <herzen@imapmail.org>
 - update to 0.3.2; configure is now called "old-configure", so call that
 - deliver encoding-profiles.conf to /etc/mpv as expected by upstream - inelegant
 - restore comment about options that must be passed to less for man page to work
