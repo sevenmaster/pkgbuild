@@ -94,6 +94,8 @@ rm -rf %{buildroot}
 %{_docdir}/*
 
 %changelog
+* Wed Jan 22 2014 - Thomas Wagner
+- bump to 5.3.28
 * Tue Aug 28 2012 - Milan Jurik
 - support multiarch
 * Wed Mar 30 2011 - Milan Jurik
