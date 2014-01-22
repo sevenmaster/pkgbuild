@@ -7,7 +7,7 @@
 Name:		bdb
 Summary:	Berkeley DB
 Group:		System/Databases
-Version:	4.8.30
+Version:	5.3.28
 License:        BSD3c
 Source:		http://download.oracle.com/berkeley-db/db-%{version}.tar.gz
 URL:		http://www.oracle.com/technology/software/products/berkeley-db/index.html
@@ -53,5 +53,7 @@ mv $RPM_BUILD_ROOT%{_prefix}/docs $RPM_BUILD_ROOT%{_prefix}/share/doc/bdb
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Jan 22 2014 - Thomas Wagner
+- bump to 5.3.28
 * Tue Aug 28 2012 - Milan Jurik
 - support multiarch
