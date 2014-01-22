@@ -20,7 +20,7 @@ Name:                    SFEsamba35
 IPS_package_name:	 sfe/service/network/samba35
 Summary:                 samba - CIFS Server and Domain Controller
 URL:                     http://samba.org/
-Version:                 3.5.21
+Version:                 3.5.22
 Copyright:               GPL
 Url:                     http://www.samba.org
 #Source:                  http://samba.org/samba/ftp/stable/samba-%{version}.tar.gz
@@ -47,6 +47,8 @@ BuildRequires: SUNWgcc
 #TODO: Reqires:
 Requires: SUNWbash
 Requires: SUNWgccruntime
+BuildRequires: SFEopenldap
+Requires: SFEopenldap
 
 %include default-depend.inc
 
@@ -299,6 +301,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 20 2014 - Thomas Wagner
+- bump to 3.5.22
+- add BuildRequires: SFEopenldap (SFEbdb)
 * Thu Dec 27 2012 - Thomas Wagner
 - bump to 3.5.20
 - use auto-switch for changing group owner of /usr/gnu/share/locale
