@@ -3,28 +3,49 @@
 # spec file for package SFEopenldap.spec
 #
 
+# NOTE: some distributions provide theyr own openldap package,
+#       you only want his package here in case you need special
+#       options set/compiled in
+
+# for now:  32-bit *only*, 32/64-bit can be added on request
+
 %include Solaris.inc
 
 %define cc_is_gcc 1
 %include base.inc
 
+#avoid ovelapping with SUNWhea and SUNWman
+%include usr-gnu.inc
+
+
 %define src_name openldap
 
 
 Name:                    SFEopenldap
+##TODO##
+#IPS_package_name:   
+#Group:
 Summary:                 OpenLDAP - LDAP Server, Tools and Libraries
 URL:                     http://www.openldap.org
-Version:                 2.4.26
+Version:                 2.4.38
 Source:                  http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-%{version}.tgz
+Source2:		ldap-olslapd.xml
+Source3:		openldap-exec_attr
+Source4:		openldap-prof_attr
 SUNW_Copyright:		 %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 
-Requires:        SFEbdb
+##TODOä## make (Build)Requires complete
 BuildRequires:   SFEbdb
+Requires:        SFEbdb
+#BuildRequires:   SFEgcc
+#Requires:        SFEgcc-runtime
 
+#if not using usr-gnu.inc, then
+#Conflicts: SUNWopenldap,SUNWopenldapu,SUNWopenldapr
 
 Requires: %name-root
 %package root
@@ -34,10 +55,15 @@ Requires: %name
 
 %description
 OpenLDAP Server, Tools and Libraries
+Replaces distro provided LDAP Server package
 
 
 %prep
 %setup -q -n %{src_name}-%version
+
+cp -p %{SOURCE2}  ldap-olslapd.xml
+cp -p %{SOURCE3}  openldap-exec_attr
+cp -p %{SOURCE4}  openldap-prof_attr
 
 %build
 
@@ -54,9 +80,13 @@ export CFLAGS="%optflags -I%{gnu_inc}"
 export CXXLAGS="%cxx_optflags -I%{gnu_inc}"
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
+export RUNDIR="%{_std_localstatedir}/run/%{src_name}"
+
+#note: at the moment %install section moves binaries from %{_bindir} over to %{gnu_bin}
+#note: at the moment %install section moves one library from %{_libdir} over to %{gnu_lib}
 ./configure --prefix=%{_prefix}				\
             --libexecdir=%{_libexecdir}			\
-            --sysconfdir=%{_sysconfdir}/%{src_name}	\
+            --sysconfdir=%{_sysconfdir}			\
             --localstatedir=%{_localstatedir}/%{src_name}\
             --enable-wrappers		\
             --disable-static
@@ -142,18 +172,43 @@ gmake install DESTDIR=$RPM_BUILD_ROOT
 [ -d $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name} ] || mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}
 cp [A-Z][A-Z]* $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}
 
+mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/network/ldap/
+cp ldap-olslapd.xml ${RPM_BUILD_ROOT}/var/svc/manifest/network/ldap/
+
+mkdir -p $RPM_BUILD_ROOT%{_std_sysconfdir}/security/exec_attr.d
+mkdir -p $RPM_BUILD_ROOT%{_std_sysconfdir}/security/prof_attr.d
+cp  openldap-exec_attr $RPM_BUILD_ROOT%{_std_sysconfdir}/security/exec_attr.d/%{name}
+cp  openldap-prof_attr $RPM_BUILD_ROOT%{_std_sysconfdir}/security/prof_attr.d/%{name}
+
+#clean from static libs
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+#relocate a few binaries, relocate one basic client library to usr_gnu
+#mkdir -p $RPM_BUILD_ROOT%{gnu_bin}/
+#mv $RPM_BUILD_ROOT%{_bindir}/* $RPM_BUILD_ROOT/%{gnu_bin}/
+#rmdir $RPM_BUILD_ROOT%{_bindir}
+#mkdir -p $RPM_BUILD_ROOT%{gnu_lib}/
+#mv $RPM_BUILD_ROOT%{_libdir}/libldap.so* $RPM_BUILD_ROOT/%{gnu_lib}/
+#not moving, instead remove the symlink (let OS ldap package's symlink in place)
+#rm $RPM_BUILD_ROOT%{_libdir}/libldap.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, bin)
+#moved to /usr/gnu/bin
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
+#%dir %attr (0755, root, bin) %{gnu_bin}
+#%{gnu_bin}/*
 %dir %attr (0755, root, bin) %{_sbindir}
 %{_sbindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/*
+#see %install, paused - symlink removed
+#%dir %attr (0755, root, bin) %{gnu_lib}
+#%{gnu_lib}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
@@ -165,14 +220,31 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files root
-%defattr (-, root, sys)
-%dir %attr (0755, root, sys) %{_sysconfdir}
+%defattr (-, root, bin)
+%dir %attr (0755, root, sys) %{_std_sysconfdir}
+%dir %attr (0755, root, bin) %{_sysconfdir}
 %dir %attr (0755, root, bin) %{_sysconfdir}/%{src_name}
-%{_sysconfdir}/%{src_name}/*
+%attr (-, openldap, openldap) %{_sysconfdir}/%{src_name}/*
+%defattr (-, root, sys)
+%dir %attr (0755, root, sys) %{_std_sysconfdir}/security
+%{_std_sysconfdir}/security/*
+
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_localstatedir}
-%{_localstatedir}/*
+%defattr (-, openldap, openldap)
+%dir %attr (0700, openldap, openldap) %{_localstatedir}/%{src_name}
+%{_localstatedir}/%{src_name}/*
+
+%defattr (-, root, sys)
+%dir %attr (0755, root, sys) %{_std_localstatedir}
+%dir %attr (0755, root, sys) %{_std_localstatedir}/svc
+%dir %attr (0755, root, sys) %{_std_localstatedir}/svc/manifest
+%class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Tue Jan 21 2014 - Thomas Wagner
+- bump to 2.4.38
+* Sat Oct  8 2011 - Thomas Wagner
+- add SMF manifest (copied from distro, modified), add security/ RBAC info (copied from distro, modified)
 * Fri Oct  7 2011 - Thomas Wagner
 - Initial spec
