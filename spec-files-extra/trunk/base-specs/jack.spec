@@ -7,7 +7,7 @@
 # Old stable version
 #%define src_ver 0.116.2
 
-%define src_ver 0.121.3
+%define src_ver 0.124.1
 %define src_name jack-audio-connection-kit
 %define src_url http://jackaudio.org/downloads
 
@@ -84,6 +84,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/jack/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Jan 23 2014 - Ken Mays <kmays2000@gmail.com>
+- Bump to 0.124.1
 * Fri Jan 3 2014 - Ken Mays <kmays2000@gmail.com>
 - Bump to 0.121.3
 * Fri Oct 16 2009 - Milan Jurik

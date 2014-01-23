@@ -1,3 +1,108 @@
+--- jack-audio-connection-kit-0.124.1/configure.ac.orig	2014-01-22 15:23:36.000000000 -0500
++++ jack-audio-connection-kit-0.124.1/configure.ac	2014-01-23 17:23:42.332031300 -0500
+@@ -141,6 +141,23 @@
+ 
+ CFLAGS="$ORIGINAL_CFLAGS"
+ 
++AC_MSG_CHECKING([Sun C compiler])
++AC_COMPILE_IFELSE(
++  [AC_LANG_PROGRAM(
++    [[
++#ifndef __SUNPRO_C
++#error We r not him
++#endif
++#include <stdio.h>
++    ]],[[
++  (void)printf("JAVA CC");;
++    ]]
++  )],
++  [SUNCC=true
++   AC_MSG_RESULT(yes)],
++  [SUNCC=false
++   AC_MSG_RESULT(no)])
++
+ AC_MSG_CHECKING([platform dependencies])
+ 
+ HOST_DEFAULT_TMP_DIR=/dev/shm
+@@ -165,6 +182,14 @@
+     TRY_POSIX_SHM=yes			# POSIX shm works better
+     HOST_DEFAULT_TMP_DIR=/tmp
+     ;;
++  solaris*)
++    JACK_CPP_VARARGS_BROKEN=1;
++    OS_LDFLAGS="-Wl,-z,muldefs"
++    if $SUNCC ; then
++	CPPFLAGS="-D__FUNCTION__=__func__"
++        CFLAGS="-xc99 -erroff=E_ARGUEMENT_MISMATCH $CFLAGS"
++    fi
++    ;;
+ esac
+ 
+ AC_SUBST(OS_LDFLAGS)
+@@ -298,7 +323,7 @@
+ 
+ JACK_CORE_CFLAGS="-I\$(top_srcdir)/config -I\$(top_srcdir) \
+ -I\$(top_srcdir) -I\$(top_srcdir)/include \ 
+--D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -Wall"
++-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
+ 
+ JACK_LIBC_HELPER_FLAGS=
+ AC_ARG_ENABLE(ancient_libc,
+@@ -784,6 +809,27 @@
+ fi
+ AM_CONDITIONAL(HAVE_PA, $HAVE_PA)
+ 
++#
++# Solaris does not have endian.h, so we check for the alsa hack version
++#
++AC_CHECK_HEADERS(endian.h alsa/endian-compat.h)
++#
++# Headers needed for Solaris
++#
++AC_CHECK_HEADERS(sys/rtpriocntl.h sys/priocntl.h limits.h stropts.h priv.h)
++
++#
++# If we find exec_attr.h, we assume we can use RBAC
++#
++USE_RBAC=false
++AC_CHECK_HEADER(exec_attr.h,[
++    AC_MSG_RESULT([*** Using Solaris RBAC ***])
++    USE_RBAC=true
++    AC_DEFINE(USE_RBAC,1,"Adding Solaris RBAC mods")
++])
++
++AM_CONDITIONAL(USE_RBAC,$USE_RBAC)
++
+ AC_ARG_ENABLE(coreaudio, AC_HELP_STRING([--disable-coreaudio], [ignore CoreAudio driver]),
+ 			TRY_COREAUDIO=$enableval , TRY_COREAUDIO=yes )
+ HAVE_COREAUDIO="false"
+@@ -874,6 +920,14 @@
+ HAVE_ALSA_MIDI=$HAVE_ALSA
+ AM_CONDITIONAL(HAVE_ALSA_MIDI, $HAVE_ALSA_MIDI)
+ 
++case "${host_os}" in
++  solaris*)
++        if test "x$HAVE_OSS" != "x" ; then
++                JACK_DEFAULT_DRIVER=\"oss\"
++        fi
++  ;;
++esac
++
+ if test "$JACK_DEFAULT_DRIVER" = \"dummy\"; then
+   AC_MSG_WARN([Only the dummy driver can be built])
+ fi
+--- jack-audio-connection-kit-0.124.1/include/internal.h.orig	2014-01-23 17:36:02.366211000 -0500
++++ jack-audio-connection-kit-0.124.1/include/internal.h	2014-01-23 17:37:27.190429700 -0500
+@@ -44,6 +44,9 @@
+    compiler.
+ */
+ #define POST_PACKED_STRUCTURE __attribute__((__packed__))
++#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x5100)
++/* Available from Sun Studio 12 u1 */
++#define POST_PACKED_STRUCTURE __attribute__((__packed__))
+ #else
+ /* Add other things here for non-gcc platforms */
+ #endif
 diff -Naur jack-audio-connection-kit-0.116.2/config/cpu/Makefile.am jack-audio-connection-kit-0.116.2-patch/config/cpu/Makefile.am
 --- jack-audio-connection-kit-0.116.2/config/cpu/Makefile.am	2007-04-12 21:08:32.000000000 +0200
 +++ jack-audio-connection-kit-0.116.2-patch/config/cpu/Makefile.am	2009-09-20 19:20:09.718140719 +0200
@@ -345,100 +450,6 @@ diff -Naur jack-audio-connection-kit-0.116.2/config/sysdeps/time.h jack-audio-co
  #else
  #include <config/os/generic/time.h>
  #endif
-diff -Naur jack-audio-connection-kit-0.116.2/configure.ac jack-audio-connection-kit-0.116.2-patch/configure.ac
---- jack-audio-connection-kit-0.116.2/configure.ac	2009-02-06 11:40:56.000000000 +0100
-+++ jack-audio-connection-kit-0.116.2-patch/configure.ac	2009-09-20 19:23:52.924391619 +0200
-@@ -97,6 +97,23 @@
- 
- CFLAGS="$ORIGINAL_CFLAGS"
- 
-+AC_MSG_CHECKING([Sun C compiler])
-+AC_COMPILE_IFELSE(
-+  [AC_LANG_PROGRAM(
-+    [[
-+#ifndef __SUNPRO_C
-+#error We r not him
-+#endif
-+#include <stdio.h>
-+    ]],[[
-+  (void)printf("JAVA CC");;
-+    ]]
-+  )],
-+  [SUNCC=true
-+   AC_MSG_RESULT(yes)],
-+  [SUNCC=false
-+   AC_MSG_RESULT(no)])
-+
- AC_MSG_CHECKING([platform dependencies])
- 
- HOST_DEFAULT_TMP_DIR=/dev/shm
-@@ -121,6 +138,14 @@
-     TRY_POSIX_SHM=yes			# POSIX shm works better
-     HOST_DEFAULT_TMP_DIR=/tmp
-     ;;
-+  solaris*)
-+    JACK_CPP_VARARGS_BROKEN=1;
-+    OS_LDFLAGS="-Wl,-z,muldefs"
-+    if $SUNCC ; then
-+	CPPFLAGS="-D__FUNCTION__=__func__"
-+        CFLAGS="-xc99 -erroff=E_ARGUEMENT_MISMATCH $CFLAGS"
-+    fi
-+    ;;
- esac
- 
- AC_SUBST(OS_LDFLAGS)
-@@ -249,7 +274,7 @@
- AM_CONDITIONAL(USE_POSIX_SHM, $USE_POSIX_SHM)
- 
- JACK_CORE_CFLAGS="-I\$(top_srcdir)/config -I\$(top_srcdir) \
---I\$(top_srcdir) -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -Wall"
-+-I\$(top_srcdir) -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
- 
- JACK_LIBC_HELPER_FLAGS=
- AC_ARG_ENABLE(ancient_libc,
-@@ -705,6 +730,27 @@
- fi
- AM_CONDITIONAL(HAVE_PA, $HAVE_PA)
- 
-+#
-+# Solaris does not have endian.h, so we check for the alsa hack version
-+#
-+AC_CHECK_HEADERS(endian.h alsa/endian-compat.h)
-+#
-+# Headers needed for Solaris
-+#
-+AC_CHECK_HEADERS(sys/rtpriocntl.h sys/priocntl.h limits.h stropts.h priv.h)
-+
-+#
-+# If we find exec_attr.h, we assume we can use RBAC
-+#
-+USE_RBAC=false
-+AC_CHECK_HEADER(exec_attr.h,[
-+    AC_MSG_RESULT([*** Using Solaris RBAC ***])
-+    USE_RBAC=true
-+    AC_DEFINE(USE_RBAC,1,"Adding Solaris RBAC mods")
-+])
-+
-+AM_CONDITIONAL(USE_RBAC,$USE_RBAC)
-+
- AC_ARG_ENABLE(coreaudio, AC_HELP_STRING([--disable-coreaudio], [ignore CoreAudio driver]),
- 			TRY_COREAUDIO=$enableval , TRY_COREAUDIO=yes )
- HAVE_COREAUDIO="false"
-@@ -795,6 +841,14 @@
- HAVE_ALSA_MIDI=$HAVE_ALSA
- AM_CONDITIONAL(HAVE_ALSA_MIDI, $HAVE_ALSA_MIDI)
- 
-+case "${host_os}" in
-+  solaris*)
-+        if test "x$HAVE_OSS" != "x" ; then
-+                JACK_DEFAULT_DRIVER=\"oss\"
-+        fi
-+  ;;
-+esac
-+
- if test "$JACK_DEFAULT_DRIVER" = \"dummy\"; then
-   AC_MSG_WARN([Only the dummy driver can be built])
- fi
 diff -Naur jack-audio-connection-kit-0.116.2/drivers/alsa/memops.c jack-audio-connection-kit-0.116.2-patch/drivers/alsa/memops.c
 --- jack-audio-connection-kit-0.116.2/drivers/alsa/memops.c	2008-11-22 12:54:59.000000000 +0100
 +++ jack-audio-connection-kit-0.116.2-patch/drivers/alsa/memops.c	2009-09-20 19:27:17.137024449 +0200
@@ -486,15 +497,6 @@ diff -Naur jack-audio-connection-kit-0.116.2/drivers/netjack/net_driver.c jack-a
  #include "config.h"
  
  #if HAVE_SAMPLERATE
-@@ -497,7 +501,7 @@
-     {
- 	int r;
- 
--#ifdef __APPLE__
-+#if defined (__APPLE__) || defined (__sun)
- 	static const int flag = 0;
- #else
- 	static const int flag = MSG_CONFIRM;
 diff -Naur jack-audio-connection-kit-0.116.2/drivers/oss/oss_driver.c jack-audio-connection-kit-0.116.2-patch/drivers/oss/oss_driver.c
 --- jack-audio-connection-kit-0.116.2/drivers/oss/oss_driver.c	2008-07-03 08:47:34.000000000 +0200
 +++ jack-audio-connection-kit-0.116.2-patch/drivers/oss/oss_driver.c	2009-09-20 19:20:09.738289833 +0200
@@ -535,19 +537,6 @@ diff -Naur jack-audio-connection-kit-0.116.2/drivers/oss/oss_driver.c jack-audio
  				 (double) driver->sample_rate) * 1e6;
  			driver->engine->set_buffer_size(driver->engine, 
  				driver->period_size);
-diff -Naur jack-audio-connection-kit-0.116.2/jack/internal.h jack-audio-connection-kit-0.116.2-patch/jack/internal.h
---- jack-audio-connection-kit-0.116.2/jack/internal.h	2008-11-30 10:56:08.000000000 +0100
-+++ jack-audio-connection-kit-0.116.2-patch/jack/internal.h	2009-09-20 19:51:18.139099446 +0200
-@@ -44,6 +44,9 @@
-    compiler.
- */
- #define POST_PACKED_STRUCTURE __attribute__((__packed__))
-+#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x5100)
-+/* Available from Sun Studio 12 u1 */
-+#define POST_PACKED_STRUCTURE __attribute__((__packed__))
- #else
- /* Add other things here for non-gcc platforms */
- #endif
 diff -Naur jack-audio-connection-kit-0.116.2/jack/transport.h jack-audio-connection-kit-0.116.2-patch/jack/transport.h
 --- jack-audio-connection-kit-0.116.2/jack/transport.h	2008-11-24 10:32:58.000000000 +0100
 +++ jack-audio-connection-kit-0.116.2-patch/jack/transport.h	2009-09-20 19:52:01.590508514 +0200
