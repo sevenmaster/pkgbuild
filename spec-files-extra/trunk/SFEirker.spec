@@ -12,7 +12,7 @@
 %include packagenamemacros.inc
 
 Name:                    SFEirker
-IPS_Package_Name:	
+IPS_Package_Name:	 network/irker
 Summary:		 An IRC client that runs as a daemon accepting notification requests as JSON objects presented to a listening socket
 Version:                 2.5
 Source:                  http://www.catb.org/~esr/irker/irker-%{version}.tar.gz
@@ -91,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jan 23 2014 - Thomas Wagner
 - bump to 2.5 (pyirclib is no longer a dependeny)
+- add IPS_Package_Name
 * Sat Mar 23 2013 - Thomas Wagner
 - bump to 1.17
 - remove patch1 irker-1.12-urlparse.diff
