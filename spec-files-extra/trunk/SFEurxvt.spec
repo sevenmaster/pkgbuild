@@ -288,6 +288,13 @@ cp $SOURCE4DIR/[a-z]* $RPM_BUILD_ROOT%{_libdir}/urxvt/perl/
 cp -pr $SOURCE4DIR/ $RPM_BUILD_ROOT%{_docdir}/%{name}/$SOURCE4DIRSHORT/
 [ -f $RPM_BUILD_ROOT%{_docdir}/%{name}/$SOURCE4DIRSHORT/.gitignore ] && rm $RPM_BUILD_ROOT%{_docdir}/%{name}/$SOURCE4DIRSHORT/.gitignore
 
+# compiled runpath, problem: stubled over S11.2 libstdc++.so.6 which is placed in /usr/lib/ (bad!)
+# [27]  RUNPATH         0x7c4b     /usr/lib:/usr/lib/amd64:/usr/perl5/5.12/lib/i86pc-solaris-64int/CORE:/usr/gcc/4.6/lib:/usr/gcc/lib
+# remove /usr/lib and /usr/lib/amd64 !
+RUNPATHURXVT=$( /usr/bin/elfedit -re 'dyn:' $RPM_BUILD_ROOT/%{_bindir}/urxvt | grep RUNPATH | sed -e s'?.* /?/?' -e 's,/usr/lib:,,' -e 's,/usr/lib/[A-z0-9]*:,,' )
+/usr/bin/elfedit -e 'dyn:runpath $RUNPATHURXVT' /usr/bin/urxvt
+/usr/bin/elfedit -e 'dyn:runpath $RUNPATHURXVT' /usr/bin/urxvtd
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -336,6 +343,8 @@ depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
 
 
 %changelog
+* Fri Jan 24 2014 - Thomas Wagner
+- elfedit / remove /usr/lib:/usr/lib/amd64 from RUNPATH. Or get bad /usr/lib/libstdc++.so.6 from the OS supplied gcc, core dumps.
 * Thu Nov 14 2013 - Thomas Wagner
 - improve renamed package (oldpkg now with incremented IPS_Vendor_version aka branch)
 - re-sort include logic to get %package working (would be a no-op if hidden inside an %include or %use)
