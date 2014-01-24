@@ -6,9 +6,10 @@
 %include usr-gnu.inc
 
 Name:                    SFErsync
+IPS_Package_Name:	 sfe/network/rsync
 Summary:                 rsync - fast incremental file transfer (%{_basedir}/gnu/bin/rsync)
 URL:                     http://rsync.samba.org/
-Version:                 3.0.9
+Version:                 3.1.0
 Source:                  http://rsync.samba.org/ftp/rsync/rsync-%{version}.tar.gz
 License:		 GPLv3
 SUNW_Copyright:		 rsync.copyright
@@ -65,9 +66,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 24 2014 - Thomas Wagner
+- bump to 3.1.0
+- add IPS_Package_Name
 * Sat Mar 31 2012 - Pavel Heimlich
 - rsync 3.0.9
 * Mon Jul 25 2011 - N.B.Prashanth
 - Add SUNW_Copyright
-* Fri Apr 01 20011 - Thomas Wagner
+* Fri Apr 01 2011 - Thomas Wagner
 - Initial spec
