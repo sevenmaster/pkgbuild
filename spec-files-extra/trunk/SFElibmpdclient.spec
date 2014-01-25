@@ -12,11 +12,12 @@ IPS_package_name:	library/audio/mpd/libmpdclient
 Summary:	Asynchronous API library for interfacing to MPD
 URL:		http://mpd.wikia.com/wiki/ClientLib:libmpdclient
 Meta(info.upstream):	Max Kellermann <max@duempel.org>
-Version:	2.7
+Version:	2.9
 License:	BSD
 Group:		System/Multimedia Libraries
 SUNW_Copyright:	libmpdclient.copyright
-Source:		%sf_download/project/musicpd/%srcname/%version/%srcname-%version.tar.bz2
+#Source:		%sf_download/project/musicpd/%srcname/2/%srcname-%version.tar.xz
+Source:		http://www.musicpd.org/download/%srcname/2/%srcname-%version.tar.xz
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
@@ -75,11 +76,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_libdir/pkgconfig 
 %_libdir/pkgconfig/%srcname.pc
 %dir %attr (0755, root, sys) %_datadir
+%_datadir/vala
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/*
 
 
 %changelog
+* Sat Jan 25 2013 - Alex Viskovatoff
+- update to 2.9; follow new naming convention for mpd clients
 * Tue Apr 17 2012 - Thomas Wagner
 - bump to 2.7
 * Thu Jul 21 2011 - Alex Viskovatoff
