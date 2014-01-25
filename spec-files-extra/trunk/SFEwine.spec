@@ -31,7 +31,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.10
+Version:                1.7.11
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -265,6 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Jan 25 2014 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.11
 * Fri Jan 3 2014 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.10
 * Fri Dec 20 2013 - Ken Mays <kmays2000@gmail.com>
