@@ -43,8 +43,8 @@ fi
 export CFLAGS="%optflags"
 
 # Get compile errors with CC
-export CC=/usr/gnu/bin/gcc
-export CXX=/usr/gnu/bin/g++
+export CC=gcc
+export CXX=g++
 export CXXFLAGS="%cxx_optflags -fpermissive -I/usr/include/ncurses -L/usr/gnu/lib -R/usr/gnu/lib"
 export LIBS=-lsocket
 export LDFLAGS="%_ldflags %gnu_lib_path"
@@ -83,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 25 2013 - Alex Viskovatoff
+- do not hardcode path of gcc; follow new naming convention for mpd clients
 * Fri Sep 13 2013 - Alex Viskovatoff
 - Update to 0.5.10
 * Sun Jul 24 2011 - Alex Viskovatoff
