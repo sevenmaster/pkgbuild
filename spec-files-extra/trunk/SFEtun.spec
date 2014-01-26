@@ -6,7 +6,22 @@
 #
 %include Solaris.inc
 %define src_name tuntap
-%define src_url http://www.whiteboard.ne.jp/~admin2/tuntap/source/%{src_name}
+#%define src_url http://www.whiteboard.ne.jp/~admin2/tuntap/source/%{src_name}
+
+#description of this download method:
+#https://fedorahosted.org/fpc/attachment/ticket/233/slask
+
+#tuntap
+%define githubowner1  kaizawa
+%define githubproject1 tuntap
+#for github commits see link on the right with the shortened commitid on the Webpage
+#  -> https://github.com/kaizawa/tuntap/commit/43816b1ac8b050e45a6f7882058755fe753a9992
+%define commit1 43816b1ac8b050e45a6f7882058755fe753a9992
+#remember to increas with every changed commit1 value
+%define increment_version_helper 1
+%define shortcommit1 %(c=%{commit1}; echo ${c:0:7})
+#
+
 
 %define usr_kernel /usr/kernel
 %define drv_base %{usr_kernel}/drv
@@ -18,8 +33,8 @@ URL:		http://www.whiteboard.ne.jp/~admin2/tuntap/
 License:        GPLv2
 SUNW_Copyright:	tuntap.copyright
 Meta(info.upstream): Kazuyoshi Aizawa <admin2@whiteboard.ne.jp>
-Version:	1.3.2
-Source:		%{src_url}/%{src_name}.tar.gz
+Version:        1.3.2.0.0.%{increment_version_helper}
+Source:         http://github.com/%{githubowner1}/%{githubproject1}/archive/%{shortcommit1}/%{githubproject1}-%{commit1}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -32,6 +47,8 @@ The code is based on the Universal TUN/TAP driver. Some changes were made and
 code added for supporting Ethernet tunneling feature, since the Universal
 TUN/TAP driver for Solaris only supports IP tunneling known as TUN.
 
+Note: github checkout commit version %{shortcommit1} / %{commit1} 
+
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
@@ -39,12 +56,15 @@ SUNW_BaseDir:            %{_basedir}
 Requires:                %{name}
 
 %prep
-%setup -q -n %{src_name}
+%setup -q -n %{githubproject1}-%{commit1}
 
 %build
+export LD=/usr/bin/ld
+
 autoconf -f
 ./configure
-make
+gsed -i -e 's/-melf_x86_64_sol2//' Makefile
+make LD=$LD
 %ifarch sparcv9 amd64
 mv tun tun64
 mv tap tap64
@@ -104,6 +124,11 @@ driver name=tap
 %endif
 
 %changelog
+* Sun Jan 26 2014 - Thomas Wagner
+- bump to 1.3.2 github 43816b1ac8 / 43816b1ac8b050e45a6f7882058755fe753a9992
+- change Source to github checkout to get current code, fixes Solaris 11 compile (undefined symbol: ddi_power)
+- gitbug checkout to solve unversioned tarball name which never gets updates once downloaded
+- set LD=/usr/bin/ld , edit Makefile to not use -melf_x86_64_sol2
 * Sat Aug  3 2013 - Thomas Wagner
 - bump to 1.3.2
 * Thu Oct 06 2011 - Milan Jurik
