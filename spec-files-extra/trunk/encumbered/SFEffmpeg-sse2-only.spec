@@ -10,7 +10,7 @@
 %include packagenamemacros.inc
 
 #change version number only here.
-%define ffmpeg_version 2.1.1
+%define ffmpeg_version 2.1.3
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -147,6 +147,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 26 2014 - Alex Viskovatoff
+- bump to 2.1.3
 * Mon Jan 13 2014 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_NVDAgraphics_devel}, %{pnm_buildrequires_SUNWlibsdl_devel}
 - change (Build)Requires to SFEfaac-gpp(-devel)
