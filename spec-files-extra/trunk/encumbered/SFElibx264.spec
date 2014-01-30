@@ -50,8 +50,9 @@ Requires: SFEgccruntime
 BuildRequires: SFEyasm
 %endif
 
-BuildRequires: SFEgpac-devel
-Requires: SFEgpac
+# There's no point in requiring gpac, since we don't build the x264 cli
+#BuildRequires: SFEgpac-devel
+#Requires: SFEgpac
 
 BuildRequires: %{pnm_buildrequires_SUNWgawk_devel}
 
@@ -61,23 +62,23 @@ the H.264/MPEG-4 AVC format.
 
 Encoder features:
 
-    * 8x8 and 4x4 adaptive spatial transform
-    * Adaptive B-frame placement
-    * B-frames as references / arbitrary frame order
-    * CAVLC/CABAC entropy coding
-    * Custom quantization matrices
-    * Intra: all macroblock types (16x16, 8x8, 4x4, and PCM with all predictions)
-    * Inter P: all partitions (from 16x16 down to 4x4)
-    * Inter B: partitions from 16x16 down to 8x8 (including skip/direct)
-    * Interlacing (MBAFF)
-    * Multiple reference frames
-    * Ratecontrol: constant quantizer, constant quality, single or multipass ABR, optional VBV
-    * Scenecut detection
-    * Spatial and temporal direct mode in B-frames, adaptive mode selection
-    * Parallel encoding on multiple CPUs
-    * Predictive lossless mode
-    * Psy optimizations for detail retention (adaptive quantization, psy-RD, psy-trellis)
-    * Zones for arbitrarily adjusting bitrate distribution
+    • 8x8 and 4x4 adaptive spatial transform
+    • Adaptive B-frame placement
+    • B-frames as references / arbitrary frame order
+    • CAVLC/CABAC entropy coding
+    • Custom quantization matrices
+    • Intra: all macroblock types (16x16, 8x8, 4x4, and PCM with all predictions)
+    • Inter P: all partitions (from 16x16 down to 4x4)
+    • Inter B: partitions from 16x16 down to 8x8 (including skip/direct)
+    • Interlacing (MBAFF)
+    • Multiple reference frames
+    • Ratecontrol: constant quantizer, constant quality, single or multipass ABR, optional VBV
+    • Scenecut detection
+    • Spatial and temporal direct mode in B-frames, adaptive mode selection
+    • Parallel encoding on multiple CPUs
+    • Predictive lossless mode
+    • Psy optimizations for detail retention (adaptive quantization, psy-RD, psy-trellis)
+    • Zones for arbitrarily adjusting bitrate distribution
 
 
 %package devel
