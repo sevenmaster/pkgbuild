@@ -5,6 +5,7 @@
 # includes module(s): fusefs
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name fusefs
 %define src_url http://sfe.opencsw.org/files
@@ -27,7 +28,7 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires:	SUNWonbld
+BuildRequires:	%{pnm_buildrequires_SUNWonbld}
 
 %description
 FUSE stands for 'File system in User Space'. It provides a simple
@@ -83,6 +84,8 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Wed Jan 30 2014 - Thomas Wagner
+- change to (Build)Requires: %{pnm_buildrequires_SUNWonbld}, #include packagenamemacros.inc
 * Thu Jun 20 2013 - Thomas Wagner
 - new download url
 * Fri Aug 31 2012 - Milan Jurik
