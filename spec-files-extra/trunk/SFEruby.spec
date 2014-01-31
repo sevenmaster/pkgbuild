@@ -1,49 +1,38 @@
 #
-# Copyright (c) 2008 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-# spec file for package SFEruby
-#
-# includes module(s): ruby
-#
+
 %include Solaris.inc
 
 Name:         SFEruby
-IPS_Package_Name:	runtime/ruby-19
-Summary:      ruby - object oriented scripting language
+IPS_Package_Name:	runtime/ruby-21
+Summary:      Object oriented scripting language
 URL:          http://www.ruby-lang.org/
-Version:      1.9.3
-%define tarball_version %{version}-p327
-Source:	      http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-%{tarball_version}.tar.bz2
+Version:      2.1.0
+Source:       http://cache.ruby-lang.org/pub/ruby/2.1/ruby-%version.tar.gz
 Patch1:       ruby-01-endian.diff
-Patch2:       ruby-02-small-files-for-libelf.diff
+#Patch2:       ruby-02-small-files-for-libelf.diff
 SUNW_BaseDir: %{_basedir}
-BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires:     SUNWlibmsr
 Requires:     SUNWopenssl-libraries
 Requires:     SUNWzlib
 Conflicts:    SUNWruby18u
-BuildRequires:     SFElibyaml
-Requires:     SFElibyaml
+BuildRequires:     library/libyaml
 
 %prep
-%setup -q -n ruby-%{tarball_version}
+%setup -q -n ruby-%version
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
+
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CFLAGS="-xc99 %optflags"
 export LDFLAGS="%_ldflags"
 autoconf
-./configure --prefix=%{_prefix}              \
-            --mandir=%{_mandir}              \
-            --libdir=%{_libdir}              \
+./configure --prefix=%_prefix              \
             --enable-shared
 
 make -j$CPUS
@@ -56,6 +45,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libruby*.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %files
 %defattr (-, root, bin)
@@ -76,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Jan 30 2014 - Alex Viskovatoff
+- update to 2.1.0
 * Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
 - added (build)requires libyaml.
 * Thu Dec 20 2012 - Logan Bruns <logan@gedanken.org>
