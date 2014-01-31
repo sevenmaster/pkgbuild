@@ -9,7 +9,7 @@
 Name:                   SFEsmartmontools
 IPS_Package_Name:	storage/smartmontools
 Summary:                S.M.A.R.T. monitoring tools
-Version:                5.42
+Version:                6.2
 Group:                  Applications/System Utilities
 License:                GPLv2
 URL:                    http://smartmontools.sourceforge.net/
@@ -78,8 +78,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %{_sysconfdir}/init.d
 %{_sysconfdir}/smartd.conf
+%_sysconfdir/smartd_warning.sh
+
 
 %changelog
+* Mon Jan 20 2014 - Alex Viskovatoff
+- update to 6.2
 * Sun Oct 30 2011 - Milan Jurik
 - bump to 5.42
 * Mon Jul 25 2011 - N.B.Prashanth
