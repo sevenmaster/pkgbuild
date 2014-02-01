@@ -6,13 +6,15 @@
 
 %include Solaris.inc
 
-%define tarball_version 2.05
+%define tarball_version 2.07
 %define source_name Crypt-DES
 
 Name:                    SFEperl-crypt-des
+IPS_package_name:	 library/perl-5/crypt-des
 Summary:                 %{source_name}-%{tarball_version} PERL Module
 Version:                 %{perl_version}.%{tarball_version}
 IPS_component_version:   2.5
+Group:			 Development/Perl
 Source:                  http://www.cpan.org/modules/by-module/Crypt/%{source_name}-%{tarball_version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -62,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 31 2014 - Ian Johnson <ianj0h@yahoo.co.jp>
+- bump to 2.07 (2.05 is no longer at the Source location)
 * Sat Aug  4 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
   paths dynamic, define fewer directories in %files
