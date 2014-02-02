@@ -26,11 +26,14 @@ Version:                 %{poppler.version}
 SUNW_BaseDir:            %{_basedir}
 
 %include default-depend.inc
-Requires: SUNWgnome-base-libs
 BuildRequires: SUNWgnome-base-libs-devel
-BuildRequires: gtk2
-BuildRequires: cairo
-BuildRequires:    %{pnm_buildrequires_SFExz_gnu}
+Requires:      SUNWgnome-base-libs
+BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
+Requires:      %{pnm_requires_SUNWgtk2}
+BuildRequires: %{pnm_buildrequires_SUNWcairo_devel}
+Requires:      %{pnm_requires_SUNWcairo}
+BuildRequires: %{pnm_buildrequires_SFExz_gnu}
+Requires:      SFEsigcpp-gpp-devel
 
 %package devel
 Summary:                 %{summary} - development files
@@ -39,7 +42,6 @@ SUNW_BaseDir:            %{_basedir}
 Requires: %name
 Requires: SUNWgnome-base-libs-devel
 Requires: SFEsigcpp-gpp-devel
-Requires: SUNWsigcpp-devel
 
 %prep
 rm -rf %name-%version
@@ -99,6 +101,10 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
+* Mon Feb  3 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWcairo_devel}, %{pnm_buildrequires_SUNWgtk2_devel}
+- remove Requires: SUNWsigcpp-devel (SFEsigcpp-gpp-devel is found first in /usr/g++)
+- fix unpacking directories (base-specs/poppler.spec)
 * Mon Jan 13 2014 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFExz}, %include packagenamemacros.inc
 - use manual call to xz (older pkgbuild can't)
