@@ -97,8 +97,8 @@ rendering.
 
 %prep
 #don't unpack please
-%setup -q -c -T -n poppler-%version
-xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+%setup -q -c -T
+xz -dc %SOURCE0 | (cd ..; tar xf -)
 
 #%patch1 -p1
 
@@ -157,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Mon Feb  3 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWcairo_devel}, %{pnm_buildrequires_SUNWgtk2_devel}
+- remove Requires: SUNWsigcpp-devel (SFEsigcpp-gpp-devel is found first in /usr/g++)
+- fix unpacking directories (base-specs/poppler.spec)
 * Mon Jan 13 2014 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFExz}, %include packagenamemacros.inc
 - use manual call to xz (older pkgbuild can't)
