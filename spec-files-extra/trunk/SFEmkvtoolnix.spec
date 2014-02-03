@@ -1,15 +1,13 @@
 #
 # spec file for package SFEmkvtoolnix
 #
-# includes module: mkvtoolnix
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
 %define srcname mkvtoolnix
 %define _pkg_docdir %_docdir/%srcname
-%define with_SUNWruby %(pkginfo -q SFEruby && echo 0 || echo 1)
+#%define with_SUNWruby %(pkginfo -q SFEruby && echo 0 || echo 1)
 
 Name:		SFEmkvtoolnix
 IPS_Package_Name:	media/mkvtoolnix
@@ -17,34 +15,39 @@ Summary:	Tools for the Matroska video container
 Group:		Applications/Sound and Video
 URL:		http://www.bunkus.org/videotools/mkvtoolnix
 Meta(info.upstream):	Moritz Bunkus <moritz@bunkus.org>
-Version:	5.7.0
+Version:	6.7.0
 License:	GPLv2
 SUNW_Copyright:	mkvtoolnix.copyright
-Source:		http://www.bunkus.org/videotools/%srcname/sources/%srcname-%version.tar.bz2
+Source:		http://www.bunkus.org/videotools/%srcname/sources/%srcname-%version.tar.xz
 Patch5:		mkvtoolnix-05-terminal.diff
+Patch6:		mkvtoolnix-06-ldexp.diff
 
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
-%if %with_SUNWruby
-BuildRequires: runtime/ruby-18
-%endif
+#%if %with_SUNWruby
+BuildRequires: runtime/ruby-21
+#%endif
 
 BuildRequires: SFEboost-gpp-devel
 Requires: SFEboost-gpp
 BuildRequires: SUNWlexpt
 Requires: SUNWlexpt
-BuildRequires: SUNWzlib
-Requires: SUNWzlib
-BuildRequires: SFElzo-devel
-Requires: SFElzo
+BuildRequires: library/zlib
+Requires: zlib
+BuildRequires: library/lzo
+Requires: lzo
 BuildRequires: SUNWogg-vorbis
 Requires: SUNWogg-vorbis
 BuildRequires: SUNWflac
 Requires: SUNWflac
 BuildRequires: SFEwxwidgets-gpp-devel
 Requires: SFEwxwidgets-gpp
+BuildRequires: text/gnu-gettext
+# configure can't find libmagick because it's in /usr/gnu;
+# adding its path to CXXFLAGS keeps other things from being found
+# so: TODO: make configure find libmagick (in file/file)
+#BuildRequires: file/file
 
 %description
 MKVToolnix is a set of tools to create, alter and inspect Matroska files under
@@ -65,6 +68,8 @@ Requires:       %name
 %prep
 %setup -q -n %srcname-%version
 %patch5 -p1
+%patch6 -p1
+
 
 %build
 
@@ -81,6 +86,7 @@ CXXFLAGS=$USER_CXXFLAGS LDFLAGS=$USER_LDFLAGS ./configure --prefix=%_prefix \
 --with-extra-includes=/usr/g++/include --with-boost-libdir=/usr/g++/lib \
 --with-wx-config=/usr/g++/bin/wx-config
 ./drake -j$CPUS
+
 
 %install
 rm -rf %buildroot
@@ -146,6 +152,9 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Sun Feb 02 2014 - Alex Viskovatoff <herzen@imap.cc>
+- update to 6.7.0, adding one patch (build fails with gcc 4.7 without it)
+  (bug report: https://trac.bunkus.org/ticket/977 )
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 5.7.0
 * Fri Oct 14 2011 - Alex Viskovatoff <herzen@imap.cc>

@@ -1,0 +1,17 @@
+This patch is to fix this error:
+
+     CXX src/common/math.cpp
+src/common/math.cpp: In function 'double int_to_double(int64_t)':
+src/common/math.cpp:48:109: error: call of overloaded 'ldexp(int64_t, int64_t)' is ambiguous
+
+Bug report: https://trac.bunkus.org/ticket/977
+
+--- mkvtoolnix-6.7.0/src/common/math.cpp.original	Wed Jan  8 08:59:37 2014
++++ mkvtoolnix-6.7.0/src/common/math.cpp	Sun Feb  2 20:43:54 2014
+@@ -45,5 +45,5 @@
+ int_to_double(int64_t value) {
+   if (static_cast<uint64_t>(value + value) > (0xffeull << 52))
+     return NAN;
+-  return ldexp(((value & ((1ll << 52) - 1)) + (1ll << 52)) * (value >> 63 | 1), (value >> 52 & 0x7ff) - 1075);
++  return std::ldexp(((value & ((1ll << 52) - 1)) + (1ll << 52)) * (value >> 63 | 1), (value >> 52 & 0x7ff) - 1075);
+ }
