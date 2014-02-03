@@ -116,7 +116,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://postfix.org/
-Version:                 2.10.2
+Version:                 2.10.3
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -906,6 +906,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Mon Feb 3 2014 - Ken Mays <kmays2000@gmail.com>
+- bump to 2.10.3
 * Tue Dec 10 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.10.2
 - Fixed group issue for postqueue and postdrop
