@@ -1,10 +1,10 @@
 #
 # spec file for package SFEparrot
 #
-# includes module: parrot
-#
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %define srcname parrot
 
 Name:		SFE%srcname
@@ -12,13 +12,12 @@ IPS_Package_Name:	runtime/parrot
 Summary:	Register-based virtual machine designed to run dynamic languages efficiently
 URL:		http://www.parrot.org/
 Meta(info.upstream):	Parrot Developers <parrot-dev@lists.parrot.org>
-Version:	3.6.0
+Version:	6.0.0
 License:	Artistic 2.0
 Group:		Development/Other Languages
 SUNW_Copyright:	parrot.copyright
 Source:		ftp://ftp.parrot.org/pub/%srcname/releases/supported/%version/%srcname-%version.tar.bz2
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
 # Don't require perl-5 explicitly, since all Solaris systems have it,
@@ -32,31 +31,35 @@ SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 Requires: %name
 
+%description
+Parrot is a virtual machine designed to efficiently compile and execute bytecode
+for dynamic languages. Parrot currently hosts a variety of language
+implementations in various stages of completion, including Tcl, Javascript,
+Ruby, Lua, Scheme, PHP, Python, Perl 6, APL, and a .NET bytecode translator.
+
+
 %prep
 %setup -q -n %srcname-%version
 
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-perl Configure.pl --prefix=%_prefix --cc=cc --cxx=CC --optimize
-gmake -j$CPUS
+perl Configure.pl --prefix=%_prefix --cc=gcc --cxx=g++ --ccflags="%picflags" --ld=/usr/bin/ld --optimize
+make -j$CPUS
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
-gmake install DESTDIR=$RPM_BUILD_ROOT
-cd $RPM_BUILD_ROOT/%_prefix
+make install DESTDIR=%buildroot
+cd %buildroot/%_prefix
 rm lib/*.a
-mv src share
+mv src man share
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files
@@ -67,6 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (-, root, sys) %_datadir
 %dir %attr (-, root, other) %_docdir
 %_docdir/%srcname
+%_mandir
 
 %files devel
 %defattr (-, root, bin)
@@ -74,9 +78,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (-, root, sys) %_datadir
 %dir %attr (-, root, sys) %_datadir/src
 %_datadir/src/%srcname/%version
+%_datadir/%srcname/%version
 
 
 %changelog
+* Sun Feb  2 2013 - Alex Viskovatoff
+- update to 6.0.0; use gcc (building with Sun Studio does not work anymore)
 * Tue Aug 30 2011 - Alex Viskovatoff
 - Bump to 3.6.0
 * Sun Jul 24 2011 - Alex Viskovatoff
