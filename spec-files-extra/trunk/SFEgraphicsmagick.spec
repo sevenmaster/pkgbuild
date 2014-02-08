@@ -18,7 +18,7 @@ IPS_Package_Name:       image/editor/graphicsmagick
 Group:                  Applications/Graphics and Imaging
 License:                MIT
 SUNW_copyright:         graphicsmagick.copyright
-Version:                1.3.17
+Version:                1.3.19
 URL:			http://www.graphicsmagick.org/
 Source:                 %{sf_download}/graphicsmagick/GraphicsMagick-%{version}.tar.bz2
 SUNW_BaseDir:           %{_basedir}
@@ -163,6 +163,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Feb 8 2014 - Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+- bump to 1.3.19
 * Sun Nov  4 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWsane_backend_devel}, %{pnm_buildrequires_SUNWfreetype2_devel}
 - add (Build)Requires SUNWgnome-img-editor(-devel)
