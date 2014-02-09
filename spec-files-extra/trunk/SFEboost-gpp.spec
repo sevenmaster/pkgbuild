@@ -47,35 +47,38 @@ rm -rf %name-%version
 mkdir %name-%version
 %boost.prep -d %name-%version
 
+
 %build
 %boost.build -d %name-%version
 
+
 %install
-rm -rf %{buildroot}
+rm -rf %buildroot
 %boost.install -d %name-%version
 
-cd %{_builddir}/%name-%version/boost_%{boost.ver_boost}
+cd %_builddir/%name-%version/boost_%boost.ver_boost
 
-mkdir -p %{buildroot}%{_docdir}/boost-%{version}
+mkdir -p %buildroot%_docdir/boost-%version
 cd "doc/html"
 for i in `find . -type d`; do
-  mkdir -p %{buildroot}%{_docdir}/boost-%{version}/$i
+  mkdir -p %buildroot%_docdir/boost-%version/$i
 done
 for i in `find . -type f`; do
-  cp $i %{buildroot}%{_docdir}/boost-%{version}/$i
+  cp $i %buildroot%_docdir/boost-%version/$i
 done
 
 # It's not worth figuring out how to get the Boost build system
 # to set the runpath correctly
 %define rpath 'dyn:runpath /usr/g++/lib:/usr/gnu/lib'
-pushd %{buildroot}%{_libdir}
+pushd %buildroot%_libdir
 for i in *.so.*; do
-  elfedit -e %rpath $i
+  /usr/bin/elfedit -e %rpath $i
 done
 popd
 
 %clean
-rm -rf %{buildroot}
+rm -rf %buildroot
+
 
 %files
 %defattr (-, root, bin)

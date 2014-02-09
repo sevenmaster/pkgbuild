@@ -1,16 +1,16 @@
---- libmatroska-1.0.0/make/linux/Makefile.orig	Fri Jun  4 04:46:29 2010
-+++ libmatroska-1.0.0/make/linux/Makefile	Sat Oct  9 16:24:08 2010
-@@ -72,6 +72,9 @@
+--- libmatroska-1.4.1/make/linux/Makefile.orig	Sat Feb  8 13:05:16 2014
++++ libmatroska-1.4.1/make/linux/Makefile	Sat Feb  8 13:18:07 2014
+@@ -81,6 +81,9 @@
  COMPILEFLAGS=$(DEBUGFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(WARNINGFLAGS) $(INCLUDE)
  LINKFLAGS=-L. -L$(LIBEBML_LIB_DIR) $(LDFLAGS)
  DEPENDFLAGS  = $(CXXFLAGS) $(INCLUDE)
-+LOFLAGS=-fPIC
++LDFLAGS=-fPIC
 +ARFLAGS=rcvu
 +LIBSOFLAGS=-Wl,-soname,
  
- ifeq (Darwin,$(shell uname -s))
- all: staticlib
-@@ -92,14 +95,14 @@
+ all: $(targets_$(link))
+ 
+@@ -97,14 +100,14 @@
  	$(CXX) -c $(COMPILEFLAGS) -o $@ $<
  
  %.lo: %$(EXTENSION)
@@ -19,7 +19,7 @@
  
  $(LIBRARY): $(objects)
 -	$(AR) rcvu $@ $(objects)
-+	$(AR) $(ARFLAGS) $@ $(objects)
++	$(AR)  $(ARFLAGS) $@ $(objects)
  	$(RANLIB) $@
  
  $(LIBRARY_SO): $(objects_so)

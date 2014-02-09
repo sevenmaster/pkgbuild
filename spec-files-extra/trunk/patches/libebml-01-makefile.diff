@@ -1,3 +1,7 @@
+This patch does not affect the behavior of the Makefile unless the added
+variables LOFLAGS, ARFLAG, or LIBSOFLAGS are specified when the Makefile
+is called.
+
 --- libebml-1.0.0/make/linux/Makefile.orig	Fri Jun  4 04:44:54 2010
 +++ libebml-1.0.0/make/linux/Makefile	Sat Oct  9 16:26:15 2010
 @@ -64,6 +64,9 @@

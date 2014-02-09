@@ -7,7 +7,6 @@
 %include base.inc
 %define srcname mkvtoolnix
 %define _pkg_docdir %_docdir/%srcname
-#%define with_SUNWruby %(pkginfo -q SFEruby && echo 0 || echo 1)
 
 Name:		SFEmkvtoolnix
 IPS_Package_Name:	media/mkvtoolnix
@@ -25,24 +24,15 @@ Patch6:		mkvtoolnix-06-ldexp.diff
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
-#%if %with_SUNWruby
 BuildRequires: runtime/ruby-21
-#%endif
-
+BuildRequires: SFElibmatroska-gpp-devel
 BuildRequires: SFEboost-gpp-devel
-Requires: SFEboost-gpp
 BuildRequires: SUNWlexpt
-Requires: SUNWlexpt
 BuildRequires: library/zlib
-Requires: zlib
 BuildRequires: library/lzo
-Requires: lzo
 BuildRequires: SUNWogg-vorbis
-Requires: SUNWogg-vorbis
 BuildRequires: SUNWflac
-Requires: SUNWflac
 BuildRequires: SFEwxwidgets-gpp-devel
-Requires: SFEwxwidgets-gpp
 BuildRequires: text/gnu-gettext
 # configure can't find libmagick because it's in /usr/gnu;
 # adding its path to CXXFLAGS keeps other things from being found
@@ -50,11 +40,11 @@ BuildRequires: text/gnu-gettext
 #BuildRequires: file/file
 
 %description
-MKVToolnix is a set of tools to create, alter and inspect Matroska files under
+MKVToolNix is a set of tools to create, alter and inspect Matroska files under
 Linux, other Unices and Windows. They do for Matroska what the OGMtools do for
 the OGM format and then some.
 
-MKVToolnix consists of the tools mkvmerge, mkvinfo, mkvextract, and mkvpropedit.
+MKVToolNix consists of the tools mkvmerge, mkvinfo, mkvextract, and mkvpropedit.
 
 %if %build_l10n
 %package l10n
@@ -117,32 +107,8 @@ rm -rf %buildroot
 %dir %attr (-, root, root) %_datadir/mime
 %dir %attr (-, root, root) %_datadir/mime/packages
 %_datadir/mime/packages/%srcname.xml
-%dir %attr (-, root, other) %_datadir/icons
-%dir %attr (-, root, other) %_datadir/icons/hicolor
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16/apps
-%_datadir/icons/hicolor/16x16/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/24x24
-%dir %attr (-, root, other) %_datadir/icons/hicolor/24x24/apps
-%_datadir/icons/hicolor/24x24/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32/apps
-%_datadir/icons/hicolor/32x32/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48/apps
-%_datadir/icons/hicolor/48x48/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
-%_datadir/icons/hicolor/64x64/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/96x96
-%dir %attr (-, root, other) %_datadir/icons/hicolor/96x96/apps
-%_datadir/icons/hicolor/96x96/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128/apps
-%_datadir/icons/hicolor/128x128/apps/*.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256
-%dir %attr (-, root, other) %_datadir/icons/hicolor/256x256/apps
-%_datadir/icons/hicolor/256x256/apps/*.png
+%defattr (-, root, other)
+%_datadir/icons
 
 %if %build_l10n
 %files l10n
@@ -151,8 +117,11 @@ rm -rf %buildroot
 %attr (-, root, other) %_datadir/locale
 %endif
 
+
 %changelog
-* Sun Feb 02 2014 - Alex Viskovatoff <herzen@imap.cc>
+* Sun Feb  9 2014 - Alex Viskovatoff <herzen@imap.cc>
+- require libmatroska: that and libebml can be external libraries again
+* Sun Feb  2 2014 - Alex Viskovatoff <herzen@imap.cc>
 - update to 6.7.0, adding one patch (build fails with gcc 4.7 without it)
   (bug report: https://trac.bunkus.org/ticket/977 )
 * Sun Aug 05 2012 - Milan Jurik
