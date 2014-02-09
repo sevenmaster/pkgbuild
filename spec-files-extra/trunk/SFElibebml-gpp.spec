@@ -1,8 +1,6 @@
 #
 # spec file for package SFElibebml
 #
-# includes module(s): libebml
-#
 
 %include Solaris.inc
 %include packagenamemacros.inc
@@ -13,26 +11,25 @@
 %define srcname libebml
 
 Name:		SFElibebml-gpp
-IPS_package_name: library/g++/ebml
+IPS_package_name: library/g++/libebml
 License:	LGPL
-Summary:	Extensible Binary Meta Language (g++-built)
+Summary:	Extensible Binary Meta Language
 Group:		System Environment/Libraries
 URL:		http://ebml.sourceforge.net
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
-Version:	1.2.2
+Version:	1.3.0
 Source:		http://dl.matroska.org/downloads/%srcname/%srcname-%version.tar.bz2
 Patch1:		libebml-01-makefile.diff
-Patch2:		libebml-02-headers.diff
+#Patch2:		libebml-02-headers.diff
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires:	SUNWgmake
 BuildRequires:	%{pnm_buildrequires_SUNWgnu_coreutils}
 BuildRequires:	SUNWloc
 
 BuildRequires:	SFEgcc
-Requires:	SFEgccruntime
+# Specifying runtime dependencies is deprecated: pkgdepend finds them
+#Requires:	SFEgccruntime
 
 %package devel
 Summary:	%{summary} - development files
@@ -43,13 +40,10 @@ Requires: %name
 %prep
 %setup -q -n %srcname-%version
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CXXFLAGS="%cxx_optflags"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
@@ -57,7 +51,7 @@ export MSGFMT=/usr/bin/msgfmt
 
 cd make/linux
 gmake -j$CPUS CXX=g++ AR=CC  DEBUGFLAGS=-g WARNINGFLAGS="" \
-ARFLAGS="-xar -o" LOFLAGS=-fpic LIBSOFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -G -h "
+ARFLAGS="-xar -o" LOFLAGS=-fpic LIBSOFLAGS="%_ldflags -G -h "
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -77,6 +71,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Feb  9 2014 - Alex Viskovatoff
+- update to 1.3.0; restore correct IPS package name
 * Thu Jul 11 2013 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgnu_coreutils}, %include packagenamemacros.inc
 - %include usr-g++.inc

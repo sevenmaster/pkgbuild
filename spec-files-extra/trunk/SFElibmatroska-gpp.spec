@@ -1,8 +1,6 @@
 #
 # spec file for package SFElibmatroska
 #
-# includes module(s): libmatroska
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -17,16 +15,13 @@ Summary:	Matroska Video Container
 Group:		System Environment/Libraries
 URL:		http://www.matroska.org
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
-Version:	1.3.0
+Version:	1.4.1
 Source:		http://dl.matroska.org/downloads/%srcname/%srcname-%version.tar.bz2
 Patch1:		libmatroska-01-makefile.diff
 
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires:	SFEgcc
-Requires:	SFEgccruntime
 BuildRequires:	SFElibebml-gpp-devel
 Requires:	SFElibebml-gpp
 
@@ -50,10 +45,7 @@ Requires: %name
 %patch1 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CXXFLAGS="%cxx_optflags -I%/usr/g++/include"
 export ACLOCAL_FLAGS="-I/usr/share/aclocal -I %{_datadir}/aclocal"
@@ -62,7 +54,7 @@ export MSGFMT="/usr/bin/msgfmt"
 cd make/linux
 gmake -j$CPUS  CXX=g++ AR=CC  DEBUGFLAGS=-g WARNINGFLAGS="" \
 ARFLAGS="-xar -o" LOFLAGS=-fpic \
-LIBSOFLAGS="%_ldflags -L/usr/g++/lib -L/usr/gnu/lib -R/usr/g++/lib:/usr/gnu/lib -G -h "
+LIBSOFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -G -h "
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -82,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Feb  9 2014 - Alex Viskovatoff
+- update to 1.4.1
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 1.3.0
 * Sun Jun 17 2012 - Thomas Wagner
