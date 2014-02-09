@@ -1,11 +1,11 @@
---- git-1.8.0/Documentation/Makefile	2012-10-21 14:32:15.000000000 -0700
-+++ git-1.8.0-patched/Documentation/Makefile	2012-10-25 17:41:00.860090708 -0700
-@@ -48,7 +48,7 @@
+--- git-1.8.5.4/Documentation/Makefile.orig	Wed Feb  5 17:17:45 2014
++++ git-1.8.5.4/Documentation/Makefile	Fri Feb  7 16:11:19 2014
+@@ -94,7 +94,7 @@
  ASCIIDOC_EXTRA =
  MANPAGE_XSL = manpage-normal.xsl
  XMLTO = xmlto
 -XMLTO_EXTRA =
 +XMLTO_EXTRA = --skip-validation
- INSTALL?=install
+ INSTALL ?= install
  RM ?= rm -f
  MAN_REPO = ../../git-manpages

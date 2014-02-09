@@ -19,8 +19,8 @@
 
 Name:                SFEgit
 IPS_Package_Name:    sfe/developer/versioning/git
-Summary:             Git - the fast version control system
-Version:             1.8.3
+Summary:             A fast version control system
+Version:             1.8.5.4
 License:             GPLv2
 SUNW_Copyright:      git.copyright
 URL:                 http://git-scm.com/
@@ -29,7 +29,6 @@ Patch1:              git-01-solaris-shell.diff
 Patch2:              git-02-fixshell.diff
 Patch3:              git-03-xmlto.diff
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWzlib
@@ -38,7 +37,7 @@ Requires: SUNWopenssl-libraries
 Requires: SUNWlexpt
 Requires: SUNWcurl
 Requires: %pnm_requires_perl_default
-Requires: SFEpython3
+#Requires: SFEpython3
 Requires: SUNWbash
 Requires: SUNWlexpt
 %if %(pkginfo -q SUNWgnu-diffutils && echo 1 || echo 0)
@@ -54,7 +53,7 @@ BuildRequires: SFExmlto
 %setup -q -n git-%version
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -118,7 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/git*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/git-core
-%{_libdir}/python3.2/site-packages
+#%{_libdir}/python3.2/site-packages
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/gitk
 %dir %{_datadir}/git-core
@@ -145,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Sun Feb 9  2014 - Alex Viskovatoff
+- update to 1.8.5.4
 * Thu Sep 12 2013 - Alex Viskovatoff
 - bump to 1.8.3
 * Sat Apr 6 2012 - Logan Bruns <logan@gedanken.org>
