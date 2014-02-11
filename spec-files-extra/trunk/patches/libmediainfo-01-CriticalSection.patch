@@ -1,0 +1,27 @@
+Problem: Solaris defines "CS" somewhere, and libmediainfo defines it, too.
+The developer tried to deal with this by undefining "CS" in CriticalSection.h 
+(part of libzen), but that doesn't work anymore.  So use a brute force method,
+and undefine "CS" just before it is (re)defined.
+
+--- Source/MediaInfo/MediaInfo_Config.h.orig	Fri Oct 11 10:18:26 2013
++++ Source/MediaInfo/MediaInfo_Config.h	Mon Feb 10 22:12:27 2014
+@@ -313,6 +313,8 @@
+ 
+     std::map<Ztring, std::map<Ztring, Ztring> > CustomMapping;
+ 
++#undef CS
++
+     ZenLib::CriticalSection CS;
+ 
+     void      Language_Set (stream_t StreamKind);
+--- Source/MediaInfo/MediaInfo_Config_MediaInfo.h.orig	Tue Jan  7 04:24:26 2014
++++ Source/MediaInfo/MediaInfo_Config_MediaInfo.h	Mon Feb 10 22:12:57 2014
+@@ -433,6 +433,8 @@
+     std::map<Ztring, Ztring> Curl;
+     #endif //defined(MEDIAINFO_LIBCURL_YES)
+ 
++#undef CS
++
+     ZenLib::CriticalSection CS;
+ 
+     //Constructor
