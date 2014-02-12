@@ -2,9 +2,6 @@
 # spec file for package SFEpkgbuild
 #
 
-# NOTE: To make the unpatched pkgbuild find the patches, use
-#	pkgtool build --patches=patches/pkgbuild experimental/SFEpkgbuild.spec
-  
 # Vanilla pkgbuild's default install prefix is /opt/pkgbuild
 # We follow the SFE convention of installing in /usr
 # Use pkgbuild --define 'pkgbuild_prefix /path/to/dir'
@@ -18,27 +15,16 @@
 %include packagenamemacros.inc
 
 Name:         SFEpkgbuild
-#IPS_Package_Name: package/pkgbuild
+IPS_Package_Name: package/pkgbuild
 License:      GPL
 Group:        Development/Tools/Other
 URL:	      http://pkgbuild.sourceforge.net/
-Version:      1.3.103
+Version:      1.3.105
 Release:      1
 BuildArch:    noarch
 Vendor:	      OpenSolaris Community
-Summary:      pkgbuild - rpmbuild-like tool for building Solaris packages
-Source:      http://prdownloads.sourceforge.net/pkgbuild/pkgbuild-%{version}.tar.bz2
-#Source:       http://opensolaris-lang.googlecode.com/files/pkgbuild-%{version}pre.tar.bz2
-# First three patches are taken from oi-cbe
-Patch1:       pkgbuild-01-add-unknown-dependencies.patch
-Patch2:       pkgbuild-02-nopkg.patch
-Patch3:       pkgbuild-03-forcefully-copy-docs.patch
-# Next three patches are taken from here:
-# http://solaris.bionicmutton.org/hg/kde4-specs-460/file/d57ba60c50da/setup/common/patches
-Patch4:       pkgbuild/pkgbuild-patchdir.diff
-#Patch2:       pkgbuild/pkgbuild-postprocess-debug-separate.diff
-#Patch3:       pkgbuild/pkgbuild-local.diff
-Patch5:       pkgbuild/pkgbuild-xz.diff
+Summary:      rpmbuild-like tool for building Solaris packages
+Source:       http://prdownloads.sourceforge.net/pkgbuild/pkgbuild-%{version}.tar.bz2
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
 %if %_is_pkgbuild
@@ -61,7 +47,6 @@ Requires:     SUNWgpch
 Requires:     perl >= 5.0.0
 Requires:     patch
 %endif
-Requires:     SFExz
 
 %description
 A tool for building Solaris SVr4 packages based on RPM spec files.
@@ -69,23 +54,9 @@ Most features and some extensions of the spec format are implemented.
 
 %prep
 %setup -q -n pkgbuild-%version
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-# Descriptions of patches 2 and 3 are taken from here:
-# http://solaris.bionicmutton.org/hg/kde4-specs-460/file/ed3b4f8dbad1/setup/common/install-pkgbuild
-# patch letting pkgtool find patches in subdirectories
-%patch4
-# patch for separating debug files
-#%patch2 -p1
-# patch for publishing to a local repository via the file protocol
-#%patch3
-# patch to make pkgbuild recognize xz compressed archives
-%patch5
 
 %build
 ./configure --prefix=%{pkgbuild_prefix} --docdir=%_docdir/%srcname
-#./configure --prefix=%{pkgbuild_prefix}
 make
 
 %install
@@ -106,6 +77,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 1.3.105
+- remove all patches; they can be found at
+  http://hg.openindiana.org/projects/sfe/oi-sfe-tools/file/14fc6fd0ac2d/pkgbuild
 * Sun Apr 10 2011 - Alex Viskovatoff <herzen@imap.cc>
 - add patches from oi-cbe, rearranging patches
 * Sat Apr  2 2011 - Alex Viskovatoff <herzen@imap.cc>
