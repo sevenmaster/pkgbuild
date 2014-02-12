@@ -1313,6 +1313,12 @@
 %define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
 %define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
 
+##TODO## check if this is the case as well for S11 (!)
+#S12 lost the legacy name SUNWslang
+%define pnm_buildrequires_SUNWslang_devel library/slang
+%define pnm_buildrequires_SUNWslang library/slang
+%define pnm_requires_SUNWslang library/slang
+
 %endif
 #END solaris12
 
@@ -1502,8 +1508,8 @@
 
 #START setting python, changes with specific builds and distros  - Part 2 of 2
 # on S12 we don't have legacy package name SUNWPython26, so we need to
-# use runtime/python-26 instead
-%if %( expr %{solaris12} '>=' 1 )
+# use runtime/python-26 instead ##TODO## testing for OI151a8 as well
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #note: the name is subject to change if we find a better one
 #_default string is not meant to be a part of the package name...
 %define pnm_buildrequires_python_default	runtime/python-26
@@ -2173,6 +2179,9 @@
 
 
 %changelog
+* Wed Feb 12 2014 - Thomas Wagner
+- lost the legacy name SUNWslang on (S12) ##TODO## check if this is the case as well for (S11) (!)
+- switch pnm_buildrequires_python_default correctly for osbuild >= 133 (S11, OI, S12)
 * Mon Jan  6 2013 - Thomas Wagner
 - S12 has no legacy name for library/database/gdbm (SFEgdbm SUNWgnu-dbm)
 * Tue Dec 24 2013 - Thomas Wagner
