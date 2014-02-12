@@ -52,7 +52,7 @@ BuildRequires: SFElibcdio
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
 BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
 BuildRequires: SUNWglib2
-BuildRequires: SUNWcurl
+BuildRequires: %{pnm_buildrequires_SUNWcurl_devel}
 #TODO# BuildRequires: SFElibpulse-devel
 BuildRequires: SUNWavahi-bridge-dsd-devel
 ## MPD INSTALL file says AO "should be used only if there is no native plugin
@@ -67,7 +67,7 @@ Requires: SFElibcdio
 Requires: %{pnm_requires_SUNWsqlite3}
 Requires: %{pnm_requires_SFElibsndfile}
 Requires: SUNWglib2
-Requires: SUNWcurl
+Requires: %{pnm_requires_SUNWcurl}
 #TODO# Requires: SFElibpulse
 Requires: SUNWavahi-bridge-dsd
 %if %build_encumbered
@@ -174,6 +174,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog 
+* Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- change (Build)Requires to %{pnm_buildrequires_SUNWcurl_devel}
 * Tue Feb 11 2014 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.18.8
   (thanks to upstream for fixing http://bugs.musicpd.org/view.php?id=3941)
