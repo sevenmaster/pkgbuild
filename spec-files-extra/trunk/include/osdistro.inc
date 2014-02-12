@@ -300,7 +300,7 @@
 %define osdistrelnumber 201100
 %define s110000 1
 #11.1 build ??
-%if %( uname -v | egrep '^11\.1]$' > /dev/null && echo 1 || echo 0 )
+%if %( uname -v | egrep '^11\.1$' > /dev/null && echo 1 || echo 0 )
 %define s110100 1
 %define osdistrelnumber 201100
 %else
@@ -411,6 +411,8 @@
 
 
 %changelog
+* Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- typo in egrep regex to define s110100 for S11.1
 * Mon Jan  6 2014 - Thomas Wagner
 - typo in define osbuild for S12
 * Sat Sep 28 2013 - Thomas Wagner
