@@ -8,6 +8,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define python_version 2.6
 
@@ -24,20 +25,21 @@ SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: sonata.copyright
 
 Source0:	http://download.berlios.de/sonata/sonata-%{version}.tar.bz2
+Patch0:		sonata-01-xfade.diff
 
 %include default-depend.inc
-BuildRequires:	SUNWgnu-gettext
-BuildRequires:	SUNWgnome-common-devel
+BuildRequires:	%{pnm_buildrequires_SUNWgnu_gettext_devel}
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 BuildRequires:	SUNWxwinc
-BuildRequires:	SUNWPython26
-BuildRequires:	SUNWgnome-python26-libs
-BuildRequires:	SUNWgnome-python26-extras
-BuildRequires:	SUNWdbus-python26
+BuildRequires:	%{pnm_buildrequires_python_default}
+#BuildRequires:  SUNWgnome-python26-libs
+#BuildRequires:  SUNWgnome-python26-extras
+#BuildRequires:  SUNWdbus-python26
 BuildRequires:	SFEpython26-mpd
-Requires:	SUNWPython26
-Requires:	SUNWgnome-python26-libs
-Requires:	SUNWgnome-python26-extras
-Requires:	SUNWdbus-python26
+Requires:	%{pnm_requires_python_default}
+#Requires:	SUNWgnome-python26-libs
+#Requires:	SUNWgnome-python26-extras
+#Requires:	SUNWdbus-python26
 Requires:	SFEpython26-mpd
 
 Meta(info.maintainer):          James Lee <jlee@thestaticvoid.com>
@@ -58,6 +60,7 @@ An elegant GTK+ client for the Music Player Daemon (MPD).
 
 %prep
 %setup -q -n sonata-%version
+%patch0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -104,6 +107,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add sonata-01-xfade.diff (patch for compatibility with mpd >=0.18)
+- include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWgnu_gettext_devel}
+- change (Build)Requires to %{pnm_buildrequires_SUNWgnome_common_devel}
+- change (Build)Requires to %{pnm_buildrequires_python_default}
+- comment out other Python dependencies until packagenamemacros are ready to handle them
 * Thu Jun 30 2011 - Alex Viskovatoff
 - Package locale files separately
 * Tue Dec 01 2009 - jlee@thestaticvoid.com
