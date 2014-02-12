@@ -1,9 +1,12 @@
 #
+# spec file for package SFEmpd
+#
+
+#
 # Copyright (c) 2006 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-
 
 # For the output section of ~/.mpdconf or /etc/mpd.conf try:
 #
@@ -16,6 +19,8 @@
 %define build_encumbered %{?_without_encumbered:0}%{?!_without_encumbered:1}
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %include packagenamemacros.inc
 
 %define src_name mpd
@@ -26,7 +31,7 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.17.5
+Version:             0.18.8
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://http://www.musicpd.org/
@@ -34,8 +39,6 @@ URL:		     http://http://www.musicpd.org/
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-
-# Use the system xz and libsndfile
 
 BuildRequires:  %{pnm_buildrequires_system_header_header_audio}
 BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
@@ -68,6 +71,7 @@ Requires: SUNWcurl
 #TODO# Requires: SFElibpulse
 Requires: SUNWavahi-bridge-dsd
 %if %build_encumbered
+BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibmpcdec-devel
 BuildRequires: SFEmpg123-devel
 BuildRequires: SFEfaad2-devel
@@ -100,16 +104,15 @@ auto-network SFEpulseaudio ( via pulseaudio, libao (sun|pulse) ).
 xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %build
-
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
-
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+ 
 # LDFLAGS below are based on the following fix to the same problem:
 # http://lists.libsdl.org/pipermail/commits-libsdl.org/2013-March/006360.html
 
+export CC=gcc
+export CXX=g++
 export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
+export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -Wl,-znodeferred"
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
@@ -120,13 +123,13 @@ sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure
 	    --enable-iso9660     \
 	    --enable-shout       \
             --disable-alsa       \
-            --disable-ffmpeg     \
             --disable-mad        \
 %if %build_encumbered
             --enable-mpg123      \
 %else
+            --disable-ffmpeg     \
             --disable-mpg123     \
-            --enable-aac         \
+            --disable-aac        \
             --disable-mpc        \
             --disable-lame-encoder \
             --disable-twolame-encoder \
@@ -135,9 +138,10 @@ sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure
             # --with-zeroconf=no   \
             # --enable-pulse
 
-# Be modern and use libxnet instead of libsocket
-sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
-mv Makefile.xnet Makefile
+# According to man intro.3, the following is ill-advised
+# # Be modern and use libxnet instead of libsocket
+# sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
+# mv Makefile.xnet Makefile
 
 gmake -j$CPUS
 
@@ -170,6 +174,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog 
+* Tue Feb 11 2014 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.18.8
+  (thanks to upstream for fixing http://bugs.musicpd.org/view.php?id=3941)
+- use gcc (does not compile with Studio); enable ffmpeg
 * Sun Sep 15 2013 - Thomas Wagner
 - reverse changes to use pnm_macros for libsndfile and header/audio
 * Thu Sep 12 2013 - Alex Viskovatoff

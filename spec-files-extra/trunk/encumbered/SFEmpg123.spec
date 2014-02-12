@@ -1,7 +1,12 @@
 #
 # spec file for package SFEmpg123.spec
 #
-%include Solaris.inc
+
+# NOTE: Latest version (1.18.0) does not compile.
+#	Previous versions starting at 1.14.x "have some nasty regressions".
+#	So do not bump this spec to earlier than 1.18.0.
+
+%Include Solaris.inc
 %include packagenamemacros.inc
 
 Name:           SFEmpg123
