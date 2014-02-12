@@ -14,8 +14,8 @@
 
 # To attempt building a certain wine version, as opposed to the latest
 # Wine version available from Sourceforge, pass the version as an argument.
-# example version number: 1.6.1
-# $ pkgtool build SFEwine --define 'version 1.6.1'
+# example version number: 1.6.2
+# $ pkgtool build SFEwine --define 'version 1.6.2'
 
 # In case of an unstable wine version, temporarily set this to the
 # last-known-good version. This should be reverted the next stable version.
@@ -31,7 +31,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.11
+Version:                1.7.12
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -265,6 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Tue Feb 11 2014 - Ken Mays <kmays2000@gmail.com>
+- Bump to 1.7.12
 * Fri Jan 25 2014 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.11
 * Fri Jan 3 2014 - Ken Mays <kmays2000@gmail.com>
