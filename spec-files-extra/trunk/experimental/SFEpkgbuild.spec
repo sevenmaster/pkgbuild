@@ -25,6 +25,11 @@ BuildArch:    noarch
 Vendor:	      OpenSolaris Community
 Summary:      rpmbuild-like tool for building Solaris packages
 Source:       http://prdownloads.sourceforge.net/pkgbuild/pkgbuild-%{version}.tar.bz2
+# The following patches are taken from here:
+# https://github.com/OpenIndiana/oi-userland/tree/oi/hipster/components/pkgbuild
+Patch0:       pkgbuild-configure.patch
+Patch1:       pkgbuild-01-fix.patch
+Patch2:       pkgbuild-04-xz.patch
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
 %if %_is_pkgbuild
@@ -54,6 +59,9 @@ Most features and some extensions of the spec format are implemented.
 
 %prep
 %setup -q -n pkgbuild-%version
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 ./configure --prefix=%{pkgbuild_prefix} --docdir=%_docdir/%srcname
@@ -77,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
+- add three patches used by OpenIndiana hipster
 * Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 1.3.105
 - remove all patches; they can be found at
