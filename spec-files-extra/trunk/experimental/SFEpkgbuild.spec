@@ -64,6 +64,7 @@ Most features and some extensions of the spec format are implemented.
 %patch2 -p1
 
 %build
+aclocal-1.10 -I m4; automake-1.10 --add-missing; autoconf
 ./configure --prefix=%{pkgbuild_prefix} --docdir=%_docdir/%srcname
 make
 
@@ -86,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
-- add three patches used by OpenIndiana hipster
+- add three patches and an invocation of aclocal etc used by OpenIndiana hipster
 * Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 1.3.105
 - remove all patches; they can be found at
