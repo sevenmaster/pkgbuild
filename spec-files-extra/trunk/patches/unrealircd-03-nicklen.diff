@@ -1,0 +1,12 @@
+diff -urN Unreal3.2.10.1.orig/include/struct.h Unreal3.2.10.1/include/struct.h
+--- Unreal3.2.10.1.orig/include/struct.h	2013-04-05 10:29:24.000000000 -0400
++++ Unreal3.2.10.1/include/struct.h	2014-02-13 13:58:15.299890752 -0500
+@@ -171,7 +171,7 @@
+ #define	HOSTLEN		63	/* Length of hostname.  Updated to         */
+ 				/* comply with RFC1123                     */
+ 
+-#define	NICKLEN		30
++#define	NICKLEN		 9	/* Edited to comply with RFC2812 */
+ #define	USERLEN		10
+ #define	REALLEN	 	50
+ #define	TOPICLEN	307
