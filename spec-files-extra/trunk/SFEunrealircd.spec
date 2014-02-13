@@ -13,6 +13,12 @@
 %define  daemongroup ircd
 %define  daemongid   121
 
+# Option to patch for 9-character nicklen limit instead of the default 30.
+# This makes unreal RFC 2812-compliant.
+
+%define option_with_rfc_nicklen %{?_with_rfc_nicklen:1}%{?!_with_rfc_nicklen:0}
+%define nicklen_patch %option_with_rfc_nicklen
+
 Name:		SFEunrealircd
 IPS_Package_Name:	 irc/server/unreal
 Summary:	Unreal IRCd
@@ -24,6 +30,7 @@ Source0:	http://www.unrealircd.com/downloads/%{srcname}%{version}.tar.gz
 Source1:	unreal.xml
 Patch1:		unrealircd-01-arch-fixes.diff
 Patch2:		unrealircd-02-modules-Makefile.diff
+Patch3:		unrealircd-03-nicklen.diff
 
 SUNW_Copyright:	%{license}.copyright
 SUNW_BaseDir:	/
@@ -43,6 +50,11 @@ WWW: http://www.unrealircd.com
 %setup -q -n %srcname%version
 %patch1 -p1
 %patch2 -p1
+
+%if %nicklen_patch
+echo "Patching for RFC 2812-compliant max nicklen"
+%patch3 -p1
+%endif
 
 %build
 
@@ -138,14 +150,17 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username=%{daemonuser} uid=%{
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/network/unreal.xml
 
 %changelog
+* Thu Feb 13 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- add unrealircd-03-nicklen.diff for RFC-compliant nicklen
+- define option_with_rfc_nicklen for nicklen patch
 * Fri Nov 15 2013 - Thomas Wagner
 - add (Build)Requires %{pnm_buildrequires_SUNWzlib}, %{pnm_buildrequires_SUNWopenssl_devel}, %include packagenamemacros.inc
 - renumber patches, use macros for paths in most places
 - rename SMF service to network/irc/server:unreal
 - use relative symlinks (better for pkg -R /a)
 - relocate doc to %{_docdir}
-* 23 Sep 2013 Ian Johnson <ianj0h@yahoo.co.jp>
+* 23 Sep 2013 Ian Johnson <ianj@tsundoku.ne.jp>
 - Added patches
 - Wrote files section
-* 22 Sep 2013 Ian Johnson <ianj0h@yahoo.co.jp>
+* 22 Sep 2013 Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial package version 3.2.10.1
