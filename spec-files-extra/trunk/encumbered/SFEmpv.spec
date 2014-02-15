@@ -19,44 +19,38 @@
 %define srcname mpv
 %define _pkg_docdir %_docdir/%srcname
 
-%define with_fribidi %(pkginfo -q SFElibfribidi && echo 1 || echo 0)
-%define with_openjpeg %(pkginfo -q SFEopenjpeg && echo 1 || echo 0)
 # NVDAgraphics is the driver supplied directly by Nvidia
 %define with_system_nvidia %(pkginfo -q NVDAgraphics && echo 0 || echo 1)
 
 Name:			SFEmpv
 IPS_Package_Name:	media/mpv
-Summary:		de facto successor of mplayer2, of which it is a fork
+Summary:		Video player based on MPlayer/mplayer2
 License:		GPLv3
 SUNW_Copyright:		mpv.copyright
-Version:		0.3.3
+Version:		0.3.4
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
 SUNW_BaseDir:		%_basedir
 
 BuildRequires: SFEffmpeg-devel
-BuildRequires: SFElibcdio-devel
+# libcdio is not found
+#BuildRequires: SFElibcdio-devel
 BuildRequires: SFElibdvdnav-devel
 BuildRequires: SFEpython26-docutils
 BuildRequires: SUNWgroff
 %if %with_system_nvidia
 BuildRequires: driver/graphics/nvidia
 %endif
-%if %with_fribidi
-BuildRequires: SFElibfribidi-devel
-%endif
-BuildRequires: SFEmpg123-devel
+BuildRequires: library/fribidi
 BuildRequires: SFEliba52-devel
-%if %with_openjpeg
 BuildRequires: SFEopenjpeg-devel
-%endif
 BuildRequires: SFElibass-devel
 BuildRequires: SFElibquvi
 
 # pkgbuild now takes care of most install-time dependencies, so do not
 # declare them unless pkgbuild can't find them
-
+Requires: libquvi
 
 Requires: %name-root
 %package root
@@ -74,35 +68,64 @@ files.
 
 %prep
 %setup -q -n %srcname-%version
+# SFEwaf.spec exists, but the version is too old, whereas recent versions
+# don't install.  Furthermore, the waf FAQ say, "packaging of waf in
+# distributions [is] discouraged".
+./bootstrap.py	# download latest tested version of waf (Python build system)
+
+# stream/ai_oss.c produces a warning "implicit declaration of function 'ioctl'"
+pushd waftools/detections
+sed -i 's/-Werror=implicit-/-Wno-error=implicit-/' compiler.py
+popd
+
+# vdpau.pc is missing from driver/graphics/nvidia
+cat > vdpau.pc << EOM
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+moduledir=${exec_prefix}/lib/vdpau
+
+Name: VDPAU
+Description: The Video Decode and Presentation API for UNIX
+Version: 1
+Requires.private: x11
+Cflags: -I${includedir}
+Libs: -L${libdir} -lvdpau
+EOM
+
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
 # Solaris headers do not define BYTE_ORDER or BIG_ENDIAN, breaking sound
 export CFLAGS="-O3 -march=prescott -fomit-frame-pointer -DBYTE_ORDER=0 -DBIG_ENDIAN=1"
-
-export LDFLAGS="%gnu_lib_path"
-export CC=gcc
+export LDFLAGS="-lsocket -lnsl"
+# Use locally created vdpau.pc, because ./waf configure
+# refuses to accept --enable-vdpau if the autodetection test fails.
+export PKG_CONFIG_PATH="."
 
 # Enabling gl makes compilation fail.  When mplayer did compile with
 # gl enabled, gl made it crash immediately.
-# Force vdpau, because vdpau.pc is missing from the nvidia package.
-bash ./old-configure			\
+# ./old-configure disables mpg123, which does not build.  FFmpeg can play mp3
+# streams, anyway.
+./waf configure				\
 	--prefix=%_prefix		\
-	--mandir=%_mandir		\
         --confdir=%_sysconfdir		\
-        --extra-libs="-lsocket -lnsl -lvdpau" \
         --disable-gl			\
-	--disable-alsa			\
-        --enable-rpath			\
-	--enable-vdpau
+	--disable-mpg123		\
+	--disable-alsa
 
-gmake -j$CPUS 
+./waf -j$CPUS 
 
 
 %install
 rm -rf %buildroot
-make install DESTDIR=%buildroot
+./waf install --destdir=%buildroot
+
+mkdir examples
+mv etc/example.conf etc/input.conf examples
 
 # nroff does not understand macros used by mplayer man page
 # See http://www.mplayerhq.hu/DOCS/tech/manpage.txt
@@ -124,7 +147,7 @@ rm -rf %buildroot
 %_bindir/%srcname
 %_mandir
 %defattr (-, root, other)
-%doc README.md RELEASE_NOTES
+%doc README.md RELEASE_NOTES examples/example.conf examples/input.conf
 %doc -d DOCS encoding.rst tech-overview.txt OUTDATED-tech/formats.txt OUTDATED-tech/general.txt OUTDATED-tech/hwac3.txt OUTDATED-tech/libao2.txt OUTDATED-tech/libvo.txt OUTDATED-tech/mpsub.sub OUTDATED-tech/swscaler_filters.txt OUTDATED-tech/swscaler_methods.txt
 %_datadir/applications/%srcname.desktop
 %_datadir/icons
@@ -136,6 +159,9 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Feb 06 2014 - Alex Viskovatoff <herzen@imapmail.org>
+- bump to 0.3.4; build with waf; delete %changelog entries from before fork
+  from SFEmplayer2.spec - they are not very relevant
 * Mon Jan 20 2014 - Alex Viskovatoff <herzen@imapmail.org>
 - bump to 0.3.3
 * Sun Jan 12 2014 - Alex Viskovatoff <herzen@imapmail.org>
@@ -156,52 +182,3 @@ rm -rf %buildroot
 - Do not unconditionally require system nvidia
 * Fri Oct 11 2013 - Alex Viskovatoff
 - Fork SFEmpv.spec off SFEmplayer2.spec
-* Thu Nov 17 2011 - Alex Viskovatoff
-- Add optional dependency on SFElibdts; disable esd (not part of Solaris 11)
-* Sun Oct 30 2011 - Alex Viskovatoff
-- Update tarball and switch to new versioning scheme
-- Disable gt (causes crashes with gcc 4.6.2) and enable runtime cpu detection
-* Wed Oct 19 2011 - Alex Viskovatoff
-- Enable 3dnow and 3dnowext; add missing (build) dependency on SFEmpg123
-- Disable libmad (only used on integer-only platforms, unsupported by SFE)
-- Remove --enable-dynamic-plugins (deprecated by upstream)
-* Fri Aug  5 2011 - Alex Viskovatoff
-- Require driver/graphics/nvidia
-* Wed Aug  3 2011 - Alex Viskovatoff
-- Add missing (build) dependency on SFElibdvdnav
-* Fri Jul 22 2011 - Alex Viskovatoff
-- Default to not renaming mplayer to "mplayer2"; symlink to a DejaVu font
-  which is available on all platforms; add SUNW_Copyright
-* Sat Jul 16 2011 - Alex Viskovatoff
-- Update to git version, so mplayer2 can link against newest ffmpeg
-* Mon May  2 2011 - Alex Viskovatoff
-- Fork SFEmplayer2.spec off SFEmplayer-snap.spec, making the appropriate changes
-- Rename everything "mplayer2" for now so can coexist with original mplayer
-* Wed Apr 27 2011 - Alex Viskovatoff
-- Add missing optional dependencies
-* Sat Apr  2 2011 - Alex Viskovatoff
-- Update to new tarball
-* Tue Jan 18 2011 - Alex Viskovatoff
-- Update to new tarball, with Patch6 no longer required
-- Replace --without-gui option with --with-gui, disabling gui by default
-* Fri Nov  5 2010 - Alex Viskovatoff
-- Use fixed (constant) tarball from Arch Linux repository by default
-- Remove obsolete configure switch --enable-network
-- Restore cpu detection patch by Milan Jurik
-- Add Patch6 by Thomas Wagner to make mkstemp get used
-- Add --without-gui option: the configure default is to disable the gui,
-  and the MPlayer download page effectively deprecates the included gui
-- Create a formatted man page, since nroff cannot handle the man page
-* Wed Aug 18 2010 - Thomas Wagner
-- rename configure switch --enable-faad-external to --enable-faad   
-- use gmake in %build instead make (might have solved makefile syntax error)
-* Fri May 21 2010 - Milan Jurik
-- openjpeg and giflib support
-* Thu Aug 20 2009 - Milan Jurik
-- -fomit-frame-pointer to workaround Solaris GCC bug on Nehalem
-* Sun Aug 16 2009 - Milan Jurik
-- GNU grep not needed
-* Sat Jul 18 2009 - Milan Jurik
-- improved handling of tarball
-* Sat Jul 11 2009 - Milan Jurik
-- Initial version
