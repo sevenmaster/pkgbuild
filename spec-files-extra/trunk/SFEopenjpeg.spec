@@ -27,6 +27,7 @@ IPS_Package_Name:	image/library/openjpeg
 Group:		System/Libraries
 Summary:                 %{openjpeg.summary}
 Version:                 %{openjpeg.version}
+URL:		http://www.openjpeg.org/
 Source:		http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
 License:	BSD
 SUNW_Copyright:	openjpeg.copyright
