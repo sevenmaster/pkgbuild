@@ -6,14 +6,14 @@
 %include base.inc
 %include packagenamemacros.inc
 
-%define srcdate 130518
+%define srcdate 140104
 
 Name:                SFEjd
 IPS_Package_Name:	desktop/2ch/jd
 License:             GPLv2
 Summary:             2ch browser (gtkmm/GTK+)
-Version:             2.8.6
-Source:              http://iij.dl.sourceforge.jp/jd4linux/58841/jd-%{version}-%{srcdate}.tgz
+Version:             2.8.7
+Source:				 http://dl.sourceforge.jp/jd4linux/60198/jd-%{version}-%{srcdate}.tgz
 Patch0:              jd-timegm.diff
 Patch1:              jd-iconv-const.diff
 URL:                 http://sourceforge.jp/projects/jd4linux
@@ -78,9 +78,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/*
 
 %changelog
+* Sat Feb 15 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 2.8.7
+- Fix Source URL
 * Fri Nov 15 2013 - Thomas Wagner
 - commit patches, set GPLv2 shared copyright file
-* Thu Nov 14 2013 - Ian Johnson <ianj0h@yahoo.co.jp>
+* Thu Nov 14 2013 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Use standard CFLAGS / CXXFLAGS / LDFLAGS
 - Add %description
 - Fix Group
