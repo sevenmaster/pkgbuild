@@ -32,16 +32,14 @@ URL:		http://www.lyx.org
 License:	GPLv2
 Group:		Applications/Office
 SUNW_Copyright:	lyx.copyright
-Version:	2.0.6
-Source:		ftp://ftp.lyx.org/pub/lyx/stable/2.0.x/%srcname-%version.tar.gz
+Version:	2.0.7.1
+Source:		ftp://ftp.lyx.org/pub/lyx/stable/2.0.x/%srcname-%version.tar.xz
 Source1:	%srcname.desktop
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
 BuildRequires:	SFEqt-gpp-devel
 BuildRequires:	SFEboost-gpp-devel
-# Build fails if libiconv is not installed
-#BuildRequires:	SFElibiconv-devel
 BuildRequires:	SUNWgnome-spell
 BuildRequires:	python-26
 Requires:	python-26
@@ -82,8 +80,8 @@ export CC=gcc
 export CXX=g++
 export CPPFLAGS="-I/usr/g++/include -I/usr/g++/include/qt"
 export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags -pthreads -fpermissive"
-export LDFLAGS="%_ldflags -pthreads -lxnet -L/usr/g++/lib -R/usr/g++/lib"
+export CXXFLAGS="%cxx_optflags -pthreads -fpermissive -DBOOST_SIGNALS_NO_DEPRECATION_WARNING"
+export LDFLAGS="%_ldflags -pthreads -lsocket -lnsl -L/usr/g++/lib -R/usr/g++/lib"
 
 # LyX can use enchant, so no need for hunspell; aspell is obsolete
 ./configure --prefix=%_prefix --with-qt4-dir=/usr/g++ --enable-threads=posix --without-included-boost --without-aspell --without-hunspell
@@ -128,6 +126,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sat Feb 15 2013 - Alex Viskovatoff
+- bump to 2.0.7.1
 * Wed Dec  5 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 2.0.5
 * Sun Aug 05 2012 - Milan Jurik
