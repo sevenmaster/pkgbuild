@@ -1884,8 +1884,8 @@
 %if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #note: currently explicitly defined only for SXCE and for >=133
-%define pnm_buildrequires_apache2_default		SUNWapch22u
-%define pnm_requires_apache2_default			SUNWapch22u
+%define pnm_buildrequires_apache2_default		web/server/apache-%{apache2_version_package_string}
+%define pnm_requires_apache2_default			web/server/apache-%{apache2_version_package_string}
 #expect that to change soon, as apache2 2.4 is in preparation as additional
 #version to apache2 2.2 (will dissapear with future OS versions)
 %endif
@@ -2179,6 +2179,8 @@
 
 
 %changelog
+* Mon Feb 17 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- switch pnm_buildrequires_apache2_default correctly for osbuild >= 133 (SUNWapch22u does not exist in S11+)
 * Wed Feb 12 2014 - Thomas Wagner
 - lost the legacy name SUNWslang on (S12) ##TODO## check if this is the case as well for (S11) (!)
 - switch pnm_buildrequires_python_default correctly for osbuild >= 133 (S11, OI, S12)
