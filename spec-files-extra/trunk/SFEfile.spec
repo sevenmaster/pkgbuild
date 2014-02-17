@@ -10,7 +10,7 @@
 Name:		SFEfile
 IPS_Package_Name:	file/file
 Summary:	determine file type
-Version:	5.11
+Version:	5.17
 Group:		Applications/System Utilities
 License:	BSD3c
 SUNW_Copyright:	file.copyright
@@ -70,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/*.4
 
 %changelog
+* Sun Feb 16 2014 - Alex Viskovatoff
+- bump to 5.17
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 5.11
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
