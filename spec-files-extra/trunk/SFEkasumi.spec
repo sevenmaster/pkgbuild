@@ -39,7 +39,9 @@ fi
 
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{cxx_optflags}"
-export LDFLAGS="%{ldflags}"
+export LDFLAGS="%{_ldflags}"
+
+echo $LDFLAGS
 
 ./configure --prefix=/usr
 make -j $CPUS
@@ -71,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/pixmaps/*
 
 %changelog
+* Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- typo in %{_ldflags}
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - export CFLAGS=%{optflags}, export LDFLAGS=%{ldflags}
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
