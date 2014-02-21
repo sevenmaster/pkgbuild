@@ -3,7 +3,6 @@
 # 
 
 %include Solaris.inc
-%include base.inc
 %include packagenamemacros.inc
 
 Name:                SFEkasumi
@@ -68,5 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/pixmaps/*
 
 %changelog
+* Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Remove redundant %include base.inc
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial spec version 2.5
