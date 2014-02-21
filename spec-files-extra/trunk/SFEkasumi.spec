@@ -37,6 +37,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
+export CXXFLAGS="%cxx_optflags"
+
 ./configure --prefix=/usr
 make -j $CPUS
 
@@ -67,6 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/pixmaps/*
 
 %changelog
+* Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- export CXXFLAGS=%cxx_optflags
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Remove redundant %include base.inc
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
