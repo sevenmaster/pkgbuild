@@ -60,7 +60,7 @@ Requires:      SFElibid3tag
 #2.1.8 uses taglib BuildRequires: SFElibmp4v2-devel
 #2.1.8 uses taglib Requires:      SFElibmp4v2
 #C++ by studio compilers:
-BuildRequires: SUNWid3lib-devel
+BuildRequires: SUNWid3lib
 Requires:      SUNWid3lib
 
 %if %build_l10n

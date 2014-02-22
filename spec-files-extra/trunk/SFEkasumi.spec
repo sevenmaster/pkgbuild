@@ -11,8 +11,6 @@ License:             GPLv2
 Summary:             A dictionary management tool for Anthy
 Version:             2.5
 Source:				 http://jaist.dl.sourceforge.jp/kasumi/41436/kasumi-%{version}.tar.gz
-Patch0:				 kasumi-00-sunstudio.diff
-Patch1:				 kasumi-01-setlocale.diff
 URL:                 http://kasumi.sourceforge.jp/index.php?FrontPage
 SUNW_BaseDir:        %{_basedir}
 SUNW_Copyright:      %{license}.copyright
@@ -28,8 +26,8 @@ A dictionary management tool for Anthy.
 
 %prep
 %setup -q -n kasumi-%{version}
-%patch0 -p1
-%patch1 -p1
+gsed -i 's/ -Wall//g' configure
+gsed -i '/^\s*setlocale(LC_ALL, "");/d' main.cxx
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -73,6 +71,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/pixmaps/*
 
 %changelog
+* Fri Feb 21 2014 - Alex Viskovatoff
+- trivial patches are deprecated
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - typo in %{_ldflags}
 * Fri Feb 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
