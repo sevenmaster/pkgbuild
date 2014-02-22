@@ -12,6 +12,7 @@
 
 %define srcname pkgbuild
 %define _pkg_docdir %_docdir/%srcname
+%define tarball_name hipster-0.1
 %include packagenamemacros.inc
 
 Name:         SFEpkgbuild
@@ -24,16 +25,10 @@ Release:      1
 BuildArch:    noarch
 Vendor:	      OpenSolaris Community
 Summary:      rpmbuild-like tool for building Solaris packages
-Source:       http://prdownloads.sourceforge.net/pkgbuild/pkgbuild-%{version}.tar.bz2
-# The following patches are taken from here:
-# https://github.com/OpenIndiana/oi-userland/tree/oi/hipster/components/pkgbuild
-Patch0:       pkgbuild-configure.patch
-Patch1:       pkgbuild-01-fix.patch
-Patch2:       pkgbuild-04-xz.patch
-BuildRoot:    %{_tmppath}/%{name}-%{version}-build
+Source:       http://github.com/herzen/%srcname/archive/%tarball_name.tar.gz
 
 %if %_is_pkgbuild
-#SUNW_Pkg:                  SFpkgbuild
+SUNW_Pkg:                  SFpkgbuild
 SUNW_MaxInst:              1000
 SUNW_BaseDir:              %{pkgbuild_prefix}
 SUNW_Copyright:            http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -54,26 +49,23 @@ Requires:     patch
 %endif
 
 %description
-A tool for building Solaris SVr4 packages based on RPM spec files.
+A tool for building Solaris SVr4 and IPS packages based on RPM spec files.
 Most features and some extensions of the spec format are implemented.
 
 %prep
-%setup -q -n pkgbuild-%version
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%setup -q -n %srcname-%tarball_name
 
 %build
-aclocal-1.10 -I m4; automake-1.10 --add-missing; autoconf
-./configure --prefix=%{pkgbuild_prefix} --docdir=%_docdir/%srcname
+./autogen.sh
+./configure --prefix=%pkgbuild_prefix --docdir=%_docdir/%srcname
 make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+rm -rf %buildroot
+make DESTDIR=%buildroot install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
@@ -86,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}
 
 %changelog
+* Sun Feb 16 2016 - Alex Viskovatoff <herzen@imap.cc>
+- use a tarball having the patches already applied and autogen.sh
 * Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
 - add three patches and an invocation of aclocal etc used by OpenIndiana hipster
 * Wed Feb 12 2014 - Alex Viskovatoff <herzen@imap.cc>
