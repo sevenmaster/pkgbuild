@@ -19,7 +19,7 @@ Requires:     SUNWlibmsr
 Requires:     SUNWopenssl-libraries
 Requires:     SUNWzlib
 Conflicts:    SUNWruby18u
-BuildRequires:     library/libyaml
+BuildRequires:     SFElibyaml
 
 %prep
 %setup -q -n ruby-%version
@@ -66,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sat Feb 22 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Fix libyaml (build)requires name
 * Thu Jan 30 2014 - Alex Viskovatoff
 - update to 2.1.0
 * Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
