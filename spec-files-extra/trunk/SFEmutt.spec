@@ -10,8 +10,9 @@
 
 
 Name:                SFEmutt
+IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.5.22
+Version:             1.5.23
 Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Patch1:              mutt-01-makefile.diff
 Patch2:              mutt-02-configure-gssapi-krb5.diff
@@ -29,8 +30,8 @@ Requires: %{name}-root
 BuildRequires: %{pnm_buildrequires_SUNWgnu_dbm}
 Requires:      %{pnm_requires_SUNWgnu_dbm}
 
-BuildRequires: SUNWslang
-Requires: SUNWslang
+BuildRequires: %{pnm_buildrequires_SUNWslang}
+Requires:      %{pnm_buildrequires_SUNWslang}
 
 BuildRequires: SFElibiconv-devel
 Requires: SFElibiconv
@@ -143,7 +144,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Wed Mar 12 2014 - Thomas Wagner
+- bump to 1.5.23 - CVE-2014-0467
+* Wed Jan  8 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWslang}
 * Tue Dec 31 2013 - Thomas Wagner
+- add IPS_Package_Name
 - add patch3 mutt-03-configure-unquoted-test.diff
 - --enable-debug 
 - adjust gnu-idn location
