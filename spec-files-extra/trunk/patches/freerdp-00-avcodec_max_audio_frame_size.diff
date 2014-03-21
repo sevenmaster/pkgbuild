@@ -1,0 +1,34 @@
+diff -urN freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c
+--- freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2013-01-02 16:46:59.000000000 -0500
++++ freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2014-03-21 17:09:46.079974331 -0400
+@@ -34,6 +34,12 @@
+ #define AVMEDIA_TYPE_AUDIO 1
+ #endif
+ 
++#if LIBAVCODEC_VERSION_MAJOR < 54
++#define MAX_AUDIO_FRAME_SIZE AVCODEC_MAX_AUDIO_FRAME_SIZE
++#else
++#define MAX_AUDIO_FRAME_SIZE 192000
++#endif
++
+ typedef struct _TSMFFFmpegDecoder
+ {
+ 	ITSMFDecoder iface;
+@@ -337,7 +343,7 @@
+ #endif
+ 
+ 	if (mdecoder->decoded_size_max == 0)
+-		mdecoder->decoded_size_max = AVCODEC_MAX_AUDIO_FRAME_SIZE + 16;
++		mdecoder->decoded_size_max = MAX_AUDIO_FRAME_SIZE + 16;
+ 	mdecoder->decoded_data = xzalloc(mdecoder->decoded_size_max);
+ 	/* align the memory for SSE2 needs */
+ 	dst = (uint8*) (((uintptr_t)mdecoder->decoded_data + 15) & ~ 0x0F);
+@@ -348,7 +354,7 @@
+ 	while (src_size > 0)
+ 	{
+ 		/* Ensure enough space for decoding */
+-		if (mdecoder->decoded_size_max - mdecoder->decoded_size < AVCODEC_MAX_AUDIO_FRAME_SIZE)
++		if (mdecoder->decoded_size_max - mdecoder->decoded_size < MAX_AUDIO_FRAME_SIZE)
+ 		{
+ 			mdecoder->decoded_size_max = mdecoder->decoded_size_max * 2 + 16;
+ 			mdecoder->decoded_data = xrealloc(mdecoder->decoded_data, mdecoder->decoded_size_max);

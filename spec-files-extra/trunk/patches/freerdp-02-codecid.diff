@@ -1,0 +1,15 @@
+diff -urN freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c
+--- freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2013-01-02 16:46:59.000000000 -0500
++++ freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2014-03-21 17:18:57.532168060 -0400
+@@ -39,7 +39,11 @@
+ 	ITSMFDecoder iface;
+ 
+ 	int media_type;
++#if LIBAVCODEC_VERSION_MAJOR < 55
+ 	enum CodecID codec_id;
++#else
++	enum AVCodecID codec_id;
++#endif
+ 	AVCodecContext* codec_context;
+ 	AVCodec* codec;
+ 	AVFrame* frame;
