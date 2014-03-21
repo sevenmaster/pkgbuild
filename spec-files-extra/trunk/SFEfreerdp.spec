@@ -11,7 +11,7 @@ Summary:	Free implementation of the Remote Desktop Protocol
 URL:		http://www.freerdp.com/
 Version:	1.0.2
 License:	Apache
-Source:		https://github.com/FreeRDP/FreeRDP/archive/%{version}.tar.gz
+Source:		http://pub.freerdp.com/releases/freerdp-%{version}.tar.gz
 SUNW_Copyright:	%{license}.copyright
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
@@ -64,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/*
 
 %changelog
+* Fri Mar 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Change Source URL to one that works with pkgtool --download
 * Thu Mar 20 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial spec (version 1.0.2)
 
