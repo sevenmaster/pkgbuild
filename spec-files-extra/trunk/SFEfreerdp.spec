@@ -12,6 +12,9 @@ URL:		http://www.freerdp.com/
 Version:	1.0.2
 License:	Apache
 Source:		http://pub.freerdp.com/releases/freerdp-%{version}.tar.gz
+Patch0:		freerdp-00-avcodec_max_audio_frame_size.diff
+Patch1:		freerdp-01-dsp_mask.diff
+Patch2:		freerdp-02-codecid.diff
 SUNW_Copyright:	%{license}.copyright
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
@@ -27,6 +30,9 @@ BuildRequires:	SFEcmake
 
 %prep
 %setup -q -n freerdp-%version
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 
@@ -64,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/*
 
 %changelog
+* Fri Mar 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add patch0, patch1, and patch2 for compatibility with newer ffmpeg
 * Fri Mar 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Change Source URL to one that works with pkgtool --download
 - Fix source directory name in %setup accordingly

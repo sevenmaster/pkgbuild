@@ -1,0 +1,25 @@
+diff -urN freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c
+--- freerdp-1.0.2.orig/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2013-01-02 16:46:59.000000000 -0500
++++ freerdp-1.0.2/channels/drdynvc/tsmf/ffmpeg/tsmf_ffmpeg.c	2014-03-21 17:16:08.479882448 -0400
+@@ -88,6 +88,7 @@
+ 	mdecoder->codec_context->channels = media_type->Channels;
+ 	mdecoder->codec_context->block_align = media_type->BlockAlign;
+ 
++#if LIBAVCODEC_VERSION_MAJOR > 55
+ #ifdef AV_CPU_FLAG_SSE2
+ 	mdecoder->codec_context->dsp_mask = AV_CPU_FLAG_SSE2 | AV_CPU_FLAG_MMX2;
+ #else
+@@ -97,6 +98,13 @@
+ 	mdecoder->codec_context->dsp_mask = FF_MM_SSE2 | FF_MM_MMX2;
+ #endif
+ #endif
++#else /* LIBAVCODEC_VERSION_MAJOR < 55 */
++#ifdef AV_CPU_FLAG_SSE2
++	av_set_cpu_flags_mask(AV_CPU_FLAG_SSE2 | AV_CPU_FLAG_MMX2);
++#else
++	av_set_cpu_flags_mask(FF_MM_SSE2 | FF_MM_MMX2);
++#endif
++#endif /* LIBAVCODEC_VERSION_MAJOR < 55 */
+ 
+ 	return true;
+ }
