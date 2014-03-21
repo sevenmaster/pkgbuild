@@ -26,7 +26,7 @@ BuildRequires:	SUNWxwinc
 BuildRequires:	SFEcmake
 
 %prep
-%setup -q -n FreeRDP-%version
+%setup -q -n freerdp-%version
 
 %build
 
@@ -66,6 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Mar 21 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Change Source URL to one that works with pkgtool --download
+- Fix source directory name in %setup accordingly
 * Thu Mar 20 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial spec (version 1.0.2)
 
