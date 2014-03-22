@@ -24,8 +24,8 @@
 Name:                    SFEbitlbee
 IPS_Package_Name:	 network/chat/bitlbee
 Group:                   Utility
-%define bzr_revision	998
-Version:                 3.2.0.0.%{bzr_revision}
+%define bzr_revision	1011
+Version:                 3.2.1.0.%{bzr_revision}
 %define download_version %{bzr_revision}
 Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
 URL:		         http://www.bitlbee.org
@@ -130,7 +130,7 @@ bash ./configure --prefix=%{_prefix}		\
             --ssl=openssl                       \
             --otr=1
 
-#doc is only built if the source looks like a bzr checkout
+#doc is only built if the source looks like a b zr checkout
 mkdir .bzr
 make -j$CPUS LDFLAGS_BITLBEE="/usr/lib/0@0.so.1 %_ldflags %{gnu_lib_path} -L/usr/lib -R/usr/lib -lgcrypt"
 
@@ -210,6 +210,9 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 %class(renamenew) /etc/bitlbee/*
 
 %changelog
+* Sun Feb 16 2014 - Thomas Wagner
+- bump to 1011 (development version 1011, tarball download from bzr scm)
+- appromate version number to 3.2.1.0.1011
 * Sun Nov 10 2013 - Thomas Wagner
 - bump to 998 (development version 998, tarball download from bzr scm)
   (%change unpack, trigger doc preparation
