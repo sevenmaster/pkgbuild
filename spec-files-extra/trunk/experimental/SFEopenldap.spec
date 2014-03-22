@@ -48,10 +48,10 @@ Requires:        SFEbdb
 #Conflicts: SUNWopenldap,SUNWopenldapu,SUNWopenldapr
 
 Requires: %name-root
+
 %package root
 Summary:                 %{summary} - / filesystem
 SUNW_BaseDir:            /
-Requires: %name
 
 %description
 OpenLDAP Server, Tools and Libraries
@@ -77,7 +77,8 @@ fi
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I%{gnu_inc}"
-export CXXLAGS="%cxx_optflags -I%{gnu_inc}"
+export CXXFLAGS="%cxx_optflags -I%{gnu_inc}"
+export CPPFLAGS=${CXXFLAGS}
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
 export RUNDIR="%{_std_localstatedir}/run/%{src_name}"
@@ -244,6 +245,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Jan 21 2014 - Thomas Wagner
 - bump to 2.4.38
+- remove typo in CXXLAGS -> CXXFLAGS (no finds right BDB db.h in %{gnu_inc}, export CPPFLAGS=${CXXFLAGS}
+- remove depenency on %name in package %name-root
 * Sat Oct  8 2011 - Thomas Wagner
 - add SMF manifest (copied from distro, modified), add security/ RBAC info (copied from distro, modified)
 * Fri Oct  7 2011 - Thomas Wagner
