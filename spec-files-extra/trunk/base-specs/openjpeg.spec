@@ -21,8 +21,14 @@ export LDFLAGS="%{gnu_lib_path} %{_ldflags}"
 
 #for SFElcms2-gnu
 #note: %{_libdir} already contains current %{_arch64}
-export PKG_CONFIG_PATH="/usr/gnu/lib/%{_arch64}/pkgconfig:%{_libdir}/pkgconfig"
+#export PKG_CONFIG_PATH="/usr/gnu/lib/%{_arch64}/pkgconfig:%{_libdir}/pkgconfig"
+%if %{opt_arch64}
+  export PKG_CONFIG_PATH=/usr/gnu/lib/%{_arch64}/pkgconfig
+%else
+  export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig
+%endif
 
+set
 
 mkdir -p builds/unix
 cd builds/unix
@@ -35,6 +41,11 @@ cmake -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \
       -DOPENJPEG_INSTALL_LIB_DIR:PATH=%{_libdir} \
       -DOPENJPEG_INSTALL_BIN_DIR:PATH=%{_bindir} \
+%if %{opt_arch64}
+      -DLCMS2_LIBRARY:FILEPATH=/usr/gnu/lib/%{_arch64}/liblcms2.so \
+%else
+      -DLCMS2_LIBRARY:FILEPATH=/usr/gnu/lib/liblcms2.so \
+%endif
       ../..
 make VERBOSE=1 -j$CPUS
 
@@ -53,6 +64,9 @@ mkdir -p ${RPM_BUILD_ROOT}%{_pkg_config_path}
 
 
 %changelog
+* Sat Mar 22 2014 - Thomas Wagner
+- Workaround broken search for liblcms2.so in configure.
+  On some OS and installed package mix, the amd64 build traps over /usr/gnu/lib/lcms2.so (=32bit)
 * Mon Jan  6 2014 - Thomas Wagner
 - bump to 1.5.1
 - fix %files

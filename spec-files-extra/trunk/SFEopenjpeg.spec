@@ -143,6 +143,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Mar 22 2014 - Thomas Wagner
+- Workaround broken search for liblcms2.so in configure.
+  On some OS and installed package mix, the amd64 build traps over /usr/gnu/lib/lcms2.so (=32bit)
 * Mon Jan  6 2014 - Thomas Wagner
 - bump to 1.5.1
 - fix %files twice
