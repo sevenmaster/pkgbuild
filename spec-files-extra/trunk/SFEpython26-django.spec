@@ -4,22 +4,24 @@
 # includes module(s): Django
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define python_version  2.6
+%define django_major_version 1.6
 
 Name:		SFEpython26-django
 IPS_Package_Name:	web/python/django
-Version:	1.5.2
+Version:	1.6.2
 Summary:	A high-level Python Web framework that enables Rapid Development
 License:	BSD
 Group:		Development/Languages/Python
 URL:		http://www.djangoproject.com/
-Source:		http://www.djangoproject.com/m/releases/1.5/Django-%{version}.tar.gz
+Source:		http://www.djangoproject.com/m/releases/%{django_major_version}/Django-%{version}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWPython26-devel
-Requires: SUNWPython26
+BuildRequires: %{pnm_buildrequires_python_default}
+Requires: %{pnm_requires_python_default}
 
 %prep
 %setup -q -n Django-%version

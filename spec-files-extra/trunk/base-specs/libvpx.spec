@@ -37,6 +37,7 @@ fi
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
 	--enable-vp8 --enable-postproc --enable-runtime-cpu-detect \
 	--enable-shared --disable-examples \
+	--disable-unit-tests \
 	--target=%{_target}
 
 make -j $CPUS
