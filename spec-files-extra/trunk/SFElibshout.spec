@@ -10,6 +10,7 @@
 
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	libshout
 %define src_url		http://downloads.xiph.org/releases/libshout
@@ -27,16 +28,16 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 #BuildRequires: SFWoggl
-BuildRequires: SUNWlibtheora-devel
-BuildRequires: SUNWlxml-devel
-BuildRequires: SUNWlxsl-devel
-BuildRequires: SUNWogg-vorbis-devel
+BuildRequires: %{pnm_buildrequires_SUNWlibtheora_devel}
+BuildRequires: %{pnm_buildrequires_SUNWlxml_devel}
+BuildRequires: %{pnm_buildrequires_SUNWlxsl_devel}
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
 # TODO needed? BuildRequires: SUNWspeex-devel
 #Requires: SFWoggl
-Requires: SUNWlibtheora
-Requires: SUNWlxml
-Requires: SUNWlxsl
-Requires: SUNWogg-vorbis
+Requires: %{pnm_requires_SUNWlibtheora}
+Requires: %{pnm_requires_SUNWlxml}
+Requires: %{pnm_requires_SUNWlxsl}
+Requires: %{pnm_requires_SUNWogg_vorbis}
 # TODO needed? Requires: SUNWspeex
 
 %package devel
@@ -107,6 +108,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibtheora_devel}
+- change (Build)Requires to %{pnm_buildrequires_SUNWlxml_devel}
+- change (Build)Requires to %{pnm_buildrequires_SUNWlxsl_devel}
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Fri Jun 22 2012 - Logan Bruns <logan@gedanken.org>
 - added ips package name.
 * Thu Jul 21 2011 - Alex Viskovatoff
