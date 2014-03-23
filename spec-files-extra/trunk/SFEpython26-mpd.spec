@@ -8,6 +8,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define python_version 2.6
 
@@ -25,8 +26,8 @@ SUNW_Basedir:	%{_basedir}
 Source0:	http://pypi.python.org/packages/source/p/python-mpd/python-mpd-%{version}.tar.bz2
 
 %include default-depend.inc
-BuildRequires:	SUNWPython26
-Requires:	SUNWPython26
+BuildRequires:	%{pnm_buildrequires_python_default}
+Requires:	%{pnm_requires_python_default}
 
 Meta(info.maintainer):          James Lee <jlee@thestaticvoid.com>
 Meta(info.upstream):            J. Alexander Treuman <jat@spatialrift.net>
@@ -67,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python%{python_version}/vendor-packages/python_mpd-%{version}-py%{python_version}.egg-info
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_python_default}
 * Tue Jul 26 2011 - N.B.Prashanth
 - Added SUNW_Copyright
 * Thu Jun 30 2011 - Alex Viskovatoff
