@@ -13,7 +13,7 @@ IPS_package_name:        media/mediathek
 Group:                   Applications/Sound and Video
 Summary:                 mediathek - download TV broadcasters online offers, download podcasts
 URL:                     http://zdfmediathk.sourceforge.net/
-Version:                 3.2.1
+Version:                 4.0.0.1
 Source:                  %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{version}/MediathekView_%{version}.zip
 Source2:                 %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{docversion}/Kurzanleitung_%{docversion}.pdf
 
@@ -25,7 +25,7 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 %description
-Das Programm durchsucht die Mediathek verschiedener Sender (ARD, ZDF, Arte, 3Sat, MDR, NDR, ORF, SF), laedt Beitraege mit einem Programm eigener Wahl und kann Themen als Abos anlegen und neue Beiträge automatisch downloaden. Es gibt auch eine Moeglichkeit, Podcast zu verwalten und zu Downloaden.
+Das Programm durchsucht die Mediathek verschiedener Sender (ARD, ZDF, Arte, 3Sat, MDR, NDR, ORF, SF), laedt Beitraege mit einem Programm eigener Wahl und kann Themen als Abos anlegen und neue Beitraege automatisch downloaden. Es gibt auch eine Moeglichkeit, Podcast zu verwalten und zu Downloaden.
 
 
 %prep
@@ -60,6 +60,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 23 2014 - Thomas Wagner
+- bump to 4.0.0.1 respin to avoid invalit UTF-8 in %description
+* Thu Mar 20 2014 - Thomas Wagner
+- bump to 4
+* Thu Sep 19 2013 - Thomas Wagner
+- bump to 3.3.0
 * Sat Mar 23 2013 - Thomas Wagner
 - bump to 3.2.1
 * Sun Jan 27 2013 - Thomas Wagner
