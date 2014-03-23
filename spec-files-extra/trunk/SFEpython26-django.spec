@@ -48,6 +48,9 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.6.2
+- %define django_major_version for Source URL
 * Sun Sep 01 2013 - Milan Jurik
 - bump to 1.5.2
 * Sun Aug 19 2012 - Milan Jurik
