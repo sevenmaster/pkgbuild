@@ -13,6 +13,7 @@
 %define python_version 2.6
 
 Name:		SFEpython26-mpd
+IPS_package_name: library/python-2/mpd-26
 Version:	0.3.0
 Summary:	Python MPD Library
 Group:		Development/Python
@@ -68,6 +69,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python%{python_version}/vendor-packages/python_mpd-%{version}-py%{python_version}.egg-info
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- add IPS_package_name
 * Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - %include packagenamemacros.inc
 - change (Build)Requires to %{pnm_buildrequires_python_default}
