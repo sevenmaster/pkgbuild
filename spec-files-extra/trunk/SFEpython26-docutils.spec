@@ -4,6 +4,7 @@
 # includes module(s): docutils
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:			SFEpython26-docutils
 IPS_Package_Name:	library/python-2/python-docutils-26
@@ -13,7 +14,7 @@ Version:		0.11
 Source:			%sf_download/project/docutils/docutils/%version/docutils-%version.tar.gz
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
-Requires:		SUNWPython26
+Requires:		%{pnm_requires_python_default}
 
 %include default-depend.inc
 
@@ -47,5 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/python%python_version/vendor-packages
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- %include packagenamemacros.inc
+- change Requires to %{pnm_requires_python_default}
 * 10 Oct 2013 - Alex Viskovatoff
 - Initial spec, based on SFEpython26-dateutil.spec
