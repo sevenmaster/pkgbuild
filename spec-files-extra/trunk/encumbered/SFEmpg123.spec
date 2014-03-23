@@ -6,7 +6,7 @@
 #	Previous versions starting at 1.14.x "have some nasty regressions".
 #	So do not bump this spec to earlier than 1.18.0.
 
-%Include Solaris.inc
+%include Solaris.inc
 %include packagenamemacros.inc
 
 Name:           SFEmpg123
@@ -100,6 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libmpg123.so
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- syntax error in %include Solaris.inc (was %Include)
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}
 * Sat Jun 23 2012 - Thomas Wagner
