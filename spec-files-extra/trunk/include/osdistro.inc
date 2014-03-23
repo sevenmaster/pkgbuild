@@ -144,6 +144,8 @@
 %define s110000 0
 #11.1 build ??
 %define s110100 0
+#11.2 build ??
+%define s110200 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -298,11 +300,21 @@
 %define s11ex201100 1
 %define solaris11express 1
 %define osdistrelnumber 201100
+%define solaris11 1
 %define s110000 1
 #11.1 build ??
 %if %( uname -v | egrep '^11\.1$' > /dev/null && echo 1 || echo 0 )
+#additive
 %define s110100 1
-%define osdistrelnumber 201100
+%define osdistrelnumber 201101
+%else
+%endif
+#11.2 build ??
+%if %( uname -v | egrep '^11\.2$' > /dev/null && echo 1 || echo 0 )
+#additive
+%define s110100 1
+%define s110200 1
+%define osdistrelnumber 201102
 %else
 %endif
 %define osdistrelname   "Solaris 11"
@@ -411,6 +423,10 @@
 
 
 %changelog
+* Sun Mar 23 2014 - Thomas Wagner
+- add s11 11.2 support, define s110200 and distrelnumber 201102 (S11.2)
+- fix osdistrelnumber (S11.1)
+- add solaris11 1 to Solaris 11 releases
 * Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - typo in egrep regex to define s110100 for S11.1
 * Mon Jan  6 2014 - Thomas Wagner

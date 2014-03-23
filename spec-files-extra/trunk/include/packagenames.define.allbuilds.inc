@@ -1254,6 +1254,10 @@
 %endif
 #END solaris11express >=174, solaris 11 solaris 12
 
+##TODO## maybe re-locate the definitions below if that helps getting better overview
+
+#NOTE# Defaults here for os2nn, SXCE, and so on. This is overlayed if one 
+#distro needs this different!
 #pulseaudio, we currently have this in SFE - see below for more fresh distros
 %define pnm_buildrequires_SFEpulseaudio				SFEpulseaudio-devel
 %define pnm_requires_SFEpulseaudio				SFEpulseaudio
@@ -1268,11 +1272,21 @@
 %define pnm_buildrequires_SFEautomake_111		SFEautomake-111
 %define pnm_requires_SFEautomake_111			SFEautomake-111
 
+#Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
+#set the SFE spec file as default for os20nn SXCE, overlay that for >=S11.2, S12
+%define pnm_buildrequires_SFEgnugetopt			SFEgnugetopt
+%define pnm_requires_SFEgnugetopt			SFEgnugetopt
+%define pnm_buildrequires_shell_gnugetopt		SFEgnugetopt
+%define pnm_requires_shell_gnugetopt			SFEgnugetopt
 
-#Solaris 11 Update 1
+#NOTE# now overlay the above definitions if needed:
+
+
+#START Solaris 11 Update 1
 #
-#TO BE DEFINED pulseaudio in Solaris 11.x
-%if %{s110100}
+#pulseaudio, automake-111 w/o legacy name in Solaris 11.1 and newer
+%if %{solaris11}
+%if %( expr  %{osdistrelnumber} '>=' 201101 )
 %define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
 %define pnm_requires_SFEpulseaudio				SUNWpulseaudio
 %define pnm_buildrequires_pulseaudio				SUNWpulseaudio-devel
@@ -1288,9 +1302,30 @@
 %define pnm_requires_SFEautomake_111			developer/build/automake-111
 
 %endif
-#END s110100 aka solaris11 11.1
+#END osdistrelnumber >= 201101 aka solaris11 11.1 and newer
+%endif
+#END solaris11
 
-#Solaris 12
+
+#START Solaris 11 Update 2
+#
+#gnu-getopt added (S11.2, S12)
+%if %{solaris11}
+%if %( expr  %{osdistrelnumber} '>=' 201102 )
+
+#Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
+%define pnm_buildrequires_SFEgnugetopt			solaris/shell/gnu-getopt
+%define pnm_requires_SFEgnugetopt			solaris/shell/gnu-getopt
+%define pnm_buildrequires_shell_gnugetopt		solaris/shell/gnu-getopt
+%define pnm_requires_shell_gnugetopt			solaris/shell/gnu-getopt
+
+%endif
+#END osdistrelnumber >= 201102 aka solaris11 11.2 and newer
+%endif
+#END solaris11
+
+
+#START Solaris 12
 #
 %if %{solaris12}
 %define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
@@ -1318,6 +1353,12 @@
 %define pnm_buildrequires_SUNWslang_devel library/slang
 %define pnm_buildrequires_SUNWslang library/slang
 %define pnm_requires_SUNWslang library/slang
+
+#Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
+%define pnm_buildrequires_SFEgnugetopt			solaris/shell/gnu-getopt
+%define pnm_requires_SFEgnugetopt			solaris/shell/gnu-getopt
+%define pnm_buildrequires_shell_gnugetopt		solaris/shell/gnu-getopt
+%define pnm_requires_shell_gnugetopt			solaris/shell/gnu-getopt
 
 %endif
 #END solaris12
@@ -2178,7 +2219,13 @@
 ##%endif
 
 
+##TODO## check if this is the case as well for S11 (!)
+#S12 lost the legacy name SUNWslang
+
 %changelog
+* Sun Mar 23 2014 - Thomas Wagner
+- use %{osdistrelnumber} '>=' 201101 instead of %{s110100} for pulseaudio, automake-111 in Solaris 11.1 (>= S11.1)
+- handle SFEgnugetopt / sfe/shell/gnu-getopt / solaris/shell/gnu-getopt (>= S11.2, S12)
 * Mon Feb 17 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - switch pnm_buildrequires_apache2_default correctly for osbuild >= 133 (SUNWapch22u does not exist in S11+)
 * Wed Feb 12 2014 - Thomas Wagner
