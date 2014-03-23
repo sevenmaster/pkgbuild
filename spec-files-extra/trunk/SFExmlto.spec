@@ -36,7 +36,8 @@ Requires: SUNWgnome-xml-share
 Requires: SUNWgnome-xml-root
 %endif
 Requires: SUNWw3m
-Requires: SFEgnugetopt
+BuildRequires: %{pnm_buildrequires_SFEgnugetopt}
+Requires: %{pnm_requires_SFEgnugetopt}
 
 %prep
 rm -rf %name-%version
@@ -77,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Sun Mar 23 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFEgnugetopt} to fix build on >= S11.2, S12
 * Sun Jun 24 2012 - Logan Bruns <logan@gedanken.org>
 - for now, use a conditional to choose required packages based on os.
 * Sat Jun 23 2012 - Logan Bruns <logan@gedanken.org>
