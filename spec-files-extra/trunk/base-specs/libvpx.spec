@@ -52,6 +52,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Mar 23 2014 - Ian Johnson
+- add --disable-unit-tests to configure line (test suite fails to build on Solaris 11.1)
 * Sat Sep 28 2013 - Milan Jurik
 - bump to 1.2.0
 * Sun Aug 05 2012 - Milan Jurik
