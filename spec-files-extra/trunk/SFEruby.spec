@@ -4,6 +4,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:         SFEruby
 IPS_Package_Name:	runtime/ruby-21
@@ -16,7 +17,7 @@ Patch1:       ruby-01-endian.diff
 SUNW_BaseDir: %{_basedir}
 %include default-depend.inc
 Requires:     SUNWlibmsr
-Requires:     SUNWopenssl-libraries
+Requires:     %{pnm_requires_openssl}
 Requires:     SUNWzlib
 Conflicts:    SUNWruby18u
 BuildRequires:     SFElibyaml
@@ -66,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Mar 24 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- %include packagenamemacros.inc
+- change Requires to %{pnm_requires_openssl}
 * Sat Feb 22 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Fix libyaml (build)requires name
 * Thu Jan 30 2014 - Alex Viskovatoff
