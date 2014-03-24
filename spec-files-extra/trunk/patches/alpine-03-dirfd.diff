@@ -1,0 +1,12 @@
+diff -urN alpine-2.00.orig/imap/src/osdep/unix/scandir.c alpine-2.00/imap/src/osdep/unix/scandir.c
+--- alpine-2.00.orig/imap/src/osdep/unix/scandir.c	2008-06-04 14:18:34.000000000 -0400
++++ alpine-2.00/imap/src/osdep/unix/scandir.c	2013-10-15 14:32:24.949702659 -0400
+@@ -42,7 +42,7 @@
+   struct stat stb;
+   long nlmax;
+   DIR *dirp = opendir (dirname);/* open directory and get status poop */
+-  if ((!dirp) || (fstat (dirp->dd_fd,&stb) < 0)) return -1;
++  if ((!dirp) || (fstat (dirp->d_fd,&stb) < 0)) return -1;
+   nlmax = stb.st_size / 24;	/* guesstimate at number of files */
+   names = (struct direct **) fs_get (nlmax * sizeof (struct direct *));
+   nitems = 0;			/* initially none found */

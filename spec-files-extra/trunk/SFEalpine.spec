@@ -2,10 +2,10 @@
 # 
 # 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 #%define tcl_version 8.4
 #%define tcl_8_3 %(pkgchk -l SUNWTcl 2>/dev/null | grep /usr/sfw/bin/tclsh8.3 >/dev/null && echo 1 || echo 0)
-%define SUNWgawk      %(/usr/bin/pkginfo -q SUNWgawk && echo 1 || echo 0)
 
 Name:                SFEalpine
 IPS_Package_Name:	mail/alpine
@@ -14,26 +14,24 @@ Summary:             University of Washington Alpine mail user agent
 Version:             2.00
 Source:              ftp://ftp.cac.washington.edu/alpine/alpine-%{version}.tar.bz2
 Patch2:              alpine-02-CC.diff
+Patch3:			   	 alpine-03-dirfd.diff
 URL:                 http://www.washington.edu/alpine/
 SUNW_BaseDir:        %{_basedir}
 SUNW_Copyright:      %{name}.copyright
 Group:		     Office/Email
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWopenssl-include
-Requires: SUNWopenssl-libraries
+BuildRequires: %{pnm_buildrequires_openssl}
+Requires: %{pnm_requires_openssl}
 BuildRequires: SUNWhea
 Requires: SUNWcsl
 #BuildRequires: SUNWTcl
-%if %SUNWgawk
-BuildRequires: SUNWgawk
-%else
-BuildRequires: SFEgawk
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWgawk}
 
 %prep
 %setup -q -n alpine-%{version}
 %patch2 -p1
+%patch3 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -42,7 +40,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags -mt %{sfw_lib_path}"
+export LDFLAGS="%_ldflags"
 
 #%if %tcl_8_3
 #TCL_OPTS="--with-tcl-lib=tcl8.3"
@@ -52,12 +50,9 @@ export LDFLAGS="%_ldflags -mt %{sfw_lib_path}"
 # Disable Tcl until we figure out what to do with Web Alpine
 TCL_OPTS=--without-tcl
 
-SSL_CERTS_DIR=/etc/sfw/openssl/certs
-SSL_INCLUDE_DIR=%{sfw_inc}
-SSL_LIB_DIR=/usr/sfw/lib
-if [ ! -d "$SSL_INCLUDE_DIR/openssl" ]; then
-	SSL_INCLUDE_DIR=/usr/include
-fi
+SSL_CERTS_DIR=%{_sysconfdir}/openssl/certs
+SSL_INCLUDE_DIR=%{_includedir}
+SSL_LIB_DIR=%{_libdir}
 
 # autoconf
 
@@ -101,6 +96,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Mon Mar 24 2014 - ianj@tsundoku.ne.jp
+- add patch3 to fix dirfd issue
+- %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_openssl}
+- change BuildRequires to %{pnm_buildrequires_SUNWgawk}
+- remove obsolete SUNWgawk define that depended on SVR4 packages
+- change SSL_*_DIR variables to use system paths instead of SFW paths
 * Mon Aug 10 2009 - matt@greenviolet.net
 - Allow BuildRequires to accept SUNWgawk
 - Remove autoconf, as source is unfriendly to newer versions and aclocal doesn't help.
