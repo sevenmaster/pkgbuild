@@ -228,9 +228,9 @@ user ftpuser=false gcos-field="Nagios Reserved UID" username="nagios" password=N
 %{_includedir}/nagios
 
 %changelog
-* Mon Mar 31 2014 - Ian JOhnson
+* Mon Mar 31 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Fix SMF name to match system packages -  site/nagios to application/nagios
-* Fri Jan 31 2014 - Ian Johnson
+* Fri Jan 31 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 3.5.1
 - Add IPS_package_name
 - Add some packagenamemacros
