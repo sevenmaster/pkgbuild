@@ -62,7 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %{_sbindir}/*
 %dir %attr (0755, root, sys) /etc
 %dir %attr (0755, root, sys) /etc/bacula
-/etc/bacula/*
+%config(noreplace) /etc/bacula/*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
 %dir %attr (0755, root, other) %{_datadir}/doc/bacula
@@ -81,6 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/application/bacula/bacula.xml
 
 %changelog
+* Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add %config(noreplace) to configuration files in %files
 * Mon Mar 03 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add SMF manifest
 - Add CFLAGS and LDFLAGS
