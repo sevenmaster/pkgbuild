@@ -12,7 +12,8 @@
 %include packagenamemacros.inc
 
 Name:		SFEnagios
-Version:	3.4.1
+IPS_package_name: system/management/nagios
+Version:	3.5.1
 Summary:	Host/service/network monitoring program
 Group:		Applications/System
 License:	GPLv2
@@ -31,8 +32,8 @@ BuildRequires:	%{pnm_buildrequires_SUNWsndm_devel}
 Requires:	%{pnm_requires_SUNWsndm}
 BuildRequires:	SUNWjpg-devel
 Requires:	SUNWjpg
-BuildRequires:	SUNWgd2
-Requires:	SUNWgd2
+BuildRequires:	%{pnm_buildrequires_SUNWgd2}
+Requires:	%{pnm_requires_SUNWgd2}
 Requires:	%{pnm_requires_SUNWapch22}
 
 Requires:	%{name}-common
@@ -153,8 +154,8 @@ install -m 0644 sample-config/template-object/templates.cfg %{buildroot}%{_sysco
 install -m 0644 sample-config/template-object/timeperiods.cfg %{buildroot}%{_sysconfdir}/nagios/objects/timeperiods.cfg
 install -m 0644 sample-config/template-object/windows.cfg %{buildroot}%{_sysconfdir}/nagios/objects/windows.cfg
 
-install -d 0755 %{buildroot}%/var/svc/manifest/site
-install -m 0644 %{SOURCE1} %{buildroot}%/var/svc/manifest/site
+install -d 0755 %{buildroot}%/var/svc/manifest/application
+install -m 0644 %{SOURCE1} %{buildroot}%/var/svc/manifest/application
 
 %clean
 rm -rf %{buildroot}
@@ -186,9 +187,12 @@ user ftpuser=false gcos-field="Nagios Reserved UID" username="nagios" password=N
 %{_datadir}/nagios/html/[^i]*
 %{_datadir}/nagios/html/contexthelp
 %{_datadir}/nagios/html/[^d]*
+%{_datadir}/nagios/html/[^j]*
 %{_datadir}/nagios/html/[^m]*
 %{_datadir}/nagios/html/[^s]*
 %attr(0644, root, bin) %config(noreplace) %{_datadir}/nagios/html/config.inc.php
+%attr(0644, root, bin) %{_datadir}/nagios/html/rss-corefeed.php
+%attr(0644, root, bin) %{_datadir}/nagios/html/rss-newsfeed.php
 %dir %attr (0755, root, bin) %{_sbindir}
 %{_sbindir}/*
 %{_libdir}/nagios/cgi-bin/*cgi
@@ -216,14 +220,21 @@ user ftpuser=false gcos-field="Nagios Reserved UID" username="nagios" password=N
 %dir %attr(0750, nagios,nagios) %{_localstatedir}/log/nagios/spool/checkresults
 %dir %attr (0755, root, sys) %{_localstatedir}/svc
 %dir %attr (0755, root, sys) %{_localstatedir}/svc/manifest
-%dir %attr (0755, root, sys) %{_localstatedir}/svc/manifest/site
-%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/nagios.xml
+%dir %attr (0755, root, sys) %{_localstatedir}/svc/manifest/application
+%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/application/nagios.xml
 
 %files devel
 %defattr(-, root, bin)
 %{_includedir}/nagios
 
 %changelog
+* Mon Mar 31 2014 - Ian JOhnson
+- Fix SMF name to match system packages -  site/nagios to application/nagios
+* Fri Jan 31 2014 - Ian Johnson
+- bump to 3.5.1
+- Add IPS_package_name
+- Add some packagenamemacros
+- Add missing files entries in /usr/share/nagios/html
 * Thr Aug  9 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_perl_default}
 - export CC=gcc, CXX=g++, CFLAGS with perl
