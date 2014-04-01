@@ -25,7 +25,7 @@
 
 <service_bundle type="manifest" name="SFEnagios:nagios">
 
-	<service name="site/nagios" type="service" version="1">
+	<service name="application/nagios" type="service" version="1">
 
 	<create_default_instance enabled="false"/>
 
