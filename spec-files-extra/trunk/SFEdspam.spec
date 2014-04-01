@@ -86,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_sysconfdir}
-%{_sysconfdir}/*
+%config(noreplace) %{_sysconfdir}/*
 %dir %attr (0755, root, sys) %{_localstatedir}
 %dir %attr (0770, root, sys) %{_localstatedir}/dspam
 %{_localstatedir}/dspam/*
@@ -102,6 +102,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755, root, bin) %{_includedir}/*
 
 %changelog
+* Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add %config(noreplace) to configuration files in %files
 * Mon Dec 12 2011 - Milan Jurik
 - bump to 3.10.1
 * Thu Mar 17 2011 - Thomas Wagner
