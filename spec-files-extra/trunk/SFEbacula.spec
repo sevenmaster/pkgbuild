@@ -15,7 +15,7 @@ Source:              http://downloads.sourceforge.net/sourceforge/bacula/bacula-
 Source1:			 bacula.xml
 URL:                 http://www.bacula.org/
 # SUNW_BaseDir:        %{_basedir}
-SUNW_Copyright:      %{name}.copyright
+SUNW_Copyright:      bacula.copyright
 Group:		    	 Applications/System
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -81,6 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/application/bacula/bacula.xml
 
 %changelog
+* Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Fix SUNW_Copyright
 * Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add %config(noreplace) to configuration files in %files
 * Mon Mar 03 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
