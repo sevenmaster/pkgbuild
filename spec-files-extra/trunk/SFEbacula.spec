@@ -24,6 +24,7 @@ Requires: %{pnm_requires_mysql_default}
 Requires: %{pnm_requires_SUNWmtx}
 
 %prep
+echo %{_sysconfdir}
 %setup -q -n %{src_name}-%{version}
 
 %build
@@ -38,7 +39,7 @@ export LDFLAGS="%{_ldflags}"
 ./configure				\
 	--prefix=%{_prefix} \
 	--with-mysql=/usr/mysql/5.1 \
-	--sysconfdir=/etc/bacula \
+	--sysconfdir=%{_sysconfdir}/bacula \
 	--with-working-dir=/var/bacula \
 	--mandir=%{_datadir}/man \
 	--enable-tray-monitor
@@ -54,15 +55,32 @@ cp %{SOURCE1} ${RPM_BUILD_ROOT}/var/svc/manifest/application/bacula/
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+# NOTE: the scripts mtx-changer and disk-changer (*changer) in /etc/bacula
+# are marked as %config because they sometimes need to be modified to
+# properly support different media changer models. When upgrading,
+# check *changer.new for any changes.
+
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/*
 %dir %attr (0755, root, bin) %{_sbindir}
 %attr (0555, root, bin) %{_sbindir}/*
-%dir %attr (0755, root, sys) /etc
-%dir %attr (0755, root, sys) /etc/bacula
-%config(noreplace) /etc/bacula/*
+%dir %attr (0755, root, sys) %{_sysconfdir}
+%dir %attr (0755, root, sys) %{_sysconfdir}/bacula
+%config(noreplace) %{_sysconfdir}/bacula/*.conf
+%{_sysconfdir}/bacula/bacula
+%{_sysconfdir}/bacula/*ctl*
+%{_sysconfdir}/bacula/bacula_config
+%{_sysconfdir}/bacula/bconsole
+%{_sysconfdir}/bacula/btraceback.*
+%{_sysconfdir}/bacula/*backup*
+%config(noreplace) %{_sysconfdir}/bacula/*changer
+%{_sysconfdir}/bacula/*database
+%{_sysconfdir}/bacula/*handler
+%{_sysconfdir}/bacula/*privileges
+%{_sysconfdir}/bacula/*tables
+%{_sysconfdir}/bacula/*.sql
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
 %dir %attr (0755, root, other) %{_datadir}/doc/bacula
@@ -81,6 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/application/bacula/bacula.xml
 
 %changelog
+* Wed Apr 02 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Restrict %config tag to actual config files and changer scripts
 * Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Fix SUNW_Copyright
 * Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
