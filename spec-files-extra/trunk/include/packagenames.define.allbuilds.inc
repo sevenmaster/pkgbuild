@@ -1314,10 +1314,10 @@
 %if %( expr  %{osdistrelnumber} '>=' 201102 )
 
 #Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
-%define pnm_buildrequires_SFEgnugetopt			solaris/shell/gnu-getopt
-%define pnm_requires_SFEgnugetopt			solaris/shell/gnu-getopt
-%define pnm_buildrequires_shell_gnugetopt		solaris/shell/gnu-getopt
-%define pnm_requires_shell_gnugetopt			solaris/shell/gnu-getopt
+%define pnm_buildrequires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
+%define pnm_requires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
+%define pnm_buildrequires_shell_gnugetopt		pkg://solaris/shell/gnu-getopt
+%define pnm_requires_shell_gnugetopt			pkg://solaris/shell/gnu-getopt
 
 %endif
 #END osdistrelnumber >= 201102 aka solaris11 11.2 and newer
@@ -1355,10 +1355,10 @@
 %define pnm_requires_SUNWslang library/slang
 
 #Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
-%define pnm_buildrequires_SFEgnugetopt			solaris/shell/gnu-getopt
-%define pnm_requires_SFEgnugetopt			solaris/shell/gnu-getopt
-%define pnm_buildrequires_shell_gnugetopt		solaris/shell/gnu-getopt
-%define pnm_requires_shell_gnugetopt			solaris/shell/gnu-getopt
+%define pnm_buildrequires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
+%define pnm_requires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
+%define pnm_buildrequires_shell_gnugetopt		pkg://solaris/shell/gnu-getopt
+%define pnm_requires_shell_gnugetopt			pkg://solaris/shell/gnu-getopt
 
 %endif
 #END solaris12
@@ -1433,6 +1433,7 @@
 %endif
 #END os2nnn
 
+
 #set perl5 for OpenIndiana
 %if %{os2nnn}
 %if %{openindiana}
@@ -1450,6 +1451,23 @@
 #END >= 151
 %endif
 #END openindiana
+%endif
+#END os2nnn
+
+#set perl5 for OmniOS
+%if %{os2nnn}
+%if %{omnios}
+##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
+#set perl5 for OmniOS
+%define perl_version 5.16.1
+%define perl_major_minor_version 5.16
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.16.1
+#runtime/perl-64
+%define pnm_buildrequires_perl_default runtime/perl-64
+%define pnm_requires_perl_default	runtime/perl-64
+%endif
+#END omnios
 %endif
 #END os2nnn
 
@@ -2223,9 +2241,12 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Apr 12 2014 - Thomas Wagner
+- add perl_default 5.16.1 aka 6.4 for OmniOS
 * Sun Mar 23 2014 - Thomas Wagner
 - use %{osdistrelnumber} '>=' 201101 instead of %{s110100} for pulseaudio, automake-111 in Solaris 11.1 (>= S11.1)
 - handle SFEgnugetopt / sfe/shell/gnu-getopt / solaris/shell/gnu-getopt (>= S11.2, S12)
+- need pkg://solaris/shell/gnu-getopt
 * Mon Feb 17 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - switch pnm_buildrequires_apache2_default correctly for osbuild >= 133 (SUNWapch22u does not exist in S11+)
 * Wed Feb 12 2014 - Thomas Wagner
