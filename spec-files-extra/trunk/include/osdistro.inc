@@ -245,6 +245,32 @@
 %endif
 ##END
 
+##START build 151 and up, OpenIndiana
+#NOTE: we try to set a resonable opensolaris/solaris express release
+# name as well, they should behave similar. Remaining issues to be fixed
+# in consuming spec file!
+%if %{osdet299999}
+%if %( expr %{osbuild} '>=' 151 )
+%if %( egrep 'OpenIndiana Development' /etc/release > /dev/null && echo 1 || echo 0 )
+#we are on an IPS based OS distro
+%define os2nnn   1
+#below: subject to change!
+%define openindiana 1
+##TODO## replace oi201100
+%define oi201100    1
+%define osdistrelnumber 151
+#                                below: subject to change!
+%define osdistrelname   "OpenIndiana"
+#this was the last check, skip all others
+%define osdet299999 0
+%else
+%endif
+%else
+%endif
+%else
+%endif
+##END
+
 
 ##START build 147 and up, OpenIndiana
 #NOTE: we try to set a resonable opensolaris/solaris express release
@@ -433,6 +459,8 @@
 
 
 %changelog
+* Sat Apr 12 2014 - Thomas Wagner
+- re-add OpenIndiana (was edit error)
 * Sat Apr 12 2014 - Thomas Wagner
 - add omnios OmniOS v11 r151008 support (OOS151008)
 * Sun Mar 23 2014 - Thomas Wagner
