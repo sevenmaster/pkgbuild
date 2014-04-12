@@ -89,6 +89,11 @@
 %define osbuild 151
 %endif
 
+#quick and dirty hack, only works on OmniOS - uname -v prints on 151008j: omnios-6de5e81
+%if %( uname -v | egrep '^omnios-[0-9a-f]' > /dev/null && echo 1 || echo 0 )
+%define osbuild 151
+%endif
+
 
 # see if we are on old SVR4 release
 %define SXCE %( egrep "Solaris Express Community Edition" /etc/release > /dev/null 2>&1 && echo 1 || echo 0 )
@@ -120,6 +125,8 @@
 %define solaris11express 0
 %define solaris11 0
 %define solaris12 0
+%define omnios 0
+
 
 #boolean flags for major osdistro names - *with* versioning the releases
 #use osbuild in addition to finer granularity, e.g. osbuild >= 148
@@ -209,22 +216,25 @@
 #below probably release of 2010.05 (was 2010.03 or whatever name)
 
 
-##START build 151 and up, OpenIndiana
-#NOTE: we try to set a resonable opensolaris/solaris express release
-# name as well, they should behave similar. Remaining issues to be fixed
-# in consuming spec file!
+#root@nas:~# cat /etc/release | grep OmniOS
+#  OmniOS v11 r151006
+#root@nas:~# cat /etc/release | grep OmniOS
+#  OmniOS v11 r151008
+
+
+##START build 151 006 and 008 and up , OmniOS
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 151 )
-%if %( egrep 'OpenIndiana Development' /etc/release > /dev/null && echo 1 || echo 0 )
+#  OmniOS v11 r151006
+#  OmniOS v11 r151008
+%if %( egrep 'OmniOS ' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
-%define openindiana 1
-##TODO## replace oi201100
-%define oi201100    1
-%define osdistrelnumber 151
+%define omnios 1
+%define osdistrelnumber $( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
 #                                below: subject to change!
-%define osdistrelname   "OpenIndiana"
+%define osdistrelname   "OmniOS"
 #this was the last check, skip all others
 %define osdet299999 0
 %else
@@ -423,6 +433,8 @@
 
 
 %changelog
+* Sat Apr 12 2014 - Thomas Wagner
+- add omnios OmniOS v11 r151008 support (OOS151008)
 * Sun Mar 23 2014 - Thomas Wagner
 - add s11 11.2 support, define s110200 and distrelnumber 201102 (S11.2)
 - fix osdistrelnumber (S11.1)
