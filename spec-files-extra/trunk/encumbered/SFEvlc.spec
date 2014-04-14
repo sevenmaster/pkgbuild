@@ -1,4 +1,78 @@
+##
 #
+##check features!
+#pkgbuild: configure: WARNING: Library freerdp >= 1.0.1 needed for libfreerdp was not found
+#pkgbuild: configure: WARNING: Library smbclient needed for smbclient was not found
+#pkgbuild: checking for ebml/EbmlVersion.h... no
+#pkgbuild: checking for postproc/postprocess.h... no
+#pkgbuild: checking for tremor/ivorbiscodec.h... no
+#pkgbuild: configure: WARNING: Library dirac >= 0.10.0 needed for dirac was not found
+#pkgbuild: configure: WARNING: Library libmfx needed for quicksync was not found
+#pkgbuild: configure: WARNING: Library fluidsynth >= 1.1.2 needed for fluidsynth was not found
+#pkgbuild: configure: WARNING: Library kate >= 0.3.0 needed for kate was not found
+#pkgbuild: checking for VDPAU... no
+#pkgbuild: checking for Carbon/Carbon.h... no
+#pkgbuild: configure: WARNING: Library caca >= 0.99.beta14 needed for caca was not found
+#pkgbuild: configure: WARNING: Library libgoom2 needed for goom was not found
+#pkgbuild: configure: WARNING: Library libmtp >= 1.0.0 needed for mtp was not found
+#pkgbuild: configure: WARNING: unrecognized options: --enable-real, --disable-dvb, --enable-id3tag, --enable-asademux, --enable-snapshot, --enable-switcher, --disable-smb
+#pkgbuild:
+#
+#check-dependenciespkgdepend resolve returned 0
+#check-dependencies  dependency discovered: audio/faad2@2.7-0.0.151.1.8
+#check-dependencies  dependency discovered: audio/twolame@0.3.13-0.0.151.1.8
+#check-dependencies  dependency discovered: codec/flac@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: codec/libtheora@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: codec/ogg-vorbis@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: codec/speex@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: image/library/libpng@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: image/library/librsvg@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/aalib@1.4.5-0.151.1.8
+#check-dependencies  dependency discovered: library/audio/liba52@0.7.4-0.0.151.1.8
+#check-dependencies  dependency discovered: library/audio/libdca@0.0.5-0.0.151.1.8
+#check-dependencies  dependency discovered: library/audio/libmad@0.15.1.2-0.0.151.1.8
+#check-dependencies  dependency discovered: library/audio/libmpcdec@1.2.6-0.0.151.1.8
+#check-dependencies  dependency discovered: library/desktop/g++/qt@4.8.5-0.0.151.1.8
+#check-dependencies  dependency discovered: library/desktop/gtk2@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/fribidi@0.19.2-0.0.151.1.8
+#check-dependencies  dependency discovered: library/glib2@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/gnome/gnome-vfs@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/libiconv@1.14-0.0.151.1.8
+#check-dependencies  dependency discovered: library/libidn@1.9-0.151.1.8
+#check-dependencies  dependency discovered: library/libnotify@0.4.5-0.151.1.8
+#check-dependencies  dependency discovered: library/libtar@1.2.11-0.0.151.1.8
+#check-dependencies  dependency discovered: library/libxml2@2.7.6-0.151.1.8
+#check-dependencies  dependency discovered: library/sdl@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/security/libgpg-error@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: library/video/libass@0.10.1-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/libdvbpsi@0.2.2-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/libdvdnav@4.2.0-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/libdvdread@4.2.0-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/libmpeg2@0.5.1-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/libschroedinger@1.0.11-0.0.151.1.8
+#check-dependencies  dependency discovered: library/video/x264@0.138.0.20131031-0.0.151.1.8
+#check-dependencies  dependency discovered: library/zlib@1.2.3-0.151.1.8
+#check-dependencies  dependency discovered: runtime/lua@5.1.4-0.151.1.8
+#check-dependencies  dependency discovered: sfe/system/library/gcc-46-runtime@4.6.4-0.0.151.1.8
+#check-dependencies  dependency discovered: sfe/system/library/gcc-runtime@4.6.4-0.0.151.1.8
+#check-dependencies  dependency discovered: shell/bash@4.0.28-0.151.1.8
+#check-dependencies  dependency discovered: system/library/fontconfig@2.8.0-0.151.1.8
+#check-dependencies  dependency discovered: system/library/freetype-2@2.4.11-0.151.1.8
+#check-dependencies  dependency discovered: system/library/libdbus@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: system/library/libupnp@1.6.6-0.0.151.1.8
+#check-dependencies  dependency discovered: system/library/math@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: system/library/security/libgcrypt@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: system/library@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: system/network/avahi@0.5.11-0.151.1.8
+#check-dependencies  dependency discovered: video/ffmpeg@2.1.1-0.0.151.1.8
+#check-dependencies  dependency discovered: x11/library/libx11@1.3.5-0.151.1.8
+#check-dependencies  dependency discovered: x11/library/libxext@1.1.2-0.151.1.8
+#check-dependencies  dependency discovered: x11/library/libxinerama@1.1-0.151.1.8
+#check-dependencies  dependency discovered: x11/library/libxpm@3.5.8-0.151.1.8
+#check-dependenciespkgbuild: omitting dependency SFEvlc as it is a dependency on the same IPS package
+#check-dependenciesWARNING: omitting SUNWxorg-clientlibs from the IPS manifest
+#check-dependenciesCalling script /localhomes/sfe/packages/PKGMAPS/scripts/media%2Fvlc_ips.sh
+
 # spec file for package SFEvlc
 #
 # includes module(s): vlc
@@ -122,7 +196,7 @@ Requires: x11/library/libxcb
 
 Name:                   SFEvlc
 Summary:                vlc - multimedia player and streaming server
-Version:                2.1.1
+Version:                2.1.4
 Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.xz
 #Patch3:                 vlc-03-1141-oss.diff
 #Patch3:                vlc-03-208-oss.diff
@@ -266,6 +340,13 @@ Requires:      %{pnm_requires_pulseaudio}
 
 BuildRequires: %{pnm_buildrequires_SUNWltdl}
 Requires: %{pnm_requires_SUNWltdl}
+
+##TODO## make this a pnm macro
+%if %{os2nnn}
+BuildRequires: driver/graphics/nvidia
+%else
+BuildRequires: NVDAgraphics
+%endif
 
 ##TODO## eventually can be omitted, or patched out of Makefile
 ##BuildRequires: SUNWgit
@@ -419,6 +500,15 @@ export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -R/usr/g++/lib"
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -lumem"
 %else
 %endif
+
+#trick to find GL/gl.h even if no ogl-select was actively linking the NVIDIA
+#or mesa GL-include directories /usr/include/GL/gl.h -> ../../../system/volatile/opengl/include/gl.h
+if [ ! -r /system/volatile/opengl/include/gl.h ]
+then
+  ln -s /usr/X11/include/NVIDIA/GL include/GL
+  export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
+fi
+
 
 export LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"
 
@@ -633,6 +723,9 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Mar 28 2014 - Thomas Wagner
+- bump to 2.1.4
+- if ogl-select is disabled, then GL is not found. BuildRequire NVDAgraphics driver/graphics/nvidia and make it found.
 * Sat Dec  7 2013 - Thomas Wagner
 - bump to 2.1.1
 - change BuildRequires from SFEgcc-45 to SFEgcc, CC=gcc CXX=g++
