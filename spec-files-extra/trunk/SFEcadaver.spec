@@ -21,8 +21,8 @@ Patch1:		cadaver-01-locale.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:	SUNWneon
-Requires:	SUNWneon
+BuildRequires:	SFEneon-gnu
+Requires:	SFEneon-gnu
 
 %if %build_l10n
 %package l10n
@@ -41,8 +41,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags"
+export CFLAGS="%optflags -I%{gnu_inc}"
+export LDFLAGS="%_ldflags %{gnu_lib_path}"
 ./configure --prefix=%{_prefix}		\
 	--libdir=%{_libdir}		\
 	--libexecdir=%{_libexecdir}	\
@@ -80,6 +80,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Apr 10 2014 - Thomas Wagner
+- Needs /usr/gnu/lib*curses* and /usr/gnu/libreadline or get tgetent not implemented error
+  change (Build)Requires SFEneon (will be found first, so we should depend on it)
+- add IPS_Package_Name and group
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
 - added License and SUNW_Copyright tags
 * Sat Mar 26 2011 - Milan Jurik
