@@ -24,8 +24,8 @@ SUNW_BaseDir:		%{_prefix}
 Requires: SUNWlibms
 Requires: SUNWzlib
 Requires: SUNWlexpt
-Requires: SUNWopenssl-libraries
-BuildRequires: SUNWopenssl-include
+BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
+Requires:      %{pnm_requires_SUNWopenssl_libraries}
 BuildRequires: %{pnm_buildrequires_SUNWsfwhea}
 
 %package devel
@@ -132,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Apr 10 2014 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SUNWopenssl_include}
 * Fri Jun 29 2012 - Thomas Wagner
 - bump to 0.29.6
 - rework to use standard *FLAGS
