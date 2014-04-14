@@ -10,7 +10,7 @@
 %include packagenamemacros.inc
 
 #change version number only here.
-%define ffmpeg_version 2.1.1
+%define ffmpeg_version 2.2
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -59,8 +59,12 @@ BuildRequires: %pnm_buildrequires_perl_default
 BuildRequires: SUNWxwinc
 Requires: SUNWxwrtl
 Requires: SUNWzlib
+BuildRequires: %{pnm_buildrequires_SUNWbzip}
+Requires:      %{pnm_requires_SUNWbzip}
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
 Requires:      %{pnm_requires_SUNWlibsdl}
+BuildRequires: %{pnm_buildrequires_SUNWopenssl}
+Requires: %{pnm_requires_SUNWopenssl}
 BuildRequires: SFElibgsm-devel
 Requires: SFElibgsm
 BuildRequires: SFExvid-devel
@@ -185,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 28 2014 - Thomas Wagner
+- bump to 2.2
+- add (Build)Requires to %{pnm_buildrequires_SUNWopenssl}, %{pnm_buildrequires_SUNWbzip}
 * Tue Dec 24 2013 - Thomas Wagner
 - change (Build)Requires to SFEfaac-gpp(-devel)
 - follow /usr/g++ directory layout, add to CFLAGS / LDFLAGS include /usr/g++/include and -R|-L/usr/g++/lib/%{arch}
