@@ -509,6 +509,11 @@ then
   export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
 fi
 
+# vdpau.pc is missing from driver/graphics/nvidia
+# C compiler flags for VDPAU, overriding pkg-config
+# linker flags for VDPAU, overriding pkg-config
+export VDPAU_CFLAGS="-I %{_includedir}"
+export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
 
 export LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"
 
@@ -723,6 +728,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Tue Apr 15 2014 - Thomas Wagner
+- try VDPAU
 * Sat Mar 28 2014 - Thomas Wagner
 - bump to 2.1.4
 - if ogl-select is disabled, then GL is not found. BuildRequire NVDAgraphics driver/graphics/nvidia and make it found.
