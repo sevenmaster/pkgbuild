@@ -112,7 +112,7 @@ CDDL HEADER END
         </template>
 	</instance>
 
-        <stability value='External' />
+        <stability value='Evolving' />
 </service>
 
 </service_bundle>

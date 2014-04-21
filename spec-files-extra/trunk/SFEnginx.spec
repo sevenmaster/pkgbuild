@@ -5,6 +5,7 @@
 # package are under the same license as the package itself.
 #
 # Owner: lewellyn
+# Modified: ianj 2013-2014
 #
 
 # NOTE: This package will include all normally-optional modules which do not
@@ -33,10 +34,11 @@
 ### 
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:		SFEnginx
-IPS_Package_Name:	service/network/nginx
-Version:	1.0.12
+IPS_Package_Name:	web/server/nginx
+Version:	1.4.7
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -55,15 +57,16 @@ Meta(info.maintainer):		Matt Lewandowsky <matt@greenviolet.net>
 
 %include default-depend.inc
 
-BuildRequires:	SUNWgsed
-BuildRequires:	SUNWopenssl-include
-Requires:	SUNWopenssl-libraries
-Requires:	SUNWpcre
-Requires:	SUNWzlib
-BuildRequires:	SUNWgd2
-Requires:	SUNWgd2
-Requires:	SUNWlxml
-Requires:	SUNWlxsl
+BuildRequires:	%{pnm_buildrequires_SUNWgsed_devel}
+BuildRequires:	%{pnm_buildrequires_SUNWopenssl_include}
+Requires:		%{pnm_requires_SUNWopenssl_libraries}
+Requires:		%{pnm_requires_SUNWpcre}
+Requires:		%{pnm_requires_SUNWzlib}
+Requires:		%{pnm_requires_SUNWlxsl}
+BuildRequires:	%{pnm_buildrequires_SUNWgd2_devel}
+Requires:		%{pnm_requires_SUNWgd2}
+Requires:		%{pnm_requires_SUNWlxml}
+Requires:		%{pnm_requires_SUNWlxsl}
 
 %package root
 Summary:		%{name} - root filesystem files, /
@@ -133,10 +136,11 @@ export LDFLAGS="%{_ldflags}"
 %else
 # Sun Studio
 export LDFLAGS="%{_ldflags}"
+# export CFLAGS="%{optflags}"
 
 %endif # _with_gcc
 
-export LD=/usr/ccs/bin/ld
+# export LD=/usr/ccs/bin/ld
 
 # Define the things we use more than once.
 %define statedir %{_localstatedir}/%{sname}
@@ -217,6 +221,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 18 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- add CFLAGS
+* Tue Apr 15 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- fix IPS_package_name to match other web server packages
+* Wed Apr 09 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.4.7
+* Wed Jul 03 2013 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.4.1
 * Tue Feb 07 2012 - Milan Jurik
 - bump to 1.0.12
 * Fri Oct 14 2011 - Thomas Wagner
