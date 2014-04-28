@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Apr 28 2014 - Thomas Wagner
+- add CFLAGS, LDFLAGS with -lxnet
+- bump to 0.6.4
 * Sat Oct 11 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Wed Jul 20 2011 - Alex Viskovatoff
