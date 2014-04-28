@@ -12,7 +12,7 @@
 Name:           libmms
 Summary:        mms stream protocol library
 Group:          Libraries/Multimedia
-Version:        0.6.2
+Version:        0.6.4
 Release:        1
 Distribution:   Java Desktop System
 Vendor:         Sun Microsystems, Inc.
@@ -41,6 +41,9 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
+export tCFLAGS="%optflags"
+export LDFLAGS="%_ldflags -lxnet"
+
 libtoolize --force
 aclocal $ACLOCAL_FLAGS -I .
 autoheader
@@ -68,12 +71,6 @@ find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-/sbin/ldconfig
-
-%postun
-/sbin/ldconfig
-
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING.LIB ChangeLog NEWS README TODO README.LICENSE
@@ -88,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/libmms.pc
 
 %changelog
+* Mon Apr 28 2014 - Thomas Wagner
+- add CFLAGS, LDFLAGS with -lxnet
+- bump to 0.6.4
 * Sun Oct 23 2011 - Milan Jurik
 - bump to 0.6.2
 * Thu Jun 10 2010 - Albert Lee <trisk@opensolaris.org>
