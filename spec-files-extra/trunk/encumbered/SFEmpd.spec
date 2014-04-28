@@ -2,11 +2,6 @@
 # spec file for package SFEmpd
 #
 
-#
-# Copyright (c) 2006 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
-#
 
 # For the output section of ~/.mpdconf or /etc/mpd.conf try:
 #
@@ -47,12 +42,17 @@ BuildRequires: SFElibsamplerate-devel
 BuildRequires: SUNWogg-vorbis-devel
 BuildRequires: SUNWgnome-audio-devel
 BuildRequires: SUNWflac-devel
+BuildRequires: SFEopus-devel
+BuildRequires: SFEwavpack-devel
+BuildRequires: SFElibmms-devel
 BuildRequires: SFElibshout
 BuildRequires: SFElibcdio
+BuildRequires: SFElibmpdclient-devel
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
 BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
 BuildRequires: SUNWglib2
 BuildRequires: %{pnm_buildrequires_SUNWcurl_devel}
+BuildRequires: SUNWlibsoup-devel
 #TODO# BuildRequires: SFElibpulse-devel
 BuildRequires: SUNWavahi-bridge-dsd-devel
 ## MPD INSTALL file says AO "should be used only if there is no native plugin
@@ -62,12 +62,17 @@ Requires: SFElibsamplerate
 Requires: SUNWogg-vorbis
 Requires: SUNWgnome-audio
 Requires: SUNWflac
+Requires: SFEopus
+Requires: SFEwavpack
+Requires: SFElibmms
 Requires: SFElibshout
 Requires: SFElibcdio
+Requires: SFElibmpdclient
 Requires: %{pnm_requires_SUNWsqlite3}
 Requires: %{pnm_requires_SFElibsndfile}
 Requires: SUNWglib2
 Requires: %{pnm_requires_SUNWcurl}
+Requires: SUNWlibsoup
 #TODO# Requires: SFElibpulse
 Requires: SUNWavahi-bridge-dsd
 %if %build_encumbered
@@ -136,12 +141,8 @@ sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure
 %endif
 #optional:
             # --with-zeroconf=no   \
+#let pulse be autodetected and added as dependency by pkgdepend on IPS based systems
             # --enable-pulse
-
-# According to man intro.3, the following is ill-advised
-# # Be modern and use libxnet instead of libsocket
-# sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
-# mv Makefile.xnet Makefile
 
 gmake -j$CPUS
 
@@ -174,6 +175,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog 
+* Thu Mar 20 2014 - Thomas Wagner
+- add SFEopus, SFEwavpack, SFElibmms, SUNWlibsoup, SFElibmpdclient
+- let pulseaudio be auto-detected for the moment, should be a pnm_macro in the future
+- compile problem in Error.hh still unresolved, stay with gcc for now
 * Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - change (Build)Requires to %{pnm_buildrequires_SUNWcurl_devel}
 * Tue Feb 11 2014 - Alex Viskovatoff <herzen@imap.cc>
