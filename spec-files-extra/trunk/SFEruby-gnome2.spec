@@ -16,6 +16,8 @@ Source:                 %{src_url}/%{src_name}-all-%{version}.tar.gz
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+BuildRequires: SFEruby
+BuildRequires: SFEruby-pkgconfig
 Requires: SFEruby
 
 %prep
@@ -44,6 +46,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Tue Apr 29 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add BuildRequires: SFEruby-pkgconfig
 * Tue Apr 29 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 2.2.0
 - add IPS_package_name

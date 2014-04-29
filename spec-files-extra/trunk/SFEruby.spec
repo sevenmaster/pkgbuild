@@ -10,7 +10,7 @@ Name:         SFEruby
 IPS_Package_Name:	runtime/ruby-21
 Summary:      Object oriented scripting language
 URL:          http://www.ruby-lang.org/
-Version:      2.1.0
+Version:      2.1.1
 Source:       http://cache.ruby-lang.org/pub/ruby/2.1/ruby-%version.tar.gz
 Patch1:       ruby-01-endian.diff
 #Patch2:       ruby-02-small-files-for-libelf.diff
@@ -67,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Apr 29 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- update to 2.1.1
 * Mon Mar 24 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - %include packagenamemacros.inc
 - change Requires to %{pnm_requires_openssl}
