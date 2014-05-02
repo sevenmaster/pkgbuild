@@ -10,7 +10,7 @@
 %define django_major_version 1.6
 
 Name:		SFEpython26-django
-IPS_Package_Name:	web/python/django
+IPS_Package_Name:	library/python-2/django-26
 Version:	1.6.2
 Summary:	A high-level Python Web framework that enables Rapid Development
 License:	BSD
@@ -48,6 +48,8 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Fri May 02 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Fix package name to match system python libraries
 * Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 1.6.2
 - %define django_major_version for Source URL
