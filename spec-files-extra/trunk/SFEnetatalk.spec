@@ -14,7 +14,7 @@ IPS_package_name:       service/network/netatalk
 Summary:        Open Source Apple Filing Protocol (AFP) fileserver
 Group:		System/Services
 Version:        2.2.4
-License:        GLPv2
+License:        GPLv2
 Source:         %{sf_download}/netatalk/netatalk-%{version}.tar.bz2
 URL:            http://netatalk.sourceforge.net/
 Group:          System/File System
@@ -43,7 +43,7 @@ Requires: %name-root
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:            %{_basedir}
-SUNW_Copyright: netatalk.copyright
+SUNW_Copyright: %{license}.copyright
 
 # OpenSolaris IPS Manifest Fields
 Meta(info.upstream): http://netatalk.sourceforge.net/ 
@@ -150,6 +150,9 @@ rm -rf %name-%version
 
 
 %changelog
+* May 02 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- typo in License: GPLv2
+- remove package-specific copyright file
 * Sat Jan 26 2013 - TAKI,Yasushi <taki@justplayer.com>
 - When Solaris 11.1, with /etc/pam.d/netatalk. when other, without /etc/pam.d/netatlk.
 - bump to 2.2.4
