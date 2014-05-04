@@ -5,17 +5,22 @@
 #
 %include Solaris.inc
 
-%define src_name	ldns
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use ldns_64 = ldns.spec
+%endif
+
+%include base.inc
+%use ldns = ldns.spec
 
 Name:		SFEldns
 IPS_Package_Name:	library/ldns
-URL:		http://www.nlnetlabs.nl/projects/ldns/
-Summary:	ldns library for DNS programming
-Version:	1.6.16
-Group:		System/Libraries
-License:	BSD
+URL:		%{ldns.url}
+Summary:	%{ldns.summary}
+Version:	%{ldns.version}
+Group:		%{ldns.group}
+License:	%{ldns.license}
 SUNW_Copyright:	ldns.copyright
-Source:		http://www.nlnetlabs.nl/downloads/%{src_name}/%{src_name}-%{version}.tar.gz 
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -32,38 +37,68 @@ SUNW_BaseDir:    %{_basedir}
 Requires: %name
 
 %prep
-%setup -q -n %{src_name}-%{version}
+rm -rf %name-%version
+mkdir %name-%version
+
+%ifarch amd64 sparcv9
+mkdir %name-%version/%_arch64
+%ldns_64.prep -d %name-%version/%_arch64
+%endif
+
+mkdir %name-%version/%{base_arch}
+%ldns.prep -d %name-%version/%{base_arch}
 
 %build
-./configure --prefix=%{_prefix}	\
-	--sysconfdir=%{_sysconfdir} \
-	--disable-static \
-	--disable-ecdsa \
-	--disable-gost
+%ifarch amd64 sparcv9
+%ldns_64.build -d %name-%version/%_arch64
+%endif
 
-make
+%ldns.build -d %name-%version/%{base_arch}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+%ifarch amd64 sparcv9
+%ldns_64.install -d %name-%version/%_arch64
+%endif
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+%ldns.install -d %name-%version/%{base_arch}
+
+mkdir -p %{buildroot}%{_bindir}/%{base_isa}
+mv %{buildroot}%{_bindir}/drill %{buildroot}%{_bindir}/%{base_isa}
+cd %{buildroot}%{_bindir} && ln -s ../../usr/lib/isaexec drill
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr (-, root, bin)
+%if %can_isaexec
+%{_bindir}/%{base_isa}/drill
+%hard %{_bindir}/drill
+%ifarch amd64 sparcv9
+%{_bindir}/%{_arch64}/drill
+%endif
+%endif
 %{_libdir}/libldns.so*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/libldns.so*
+%endif
+
 
 %files devel
 %defattr (-, root, bin)
 %{_bindir}/ldns-config
-%{_includedir}/%{src_name}
+%ifarch amd64 sparcv9
+%{_bindir}/%{_arch64}/ldns-config
+%endif
+%{_includedir}/ldns
 %dir %attr (0755, root, sys) %{_datadir}
 %{_mandir}
 
 %changelog
+* Sun May 04 2014 - Milan Jurik
+- bump to 1.6.17, add multiarch support
 * Mon Sep 09 2013 - Milan Jurik
 - bump to 1.6.16
 * Sun Jul 29 2012 - Milan Jurik

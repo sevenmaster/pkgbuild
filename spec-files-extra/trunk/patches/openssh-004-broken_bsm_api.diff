@@ -1,0 +1,12 @@
+# Block newer S11 audit API
+--- orig/audit-bsm.c	Sun May  4 21:34:59 2014
++++ new/audit-bsm.c	Sun May  4 21:36:30 2014
+@@ -282,7 +282,7 @@
+ 	(void) au_write(ad, au_to_text(string));
+ 	(void) au_write(ad, AUToReturnFunc(typ, rc));
+ 
+-#ifdef BROKEN_BSM_API
++#ifdef S11_BSM_API
+ 	/* The last argument is the event modifier flags. For
+ 	   some seemingly undocumented reason it was added in
+ 	   Solaris 11. */

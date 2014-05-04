@@ -1,3 +1,9 @@
+2014-15-04 Milan Jurik <sfnet@xylab.cz>
+
+	* SFEldns.spec: bump to 1.6.17, add multiarch support
+	* base-specs/libedit.spec: 20140213-3.1
+	* SFEopenssh.spec: bump to 6.6p2, add openssh as optional to system ssh
+
 2014-01-16  Logan O'Sullivan Bruns  <logan@gedanken.org>
 
 	* SFEjena.spec: rename softlink to tdbdump to jena-tdbdump to
