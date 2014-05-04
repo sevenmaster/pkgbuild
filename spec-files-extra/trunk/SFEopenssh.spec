@@ -26,6 +26,7 @@ Source2:	sshd
 Source3:	ssh-askpass
 Source4:	openssh.xml
 Source5:	opensshd
+Patch1:		openssh-01-motd.diff
 Patch2:		openssh-002-pam_support.diff
 Patch3:		openssh-003-last_login.diff
 Patch4:		openssh-004-broken_bsm_api.diff
@@ -64,6 +65,7 @@ SUNW_BaseDir:	%{_basedir}
 
 %prep
 %setup -q -n %{src_name}-%{version}
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
