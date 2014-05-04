@@ -5,7 +5,7 @@
 # package are under the same license as the package itself.
 #
 #
-%define tarball_version	20120601-3.0
+%define tarball_version	20140213-3.1
 %define tarball_name	libedit
 
 Name:		SFEeditline
@@ -57,6 +57,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun May 04 2014 - Milan Jurik
+- bump to 20140213-3.1
 * Sat Jun 02 2012 - Milan Jurik
 - better multiarch support
 * Sun Jul 31 JST 2011 TAKI, Yasushi <taki@justplayer.com>

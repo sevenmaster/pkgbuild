@@ -1,0 +1,78 @@
+#
+# We changed the OpenSSH to not record the last login time when the "UsePAM"
+# option is on, because the PAM session module in Solaris will record the last
+# login time.  This is for Solaris only, so we will not contribute back this
+# change to the upstream community.
+#
+--- orig/sshd.c	Thu Feb 27 00:20:08 2014
++++ new/sshd.c	Sun May  4 20:50:52 2014
+@@ -129,6 +129,10 @@
+ int deny_severity;
+ #endif /* LIBWRAP */
+ 
++#if defined(LASTLOG_FIX) && defined(USE_PAM)
++#include "sshlogin.h"
++#endif
++
+ #ifndef O_NOCTTY
+ #define O_NOCTTY	0
+ #endif
+@@ -2140,6 +2144,10 @@
+ #endif
+ #ifdef USE_PAM
+ 	if (options.use_pam) {
++#ifdef LASTLOG_FIX
++		store_lastlog_message(authctxt->pw->pw_name,
++		    authctxt->pw->pw_uid);
++#endif
+ 		do_pam_setcred(1);
+ 		do_pam_session();
+ 	}
+--- orig/sshlogin.h	Thu Aug  1 06:34:17 2013
++++ new/sshlogin.h	Sun May  4 20:50:52 2014
+@@ -14,6 +14,9 @@
+ 
+ void	record_login(pid_t, const char *, const char *, uid_t,
+     const char *, struct sockaddr *, socklen_t);
++#ifdef LASTLOG_FIX
++void store_lastlog_message(const char *, uid_t);
++#endif
+ void   record_logout(pid_t, const char *, const char *);
+ time_t	get_last_login_time(uid_t, const char *, char *, size_t);
+ 
+--- orig/sshlogin.c	Sun May  4 20:50:39 2014
++++ new/sshlogin.c	Sun May  4 20:50:52 2014
+@@ -83,7 +83,11 @@
+  * Generate and store last login message.  This must be done before
+  * login_login() is called and lastlog is updated.
+  */
++#ifndef LASTLOG_FIX
+ static void
++#else
++void
++#endif
+ store_lastlog_message(const char *user, uid_t uid)
+ {
+ #ifndef NO_SSH_LASTLOG
+@@ -128,6 +132,10 @@
+ {
+ 	struct logininfo *li;
+ 
++#ifdef LASTLOG_FIX
++	/* In Solaris, PAM takes care of last login tracking */
++        if (!options.use_pam) {
++#endif
+ 	/* save previous login details before writing new */
+ 	store_lastlog_message(user, uid);
+ 
+@@ -135,6 +143,10 @@
+ 	login_set_addr(li, addr, addrlen);
+ 	login_login(li);
+ 	login_free_entry(li);
++
++#ifdef LASTLOG_FIX
++	}
++#endif
+ }
+ 
+ #ifdef LOGIN_NEEDS_UTMPX
