@@ -1,0 +1,11 @@
+--- orig/servconf.c	Mon May  5 00:12:37 2014
++++ new/servconf.c	Sun May  4 23:00:48 2014
+@@ -208,7 +208,7 @@
+ 	if (options->ignore_user_known_hosts == -1)
+ 		options->ignore_user_known_hosts = 0;
+ 	if (options->print_motd == -1)
+-		options->print_motd = 1;
++		options->print_motd = 0;
+ 	if (options->print_lastlog == -1)
+ 		options->print_lastlog = 1;
+ 	if (options->x11_forwarding == -1)
