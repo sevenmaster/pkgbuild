@@ -9,6 +9,7 @@
 %include packagenamemacros.inc
 
 Name:		SFEperl-net-snmp
+IPS_package_name: library/perl-5/net-snmp
 Version:	6.0.1
 Summary:	Object oriented interface to SNMP
 Group:		Development/Libraries
@@ -81,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 05 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- add IPS_package_name
 * Sat Aug  4 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
   paths dynamic, define fewer directories in %files
