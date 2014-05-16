@@ -1,3 +1,4 @@
+# /* vim: set filetype=spec : */ 
 
 #note: one piece of the include files is generated automaticly:
 #      generate the file packagenames.defines.inc by fetching the
@@ -30,6 +31,11 @@
 #packagenamemacros.inc is included --- NOTE: this variable is primarily 
 # for internal use by packagenamemacros.inc
 %define packagenamemacros 1
+
+# inially including a general file with definitions. Later on, some of
+# those definitions get overwritten if needed
+
+%include packagenames.define.initial.inc
 
 # order in this include file: OLDEST build on top, ascending
 # 81
@@ -83,6 +89,15 @@
 #>=133
 %endif
 
+#NOTE: cumulative
+#OmniOS unfortunatly removed (all?) legacy package names. Therefore we 
+#need to add pnm_macros for translate those from e.g. SUNWzlib to library/zlib
+%if %{omnios}
+%include packagenames.define.omnios.inc
+%include packagenames.define.omnios-specialcases.inc
+#>=133
+%endif
+
 
 # finally including a general file with definitions, to overwrite possible
 # special cases (and eventually overriding content which got defined above)
@@ -90,6 +105,9 @@
 %include packagenames.define.allbuilds.inc
 
 %changelog
+* Fri May 16 2014 - Thomas Wagner
+- %include packagenames.define.initial.inc to pre-load defaults
+- add Support for OmniOS with packagenames.define.omnios.inc / packagenames.define.omnios-specialcases.inc
 * Mon Nov  4 2013 - Thomas Wagner
 - make check for osdistrofeatures.inc robust against non-defined %{osdistrofeatures} variable
 * Fri Jun 28 2013 - Thomas Wagner

@@ -1,3 +1,4 @@
+# /* vim: set filetype=spec : */ 
 # 
 # place defines to match older packages here - this include file is the first of a series
 # 
@@ -1106,8 +1107,8 @@
 %define pnm_buildrequires_compress_xz		SFExz-gnu
 %define pnm_requires_compress_xz		SFExz-gnu
 
-#cases >= 151 && OpenIndiana
-%if %{openindiana}
+#cases >= 151 && ( OpenIndiana | OmniOS )
+%if %( expr %{openindiana} '+' %{omnios} )
 %if %( expr %{osbuild} '>=' 151 )
 %define pnm_buildrequires_SFExz_gnu		compress/xz
 %define pnm_requires_SFExz_gnu			compress/xz
@@ -1169,6 +1170,14 @@
 %define pnm_requires_SFEfreeglut		x11/library/freeglut
 %define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
 %define pnm_requires_x11_library_freeglut	x11/library/freeglut
+#starting with: developer/documentation-tool/asciidoc@8.6.8,5.12-5.12.0.0.0.34.0
+%if %( expr %{osbuild} '>=' 34 )
+%define pnm_buildrequires_SFEasciidoc   	developer/documentation-tool/asciidoc
+%define pnm_requires_SFEasciidoc        	developer/documentation-tool/asciidoc
+#END osbuild >= 34
+%endif
+#%define pnm_buildrequires_SFEasciidoc   	pkg://solaris/developer/documentation-tool/asciidoc
+#%define pnm_requires_SFEasciidoc        	pkg://solaris/developer/documentation-tool/asciidoc
 #END solaris12
 %endif
 
@@ -1255,7 +1264,7 @@
 #END solaris11express >=174, solaris 11 solaris 12
 
 ##TODO## maybe re-locate the definitions below if that helps getting better overview
-
+#SEE ALSO: new include file packagenames.define.initial.inc
 #NOTE# Defaults here for os2nn, SXCE, and so on. This is overlayed if one 
 #distro needs this different!
 #pulseaudio, we currently have this in SFE - see below for more fresh distros
@@ -1574,7 +1583,13 @@
 %define pnm_buildrequires_python_default	runtime/python-26
 %define pnm_requires_python_default		runtime/python-26
 %endif
-#END %{solaris12}
+#END %{osbulild} => 133 or %{solaris12}
+
+# additinaly, in OmniOS we have a different python micro version number:
+%if %{omnios}
+%define python_major_minor_micro_version 2.6.8
+%endif
+#END %{omnios}
 
 
 #END setting python, changes with specific builds and distros  - Part 2 of 2
@@ -1754,6 +1769,10 @@
 %define pnm_buildrequires_ruby_default	SUNWruby18u
 %define pnm_requires_ruby_default	SUNWruby18u
 
+##TODO## well, we *need* a better way to determine what
+#sfe verison to use. Maybe putting ruby version number into
+#include file and include that here for sfe_ruby_* and as well
+#include that in SFEruby.spec - to keem them better in sync
 #Exception! We have two ruby_defaul, we add a define for a ruby
 #           version local to "SFE",
 #currently all the same for all osdistro
@@ -2241,8 +2260,17 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Fri May 16 2014 - Thomas Wagner
+- enhanced pnm_buildrequires_SFExz_gnu (add OOS151008)
+- set python_major_minor_micro_version 2.6.8 (OOS151008)
+* Fri Apr 26 2014 - Thomas Wagner
+- handle pnm_buildrequires_SFEasciidoc (S12 >= 34)
+* Mon Apr 21 2014 - Thomas Wagner
+- %define python_major_minor_micro_version 2.6.8 (OOS151008)
 * Sat Apr 12 2014 - Thomas Wagner
-- add perl_default 5.16.1 aka 6.4 for OmniOS
+- set pnm_buildrequires_SFExz_gnu compress/xz (OOS151008)
+* Sat Apr 12 2014 - Thomas Wagner
+- add perl_default 5.16.1 aka 6.4 for OmniOS (OOS151008)
 * Sun Mar 23 2014 - Thomas Wagner
 - use %{osdistrelnumber} '>=' 201101 instead of %{s110100} for pulseaudio, automake-111 in Solaris 11.1 (>= S11.1)
 - handle SFEgnugetopt / sfe/shell/gnu-getopt / solaris/shell/gnu-getopt (>= S11.2, S12)
