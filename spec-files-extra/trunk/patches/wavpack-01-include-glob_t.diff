@@ -1,0 +1,19 @@
+--- wavpack-4.70.0/cli/wavpack.c.orig	2014-03-29 01:07:07.210708778 +0100
++++ wavpack-4.70.0/cli/wavpack.c	2014-03-29 01:08:40.924160298 +0100
+@@ -37,13 +37,14 @@
+ #include "utils.h"
+ #include "md5.h"
+ 
+-#if defined (__GNUC__) && !defined(WIN32)
++/* #if defined (__GNUC__) && !defined(WIN32) */
+ #include <unistd.h>
+ #include <glob.h>
+ #include <sys/time.h>
+-#else
++/* #else
+ #include <sys/timeb.h>
+ #endif
++*/
+ 
+ #ifdef WIN32
+ #define stricmp(x,y) _stricmp(x,y)
