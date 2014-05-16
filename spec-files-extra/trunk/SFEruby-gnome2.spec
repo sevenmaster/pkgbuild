@@ -18,7 +18,9 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: SFEruby
 BuildRequires: SFEruby-pkgconfig
+BuildRequires: SFEruby-cairo
 Requires: SFEruby
+Requires: SFEruby-cairo
 
 %prep
 %setup -q -n %{src_name}-all-%{version}
@@ -46,6 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Thu May 15 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add (Build)Requires: SFEruby-cairo
 * Tue Apr 29 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add BuildRequires: SFEruby-pkgconfig
 * Tue Apr 29 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
