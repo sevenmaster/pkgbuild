@@ -7,7 +7,7 @@
 
 Name:		SFElibmicrohttpd
 IPS_package_name:  library/libmicrohttpd
-Version:	0.9.33
+Version:	0.9.36
 Summary:	Small Embeddable HTTP Server Library
 License:	GNU LGPL v2.1
 Group:		Development/Libraries
@@ -109,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Mon May 26 2014 - Thomas Wagner
+- bump to 0.9.36
 * Tue Dec 24 2013 - Thomas Wagner
 - fix %files
 * Sun Dec 22 2013 - Thomas Wagner
