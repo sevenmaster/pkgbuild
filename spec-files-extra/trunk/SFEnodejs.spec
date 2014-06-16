@@ -13,7 +13,7 @@
 Summary:	Asynchronous JavaScript Engine  
 Name:		SFEnodejs  
 IPS_Package_Name:	runtime/javascript/nodejs
-Version:	0.8.17
+Version:	0.10.29
 License:	BSD  
 Group:		System/Libraries  
 URL:		http://nodejs.org/  
@@ -89,6 +89,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/node  
 
 %changelog  
+* Mon Jun 16 2014 - Thomas Wagner
+- bump to 0.10.29 - #Node v0.8.27 (maint) and v0.10.29 (stable) released updating OpenSSL and fixing a UTF-8 issue with a breaking change
+* Wed Jan  1 2014 - Thomas Wagner
+- bump to 0.10.24
+* Sun May 26 2013 - Thomas Wagner
+- bump to 0.10.8
+* Wed Mar 06 2013 - Thomas Wagner
+- bump to 0.8.21
+* Wed Feb 06 2013 - Thomas Wagner
+- bump to 0.8.19
 * Fri Jan 11 2013 - Thomas Wagner
 - bump to 0.8.17
 * Sun Dec 30 2012 - Thomas Wagner
