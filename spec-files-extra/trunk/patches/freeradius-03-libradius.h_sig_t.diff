@@ -1,0 +1,15 @@
+--- freeradius-server-2.2.5/./src/include/libradius.h.orig	2014-04-28 21:13:08.000000000 +0200
++++ freeradius-server-2.2.5/./src/include/libradius.h	2014-06-16 20:22:29.491320963 +0200
+@@ -71,6 +71,12 @@
+ extern "C" {
+ #endif
+ 
++
++#if defined(_sun)
++  typedef void(*sig_t)(int);
++#endif
++
++
+ #define EAP_START               2
+ 
+ #define AUTH_VECTOR_LEN		16

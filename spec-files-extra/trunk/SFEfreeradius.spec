@@ -1,7 +1,4 @@
-#
-# Copyright (c) 2006 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
+##TODO## rework patch3 or remove it once it comes with the source distro
 
 ##TODO## check dependencies with check-deps(.pl) script
 ##TODO## what is the right thing to do in %postun, remove user/group or not
@@ -24,6 +21,8 @@ Source2:	     freeradius.xml
 Source3:             svc-freeradius
 #Patch1:              freeradius-01-types.diff
 #Patch2:              freeradius-02-makefiles.diff
+#should be obsolete some day
+Patch3:              freeradius-03-libradius.h_sig_t.diff
 URL:                 http://www.freeradius.org/
 
 SUNW_BaseDir:        %{_basedir}
@@ -78,6 +77,11 @@ cp %{SOURCE2} freeradius.xml
 cp %{SOURCE3} svc-freeradius
 #%patch1 -p1
 #%patch2 -p1
+#should be obsolete some day
+%patch3 -p1
+
+#or skip defining struct utmp in rlm_unix.c -> error
+gsed -i.bak -e 's?(_sun)?(__sun)?' src/include/sysutmp.h src/include/libradius.h
 
 #change all /bin/sh to /bin/bash since some scripts (certs/bootstrap) aren't 
 #working with old /bin/sh - /etc/raddb/certs/"random" file doesn't get created, read
@@ -103,7 +107,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-export CFLAGS="%optflags -I/usr/mysql/include/mysql `krb5-config --cflags` -I/usr/sfw/include"
+export CFLAGS="%optflags -I/usr/mysql/include/mysql `krb5-config --cflags` -I/usr/include/openldap -I/usr/sfw/include"
+export CFLAGS="${CFLAGS} -Dlt__PROGRAM__LTX_preloaded_symbols=lt_libltdl_LTX_preloaded_symbols"
 export LDFLAGS="%_ldflags -I/usr/mysql/include/mysql -L/usr/mysql/lib -R/usr/mysql/lib `krb5-config --libs` -L/usr/sfw/lib -R/usr/sfw/lib"
 export PERL=%{PERLpath}
 
@@ -252,6 +257,7 @@ user ftpuser=false gcos-field="freeradius" username="%{radiususer}" uid="%{radiu
 %class(renamenew) %attr (0700, %{radiususer}, %{radiusgroup}) %{_sysconfdir}/raddb/sql/*
 %class(renamenew) %attr (0700, %{radiususer}, %{radiusgroup}) %{_sysconfdir}/raddb/templates.conf
 %class(renamenew) %attr (0700, %{radiususer}, %{radiusgroup}) %{_sysconfdir}/raddb/users
+%class(renamenew) %attr (0700, %{radiususer}, %{radiusgroup}) %{_sysconfdir}/raddb/panic.gdb
 %dir %defattr (-, root, sys)
 #removed %dir %attr (0755, root, sys) %{_localstatedir}/run
 #removed %dir %attr (0755, %{radiususer}, %{radiusgroup}) %{_localstatedir}/run/radiusd
@@ -269,6 +275,11 @@ user ftpuser=false gcos-field="freeradius" username="%{radiususer}" uid="%{radiu
 %changelog
 * Mon Jun 16 2014 - Thomas Wagner
 - bump to 2.2.5
+- add patch3 sig_t
+- add -I/usr/include/openldap (define LDAP_OPT_X_TLS_HARD not found)
+- change define(_sun) to define(__sun) for sysutmp.h libradius.h (else possibly not detected right -> ut.ut_host undefined and more)
+- help linker with  -Dlt__PROGRAM__LTX_preloaded_symbols=lt_libltdl_LTX_preloaded_symbols or get symbol not found in modules.o
+- add new %files  %{_sysconfdir}/raddb/panic.gdb
 * Wed Sep 18 2013 - Thomas Wagner
 - bump to 2.2.1
 * Sat Dec 15 2012 - Thomas Wagner
