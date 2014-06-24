@@ -1,5 +1,24 @@
+
+CONTAINED IN OS PERL DISTRIBUTION in e.g. version 1.36 - WHAT DO TO?
+
+OPENINDIANA - nee to check if it is contained
+
+OmniOS
+
+Solaris 12
+
+
+Solaris 11.2:
+ ~/spec-files-extra pkg contents -r -m userland/userland-incorporation | grep -i ssleay
+depend facet.version-lock.library/perl-5/net-ssleay=true fmri=pkg:/library/perl-5/net-ssleay@1.36-0.175.2.0.0.40.0 type=incorporate
+depend facet.version-lock.library/perl-5/net-ssleay-512=true fmri=pkg:/library/perl-5/net-ssleay-512@1.36-0.175.2.0.0.40.0 type=incorporate
+depend facet.version-lock.library/perl-5/net-ssleay-584=true fmri=pkg:/library/perl-5/net-ssleay-584@1.36-0.175.2.0.0.40.0 type=incorporate
+depend facet.version-lock.SUNWperl-net-ssleay=true fmri=pkg:/SUNWperl-net-ssleay@1.35-0.133 type=incorporate
+
+
+
 #
-# spec file for package: SFEperl-mail-sendmail
+# spec file for package: SFEperl-net-ssleay
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -9,38 +28,38 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 0.79
-%define tarball_name    Mail-Sendmail
+%define tarball_version 1.63
+%define tarball_name    Net-SSLeay
 
-Name:		SFEperl-mail-sendmail
-IPS_package_name: library/perl-5/mail-sendmail
-Version:	0.79
-IPS_component_version: 0.79
-Summary:	Simple platform independent mailer
-License:	Artistic
+Name:		SFEperl-net-ssleay
+IPS_package_name: library/perl-5/net-ssleay
+Version:	1.63
+IPS_component_version: 1.63
+Summary:	Secure Socket Layer (based on OpenSSL)
+License:	OpenSSL
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~flora/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: perl.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIVKOVIC/Mail-Sendmail-%{tarball_version}.tar.gz
+#SUNW_Copyright: %{name}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Milivoj Ivkovic <mivkovic@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Florian Ragwitz <rafl@debian.org>
+Meta(info.upstream_url):        http://search.cpan.org/~flora/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Simple platform independent mailer
+Secure Socket Layer (based on OpenSSL)
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-perl Makefile.PL \
+echo "n" | perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
@@ -50,6 +69,9 @@ perl Makefile.PL \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+
+##TODO## find a propper way to not ask about testing
+#workaround testing question (no / do not test)
 make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
 
@@ -76,9 +98,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
-* Sat Jun 14 2014 - Thomas Wagner
-- rework spec version 0.79
-* Sat Aug  6 2011 - Thomas Wagner
-- add pnm_macro to Makefile.PL LIB= and %files
-- initial spec from taki@justplayer.com
-
+* Sun Jun  8 2014 - Thomas Wagner
+- initial spec 1.63

@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-mail-sendmail
+# spec file for package: SFEperl-date-manip
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -9,32 +9,32 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 0.79
-%define tarball_name    Mail-Sendmail
+%define tarball_version 6.45
+%define tarball_name    Date-Manip
 
-Name:		SFEperl-mail-sendmail
-IPS_package_name: library/perl-5/mail-sendmail
-Version:	0.79
-IPS_component_version: 0.79
-Summary:	Simple platform independent mailer
+Name:		SFEperl-date-manip
+IPS_package_name: library/perl-5/date-manip
+Version:	6.45
+IPS_component_version: 6.45
+Summary:	Complete date/time manipulation package
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~sbeck/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: perl.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIVKOVIC/Mail-Sendmail-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/S/SB/SBECK/Date-Manip-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Milivoj Ivkovic <mivkovic@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Sullivan Beck <sbeck@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~sbeck/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Simple platform independent mailer
+Complete date/time manipulation package
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -66,19 +66,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-#%dir %attr(0755,root,bin) %{_bindir}
-#%{_bindir}/*
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-#%dir %attr(0755, root, bin) %{_mandir}/man1
-#%{_mandir}/man1/*
+%dir %attr(0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*
 %dir %attr(0755, root, bin) %{_mandir}/man3
 %{_mandir}/man3/*
 
 %changelog
-* Sat Jun 14 2014 - Thomas Wagner
-- rework spec version 0.79
-* Sat Aug  6 2011 - Thomas Wagner
-- add pnm_macro to Makefile.PL LIB= and %files
-- initial spec from taki@justplayer.com
-
+* Fri Jun 13 2014 - Thomas Wagner
+- reworked spec version 6.45
+* Thu Sep 02 2010 - Milan Jurik
+- Initial spec based on Fedora

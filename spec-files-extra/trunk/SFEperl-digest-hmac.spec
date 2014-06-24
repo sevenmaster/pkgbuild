@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-mail-sendmail
+# spec file for package: SFEperl-digest-hmac
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -9,32 +9,32 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 0.79
-%define tarball_name    Mail-Sendmail
+%define tarball_version 1.03
+%define tarball_name    Digest-HMAC
 
-Name:		SFEperl-mail-sendmail
-IPS_package_name: library/perl-5/mail-sendmail
-Version:	0.79
-IPS_component_version: 0.79
-Summary:	Simple platform independent mailer
+Name:		SFEperl-digest-hmac
+IPS_package_name: library/perl-5/digest-hmac
+Version:	1.03
+IPS_component_version: 1.3
+Summary:	 HMAC message integrity check
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: perl.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIVKOVIC/Mail-Sendmail-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/Digest-HMAC-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Milivoj Ivkovic <mivkovic@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~mivkovic/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Gisle Aas <gisle@ActiveState.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Simple platform independent mailer
+ HMAC message integrity check
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -77,8 +77,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sat Jun 14 2014 - Thomas Wagner
-- rework spec version 0.79
-* Sat Aug  6 2011 - Thomas Wagner
-- add pnm_macro to Makefile.PL LIB= and %files
-- initial spec from taki@justplayer.com
-
+- initial spec version 1.03
