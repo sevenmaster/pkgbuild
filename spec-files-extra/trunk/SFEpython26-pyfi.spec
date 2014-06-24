@@ -15,8 +15,8 @@
 %define src_url         http://pypi.python.org/packages/source/P/PyFi
 %define src_name_uc     SetupTools
 %define src_name        PyFi
-%define src_version	0.1.20
-%define src_version_major_minor	0.1.20
+%define src_version	0.1.24
+%define src_version_major_minor	0.1.24
 %define packagename SFEpython%{python_version_package_string}-pyfi
 
 Name:		%{packagename}
@@ -72,6 +72,8 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Sat Jun 14 2014 - Thomas Wagner
+- bump to 0.1.24
 * Mon May 12 2014 - Thomas Wagner
 - bump to 0.1.20
 * Tue Feb 18 2014 - Thomas Wagner
