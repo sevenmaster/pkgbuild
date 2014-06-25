@@ -189,7 +189,11 @@ Requires: x11/library/libxcb
 
 ##TODO## temporarily disable building pulseaudio support
 %define enable_pulseaudio 0
-
+%if %{s110100}
+#pulseaudio was added with 0.175.1
+#library/audio/pulseaudio@1.1,5.11-0.175.1.0.0.18.0:20120611T222645Z
+%define enable_pulseaudio 1
+%endif
 
 %define	src_name	vlc
 %define	src_url		http://download.videolan.org/pub/videolan/vlc
@@ -505,7 +509,7 @@ export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -lumem"
 #or mesa GL-include directories /usr/include/GL/gl.h -> ../../../system/volatile/opengl/include/gl.h
 if [ ! -r /system/volatile/opengl/include/gl.h ]
 then
-  ln -s /usr/X11/include/NVIDIA/GL include/GL
+  [ -L include/GL ] || ln -s /usr/X11/include/NVIDIA/GL include/GL
   export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
 fi
 
@@ -728,6 +732,9 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Jun 25 2014 - Thomas Wagner
+- check for already existing symlink include/GL
+- enable building pulseaudio (S11.1)
 * Tue Apr 15 2014 - Thomas Wagner
 - try VDPAU
 * Sat Mar 28 2014 - Thomas Wagner
