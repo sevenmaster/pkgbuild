@@ -1,0 +1,134 @@
+#taken from: http://munin-monitoring.org/wiki/MuninConfigurationMasterCGI
+#apply regexes below on a fresh download
+#add lines ServerAdmin and DocumentRoot
+#s?/var/cache/munin/www?/var/munin/docs?
+#s?/var/cache?/var?
+
+<VirtualHost *:80>
+    ServerName munin.example.org
+    ServerAlias munin
+
+    #ServerAdmin youremail@yourdomain.tld
+
+    DocumentRoot /var/munin/docs
+
+    <IfModule !mod_rewrite.c>
+        # required because we serve out of the cgi directory and URLs are relative
+        Alias /munin-cgi/munin-cgi-html/static /var/cache/munin/www/static
+        RedirectMatch ^/$ /munin-cgi/munin-cgi-html/
+    </IfModule>
+
+    <IfModule mod_rewrite.c>
+        # Rewrite rules to serve traffic from the root instead of /munin-cgi
+        RewriteEngine On
+
+        # Static files
+        RewriteRule ^/favicon.ico /var/cache/munin/www/static/favicon.ico [L]
+        RewriteRule ^/static/(.*) /var/cache/munin/www/static/$1          [L]
+
+        # HTML
+        RewriteRule ^(/.*\.html)?$           /munin-cgi/munin-cgi-html/$1 [PT]
+
+        # Images
+        RewriteRule ^/munin-cgi/munin-cgi-graph/(.*) /$1
+        RewriteCond %{REQUEST_URI}                 !^/static
+        RewriteRule ^/(.*.png)$  /munin-cgi/munin-cgi-graph/$1 [L,PT]
+    </IfModule>
+
+    # Ensure we can run (fast)cgi scripts
+    ScriptAlias /munin-cgi/munin-cgi-graph /usr/lib/munin/cgi/munin-cgi-graph
+    <Location /munin-cgi/munin-cgi-graph>
+        Options +ExecCGI
+        <IfModule mod_fcgid.c>
+            SetHandler fcgid-script
+        </IfModule>
+        <IfModule mod_fastcgi.c>
+            SetHandler fastcgi-script
+        </IfModule>
+        <IfModule !mod_fastcgi.c>
+            <IfModule !mod_fcgid.c>
+                SetHandler cgi-script
+            </IfModule>
+        </IfModule>
+       @@APACHE22ANDBEFORE@@ Allow from all
+       @@APACHE24ANDHIGHER@@ Require all granted
+       # Replace above with "Require all granted" if running apache 2.4
+    </Location>
+
+    ScriptAlias /munin-cgi/munin-cgi-html /usr/lib/munin/cgi/munin-cgi-html
+    <Location /munin-cgi/munin-cgi-html>
+        Options +ExecCGI
+        <IfModule mod_fcgid.c>
+            SetHandler fcgid-script
+        </IfModule>
+        <IfModule mod_fastcgi.c>
+            SetHandler fastcgi-script
+        </IfModule>
+        <IfModule !mod_fastcgi.c>
+            <IfModule !mod_fcgid.c>
+                SetHandler cgi-script
+            </IfModule>
+        </IfModule>
+       @@APACHE22ANDBEFORE@@ Allow from all
+       @@APACHE24ANDHIGHER@@ Require all granted
+       # Replace above with "Require all granted" if running apache 2.4
+    </Location>
+
+    <IfModule !mod_rewrite.c>
+        <Location /munin-cgi/munin-cgi-html/static>
+                # this needs to be at the end to override the above sethandler directives
+                Options -ExecCGI
+                SetHandler None
+        </Location>
+    </IfModule>
+</VirtualHost>
+
+
+
+#cgi is broken# #taken from source file 
+#cgi is broken# #./doc/example/webserver/apache-virtualhost.rst
+#cgi is broken# ##TODO## #den hier nochmal pruefen
+#cgi is broken# #1,$ s?/var/munin/doc?/var/munin/docs?
+#cgi is broken# 
+#cgi is broken# #1,$ s?/var/apache2/2.2/logs?/var/apache2/2.2/logs?
+#cgi is broken# #1,$ s?/var/munin/cgi?/var/munin/cgi?
+#cgi is broken# 
+#cgi is broken# 
+#cgi is broken#  <VirtualHost *:80>
+#cgi is broken#      ServerName munin.example.org
+#cgi is broken#      ServerAlias munin
+#cgi is broken# 
+#cgi is broken#      ServerAdmin  info@example.org
+#cgi is broken# 
+#cgi is broken#      DocumentRoot /var/munin/docs
+#cgi is broken# 
+#cgi is broken#      ErrorLog  /var/apache2/2.2/logs/munin.example.org-error.log
+#cgi is broken#      CustomLog /var/apache2/2.2/logs/munin.example.org-access.log combined
+#cgi is broken# 
+#cgi is broken#      # Rewrites
+#cgi is broken#      RewriteEngine On
+#cgi is broken# 
+#cgi is broken#      # Static content in /static
+#cgi is broken#      RewriteRule ^/favicon.ico /etc/munin/static/favicon.ico [L]
+#cgi is broken#      RewriteRule ^/static/(.*) /etc/munin/static/$1          [L]
+#cgi is broken# 
+#cgi is broken#      # HTML
+#cgi is broken#      RewriteCond %{REQUEST_URI} .html$ [or]
+#cgi is broken#      RewriteCond %{REQUEST_URI} =/
+#cgi is broken#      RewriteRule ^/(.*)          /var/munin/cgi/munin-cgi-html/$1 [L]
+#cgi is broken# 
+#cgi is broken#      # Images
+#cgi is broken#      RewriteRule ^/(.*) /var/munin/cgi/munin-cgi-graph/$1 [L]
+#cgi is broken# 
+#cgi is broken#      # Ensure we can run (fast)cgi scripts
+#cgi is broken#      <Directory "/var/munin/cgi">
+#cgi is broken#          Options +ExecCGI
+#cgi is broken#          <IfModule mod_fcgid.c>
+#cgi is broken#              SetHandler fcgid-script
+#cgi is broken#          </IfModule>
+#cgi is broken#          <IfModule !mod_fcgid.c>
+#cgi is broken#              SetHandler cgi-script
+#cgi is broken#          </IfModule>
+#cgi is broken#      </Directory>
+#cgi is broken#  </VirtualHost>
+#cgi is broken# 
