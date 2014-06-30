@@ -1,0 +1,52 @@
+--- Makefile.config.ORIG	Mo. Jun  9 16:44:07 2014
++++ Makefile.config	Mo. Jun  9 17:36:27 2014
+@@ -17,10 +17,10 @@
+ #
+ # the base of the Munin installation.
+ #
+-PREFIX     = $(DESTDIR)/opt/munin
++PREFIX     = $(DESTDIR)/usr/munin
+ 
+ # Where Munin keeps its configurations (server.conf, client.conf, ++)
+-CONFDIR    = $(DESTDIR)/etc/opt/munin
++CONFDIR    = $(DESTDIR)/etc/munin
+ 
+ # Server only - where to put munin-cron
+ BINDIR     = $(PREFIX)/bin
+@@ -42,10 +42,10 @@
+ CGIDIR     = $(PREFIX)/www/cgi
+ 
+ # Where to put internal data for master (RRD, internal files, ...)
+-DBDIR      = $(DESTDIR)/var/opt/munin
++DBDIR      = $(DESTDIR)/var/munin
+ 
+ # Where to put internal data for node (plugin state, ...)
+-DBDIRNODE  = $(DESTDIR)/var/opt/munin-node
++DBDIRNODE  = $(DESTDIR)/var/munin-node
+ 
+ # Client only - Where the spool files are written. Must be writable by
+ # group "munin", and should be preserved between reboots
+@@ -95,8 +95,8 @@
+ BASH       := /bin/bash
+ 
+ # Server only - Where to install the perl libraries
+-PERLSITELIB := $(shell $(PERL) -V:sitelib | cut -d"'" -f2)
+-PERLLIB    = $(DESTDIR)$(PERLSITELIB)
++PERLVENDORLIB := $(shell $(PERL) -V:vendorlib | cut -d"'" -f2)
++PERLLIB    = $(DESTDIR)$(PERLVENDORLIB)
+ 
+ # Client only - Install plugins for this architecture
+ # the LANG=C makes tr work as expected, not regarding any locale it
+@@ -129,9 +129,9 @@
+ # Which command to use to check if the USER and GROUP to run Munin as, exists.
+ # These will work on most modern OSes:
+ #
+-GETENT     := $(shell which getent || which true 2>/dev/null)
+-CHECKUSER  := $(shell $(GETENT) passwd $(USER) >/dev/null 2>/dev/null || (echo "echo User $(USER) nonexistent. Create the user and retry; exit 2"))
+-CHECKGROUP := $(shell $(GETENT) group $(GROUP) >/dev/null 2>/dev/null || (echo "echo Group $(GROUP) nonexistent. Create the group and retry; exit 2"))
++#GETENT     := $(shell which getent || which true 2>/dev/null)
++#CHECKUSER  := $(shell $(GETENT) passwd $(USER) >/dev/null 2>/dev/null || (echo "echo User $(USER) nonexistent. Create the user and retry; exit 2"))
++#CHECKGROUP := $(shell $(GETENT) group $(GROUP) >/dev/null 2>/dev/null || (echo "echo Group $(GROUP) nonexistent. Create the group and retry; exit 2"))
+ 
+ # For OSX, comment out the previous two lines and comment in these
+ #

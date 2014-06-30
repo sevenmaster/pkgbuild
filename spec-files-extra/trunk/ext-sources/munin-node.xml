@@ -1,0 +1,57 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+
+<!--
+
+Adopted from the munin-node.xml in the munin source distribution.
+Changes: start the daemon directly, we already have /var/munin/ directory present.
+
+   Check
+   =====
+
+   Check the status of your running munin-node with:
+
+   # svcs site/munin-node
+     
+  -->
+
+<service_bundle type='manifest' name='export'>
+  <service name='site/munin-node' type='service' version='0'>
+
+    <create_default_instance enabled='true'/>
+    <single_instance/>
+
+    <dependency name='fs' grouping='require_all' restart_on='refresh' type='service'>
+      <service_fmri value='svc:/system/filesystem/local'/>
+    </dependency>
+
+    <dependency name='net' grouping='require_all' restart_on='refresh' type='service'>
+      <service_fmri value='svc:/milestone/network'/>
+    </dependency>
+
+    <dependency name='config' grouping='require_all' restart_on='none' type='path'>
+      <service_fmri value='file://localhost/etc/munin/munin-node.conf'/>
+    </dependency>
+
+    <exec_method name='start' type='method' exec='/usr/munin/sbin/munin-node' timeout_seconds='30'>
+      <method_context>
+        <method_credential user='root' group='root'/>
+      </method_context>
+    </exec_method>
+
+    <exec_method name='stop' type='method' exec=':kill' timeout_seconds='30'/>
+
+    <stability value='Unstable'/>
+
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>munin-node</loctext>
+      </common_name>
+      <documentation>
+        <manpage title='munin-node' section='1' manpath='/usr/munin/man'/>
+        <doc_link name='Munin Documentation' uri='http://munin-monitoring.org/wiki/Documentation'/>
+      </documentation>
+    </template>
+
+  </service>
+</service_bundle>
