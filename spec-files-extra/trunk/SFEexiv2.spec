@@ -11,15 +11,20 @@
 
 
 Name:		SFEexiv2
+IPS_Package_Name: image/library/exiv2
 License:	GPL
 Summary:	A C++ library and CLI utility to manage image metadata.
-Version:	0.20
+Version:	0.23
 URL:		http://www.exiv2.org/
 Source:		http://www.exiv2.org/exiv2-%{version}.tar.gz
 Patch1:		exiv2-01-unsigned-char.diff 
 Patch2:		exiv2-02-sunstudio.diff
 Patch3:		exiv2-03-make.diff
 Patch4:		exiv2-04-stdcxx4.diff
+Patch5:		exiv2-05-missing-includes.diff
+#Patch5:		exiv2-05-missing-includes_variant_XMP_Environment.h.diff 
+#Patch6:		exiv2-06-missing-includes_Makefile_add_cpp_includes.diff
+Patch7:		exiv2-07-namespace-rcsid_int.hpp.diff
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -38,9 +43,10 @@ BuildRequires: %{pnm_buildrequires_SUNWlibstdcxx4}
 Requires: SUNWlexpt
 BuildRequires: SUNWlexpt
 BuildRequires: SUNWgnome-common-devel
-BuildRequires: SUNWlxsl
-BuildRequires: SUNWlxsl-devel
-BuildRequires: SFEgraphviz
+BuildRequires:  %{pnm_buildrequires_SUNWlxsl}
+Requires:       %{pnm_requires_SUNWlxsl}
+BuildRequires:	%{pnm_buildrequires_SUNWgraphviz}
+Requires:	%{pnm_requires_SUNWgraphviz}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -62,6 +68,9 @@ Requires:                %{name}
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+#%patch6 -p1
+%patch7 -p1
 
 %build
 
@@ -70,11 +79,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export CFLAGS="%optflags"
+export CFLAGS="%optflags -I%{graphviz_default_include}"
 
-export CXXFLAGS="%cxx_optflags -library=no%Cstd -I%{stdcxx_include}"
+export CXXFLAGS="%cxx_optflags -library=no%Cstd -I%{stdcxx_include} -I%{graphviz_default_include}"
 
-export LDFLAGS="%_ldflags -L%{stdcxx_lib} -R%{stdcxx_lib} -lstdcxx4 -Wl,-zmuldefs"
+export LDFLAGS="%_ldflags -L%{stdcxx_lib} -R%{stdcxx_lib} -lstdcxx4 -Wl,-zmuldefs -L%{graphviz_default_include} -R%{graphviz_default_include}"
 
 ./configure --prefix=%{_prefix}	\
             --mandir=%{_mandir}	\
@@ -83,12 +92,12 @@ export LDFLAGS="%_ldflags -L%{stdcxx_lib} -R%{stdcxx_lib} -lstdcxx4 -Wl,-zmuldef
             --disable-visibility \
             --with-pic
 
-make
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make install DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
 %if %build_l10n
 %else
 rm -rf $RPM_BUILD_ROOT%{_localedir}
@@ -127,6 +136,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+- Mon Jul  7 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgraphviz}, %{pnm_buildrequires_SUNWlxsl}
+- add patch05 exiv2-05-missing-includes.diff for include string.h (strcmp), stdio.h (snprintf), ios ...
+- add patch07 exiv2-07-namespace-rcsid_int.hpp.diff
+* Sat May 25 2013 - Thomas Wagner
+- bump to 0.23
+- add IPS_Package_Name
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Fri Jul 09 2010 - Milan Jurik

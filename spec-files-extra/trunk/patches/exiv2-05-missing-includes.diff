@@ -1,0 +1,440 @@
+alternative:  (modeled after https://bugzilla.mozilla.org/attachment.cgi?id=548708&action=diff)
+
+#ifdef __SUNPRO_CC
+#include "string.h"
+#include <stdio.h>
+#endif
+
+
+--- exiv2-0.23/xmpsdk/src/XML_Node.cpp.orig	2010-04-13 21:10:55.000000000 +0200
++++ exiv2-0.23/xmpsdk/src/XML_Node.cpp	2014-07-07 15:32:04.832830238 +0200
+@@ -8,6 +8,8 @@
+ 
+ #include "XMP_Environment.h"	// ! Must be the first #include!
+ #include "XMLParserAdapter.hpp"
++#include "string.h"
++#include "stdio.h"
+ 
+ #include <map>
+ #include <cstring>
+--- exiv2-0.23/src/bmpimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/bmpimage.cpp	2014-07-07 15:46:29.165469165 +0200
+@@ -42,6 +42,7 @@
+ #include "basicio.hpp"
+ #include "error.hpp"
+ #include "futils.hpp"
++#include <string.h> 
+ 
+ // + standard includes
+ #include <string>
+--- exiv2-0.23/src/canonmn.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/canonmn.cpp	2014-07-07 15:50:57.320653048 +0200
+@@ -37,6 +37,7 @@
+ #include "value.hpp"
+ #include "exif.hpp"
+ #include "i18n.h"                // NLS support.
++#include "math.h"
+ 
+ // + standard includes
+ #include <string>
+--- exiv2-0.23/src/convert.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/convert.cpp	2014-07-07 15:51:40.402110075 +0200
+@@ -46,6 +46,7 @@
+ #include <ios>
+ #include <sstream>
+ #include <stdio.h> // for snprintf (C99)
++#include <string.h> // for strcmp
+ #ifdef _MSC_VER
+ # define snprintf _snprintf
+ #endif
+--- exiv2-0.23/src/cr2image.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/cr2image.cpp	2014-07-07 15:52:48.813864172 +0200
+@@ -45,6 +45,7 @@
+ #include "error.hpp"
+ #include "futils.hpp"
+ #include "i18n.h"                // NLS support.
++#include "string.h"
+ 
+ // + standard includes
+ #include <iostream>
+--- exiv2-0.23/src/crwimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/crwimage.cpp	2014-07-07 17:31:27.749686938 +0200
+@@ -64,6 +64,9 @@
+ # include "timegm.h"
+ #endif
+ 
++#include <ios>                   // for std::hex ...
++
++
+ // *****************************************************************************
+ // local declarations
+ namespace {
+--- exiv2-0.23/src/datasets.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/datasets.cpp	2014-07-07 16:02:23.201705350 +0200
+@@ -42,6 +42,9 @@
+ #include <iomanip>
+ #include <sstream>
+ 
++#include <ios>                   // for std::hex ...
++#include <string.h>              // for strcmp
++
+ // *****************************************************************************
+ // class member definitions
+ namespace Exiv2 {
+--- exiv2-0.23/src/easyaccess.cpp.orig	2012-04-22 07:28:42.000000000 +0200
++++ exiv2-0.23/src/easyaccess.cpp	2014-07-07 16:04:06.241608838 +0200
+@@ -31,6 +31,7 @@
+ 
+ // *****************************************************************************
+ // included header files
++#include <string.h>             // for strcmp
+ #include "easyaccess.hpp"
+ 
+ // *****************************************************************************
+--- exiv2-0.23/src/epsimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/epsimage.cpp	2014-07-07 16:06:15.202806581 +0200
+@@ -54,6 +54,7 @@
+ #include <iostream>
+ #include <sstream>
+ #include <string>
++#include <string.h>
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/futils.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/futils.cpp	2014-07-07 16:31:50.858416071 +0200
+@@ -52,6 +52,7 @@
+ #include <cerrno>
+ #include <sstream>
+ #include <cstring>
++#include <string.h>	// for strerror_r
+ 
+ #if defined EXV_HAVE_STRERROR_R && !defined EXV_HAVE_DECL_STRERROR_R
+ # ifdef EXV_STRERROR_R_CHAR_P
+--- exiv2-0.23/src/gifimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/gifimage.cpp	2014-07-07 16:32:28.442224508 +0200
+@@ -47,6 +47,7 @@
+ #include <string>
+ #include <cstring>
+ #include <iostream>
++#include <string.h>
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/jp2image.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/jp2image.cpp	2014-07-07 16:33:08.015396225 +0200
+@@ -52,6 +52,7 @@
+ #include <cstring>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // JPEG-2000 box types
+ const uint32_t kJp2BoxTypeJp2Header   = 0x6a703268; // 'jp2h'
+--- exiv2-0.23/src/jpgimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/jpgimage.cpp	2014-07-07 16:33:48.389645988 +0200
+@@ -47,6 +47,7 @@
+ #include <cstdio>                               // for EOF
+ #include <cstring>
+ #include <cassert>
++#include <string.h>
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/makernote.cpp.orig	2012-04-11 18:02:44.000000000 +0200
++++ exiv2-0.23/src/makernote.cpp	2014-07-07 17:32:50.035465403 +0200
+@@ -45,6 +45,8 @@
+ // + standard includes
+ #include <string>
+ #include <cstring>
++#include <ios>
++#include <string.h>
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/minoltamn.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/minoltamn.cpp	2014-07-07 16:36:20.243230694 +0200
+@@ -43,6 +43,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <cstring>
++#include <ios>                   // for std::right
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/mrwimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/mrwimage.cpp	2014-07-07 16:36:55.716677863 +0200
+@@ -49,6 +49,7 @@
+ #include <cstring>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/nikonmn.cpp.orig	2012-04-22 07:29:10.000000000 +0200
++++ exiv2-0.23/src/nikonmn.cpp	2014-07-07 16:37:33.383887960 +0200
+@@ -51,6 +51,7 @@
+ #include <cassert>
+ #include <cstring>
+ #include <math.h> //for log, pow, abs
++#include <ios>    //for fixed
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/olympusmn.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/olympusmn.cpp	2014-07-07 16:38:17.876585265 +0200
+@@ -48,6 +48,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <cstring>
++#include <ios>                   // for fixed
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/panasonicmn.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/panasonicmn.cpp	2014-07-07 16:38:54.402571408 +0200
+@@ -44,6 +44,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <cstring>
++#include <ios>                   // for fixed
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/pgfimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/pgfimage.cpp	2014-07-07 16:39:19.444037761 +0200
+@@ -54,6 +54,7 @@
+ #include <cstring>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // Signature from front of PGF file
+ const unsigned char pgfSignature[3] = { 0x50, 0x47, 0x46 };
+--- exiv2-0.23/src/pngimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/pngimage.cpp	2014-07-07 16:39:49.023098145 +0200
+@@ -55,6 +55,7 @@
+ #include <cstring>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // Signature from front of PNG file
+ const unsigned char pngSignature[8] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+--- exiv2-0.23/src/pngchunk.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/pngchunk.cpp	2014-07-07 16:41:09.999378664 +0200
+@@ -60,6 +60,8 @@
+ #include <iostream>
+ #include <cassert>
+ #include <cstdio>
++#include <string.h>
++#include <stdlib.h>
+ 
+ /*
+ 
+--- exiv2-0.23/src/preview.cpp.orig	2012-04-11 18:02:44.000000000 +0200
++++ exiv2-0.23/src/preview.cpp	2014-07-07 16:41:34.892258259 +0200
+@@ -38,6 +38,7 @@
+ 
+ #include <climits>
+ #include <string>
++#include <string.h>
+ 
+ #include "preview.hpp"
+ #include "futils.hpp"
+--- exiv2-0.23/src/properties.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/properties.cpp	2014-07-07 16:41:59.889257675 +0200
+@@ -46,6 +46,7 @@
+ #include <cstring>
+ #include <cstdlib>
+ #include <cctype>
++#include <string.h>
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/psdimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/psdimage.cpp	2014-07-07 16:42:26.527276640 +0200
+@@ -52,6 +52,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <memory>
++#include <string.h>
+ 
+ // Todo: Consolidate with existing code in struct Photoshop (jpgimage.hpp):
+ //       Extend this helper to a proper class with all required functionality,
+--- exiv2-0.23/src/rafimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/rafimage.cpp	2014-07-07 16:42:53.957561367 +0200
+@@ -49,6 +49,7 @@
+ #include <cstring>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/pentaxmn.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/pentaxmn.cpp	2014-07-07 16:44:20.392440112 +0200
+@@ -45,6 +45,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <cstring>
++#include <ios>                   // for fixed
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/tags.cpp.orig	2012-04-11 07:50:34.000000000 +0200
++++ exiv2-0.23/src/tags.cpp	2014-07-07 16:45:23.283368607 +0200
+@@ -60,6 +60,9 @@
+ #include <cassert>
+ #include <cmath>
+ #include <cstring>
++#include <string.h>
++#include <ios>                   // for fixed
++
+ 
+ // *****************************************************************************
+ // local declarations
+--- exiv2-0.23/src/tgaimage.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/tgaimage.cpp	2014-07-07 16:45:53.186845760 +0200
+@@ -47,6 +47,7 @@
+ #include <string>
+ #include <cstring>
+ #include <iostream>
++#include <string.h>
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/tiffcomposite.cpp.orig	2012-04-11 18:02:52.000000000 +0200
++++ exiv2-0.23/src/tiffcomposite.cpp	2014-07-07 16:47:12.594525981 +0200
+@@ -49,6 +49,8 @@
+ #include <iostream>
+ #include <iomanip>
+ #include <algorithm>
++#include <string.h>
++#include <ios>                   // for std::hex ...
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/tiffimage.cpp.orig	2012-04-13 16:08:56.000000000 +0200
++++ exiv2-0.23/src/tiffimage.cpp	2014-07-07 16:47:50.347247773 +0200
+@@ -54,6 +54,8 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <memory>
++#include <ios>                   // for std::hex ...
++
+ 
+ /* --------------------------------------------------------------------------
+ 
+--- exiv2-0.23/src/tiffvisitor.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/tiffvisitor.cpp	2014-07-07 16:49:09.256726205 +0200
+@@ -52,6 +52,9 @@
+ #include <iostream>
+ #include <iomanip>
+ #include <cassert>
++#include <string.h>
++#include <ios>                   // for std::hex ...
++
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/types.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/types.cpp	2014-07-07 16:49:56.081285132 +0200
+@@ -49,6 +49,9 @@
+ #include <cstdlib>
+ #include <cassert>
+ #include <cstring>
++#include <string.h>
++#include <ios>                   // for std::hex ...
++
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/value.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/value.cpp	2014-07-07 16:52:47.786168192 +0200
+@@ -47,6 +47,10 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <ctype.h>
++#include <string.h>
++#include <stdio.h>
++#include <ios>                   // for std::right
++#include <stdlib.h>              // for std::abs
+ 
+ // *****************************************************************************
+ // class member definitions
+--- exiv2-0.23/src/version.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/version.cpp	2014-07-07 16:53:37.600702784 +0200
+@@ -42,6 +42,7 @@
+ // + standard includes
+ #include <iomanip>
+ #include <sstream>
++#include <ios>                   // for std::hex
+ 
+ namespace Exiv2 {
+     int versionNumber()
+--- exiv2-0.23/src/xmpsidecar.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/xmpsidecar.cpp	2014-07-07 16:54:18.990411947 +0200
+@@ -49,6 +49,7 @@
+ #include <string>
+ #include <iostream>
+ #include <cassert>
++#include <string.h>
+ 
+ // *****************************************************************************
+ namespace {
+--- exiv2-0.23/src/exiv2.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/exiv2.cpp	2014-07-07 17:17:21.822469113 +0200
+@@ -52,6 +52,9 @@
+ #include <cstring>
+ #include <cassert>
+ #include <cctype>
++#include <string.h>
++#include <ios>
++#include <locale.h>
+ 
+ // *****************************************************************************
+ // local declarations
+--- exiv2-0.23/src/actions.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/actions.cpp	2014-07-07 17:18:52.829702692 +0200
+@@ -76,6 +76,9 @@
+ #else
+ # include <utime.h>
+ #endif
++#include <string.h>
++#include <stdio.h>
++#include <ios>                   // for std::hex
+ 
+ // *****************************************************************************
+ // local declarations
+--- exiv2-0.23/src/utils.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/utils.cpp	2014-07-07 17:20:43.009934995 +0200
+@@ -56,6 +56,7 @@
+ #include <string>
+ #include <iostream>
+ #include <sstream>
++#include <stdio.h>
+ 
+ namespace Util {
+ 
+--- exiv2-0.23/src/metacopy.cpp.orig	2012-03-22 16:19:35.000000000 +0100
++++ exiv2-0.23/src/metacopy.cpp	2014-07-07 17:21:17.626511157 +0200
+@@ -36,6 +36,7 @@
+ #include <iostream>
+ #include <fstream>
+ #include <cassert>
++#include <ios>                   // for std::hex
+ 
+ // *****************************************************************************
+ // Main
+--- exiv2-0.23/src/samsungmn.cpp.orig	Mo. Jul  7 18:00:56 2014
++++ exiv2-0.23/src/samsungmn.cpp	Mo. Jul  7 18:00:22 2014
+@@ -42,6 +42,7 @@
+ #include <iomanip>
+ #include <cassert>
+ #include <cstring>
++#include <ios>                   // for std::fixed
+ 
+ // *****************************************************************************
+ // class member definitions
