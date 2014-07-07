@@ -1,0 +1,12 @@
+--- exiv2-0.23/src/rcsid_int.hpp.orig	Do. Mär 22 16:19:35 2012
++++ exiv2-0.23/src/rcsid_int.hpp	Mo. Jul  7 17:53:31 2014
+@@ -53,7 +53,8 @@
+ 
+  */
+ #define EXIV2_RCSID(id) \
+-    namespace { \
++   // namespace { \
++    { \
+         inline const char* getRcsId(const char*) { return id ; } \
+         const char* rcsId = getRcsId(rcsId); \
+     }
