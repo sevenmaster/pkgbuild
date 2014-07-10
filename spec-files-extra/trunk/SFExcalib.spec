@@ -1,7 +1,7 @@
 #
-# spec file for package SFElibxcalib
+# spec file for package SFExcalib
 #
-# includes module(s): libxcalib
+# includes module(s): xcalib
 #
 # bugdb: bugzilla.freedesktop.org
 #
@@ -10,7 +10,7 @@
 %define cc_is_gcc 1
 %include base.inc
 
-Name:                    SFElibxcalib
+Name:                    SFExcalib
 IPS_Package_Name:	 x11/xcalib
 Group:                   Libraries/Multimedia
 Version:                 0.8
@@ -24,17 +24,22 @@ SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 
 %description
-load the monitor calibration data to get propper color display.
-fetch the files from your windows system where you did the
+Load the monitor calibration data to get propper color display.
+Fetch the files from your windows system where you did the
 calibration, files are usually stored under:
+
   systemdrive:\windows\system32\spool\drivers
-The file extension is names *.icc or *.icm
+
+The file extension is for example *.icc or *.icm
 
 load one of the the example color profiles like this:
 xcalib /usr/share/doc/xcalib/gamma_2_2.icc
 
 put xcalib into your startup scripts to get the corrections
 active when logging in to your desktop.
+
+Have fun with now more accurate display colors when processing
+your photos!
 
 %prep
 %setup -q -n xcalib-%version
@@ -75,5 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Thu Jul 10 2014 - Thomas Wagner
+- correct package name s/lib//
 * Thu May 15 2014 - Thomas Wagner
 - initial spec
