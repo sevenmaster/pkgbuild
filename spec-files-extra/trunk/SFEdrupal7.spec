@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.28
+Version:             7.29
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -103,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 16 2014 - Thomas Wagner
+- bump to 7.29 SA-CORE-2014-003 - Drupal core - Multiple vulnerabilities Denial of service, Access bypass, Cross-site scripting https://www.drupal.org/SA-CORE-2014-003
 - bump to 7.28 - bug fixes, 7.27: SA-CORE-2014-002 - Drupal core - Information Disclosure  https://drupal.org/SA-CORE-2014-002
 * Wed Jan 22 2014 - Thomas Wagner
 - bump to 7.26 - SA-CORE-2014-001 - Drupal core - Multiple vulnerabilities https://drupal.org/SA-CORE-2014-001
