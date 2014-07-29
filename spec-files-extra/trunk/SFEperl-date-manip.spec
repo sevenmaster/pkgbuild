@@ -9,13 +9,13 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define tarball_version 6.45
+%define tarball_version 6.46
 %define tarball_name    Date-Manip
 
 Name:		SFEperl-date-manip
 IPS_package_name: library/perl-5/date-manip
-Version:	6.45
-IPS_component_version: 6.45
+Version:	6.46
+IPS_component_version: 6.46
 Summary:	Complete date/time manipulation package
 License:	Artistic
 #Distribution:   OpenSolaris
@@ -40,6 +40,9 @@ Complete date/time manipulation package
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+#on older perl, e.g. 5.8.4
+#NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
+#export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
 perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
@@ -54,6 +57,9 @@ make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
 
 %install
+#on older perl, e.g. 5.8.4
+#NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
+#export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
 rm -rf $RPM_BUILD_ROOT
 make install
 
@@ -76,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Tue Jul 29 2014 - Thomas Wagner
+- bump to 6.46 (other download unavailable)
 * Fri Jun 13 2014 - Thomas Wagner
 - reworked spec version 6.45
 * Thu Sep 02 2010 - Milan Jurik
