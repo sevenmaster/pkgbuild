@@ -9,10 +9,11 @@
 ##TODO## make SMF manifest more nice, check for /etc/pound.cfg present
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:           SFEpound
 Summary:        The Pound program is a reverse proxy, load balancer and HTTPS front-end for Web server(s)
-Version:        2.5
+Version:        2.6
 License:        GPLv3
 URL:            http://www.apsis.ch/pound/
 Source:         http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -38,15 +39,19 @@ SUNW_Copyright: %{name}.copyright
 #####################################
 
 %include default-depend.inc
-BuildRequires: SUNWopenssl-include
 BuildRequires: SUNWbtool
 BuildRequires: SUNWggrp
-Requires: SUNWopensslr
-Requires: SUNWopenssl-libraries
+BuildRequires: %{pnm_buildrequires_SUNWopenssl}
+Requires: %{pnm_requires_SUNWopenssl}
 Requires: SUNWlibms
 Requires: SUNWpcre
 Requires: SUNWzlib
 Requires: SUNWbzip
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
+BuildRequires: %{pnm_buildrequires_SUNWbzip}
+Requires:      %{pnm_requires_SUNWbzip}
+
 
 
 %description
@@ -122,6 +127,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug  1 2014 - Thomas Wagner
+- bump version to 2.6
+- change to (Build)Requires to %{pnm_buildrequires_SUNWopenssl} SUNWzlib SUNWbzip, %include packagenamacros.inc
 * Thr Sep 16 2010 - Thomas Wagner
 - bump version to 2.5
 - re-enable IPS manifest informations, change maintainer
