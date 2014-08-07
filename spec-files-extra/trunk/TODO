@@ -245,6 +245,7 @@ remove intermediate symlink SFEgccruntime.spec -> SFEgcc.spec
 36)
 make these spec files dual 32/64 bit:
   SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
+  SFElibiconv (cost: low - remember close ticket: https://sourceforge.net/p/pkgbuild/spec-files-extra/25/ )
  
 37) 
 Update: 20130113 currently working on this: tomww (see experimental/SFEphp54.spec)
@@ -377,8 +378,10 @@ deprecate netatalk (2.x) for netatalk3 in buildlists .. eliminates being files s
 
 
 49)
-change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from
-outdated older libfuse or the S11 provided libfuse (might not work)
+change SFEfuse-exfat.spec to _really_ use libfuse form /usr/gnu and not from            
+outdated older libfuse or the S11 provided libfuse (might not work)                     
+Error: fuse.pc prints non-gnu path! must print prefix as /usr/gnu. and amd64 version of fuse.pc is missing.
+
 
 50)
 change existing /usr/gnu/ spec files to place xchat.desktop files *not* in
@@ -518,6 +521,10 @@ provide 32/64 bit packages
 specfile:           32       64        comment
 SFElibiconv.spec    OK     missing     https://sourceforge.net/p/pkgbuild/spec-files-extra/25/
 SFExmlrpc-c.spec    OK     missing     check deps as well
+#(from 36)
+SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
+SFElcms2                               OS has lcms2 as well, so place it into /usr/gnu in fresh version
+SFEufraw            OK     missing     try if 64-bit performs better (not that the 32-bit version is slow...)
 
 
 63)
@@ -537,6 +544,7 @@ mailinglists, IRC channel and on how to ask for help and participate in SFE
 spec files currently broken or in need for investigation
 what:                   where:
 see why checks fail	SFElibmpc.spec, base-specs/libmpc.spec: disabled make checks, needs investigation
+gtkdoc XML errors	SFEgtkimageview.spec - currently disabled building docs (S11.2), verify different osdistro
 
 68)
 check if those packages work with SFEqt4, if yes, move them to SFEqt4(-stdcxx), then retire SFEqt3(-stdcxx):
@@ -629,3 +637,29 @@ does not %include usr-g++.inc but needs to find the g++ libs in /usr/g++/<includ
 
 81)
 add profile to support SFEfail2ban.spec
+
+62) 
+make a quality check script: detect if pkgdepend put a "require-any" into a package, that needs to be removed and only our package is allowed to stay (e.g. same lib name present in /usr/lib and in /usr/g++/lib or /usr/gnu/lib and so on)
+
+63)
+crate start menue entries for:
+SFEtransmission.spec
+SFEperl-mime-base64
+
+64)
+for older perl 5.8.4 some spec files need a fresh SFEperl-extutils-makemaker.spec
+so make the BuildRequires dependent on the provided perl version / osdistro
+and set the PERL5LIB variable
+SFEperl-date-manip.spec
+SFEperl-html-template.spec
+
+65)
+create a tool which asks the various pkg servers about presence of specific
+package names and version. Should help finding the osbuild and osdistro
+which provides a packages and when the SFE variant is usefull.
+(e.g. os provides old version or no version, SFE provides a gcc built C++
+variant and so on)
+
+66)
+create auto-update service for geoip database
+e.g. updating the database once a quater year
