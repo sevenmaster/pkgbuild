@@ -45,7 +45,7 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.2.10
+Version:	2.2.13
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -200,6 +200,9 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 #  echo 'getent group %{daemonlogingroup} && groupdel %{daemonlogingroup}';
 #  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -c SFE
 
+#the script is found automaticly in ext-sources w/o a Source<n> keyword
+%iclass renamenew -f i.renamenew
+
 %files
 %defattr(-, root, bin)
 %doc README ChangeLog COPYING INSTALL NEWS AUTHORS TODO 
@@ -225,13 +228,18 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_sysconfdir}
 %dir %attr (0755, root, bin) %{_sysconfdir}/%{src_name}
-%{_sysconfdir}/%{src_name}/*
+%class(renamenew) %{_sysconfdir}/%{src_name}/*
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_localstatedir}
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
 
 
 %changelog
+* Thu Aug  7 2014 - Thomas Wagner
+- bump to 2.2.13
+* Mon Apr 21 2014 - Thomas Wagner
+- add %iclass renamenew
+- bump to 2.2.12
 * Fri Jan 10 2014 - Thomas Wagner
 - bump to 2.2.10
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
