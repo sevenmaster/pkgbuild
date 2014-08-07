@@ -115,8 +115,8 @@ Name:                    SFEpostfix
 IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
-URL:                     http://postfix.org/
-Version:                 2.10.3
+URL:                     http://www.postfix.org/
+Version:                 2.11.1
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -834,24 +834,24 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %class(renamenew) %{_sysconfdir}/%{src_name}/aliases.unused
 %{_sysconfdir}/%{src_name}/examples
 %{_sysconfdir}/%{src_name}/bounce.cf.default
-%{_sysconfdir}/%{src_name}/access
+%class(renamenew) %{_sysconfdir}/%{src_name}/access
 #this file has gone? %{_sysconfdir}/%{src_name}/postfix-script
 %{_sysconfdir}/%{src_name}/readme
-%{_sysconfdir}/%{src_name}/transport
-%{_sysconfdir}/%{src_name}/header_checks
+%class(renamenew) %{_sysconfdir}/%{src_name}/transport
+%class(renamenew) %{_sysconfdir}/%{src_name}/header_checks
 %{_sysconfdir}/%{src_name}/postfix.spec.cf
 #this file has gone? %{_sysconfdir}/%{src_name}/postfix-files
 %{_sysconfdir}/%{src_name}/README.rpm
 %{_sysconfdir}/%{src_name}/html
 %{_sysconfdir}/%{src_name}/LICENSE
-%{_sysconfdir}/%{src_name}/virtual
+%class(renamenew) %{_sysconfdir}/%{src_name}/virtual
 #paused %{_sysconfdir}/%{src_name}/postfix-chroot.sh
 %{_sysconfdir}/%{src_name}/TLS_LICENSE
 %{_sysconfdir}/%{src_name}/main.cf.default
-%{_sysconfdir}/%{src_name}/generic
-%{_sysconfdir}/%{src_name}/relocated
-%{_sysconfdir}/%{src_name}/makedefs.out
-%{_sysconfdir}/%{src_name}/canonical
+%class(renamenew) %{_sysconfdir}/%{src_name}/generic
+%class(renamenew) %{_sysconfdir}/%{src_name}/relocated
+%class(renamenew) %{_sysconfdir}/%{src_name}/makedefs.out
+%class(renamenew) %{_sysconfdir}/%{src_name}/canonical
 #this file has gone? %{_sysconfdir}/%{src_name}/post-install
 # only for oldtimers the original init.d/postfix script - *not* tested on Solaris
 # this is %{_sysconfdir}/init.d
@@ -906,6 +906,11 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Thu Aug  7 2014 - Thomas Wagner
+- Bump to 2.11.1
+* Mon Apr 21 2014 - Thomas Wagner
+- Bump to 2.11.0
+- add %iclass renamenew to preserve config
 * Mon Feb 3 2014 - Ken Mays <kmays2000@gmail.com>
 - bump to 2.10.3
 * Tue Dec 10 2013 - Ken Mays <kmays2000@gmail.com>
