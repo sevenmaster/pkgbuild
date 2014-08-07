@@ -5,6 +5,9 @@
 #pre-load some variables which are very common and only a few OS need variants
 %define pnm_buildrequires_SUNWpostrun	SUNWpostrun
 %define pnm_requires_SUNWpostrun	SUNWpostrun
+%define pnm_buildrequires_SUNWbzip	SUNWbzip
+%define pnm_requires_SUNWbzip		SUNWbzip
+
 
 #S12 has asciidoc, all others need out SFE version
 %define pnm_buildrequires_SFEasciidoc	SFEasciidoc
@@ -19,6 +22,8 @@
 
 
 %changelog
+* Fri Aug  1 2014 - Thomas Wagner
+- handle pnm_buildrequires_SUNWbzip
 * Thu May 15 2014 - Thomas Wagner
 - handle pnm_buildrequires_SFEjam (all, see possible exceptions in other p*inc files)
 - handle pnm_buildrequires_SUNWpostrun which OmniOS doesn't have (OOS151008)

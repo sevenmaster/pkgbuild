@@ -1071,12 +1071,34 @@
 #END >= 144
 
 
-##TODO## volunteers may implement the rules noted below
-#2010-09-14 SUNWgraphviz removed from spec-files
-#a) when was SUNWgraphviz added
-#b) when was SUNWgraphviz removed from the builds
-#%if %( expr %{osbuild} '>' 000 )
-#%endif
+#info: graphviz added around consolidation/userland/userland-incorporation@0.5.11,5.11-0.172:20110815T080358Z
+#
+#note: if you prefer the maybe more uptodate "version" ofr SFEgraphviz, then put that SFEpackagename into (Build)Requirements
+#      if you need any version of graphviz, then use pnm_buildrequires_SUNWgraphviz or ..._SFEgraphviz
+#20140707 Solaris 11.x has 
+#20140707 OpenIndiana has none
+#20140707 OpenIndiana-Hipster has image/graphviz@2.28.0,5.11-2014.0.1.3:20140528T102249Z
+#set default
+%define pnm_buildrequires_SFEgraphviz		SFEgraphviz
+%define pnm_requires_SFEgraphviz		SFEgraphviz
+%define graphviz_default_prefix			/usr/gnu
+%define graphviz_default_include		/usr/gnu/include
+%define graphviz_default_libdir			/usr/gnu/lib
+
+#set parameters for more fresh osbuild / osdistro
+#Solaris 11 Solaris 12 
+##TODO## add OI OpenIndiana Hipster image/graphviz@2.28.0,5.11-2014.0.1.3:20140528T102249Z
+%if %( expr %{solaris11} '>=' 1 '|' %{solaris12} '>=' 1 )
+%define pnm_buildrequires_SUNWgraphviz		image/graphviz
+%define pnm_requires_SUNWgraphviz		image/graphviz
+%define pnm_buildrequires_SFEgraphviz		image/graphviz
+%define pnm_requires_SFEgraphviz		image/graphviz
+%define graphviz_default_prefix			/usr
+%define graphviz_default_include		/usr/include
+%define graphviz_default_libdir			/usr/lib
+%endif
+#END solaris11 solaris12
+
 
 
 #-----------------------------------------------------------------
@@ -1287,6 +1309,13 @@
 %define pnm_requires_SFEgnugetopt			SFEgnugetopt
 %define pnm_buildrequires_shell_gnugetopt		SFEgnugetopt
 %define pnm_requires_shell_gnugetopt			SFEgnugetopt
+
+#doesn't autoinstall by resolveipspackages, to try this way
+%define pnm_buildrequires_SFEgdbm		library/database/gdbm
+%define pnm_requires_SFEgdbm		 	library/database/gdbm
+%define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
+%define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
+
 
 #NOTE# now overlay the above definitions if needed:
 
@@ -2260,6 +2289,9 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Mon Jul  7 2014 - Thomas Wagner
+- handle pnm_buildrequires_SUNWgraphviz (S11, S12. TODO: OI, hipster)
+- set default to IPS name for pnm_buildrequires_SFEgdbm  library/database/gdbm (set defaults to IPSname, switch for S12)
 * Fri May 16 2014 - Thomas Wagner
 - enhanced pnm_buildrequires_SFExz_gnu (add OOS151008)
 - set python_major_minor_micro_version 2.6.8 (OOS151008)
