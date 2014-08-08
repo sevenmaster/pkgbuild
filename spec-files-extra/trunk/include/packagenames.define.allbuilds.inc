@@ -1079,6 +1079,8 @@
 #20140707 OpenIndiana has none
 #20140707 OpenIndiana-Hipster has image/graphviz@2.28.0,5.11-2014.0.1.3:20140528T102249Z
 #set default
+%define pnm_buildrequires_SUNWgraphviz		SFEgraphviz
+%define pnm_requires_SUNWgraphviz		SFEgraphviz
 %define pnm_buildrequires_SFEgraphviz		SFEgraphviz
 %define pnm_requires_SFEgraphviz		SFEgraphviz
 %define graphviz_default_prefix			/usr/gnu
@@ -2289,6 +2291,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Fri Aug  8 2014 - Thomas Wagner
+- add missing defaults for pnm_buildrequires_SUNWgraphviz
 * Mon Jul  7 2014 - Thomas Wagner
 - handle pnm_buildrequires_SUNWgraphviz (S11, S12. TODO: OI, hipster)
 - set default to IPS name for pnm_buildrequires_SFEgdbm  library/database/gdbm (set defaults to IPSname, switch for S12)
