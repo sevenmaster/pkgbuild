@@ -22,7 +22,7 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~umemoto/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: perl.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/U/UM/UMEMOTO/Socket6-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
