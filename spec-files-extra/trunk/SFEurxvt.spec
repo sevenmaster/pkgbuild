@@ -7,8 +7,8 @@
 # spec file for package SFEurxvt
 #
 
-%define src_version 9.18
-%define version 9.18
+%define src_version 9.20
+%define version 9.20
 
 #include perl
 %define with_perl 1
@@ -292,8 +292,8 @@ cp -pr $SOURCE4DIR/ $RPM_BUILD_ROOT%{_docdir}/%{name}/$SOURCE4DIRSHORT/
 # [27]  RUNPATH         0x7c4b     /usr/lib:/usr/lib/amd64:/usr/perl5/5.12/lib/i86pc-solaris-64int/CORE:/usr/gcc/4.6/lib:/usr/gcc/lib
 # remove /usr/lib and /usr/lib/amd64 !
 RUNPATHURXVT=$( /usr/bin/elfedit -re 'dyn:' $RPM_BUILD_ROOT/%{_bindir}/urxvt | grep RUNPATH | sed -e s'?.* /?/?' -e 's,/usr/lib:,,' -e 's,/usr/lib/[A-z0-9]*:,,' )
-/usr/bin/elfedit -e 'dyn:runpath $RUNPATHURXVT' /usr/bin/urxvt
-/usr/bin/elfedit -e 'dyn:runpath $RUNPATHURXVT' /usr/bin/urxvtd
+/usr/bin/elfedit -e 'dyn:runpath '$RUNPATHURXVT'' $RPM_BUILD_ROOT/%{_bindir}/urxvt
+/usr/bin/elfedit -e 'dyn:runpath '$RUNPATHURXVT'' $RPM_BUILD_ROOT/%{_bindir}/urxvtd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -333,18 +333,15 @@ depend fmri=SFEurxvt@%{ips_version_release_renamedbranch} type=optional
 %{_mandir}/*
 
 
-
-%if %build_l10n
-%files l10n
-%defattr (-, root, bin)
-%dir %attr (0755, root, sys) %{_datadir}/locale
-%attr (-, root, other) %{_datadir}/locale
-%endif
-
-
 %changelog
+* Fri Aug  8 2014 - Thomas Wagner
+- bump to 9.20
+* Thu Jan 30 2014 - Thomas Wagner
+- fix packaging by removing %if %build_l10n %files l10n
+- correct elfedit path to file
 * Fri Jan 24 2014 - Thomas Wagner
 - elfedit / remove /usr/lib:/usr/lib/amd64 from RUNPATH. Or get bad /usr/lib/libstdc++.so.6 from the OS supplied gcc, core dumps.
+- bump to 9.19
 * Thu Nov 14 2013 - Thomas Wagner
 - improve renamed package (oldpkg now with incremented IPS_Vendor_version aka branch)
 - re-sort include logic to get %package working (would be a no-op if hidden inside an %include or %use)
