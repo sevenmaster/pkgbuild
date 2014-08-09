@@ -200,7 +200,7 @@ Requires: x11/library/libxcb
 
 Name:                   SFEvlc
 Summary:                vlc - multimedia player and streaming server
-Version:                2.1.4
+Version:                2.1.5
 Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.xz
 #Patch3:                 vlc-03-1141-oss.diff
 #Patch3:                vlc-03-208-oss.diff
@@ -732,6 +732,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Aug  9 2014 - Thomas Wagner
+- bump to 2.1.5
 * Wed Jun 25 2014 - Thomas Wagner
 - check for already existing symlink include/GL
 - enable building pulseaudio (S11.1)
