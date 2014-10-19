@@ -116,7 +116,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 2.11.1
+Version:                 2.11.2
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -906,6 +906,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Sun Oct 19 2014 - Thomas Wagner
+- Bump to 2.11.2
 * Thu Aug  7 2014 - Thomas Wagner
 - Bump to 2.11.1
 * Mon Apr 21 2014 - Thomas Wagner
