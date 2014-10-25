@@ -45,7 +45,7 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion above
-Version:	2.2.13
+Version:	2.2.15
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -228,13 +228,16 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_sysconfdir}
 %dir %attr (0755, root, bin) %{_sysconfdir}/%{src_name}
-%class(renamenew) %{_sysconfdir}/%{src_name}/*
+%config %{_sysconfdir}/%{src_name}/*
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_localstatedir}
-%class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
+%config %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
 
 
 %changelog
+* Sat Oct 25 2014 - Thomas Wagner
+- fix preserve for config files s/%iclass(renamenew)/%config/g
+- bump to 2.2.15
 * Thu Aug  7 2014 - Thomas Wagner
 - bump to 2.2.13
 * Mon Apr 21 2014 - Thomas Wagner
