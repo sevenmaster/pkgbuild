@@ -117,7 +117,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 2.11.2
+Version:                 2.11.3
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -911,6 +911,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %changelog
 * Sat Oct 25 2014 - Thomas Wagner
 - fix preserve for config files s/%iclass(renamenew)/%config/g
+- bump to 2.11.3
 * Sun Oct 19 2014 - Thomas Wagner
 - Bump to 2.11.2
 - fixed owner/group for /var/spool/postfix, postqueue, postdrop
