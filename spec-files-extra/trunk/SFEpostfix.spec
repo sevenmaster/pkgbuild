@@ -50,7 +50,8 @@
 
 %define rungroup        postfix
 %define rungroupid	181
-%define rundropgroup    postdrop
+#%define rundropgroup    postdrop
+%define rundropgroup    postfix
 %define rundropgroupid	182
 # see much more special variables below
 
@@ -725,7 +726,7 @@ rm -rf $RPM_BUILD_ROOT
 
 #IPS
 %actions
-group groupname="%{rundropgroup}" gid="%{rundropgroupid}"
+#group groupname="%{rundropgroup}" gid="%{rundropgroupid}"
 group groupname="%{rungroup}" gid="%{rungroupid}"
 user ftpuser=false gcos-field="Postfix user" username="%{runuser}" uid="%{runuserid}" password=NP group="%{runusergroup}" home-dir="%{_localstatedir}/spool/postfix" login-shell="/bin/true" group-list="mail"
 
@@ -829,29 +830,30 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %attr (0755, root, sys) %dir %{_sysconfdir}/%{src_name}
 #%{_sysconfdir}/%{src_name}/*
-%class(renamenew) %{_sysconfdir}/%{src_name}/master.cf
-%class(renamenew) %{_sysconfdir}/%{src_name}/main.cf
-%class(renamenew) %{_sysconfdir}/%{src_name}/aliases.unused
+%config %{_sysconfdir}/%{src_name}/master.cf
+%config %{_sysconfdir}/%{src_name}/main.cf
+%config %{_sysconfdir}/%{src_name}/aliases.unused
 %{_sysconfdir}/%{src_name}/examples
 %{_sysconfdir}/%{src_name}/bounce.cf.default
-%class(renamenew) %{_sysconfdir}/%{src_name}/access
+%config %{_sysconfdir}/%{src_name}/access
 #this file has gone? %{_sysconfdir}/%{src_name}/postfix-script
 %{_sysconfdir}/%{src_name}/readme
-%class(renamenew) %{_sysconfdir}/%{src_name}/transport
-%class(renamenew) %{_sysconfdir}/%{src_name}/header_checks
+%config %{_sysconfdir}/%{src_name}/transport
+%config %{_sysconfdir}/%{src_name}/header_checks
 %{_sysconfdir}/%{src_name}/postfix.spec.cf
 #this file has gone? %{_sysconfdir}/%{src_name}/postfix-files
 %{_sysconfdir}/%{src_name}/README.rpm
 %{_sysconfdir}/%{src_name}/html
 %{_sysconfdir}/%{src_name}/LICENSE
+#%config %{_sysconfdir}/%{src_name}/virtual
 %class(renamenew) %{_sysconfdir}/%{src_name}/virtual
 #paused %{_sysconfdir}/%{src_name}/postfix-chroot.sh
 %{_sysconfdir}/%{src_name}/TLS_LICENSE
 %{_sysconfdir}/%{src_name}/main.cf.default
-%class(renamenew) %{_sysconfdir}/%{src_name}/generic
-%class(renamenew) %{_sysconfdir}/%{src_name}/relocated
-%class(renamenew) %{_sysconfdir}/%{src_name}/makedefs.out
-%class(renamenew) %{_sysconfdir}/%{src_name}/canonical
+%config %{_sysconfdir}/%{src_name}/generic
+%config %{_sysconfdir}/%{src_name}/relocated
+%config %{_sysconfdir}/%{src_name}/makedefs.out
+%config %{_sysconfdir}/%{src_name}/canonical
 #this file has gone? %{_sysconfdir}/%{src_name}/post-install
 # only for oldtimers the original init.d/postfix script - *not* tested on Solaris
 # this is %{_sysconfdir}/init.d
@@ -862,7 +864,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr (0755, root, other) %{_localstatedir}/lib
 %dir %attr (0700, %{runuser}, root) %{_localstatedir}/lib/postfix
 %dir %attr (0755, root, bin) %{_localstatedir}/spool
-%dir %attr (0755, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}
+#%dir %attr (0755, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}
+%dir %attr (0755, root, bin) %{_localstatedir}/spool/%{src_name}
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/active
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/bounce
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/corrupt
@@ -887,13 +890,13 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr (0755, root, bin) %{gnu_sysconfdir}
 %dir %attr (0755, root, bin) %{gnu_sysconfdir}/sasl2
 %if %(test %{with_sasl} -ge 1 && echo 1 || echo 0)
-%class(renamenew) %{gnu_sysconfdir}/sasl2/saslauthd.postfix
+%config %{gnu_sysconfdir}/sasl2/saslauthd.postfix
 %endif
 %if %(test %{with_sasl} -ge 1 && echo 1 || echo 0)
 %dir %attr (0755, root, bin) %{gnu_dir}
 %dir %attr (0755, root, bin) %{gnu_libdir}
 %dir %attr (0755, root, other) %{gnu_libdir}/sasl2
-%class(renamenew) %{gnu_libdir}/sasl2/smtpd.conf
+%config %{gnu_libdir}/sasl2/smtpd.conf
 %endif
 
 
@@ -906,8 +909,11 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Sat Oct 25 2014 - Thomas Wagner
+- fix preserve for config files s/%iclass(renamenew)/%config/g
 * Sun Oct 19 2014 - Thomas Wagner
 - Bump to 2.11.2
+- fixed owner/group for /var/spool/postfix, postqueue, postdrop
 * Thu Aug  7 2014 - Thomas Wagner
 - Bump to 2.11.1
 * Mon Apr 21 2014 - Thomas Wagner
