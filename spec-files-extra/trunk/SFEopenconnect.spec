@@ -37,7 +37,7 @@ Requires:	SFEtun
 This package provides a client for Cisco's AnyConnect VPN, which uses
 HTTPS and DTLS protocols.
 
-%if cc_is_gcc
+%if %cc_is_gcc
 BuildRequires:	SFEgcc
 Requires:	SFEgcc-runtime
 %endif
