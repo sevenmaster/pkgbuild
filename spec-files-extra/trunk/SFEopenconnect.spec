@@ -1,3 +1,11 @@
+
+##TODO## solve compile error (missing: "openconnect.h".. warning: attribute "format" is unknown, ignored. )
+#        - try again when solarisstudio 12.4 is released - then switch back from gcc compiler
+##TODO## provide better vpnc-script (maybe in a separate package)
+#http://www.infradead.org/openconnect/platforms.html
+#For Solaris support, and for IPv6 on any platform, the vpnc-script shipped with vpnc itself (as of v0.5.3) is not sufficient. It is necessary to use the script from the vpnc-scripts repository instead. That repository also contains an updated version of vpnc-script-win.js which is required for correct IPv6 configuration under Windows.
+#http://git.infradead.org/users/dwmw2/vpnc-scripts.git
+
 #
 # spec file for package SFEopenconnect.spec
 #
@@ -5,14 +13,15 @@
 #
 
 %include Solaris.inc
+%define cc_is_gcc 1
 %include base.inc
 
 %define src_name	openconnect
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	5.01
-IPS_Component_Version: 5.1
+Version:	6.00
+IPS_Component_Version: 6.00
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -27,6 +36,11 @@ Requires:	SFEtun
 %description
 This package provides a client for Cisco's AnyConnect VPN, which uses
 HTTPS and DTLS protocols.
+
+%if cc_is_gcc
+BuildRequires:	SFEgcc
+Requires:	SFEgcc-runtime
+%endif
 
 %package devel
 Summary:	%{summary} - developer files
@@ -48,6 +62,7 @@ Requires:	%{name}
 
 #note: all variables are on the same line with the "configure" call
 #therefore *no* export
+CC=gcc \
 LD=`which ld-wrapper` \
 CFLAGS="%{optflags} -D__sun__" LDFLAGS="%{_ldflags}" \
 ZLIB_CFLAGS="-I/usr/include" ZLIB_LIBS=-lz \
@@ -86,8 +101,8 @@ rm -rf %{buildroot}
 %defattr(-, root, bin)
 %{_sbindir}/openconnect
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_docdir}
-%{_docdir}/openconnect
+#%dir %attr (0755, root, other) %{_docdir}
+#%{_docdir}/openconnect
 %{_mandir}/man1m/*
 %{_libdir}/libopenconnect.so*
 
@@ -105,6 +120,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Oct 24 2014 - Thomas Wagner
+- bump to 6.00
+- switched to gcc because no solution to get studio compile (missing: "openconnect.h".. warning: attribute "format" is unknown, ignored. ) - try again when solarisstudio 12.4 is released
 * Mon Sep 09 2013 - Milan Jurik
 - bump to 5.01
 * Sun Nov  4 2012 - Thomas Wagner
