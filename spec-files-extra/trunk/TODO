@@ -663,3 +663,10 @@ variant and so on)
 66)
 create auto-update service for geoip database
 e.g. updating the database once a quater year
+
+67)
+(brought up by alp: libevent / libevent2 event-config.h differs when compiled 32- or 64-bit)
+(tom68) patch usr/include/event-config.h to recognize if it is consumed as 32- or 64-bit
+-#define _EVENT_SIZEOF_LONG 4
++#define _EVENT_SIZEOF_LONG 8
+Idea: JT-EC> We just wrap the headers in #if (defined (__x86_64__)) #else like opensslconf.h
