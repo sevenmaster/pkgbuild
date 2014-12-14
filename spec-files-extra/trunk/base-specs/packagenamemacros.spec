@@ -74,11 +74,14 @@ pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
 pnm: solaris12       	%{solaris12} Solaris 12
-pnm: s110100         	%{s110100} Solaris 11.1
-pnm: s110000         	%{s110000} Solaris 11.0
+pnm: s110300         	%{s110300} Solaris 11.3 and up
+pnm: s110200         	%{s110200} Solaris 11.2 and up
+pnm: s110100         	%{s110100} Solaris 11.1 and up
+pnm: s110000         	%{s110000} Solaris 11.0 and up
 pnm: solaris11express	%{solaris11express} Solaris 11 Express yes/no
 pnm: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g. 166)
 pnm: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
+pnm: omnios		%{omnios} OmniOS
 pnm: openindiana		%{openindiana} OpenIndiana yes/no
 pnm: oi201100 		%{oi201100} OpenIndiana 151, experimental reworked
 pnm: oi201009 		%{oi201009} OpenIndiana 147/148, experimental reworked
@@ -169,42 +172,86 @@ pnm: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
 pnm: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
 pnm: featureflags
 pnm: etc_security_directorylayout		%{etc_security_directorylayout}
+pnm: pnm_buildrequires_SUNWlibm			math headers are in package: %{pnm_buildrequires_SUNWlibm}
+
+pnm: apache2_version 			%{apache2_version}
+pnm: apache2_major_version			%{apache2_major_version}
+pnm: apache2_major_minor_version			%{apache2_major_minor_version}
+pnm: apache2_version_package_string			%{apache2_version_package_string}
+pnm: pnm_buildrequires_apache2_default             %{pnm_buildrequires_apache2_default}
+pnm: pnm_requires_apache2_default                  %{pnm_requires_apache2_default}
+pnm: pnm_buildrequires_apache2_default		%{pnm_buildrequires_apache2_default}
+pnm: pnm_requires_apache2_default		%{pnm_requires_apache2_default}
+pnm: apache2_default_includedir    		%{apache2_default_includedir}
+pnm: apache2_default_libdir        	%{apache2_default_libdir}
+pnm: apache2_default_libexecdir    	%{apache2_default_libexecdir}
+pnm: apache2_default_apxs  		%{apache2_default_apxs}
+pnm: apache2_default_apxs_64		%{apache2_default_apxs_64}
+
 " >/dev/null
 
 
 echo "
-requesting package SUNWopenssl resolves on %{osdistrelname} build %{osbuild}:
+requesting package  SUNWopenssl resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for SUNWopenssl is contained in  %{pnm_buildrequires_SUNWopenssl}
        Requires for SUNWopenssl is contained in  %{pnm_requires_SUNWopenssl}
 
-requesting package openssl w/o the SUNW prefix in the name resolves on %{osdistrelname} build %{osbuild}:
+requesting package  openssl w/o the SUNW prefix in the name resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for openssl is contained in  %{pnm_buildrequires_openssl}
        Requires for openssl is contained in  %{pnm_requires_openssl}
 
-requesting package library/security/openssl resolves on %{osdistrelname} build %{osbuild}:
+requesting package  library/security/openssl resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for library/security/openssl is contained in  %{pnm_buildrequires_library_security_openssl}
        Requires for library/security/openssl is contained in  %{pnm_requires_library_security_openssl}
 
-requesting package SUNWncurses / SUNWncurses-devel resolves on %{osdistrelname} build %{osbuild}:
+requesting package  SUNWncurses / SUNWncurses-devel resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for SUNWncurses-devel is contained in  %{pnm_buildrequires_SUNWncurses_devel}
        Requires for SUNWncurses is contained in  %{pnm_requires_SUNWncurses}
 
-requesting package ncurses w/o the SUNW prefix in the name resolves on %{osdistrelname} build %{osbuild}:
+requesting package  ncurses w/o the SUNW prefix in the name resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for ncurses is contained in  %{pnm_buildrequires_ncurses}
        Requires for ncurses is contained in  %{pnm_requires_ncurses}
 
-requesting package library/ncurses resolves on %{osdistrelname} build %{osbuild}:
+requesting package  library/ncurses resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for library/ncurses is contained in  %{pnm_buildrequires_library_ncurses}
        Requires for library/ncurses is contained in  %{pnm_requires_library_ncurses}
 
-requesting package x11/library/freeglut resolves on %{osdistrelname} build %{osbuild}:
+requesting package  x11/library/freeglut resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for x11/library/freeglut is contained in  %{pnm_buildrequires_SFEfreeglut}
        Requires for x11/library/freeglut is contained in  %{pnm_requires_SFEfreeglut}
+
+requesting package  library/database/gdbm resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
+  BuildRequires for library/database/gdbm is contained in  %{pnm_buildrequires_SUNWgnu_dbm}
+       Requires for library/database/gdbm is contained in  %{pnm_requires_SUNWgnu_dbm}
+
+requesting package  SUNWslang resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
+  BuildRequires for SUNWslang is contained in  %{pnm_buildrequires_SUNWslang}
+       Requires for SUNWslang is contained in  %{pnm_requires_SUNWslang}
+
+requesting package  SFEgnugetopt resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
+  BuildRequires for SFEgnugetopt is contained in  %{pnm_buildrequires_SFEgnugetopt}
+       Requires for SFEgnugetopt is contained in  %{pnm_requires_SFEgnugetopt}
+
+requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
+  BuildRequires for SFExz is contained in  %{pnm_buildrequires_SFExz_gnu}
+       Requires for SFExz is contained in  %{pnm_requires_SFExz_gnu}
+
 " >/dev/null
 
 
 
 %changelog
+* Tue Jul  1 2014 - Thomas Wagner
+- print informations about apache
+* Mon Apr 21 2014 - Thomas Wagner
+- add pnm_buildrequires_SUNWlibm
+* Sat Apr 12 2014 - Thomas Wagner
+- add omnios
+- add example SFExz_gnu
+* Sun Mar 23 2014 - Thomas Wagner
+- add SFEgnugetopt, print %{osdistrelnumber}
+* Wed Jan  8 2014 - Thomas Wagner
+- add SUNWslang
 * Mon Oct  7 2013 - Thomas Wagner
 - add pkgbuild_ver / *, include pkgbuild-features.inc
 * Mon Jul 1 2013 - Thomas Wagner

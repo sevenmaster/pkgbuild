@@ -153,6 +153,8 @@
 %define s110100 0
 #11.2 build ??
 %define s110200 0
+#11.3 build ??
+%define s110300 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -216,10 +218,14 @@
 #below probably release of 2010.05 (was 2010.03 or whatever name)
 
 
-#root@nas:~# cat /etc/release | grep OmniOS
+#root@host:~# cat /etc/release | grep OmniOS
 #  OmniOS v11 r151006
-#root@nas:~# cat /etc/release | grep OmniOS
+#root@host:~# cat /etc/release | grep OmniOS
 #  OmniOS v11 r151008
+# cat /etc/release | grep OmniOS
+#  OmniOS v11 r151010
+# cat /etc/release | grep OmniOS
+#  OmniOS v11 r151012
 
 
 ##START build 151 006 and 008 and up , OmniOS
@@ -353,6 +359,15 @@
 %define osdistrelnumber 201102
 %else
 %endif
+#11.3 build ??
+%if %( uname -v | egrep '^11\.3$' > /dev/null && echo 1 || echo 0 )
+#additive
+%define s110100 1
+%define s110200 1
+%define s110300 1
+%define osdistrelnumber 201103
+%else
+%endif
 %define osdistrelname   "Solaris 11"
 #this was the last check, skip all others
 %define osdet299999 0
@@ -459,6 +474,8 @@
 
 
 %changelog
+* Sun Dec 14 2014 - Thomas Wagner
+- add s11 11.3 support, define s110300 and distrelnumber 201103 (S11.3)
 * Sat Apr 12 2014 - Thomas Wagner
 - re-add OpenIndiana (was edit error)
 * Sat Apr 12 2014 - Thomas Wagner
