@@ -13,7 +13,7 @@ IPS_package_name:        media/mediathek
 Group:                   Applications/Sound and Video
 Summary:                 mediathek - download TV broadcasters online offers, download podcasts
 URL:                     http://zdfmediathk.sourceforge.net/
-Version:                 7
+Version:                 8
 Source:                  %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{version}/MediathekView_%{version}.zip
 Source2:                 %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{docversion}/Kurzanleitung_%{docversion}.pdf
 
@@ -60,6 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 15 2014 - Thomas Wagner
+- bump to version 8
 * Sun Jul 20 2014 - Thomas Wagner
 - bump to version 7
 * Sun May 11 2014 - Thomas Wagner
