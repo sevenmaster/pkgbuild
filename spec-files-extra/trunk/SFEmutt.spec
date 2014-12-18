@@ -13,7 +13,8 @@ Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
 Version:             1.5.23
-Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
+#Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
+Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
 Patch1:              mutt-01-makefile.diff
 Patch2:              mutt-02-configure-gssapi-krb5.diff
 Patch3:              mutt-03-configure-unquoted-test.diff
@@ -144,6 +145,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Thu Dec 18 2014 - Thomas Wagner
+- fix download URL (now: sourceforge)
 * Wed Mar 12 2014 - Thomas Wagner
 - bump to 1.5.23 - CVE-2014-0467
 * Wed Jan  8 2014 - Thomas Wagner
