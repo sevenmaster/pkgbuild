@@ -18,6 +18,8 @@ Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz
 Patch1:              mutt-01-makefile.diff
 Patch2:              mutt-02-configure-gssapi-krb5.diff
 Patch3:              mutt-03-configure-unquoted-test.diff
+##TODO## remove once CVE-2014-9116 included in next version (past 1.5.23)
+Patch4:              mutt-04-CVE-2014-9116-ticket-3716-stable.patch.diff
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -67,6 +69,8 @@ SUNW_BaseDir:            /
 %patch1 -p0
 %patch2 -p0
 %patch3 -p0
+##TODO## remove once CVE-2014-9116 included in next version (past 1.5.23)
+%patch4 -p1
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
@@ -145,6 +149,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Thu Dec 18 2014 - Thomas Wagner
+- add patch4 ticket-3716, CVE-2014-9116, Debian Bug 771125
 * Thu Dec 18 2014 - Thomas Wagner
 - fix download URL (now: sourceforge)
 * Wed Mar 12 2014 - Thomas Wagner
