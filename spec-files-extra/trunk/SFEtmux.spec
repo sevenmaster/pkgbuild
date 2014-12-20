@@ -13,15 +13,13 @@
 Name:           SFE%srcname
 IPS_Package_Name:	terminal/tmux
 Summary:        Terminal multiplexer
-Version:        1.7
+IPS_Component_Version: 1.9.0.1
+Version:        1.9a
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.sourceforge.net/
 Source:         %{sf_download}/tmux/%{srcname}-%{version}.tar.gz
-# owner:gber date:2010-10-06 type:bug
-# include netdb.h which defines MAXHOSTNAMELEN
-Patch1:         tmux-01-include-netdb.h.diff
-Patch2:         tmux-02-locking.diff
-Patch3:         tmux-03-avoid-cfmakeraw.diff
+Patch5:         tmux-05-include-errno.h.diff
+Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -52,9 +50,8 @@ to (display and accept keyboard input from) multiple clients.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch5 -p1
+%patch6 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -82,13 +79,17 @@ rm -rf $RPM_BUILD_ROOT
 %_bindir/tmux
 %dir %attr (-, root, sys) %_datadir
 %dir %attr (0755, root, other) %dir %_docdir
-%doc CHANGES FAQ NOTES TODO
+%doc CHANGES FAQ TODO
 %doc examples/screen-keys.conf examples/t-williams.conf examples/vim-keys.conf
 %doc examples/h-boetes.conf examples/tmux.vim examples/n-marriott.conf
 %doc %_mandir/man1/tmux.1
 
 
 %changelog
+* Sat Dec 20 2014 - Thomas Wagner
+- bump to 1.9a, add IPS_Component_Version 1.9.0.1
+- remove patch1, remove/replace patch2 and patch3 by new patch6 (adopted from Solaris Userland), 
+- add patch5 errno.h
 * Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 1.7, added ips name and updated patches
 * Mon Oct 31 2011 - Alex Viskovatoff
