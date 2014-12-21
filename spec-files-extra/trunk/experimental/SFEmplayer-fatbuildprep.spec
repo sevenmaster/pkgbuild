@@ -1,5 +1,5 @@
 #
-# spec file for building a full features mplayer-snap from SVN
+# spec file for building a full features mplayer from SVN
 #
 
 %include packagenamemacros.inc
@@ -8,12 +8,12 @@
 #NOTE auto-install of the OS provided packages on an IPS system does *not* work currently
 
 
-#place packages to be build before mplayer-snap. mplayer-snap
+#place packages to be build before mplayer. mplayer
 #does find them and use them if they are present before, else skip.
 
 %define requiresforfatbuild experimental/SFEmplayer-fatbuildprep.spec SUNWlibsndfile SFEfaad2 SFElibfribidi SFEladspa SFEopenal SFEliba52 SFElame SFEtwolame SFElibmad SFElibmpcdec SFExvid SFElibx264 SFEopenjpeg SFEgiflib SFEliveMedia SFElibcdio SFElibcdio-devel
 
-#supplement (do not list those, who are already listed in SFEmplayer-snap iteself
+#supplement (do not list those, who are already listed in SFEmplayer iteself
 %define requiresforfatbuildsupplement %{pnm_buildrequires_SUNWsmba} SUNWgnome-audio SUNWgscr
 
 # place specs excluded from above *here* and do not delete them.
@@ -23,7 +23,7 @@
 
 #script resolveipspackages is part of "bootstrap-sfe-latest-os20nn" and "bootstrap-sfe-testing-os20nn"
 #ealybird is a dummy. This step just installs packages from the present IPS repo on this system
-%define earlybird $( /opt/jdsbld/bin/resolveipspackages %{requiresforfatbuild} %{requiresforfatbuildsupplement} experimental/SFEmplayer-snap )
+%define earlybird $( /opt/jdsbld/bin/resolveipspackages %{requiresforfatbuild} %{requiresforfatbuildsupplement} experimental/SFEmplayer )
 
 
 
@@ -50,7 +50,7 @@
 #SFEmpg321.spec
 #SFEmpgtx.spec
 #SFEmplayer-codecs.spec
-#SFEmplayer-snap.spec
+#SFEmplayer.spec
 #SFEmplayer.spec
 #SFEmplayerplug-in.spec
 #SFEnntpcached.spec
@@ -77,7 +77,7 @@
 
 
 Name:                    SFEmplayer-fat
-Summary:                 mplayer-fat - dummy spec file to BuildRequire tons of prerequisites and then also requires SFEmplayer-snap
+Summary:                 mplayer-fat - dummy spec file to BuildRequire tons of prerequisites and then also requires SFEmplayer
 Version:                 0.1
 
 
@@ -111,10 +111,10 @@ BuildRequires: SFExvid
 BuildRequires: SFElibx264
 BuildRequires: SFEopenjpeg
 BuildRequires: SFEgiflib
-BuildRequires: SFEliveMedia
+BuildRequires: SFElivemedia
 BuildRequires: SFElibcdio
 BuildRequires: SFElibcdio-devel
-BuildRequires: SFEmplayer-snap
+BuildRequires: SFEmplayer
 
 %prep
 
@@ -131,6 +131,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 13 2014 - Thomas Wagner
+- change from SFEmplayer-snap to SFEmplayer (e.g. Version 1.1.1)
 * Sun Jun 24 2012 - Thomas Wagner
 - change SUNWsmba to %{pnm_buildrequires_SUNWsmba} to build the depencies early enough
 * Fri Nov 05 2010  - Thomas Wagner
