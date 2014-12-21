@@ -1,6 +1,6 @@
---- live/groupsock/include/NetCommon.h.orig	2007-01-03 13:10:10.147171000 -0500
-+++ live/groupsock/include/NetCommon.h	2007-01-03 13:11:04.200472000 -0500
-@@ -83,7 +83,7 @@
+--- live/groupsock/include/NetCommon.h.orig	2014-12-21 13:00:00.000000000 -0500
++++ live/groupsock/include/NetCommon.h	2014-12-21 13:00:00.000000000 -0500
+@@ -111,7 +111,7 @@
  
  #define closeSocket close
  

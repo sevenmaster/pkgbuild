@@ -77,6 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Sun Dec 21 2014 - Thomas Wagner
+- rework Patch1 liveMedia-01-SOLARIS-macro.diff, Patch2 liveMedia-02-config.diff (based on source live.2014.12.17.tar.gz)
 * Thu Jul 11 2013 - Thomas Wagner
 - fix code to generate IPS_component_version out of %{version}
 * Sun Jan 27 2013 - Thomas Wagner
