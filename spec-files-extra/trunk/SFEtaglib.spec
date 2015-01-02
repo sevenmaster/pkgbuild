@@ -12,7 +12,7 @@ Name:		SFEtaglib
 IPS_Package_Name:	library/audio/taglib
 Summary:	TagLib  - a library for reading and editing the meta-data of several popular audio formats
 Group:		System/Multimedia Libraries
-Version:	1.7
+Version:	1.7.2
 Source:		http://developer.kde.org/~wheeler/files/src/taglib-%{version}.tar.gz
 License:	LGPLv2.1
 Patch1:		taglib-01-map.diff
@@ -72,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Jan  1 2014 - Thomas Wagner
+- bump to 1.7.2
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Sun Oct 23 2011 - Milan Jurik
