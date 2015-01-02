@@ -28,6 +28,10 @@
 %define pkgbuild_ver_1_3_103 0
 %define pkgbuild_ver_1_3_104 0
 %define pkgbuild_ver_1_3_105 0
+%define pkgbuild_ver_1_3_106 0
+%define pkgbuild_ver_1_3_107 0
+%define pkgbuild_ver_1_3_108 0
+%define pkgbuild_ver_1_3_109 0
 %define pkgbuild_ver_numeric 0
 #features suported:
 %define pkgbuild_ips_legacy  0
@@ -60,6 +64,42 @@
 %endif
 #1.3.105
 
+%if %( echo %{pkgbuild_ver} | grep -w "1.3.106" >/dev/null && echo 1 || echo 0 )
+%define pkgbuild_ver_1_3_106 1
+%define pkgbuild_ver_numeric 001003106
+#features suported:
+%define pkgbuild_ips_legacy  1
+%define pkgbuild_renamed_to  1
+%endif
+#1.3.106
+
+%if %( echo %{pkgbuild_ver} | grep -w "1.3.107" >/dev/null && echo 1 || echo 0 )
+%define pkgbuild_ver_1_3_107 1
+%define pkgbuild_ver_numeric 001003107
+#features suported:
+%define pkgbuild_ips_legacy  1
+%define pkgbuild_renamed_to  1
+%endif
+#1.3.107
+
+%if %( echo %{pkgbuild_ver} | grep -w "1.3.108" >/dev/null && echo 1 || echo 0 )
+%define pkgbuild_ver_1_3_108 1
+%define pkgbuild_ver_numeric 001003108
+#features suported:
+%define pkgbuild_ips_legacy  1
+%define pkgbuild_renamed_to  1
+%endif
+#1.3.108
+
+%if %( echo %{pkgbuild_ver} | grep -w "1.3.109" >/dev/null && echo 1 || echo 0 )
+%define pkgbuild_ver_1_3_109 1
+%define pkgbuild_ver_numeric 001003109
+#features suported:
+%define pkgbuild_ips_legacy  1
+%define pkgbuild_renamed_to  1
+%endif
+#1.3.109
+
 
 #add more sections of new pkgbuild version add new feature
 #so they can be excluded in case older pkgbuild version is active
@@ -67,10 +107,13 @@
 #bailout, we weren't able to detect the pkgbuild version!
 %if %(expr %{pkgbuild_ver_numeric} '=' 0 )
 not able to detect supported pkgbuild version. fix include/pkgbuild-features.inc
+do not remove these lines from file include/pkgbuild-features.inc
 %endif
 #END not %{pkgbuild_ver_numeric}
 
 %changelog
+* Fri Jan  2 2015 - Thomas Wagner
+- add more versions 1.3.105 .. 1.3.109
 * Tue Oct  8 2013 - Thomas Wagner
 - add bail-out if pkgbuild version can't be detected or is unknown
 * Mon Oct  7 2013 - Thomas Wagner

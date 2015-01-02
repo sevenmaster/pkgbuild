@@ -93,9 +93,18 @@ pnm: os200811 		%{os200811}
 pnm: osdistrelnumber 	%{osdistrelnumber}
 pnm: osdistrelname   	%{osdistrelname}
 pnm: osdet299999 		%{osdet299999}
-pnm: pkgbuild_ver		%{pkgbuild_ver}
-pnm: pkgbuild_ips_legacy	%{pkgbuild_ips_legacy}
-pnm: pkgbuild_renamed_to	%{pkgbuild_renamed_to}
+
+pnm: pkgbuild_ver_numeric	%{pkgbuild_ver_numeric}  (version encoded in a large number, usefull for comparisons)
+pnm: pkgbuild_ips_legacy	%{pkgbuild_ips_legacy}   (is supporting IPS system)
+pnm: pkgbuild_renamed_to	%{pkgbuild_renamed_to}   (is supporting the renamed_to package name tags)
+pnm: pkgbuild_ver_1_3_109	%{pkgbuild_ver_1_3_109}  (doesn't necessarily mean that version exists at all)
+pnm: pkgbuild_ver_1_3_108	%{pkgbuild_ver_1_3_108}
+pnm: pkgbuild_ver_1_3_107	%{pkgbuild_ver_1_3_107}
+pnm: pkgbuild_ver_1_3_106	%{pkgbuild_ver_1_3_106}
+pnm: pkgbuild_ver_1_3_105	%{pkgbuild_ver_1_3_105}
+pnm: pkgbuild_ver_1_3_104	%{pkgbuild_ver_1_3_104}
+pnm: pkgbuild_ver_1_3_103	%{pkgbuild_ver_1_3_103}
+
 pnm: pnm_buildrequires_perl_default: 		%{pnm_buildrequires_perl_default}
 pnm: pnm_requires_perl_default: 			%{pnm_requires_perl_default}
 pnm: perl_version number is:       		%{perl_version}
@@ -241,6 +250,8 @@ requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build 
 
 
 %changelog
+* Fri Jan  2 2015 - Thomas Wagner
+- modify infos on pkgbuild version, add more versions 1.3.105 .. 1.3.109
 * Tue Jul  1 2014 - Thomas Wagner
 - print informations about apache
 * Mon Apr 21 2014 - Thomas Wagner
