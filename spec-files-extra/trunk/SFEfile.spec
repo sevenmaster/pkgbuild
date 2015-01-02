@@ -4,13 +4,14 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
-
-%define _prefix %{_basedir}/gnu
+%include packagenamemacros.inc
+%include usr-gnu.inc
+%include base.inc
 
 Name:		SFEfile
 IPS_Package_Name:	file/file
-Summary:	determine file type
-Version:	5.17
+Summary:	determine file type (/usr/gnu)
+Version:	5.21
 Group:		Applications/System Utilities
 License:	BSD3c
 SUNW_Copyright:	file.copyright
@@ -19,6 +20,9 @@ Source:		ftp://ftp.astron.com/pub/file/file-%version.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
+BuildRequires: %{pnm_buildrequires_library_zlib}
+Requires:      %{pnm_requires_library_zlib}
 
 %prep
 %setup -q -n file-%version
@@ -70,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/*.4
 
 %changelog
+* Fri Jan  2 2015 - Thomas Wagner
+- bump to 5.21
+- add dependencies
 * Sun Feb 16 2014 - Alex Viskovatoff
 - bump to 5.17
 * Sun Aug 05 2012 - Milan Jurik
