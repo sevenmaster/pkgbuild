@@ -15,19 +15,22 @@ Source:         http://download.savannah.gnu.org/releases/lzip/lzip-%{version}.t
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 cd lzip-%{version}
+
+export CC=gcc
+export CXX=g++
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{cxx_optflags}"
 export LDFLAGS="%{_ldflags}"
 
-./configure --prefix=%{_prefix}                 \
-            --bindir=%{_bindir}         \
-            --libdir=%{_libdir}         \
-            --libexecdir=%{_libexecdir}         \
-            --mandir=%{_mandir}                 \
-            --datadir=%{_datadir}               \
-            --infodir=%{_datadir}/info          \
-	    --disable-static			\
-	    --disable-assembler
+./configure --prefix=%{_prefix}    \
+            --bindir=%{_bindir}    \
+            --mandir=%{_mandir}    \
+            --datarootdir=%{_datadir}   \
+            --infodir=%{_datadir}/info  \
+            CXX="${CXX}"           \
+            CPPFLAGS="${CPPFLAGS}" \
+            CXXFLAGS="${CXXFLAGS}" \
+            LDFLAGS="${LDFLAGS}"   \
 
 gmake -j$CPUS
 
@@ -42,4 +45,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %changelog
 * Fri Jan  1 2014 - Thomas Wagner
 - initial spec version 1.16
-- derived from SFExz.spec
+- derived from SFExz-gnu.spec
+- build 64-bit only, bindir is /usr/gnu/bin/
+- fix build for 64-bit only
+- rename to SFElzip-gnu.spec
