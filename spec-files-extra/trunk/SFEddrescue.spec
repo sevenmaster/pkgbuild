@@ -4,24 +4,28 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 
 %define src_name ddrescue
 
 Name:                SFEddrescue
 IPS_Package_Name:	storage/ddrescue
 Summary:             Data recovery tool
-Version:             1.15
+Version:             1.19
 License:             GPLv3+
-Source:              http://ftp.gnu.org/gnu/ddrescue/%{src_name}-%{version}.tar.gz
+Source:              http://ftp.gnu.org/gnu/ddrescue/%{src_name}-%{version}.tar.lz
 URL:                 http://www.gnu.org/software/ddrescue/ddrescue.html
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWlibC
+BuildRequires: SFElzip-gnu
 
 %prep
-%setup -q -n %{src_name}-%{version}
+#don't unpack please
+%setup -q -c -T -n %{src_name}-%{version}
+lzip -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -29,10 +33,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-export CXX="$CXX -norunpath"
+export CC=gcc
+export CXX=g++
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{cxx_optflags}"
-export LDFLAGS="%{_ldflags} -lCrun"
+export LDFLAGS="%{_ldflags}"
 
 ./configure --prefix=%{_prefix}		\
             --bindir=%{_bindir}		\
@@ -65,6 +70,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Wed Dec 17 2014 - Thomas Wagner
+- bump to 1.19
+- unpack sources with "lz" (lzip)
+- use gcc/g++, function snprintf not in (older) studio compiler available
 * Sun Mar 11 2012 - Milan Jurik
 - bump to 1.15
 * Tue Mar 10 2011 - Thomas Wagner
