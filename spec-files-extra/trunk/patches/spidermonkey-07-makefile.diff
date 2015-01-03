@@ -1,6 +1,6 @@
 --- a/js/src/Makefile.in-orig	2011-10-20 05:34:41.145427306 -0500
 +++ a/js/src/Makefile.in	2011-10-20 05:51:42.234360280 -0500
-@@ -861,17 +861,17 @@ install:: $(SCRIPTS)
+@@ -861,18 +861,18 @@ install:: $(SCRIPTS)
  ifeq (,$(HOST_BIN_SUFFIX))
  ifeq (.dylib,$(DLL_SUFFIX))
  # Mac OS X
@@ -18,12 +18,14 @@
 -SHLIB_ANY_VER   := $(DESTDIR)$(libdir)/$(SHARED_LIBRARY)
 -SHLIB_ABI_VER   := $(DESTDIR)$(libdir)/$(SHARED_LIBRARY).$(SRCREL_ABI_VERSION)
 -SHLIB_EXACT_VER := $(DESTDIR)$(libdir)/$(SHARED_LIBRARY).$(SRCREL_VERSION)
+-$(SHARED_LIBRARY): EXTRA_DSO_LDOPTS += -Wl,-soname,$(notdir $(SHLIB_ABI_VER))
 +SHLIB_ANY_VER   := $(SHARED_LIBRARY)
 +SHLIB_ABI_VER   := $(SHARED_LIBRARY).$(SRCREL_ABI_VERSION)
 +SHLIB_EXACT_VER := $(SHARED_LIBRARY).$(SRCREL_VERSION)
- $(SHARED_LIBRARY): EXTRA_DSO_LDOPTS += -Wl,-soname,$(notdir $(SHLIB_ABI_VER))
++#don't do -h and -soname on newer Solaris ld - multiple definitions $(SHARED_LIBRARY): EXTRA_DSO_LDOPTS += -Wl,-soname,$(notdir $(SHLIB_ABI_VER))
  endif
  endif
+
 @@ -887,10 +887,10 @@ ifeq (,$(HOST_BIN_SUFFIX))
  endif
  	$(SYSINSTALL) $(SHARED_LIBRARY) $(DESTDIR)$(libdir)
