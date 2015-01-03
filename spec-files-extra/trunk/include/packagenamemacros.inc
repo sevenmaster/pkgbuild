@@ -74,7 +74,7 @@
 
 #huge package rename actions took place with build 133 (including)
 #http://defect.opensolaris.org/bz/show_bug.cgi?id=6186
-%if %( expr %{osbuild} '>=' 133  '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133  '|' %{solaris12} '>=' 1 '|' %{omnios} '>=' 1 )
 %include packagenames.define-133.inc
 %include packagenames.define-specialcases-133.inc
 #>=133
@@ -83,7 +83,7 @@
 #NOTE: cumulative, this includes the settings from builds before
 #package rename actions took place with build 134 (including)
 #http://defect.opensolaris.org/bz/show_bug.cgi?id=6186
-%if %( expr %{osbuild} '>=' 134  '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 134  '|' %{solaris12} '>=' 1 '|' %{omnios} '>=' 1 )
 %include packagenames.define-134.inc
 %include packagenames.define-specialcases-134.inc
 #>=133
