@@ -79,7 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 %{_mandir}
-%{_libdir}/node
+#dir is gone %{_libdir}/node
 %{_libdir}/node_modules
 %{_libdir}/dtrace/node.d
 
@@ -91,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog  
 * Sat Jan  3 2015 - Thomas Wagner
 - bump to 0.10.35
+- fix %files for %{_libdir}/node
 * Wed Aug 20 2014 - Thomas Wagner
 - bump to 0.10.31
 * Mon Jun 16 2014 - Thomas Wagner
