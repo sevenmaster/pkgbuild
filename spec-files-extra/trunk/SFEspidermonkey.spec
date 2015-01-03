@@ -1,16 +1,18 @@
-
 # spec file for package SFEspidermonkey
 #
 # includes module(s): spidermonkey
 #
 %define cc_is_gcc 1
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                    SFEspidermonkey
 IPS_Package_Name:	runtime/javascript/spidermonkey
 Summary:                 Mozilla SpiderMonkey JavaScript Engine.
+#note no automatic change to the download URL!
 Version:                 1.8.5
-Source:                  http://ftp.mozilla.org/pub/mozilla.org/js/js185-1.0.0.tar.gz
+%define download_version 185-1.0.0
+Source:                  http://ftp.mozilla.org/pub/mozilla.org/js/js%{download_version}.tar.gz
 # Note these patches are copied from spec-files, the latest patches for Firefox
 # version 4.
 Patch1:                  spidermonkey-01-js-ctypes.diff
@@ -24,8 +26,14 @@ Patch7:                  spidermonkey-07-makefile.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWprd
-RequireS: SUNWpr
+#resolves to library/nspr/header-nspr but this was
+#renamed to:
+#depend fmri=library/nspr@0.5.11-0.160 type=require
+#so for the moment, require library/nspr
+#BuildRequires: %{pnm_buildrequires_SUNWprd_devel}
+##TODO## pnn_macro to resolve pnm_buildrequires_SUNWprd_devel to library/nspr if osdistro >=160
+BuildRequires: %{pnm_buildrequires_SUNWpr}
+Requires:      %{pnm_buildrequires_SUNWpr}
 BuildRequires: SUNWzip
 
 %package devel
@@ -86,5 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Jan  2 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWprd_devel} %{pnm_buildrequires_SUNWpr}, %include packagenamemacros.inc, needs more work in pnm_macros: library/nspr/header-nspr is renamed to library/nspr >= 160
+- fix patch spidermonkey-04-jemalloc.diff (you might verify this, it was an empty section at the end)
+- rework spidermonkey-07-makefile.diff to remove multiple definitions -h and -soname for mozjs185.so (newer Solaris LD complains)
 * Thu Oct 20 2011 - Brian.Cameron  <brian.cameron@sun.com>
 - Created.
