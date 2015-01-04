@@ -23,14 +23,15 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-BuildRequires: SUNWpython26-setuptools
-BuildRequires: %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
-BuildRequires: %{pnm_buildrequires_SUNWlibpigment_python26_devel}
-Requires: %{pnm_requires_SUNWgnome_python26_libs}
-BuildRequires: SUNWPython26-devel
-Requires: SUNWPython26
+BuildRequires: %{pnm_buildrequires_python_default}
+Requires:      %{pnm_requires_python_default}
+BuildRequires: %{pnm_buildrequires_SUNWpython26_setuptools_devel}
+##TODO## is this required? BuildRequires: %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
+##TODO## is this required? Requires:      %{pnm_requires_SUNWgnome_python26_libs}
+##TODO## #paused, needed only for very old osdistro# BuildRequires: %{pnm_buildrequires_SUNWlibpigment_python26_devel}
 BuildRequires: SFEpython26-genshi
-Requires: SFEpython26-genshi
+Requires:      SFEpython26-genshi
+
 
 %description
 Manifold helps you quickly and easily create Solaris SMF manifest XML files for your services by answering a few questions about how it needs to be configured.
@@ -122,7 +123,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_cxx_libdir}/*
 
 %changelog
+* Sun Jan  4 2015 - Thomas Wagner
+- fix (Build)Requires for newer osdisto
 * Thr Mar 17 2011 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWlibpigment_python26_devel}
+* Fri Jun 25 2010 - Thomas Wagner
+- remove typo in (Build)Requires
 * Thu Jun 24 2010 - Thomas Wagner
 - initial spec
