@@ -201,7 +201,10 @@ SFEqt-gpp.spec - test QT itself for working properly (low priority)
 29)
 Requires: SUNWgnome-python26-libs - check if this could be done similar to 
 pnm_python_default. Could be used by SFEpessulus.spec and possibly others
-SFEpygoocanvas.spec SFEsabayon.spec
+SFEpygoocanvas.spec SFEsabayon.spec SFEmanifold.spec
+Find a better way to express e.g.  %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
+as this is a "renamed=true" package on newer osdistro, so pkgtool can't see
+them installed.
 
 30)
 SFEtransmageddon.spec: use pnm_python_default  and *test* if it works
@@ -412,6 +415,13 @@ encumbered/SFEvlc.spec:Requires:       SFEsdl
 maybe change livemedia version number detection to an autoupdate_but_stored_in_svn variant
 that way you can rely on the svn revision be in sync with the consuming spec files and 
 not get upgrdes accidentially at compile time
+Could use a explicit version number of livemedia as dependency on the consuming packages.
+e.g. compiled against livemedia 2014.12.17, so consuming packages get a pkg mogrify to
+require explicitly livemedia@2014.12.17 or livemedia@2014.3.25,5.11-0.0.175.2.0.0.34.0:20140413T011859Z
+pkgtool does provide a mechanism to provide a version number (exact)?
+one could query the livemedia complete version string at compile time of 
+a dependent package, put that livemediaipspackageversion into a variable and
+write Requires: livemedia = %{livemediaipspackageversion}
 
 54)
 find a solution for more fresh distroy carry a SUNWbdb including the header file (was 
@@ -525,6 +535,7 @@ SFExmlrpc-c.spec    OK     missing     check deps as well
 SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
 SFElcms2                               OS has lcms2 as well, so place it into /usr/gnu in fresh version
 SFEufraw            OK     missing     try if 64-bit performs better (not that the 32-bit version is slow...)
+SFEfile             OK     missing
 
 
 63)
@@ -670,3 +681,12 @@ e.g. updating the database once a quater year
 -#define _EVENT_SIZEOF_LONG 4
 +#define _EVENT_SIZEOF_LONG 8
 Idea: JT-EC> We just wrap the headers in #if (defined (__x86_64__)) #else like opensslconf.h
+
+68)
+micro tasks for getting more packages compile on OmniOS:
+un-archive SFEgdbm.spec (OmniOS has no)
+
+67)
+pnm_macros needed to switch package name if the old package is now renamd_to
+pnm_macro to resolve pnm_buildrequires_SUNWprd_devel to library/nspr if osdistro >=160 (S11, probably others as well)
+
