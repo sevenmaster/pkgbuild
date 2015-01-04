@@ -1,0 +1,35 @@
+https://sourceforge.net/p/mediatomb/patches/25/
+
+#25 Fix build error with GCC 4.6
+Status: open
+Owner: nobody
+Labels: None
+Priority: 5
+Updated: 2011-02-05
+Created: 2011-02-05
+Creator: dirtyepic @ gentoo
+Private: No
+
+The attached patch adds a missing include to src/zmm/object.h. Without it building with GCC 4.6 produces this error:
+
+x86_64-unknown-linux-gnu-g++ -DHAVE_CONFIG_H -I. -I.. -I../tombupnp/upnp/inc -I../src -I../tombupnp/ixml/inc -I../tombupnp/threadutil/inc -I../tombupnp/upnp/inc -I.. -I/usr/include/js -I/usr/include/taglib -pthread -O2 -march=native -g -pipe -MT libmediatomb_a-autoscan.o -MD -MP -MF .deps/libmediatomb_a-autoscan.Tpo -c -o libmediatomb_a-autoscan.o `test -f '../src/autoscan.cc' || echo './'`../src/autoscan.cc
+In file included from ../src/zmm/zmm.h:37:0,
+from ../src/zmmf/zmmf.h:35,
+from ../src/autoscan.h:36,
+from ../src/autoscan.cc:36:
+../src/zmm/object.h:51:32: error: declaration of 'operator new' as non-function
+../src/zmm/object.h:51:27: error: expected ';' at end of member declaration
+../src/zmm/object.h:51:39: error: expected ')' before 'size'
+make[2]: *** [libmediatomb_a-autoscan.o] Error 1
+
+
+--- a/src/zmm/object.h
++++ b/src/zmm/object.h
+@@ -33,6 +33,7 @@
+ #define __ZMM_OBJECT_H__
+ 
+ #include <new> // for size_t
++#include <cstddef>
+ #include "atomic.h"
+ 
+ namespace zmm
