@@ -85,10 +85,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel  
 %defattr(-, root, bin)  
-%{_bindir}/node-waf
+#file is gone %{_bindir}/node-waf
 %{_includedir}/node  
 
 %changelog  
+* Sun Jan  4 2015 - Thomas Wagner
+- fix %files for %{_bindir}/node-waf
 * Sat Jan  3 2015 - Thomas Wagner
 - bump to 0.10.35
 - fix %files for %{_libdir}/node
