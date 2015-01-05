@@ -6,7 +6,7 @@ SMF manifest for SFEbacula storage daemon
 
   --> 
              
-<service_bundle type='manifest' name='SFEdovecot:dovecot'>
+<service_bundle type='manifest' name='SFEbacula:bacula'>
 <service name='application/bacula' type='service' version='1'>
 
 	<instance name='sd' enabled='false'>
