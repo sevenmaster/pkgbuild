@@ -4,14 +4,16 @@
 
 %include Solaris.inc
 
+%define dovecot_version_major_minor 2.2
+
 Name:		SFEpigeonhole
 IPS_Package_Name:	 service/network/imap/dovecot/plugin/pigeonhole
 Summary:	Dovecot Pigeonhole Plugin
 URL:		http://pigeonhole.dovecot.org/
 Vendor:		Stephan Bosch <stephan@rename-it.nl>
-Version:	0.4.2
+Version:	0.4.6
 License:	LGPL
-Source0:	http://www.rename-it.nl/dovecot/2.2/dovecot-2.2-pigeonhole-%{version}.tar.gz
+Source0:	http://pigeonhole.dovecot.org/releases/%{dovecot_version_major_minor}/dovecot-%{dovecot_version_major_minor}-pigeonhole-%{version}.tar.gz
 
 %define _prefix /usr
 
@@ -20,16 +22,23 @@ SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
+BuildRequires: SFEdovecot
+Requires:      SFEdovecot
+
 %description
 Pigeonhole Sieve sorting plugin for Dovecot
 
 %prep
-%setup -q -n dovecot-2.2-pigeonhole-%{version}
+%setup -q -n dovecot-%{dovecot_version_major_minor}-pigeonhole-%{version}
 
 %build
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
-LDFLAGS="-L/usr/lib/dovecot -R/usr/lib/dovecot" \
+
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{cxx_optflags}"
+export LDFLAGS="%{_ldflags} -L/usr/lib/dovecot -R/usr/lib/dovecot"
+
 ./configure \
 	--prefix=%{_prefix} \
 	--with-dovecot=/usr/lib/dovecot
@@ -39,6 +48,9 @@ gmake -j$CPUS
 %install
 rm -rf $RPM_BUILD_ROOT
 gmake install DESTDIR=%buildroot
+
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.la" -exec rm -f {} ';'
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.a" -exec rm -f {} ';'
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -52,17 +64,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/dovecot/managesieve
 %{_libdir}/dovecot/managesieve-login
 %{_libdir}/dovecot/modules/lib90_sieve_plugin.*
+%{_libdir}/dovecot/modules/sieve/lib90_sieve_extprograms_plugin.so
 %dir %{_libdir}/dovecot/modules/doveadm
 %{_libdir}/dovecot/modules/doveadm/*
 %dir %{_libdir}/dovecot/modules/settings
 %{_libdir}/dovecot/modules/settings/*
-%dir %{_libdir}/dovecot/sieve
-%{_libdir}/dovecot/sieve/*
 %{_datadir}/doc/dovecot/*
 %{_mandir}/man1/*
 %{_mandir}/man7/*
 
 %changelog
+* Weg Jan  7 2015 - Thomas Wagner
+- bump to 0.4.6
+- add (Build)Requires SFEdovecot
 * Sun Feb 09 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add copyright file
 * Mon Oct 14 2013 - Ian Johnson <ianj@tsundoku.ne.jp>
