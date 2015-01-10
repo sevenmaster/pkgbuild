@@ -17,8 +17,8 @@
 Name:                SFEstunnel
 IPS_Package_Name:    sfe/service/security/stunnel
 Summary:             An SSL client/server encryption wrapper
-Version:             5.01
-#remove leading "0"s. 5.01 -> 5.1
+Version:             5.09
+#remove leading "0"s. 5.09 -> 5.9
 IPS_Component_Version: $( echo %{version} | sed -e 's?\.0*?.?g' )
 Source:              http://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
 Source2:             stunnel.xml
@@ -113,14 +113,17 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %files root
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_sysconfdir}
-%class(renamenew) %dir %attr (0755, root, bin) %{_sysconfdir}/stunnel
-#%dir %attr (0755, root, bin) %{_sysconfdir}/stunnel
 %{_sysconfdir}/stunnel/stunnel.conf-sample
 %class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/site/stunnel.xml
 %dir %attr(0755, root, other) /var/lib
 %dir %attr(0755, stunnel, other) /var/lib/stunnel
 
 %changelog
+* Sat Jan 10 2015 - Thomas Wagner
+- bump to 5.09 (5.9 on IPS)
+- remove typo in %files root
+* Sat Oct 25 2014 - Thomas Wagner
+- fix preserve for config files
 * Mon Arp 14 2014 - Thomas Wagner
 - bump to 5.01 (5.1 on IPS)
 * Sun Apr  6 2014 - Thomas Wagner
