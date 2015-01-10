@@ -38,6 +38,12 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires: %{pnm_buildrequires_SUNWlibm}
 Requires:      %{pnm_buildrequires_SUNWlibm}
 
+%if %{os2nnn}
+#no need for postrun
+%else
+BuildRequires: SUNWpostrun
+%endif
+
 %package devel
 Summary:	%{summary} - development files
 SUNW_BaseDir:	%{_basedir}/%{_subdir}
@@ -71,6 +77,8 @@ rm -rf %{buildroot}
 %endif
 
 %gmp.install -d %name-%version/%{base_arch}
+
+[ -r ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
 
 %clean
 rm -rf %{buildroot}
@@ -113,6 +121,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Jan 10 2015 - Thomas Wagner
+- remove conflicting file share/info/dir
 * Sat Oct 26 2013 - Thomas Wagner
 - use %{_arch64} aware %{gnu_lib_path} in CFLAGS/CXXFLAGS/LDFLAGS
 * Fri Oct 25 2013 - Thomas Wagner

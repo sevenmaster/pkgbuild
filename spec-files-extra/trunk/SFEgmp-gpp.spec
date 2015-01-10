@@ -76,6 +76,8 @@ rm -rf %{buildroot}
 
 %gmp.install -d %name-%version/%{base_arch}
 
+[ -r ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+
 %clean
 rm -rf %{buildroot}
 
@@ -117,6 +119,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Sat Jan 10 2015 - Thomas Wagner
+- remove conflicting file share/info/dir
 * Mon Oct 21 2013 - Thomas Wagner
 - bump to 5.1.3 (small bug fixes)
 - enable 32/64-bit build
