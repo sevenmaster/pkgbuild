@@ -1,3 +1,13 @@
+#/tmp/pkgbuild.out.*: No such file or directory
+#
+#ERROR: failed to update IPS packages: Error 1: 
+#pkg install: The following packages all deliver file actions to usr/gnu/share/info/dir:
+#
+#  pkg://localhosts11/compress/gnu/lzip@1.16,5.11-0.0.175.0.0.0.2.0:20150109T014918Z
+#  pkg://localhosts11/sfe/library/gmp@5.1.3,5.11-0.0.175.0.0.0.2.0:20131101T095425Z
+
+
+
 #
 # spec file for package SFElzip
 #
@@ -48,8 +58,7 @@ rm -rf %{buildroot}
 #want 64-bit binary in bin/amd64 and in bin
 ln %{buildroot}%{_bindir}/%{_arch64}/lzip %{buildroot}%{_bindir}/lzip
 
-
-rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+[ -r ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -66,6 +75,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sat Jan 10 2015 - Thomas Wagner
+- remove conflicting file share/info/dir
 * Fri Jan  1 2014 - Thomas Wagner
 - initial spec
 - derived from SFExz-gnu.spec
