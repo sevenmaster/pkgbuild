@@ -27,6 +27,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Requires: runtime/python-27
 Requires: library/python-2/markdown
 Requires: library/python-2/markupsafe-27
+Requires: library/python-2/pytz-27
 Requires: library/python/six-27
 Requires: SFEpython27-blinker
 Requires: SFEpython27-dateutil
@@ -60,6 +61,8 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Add pytz dependency
 * Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add additional Requires:
 * Mon Jan 12 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
