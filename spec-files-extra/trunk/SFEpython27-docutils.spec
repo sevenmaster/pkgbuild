@@ -1,13 +1,13 @@
 #
-# spec file for package SFEpython26-docutils
+# spec file for package SFEpython27-docutils
 #
 # includes module(s): docutils
 #
 %include Solaris.inc
 %include packagenamemacros.inc
 
-Name:			SFEpython26-docutils
-IPS_Package_Name:	library/python-2/docutils-26
+Name:			SFEpython27-docutils
+IPS_Package_Name:	library/python-2/docutils-27
 Summary:		Process plaintext documentation into formats such as HTML, LaTeX, and man pages
 URL:			http://docutils.sourceforge.net/
 Version:		0.12
@@ -18,7 +18,9 @@ Requires:		%{pnm_requires_python_default}
 
 %include default-depend.inc
 
-%define python_version  2.6
+# Python27 isn't in packagenamemacros
+# Requires: %{pnm_requires_SUNWPython27}
+%define python_version  2.7
 
 %prep
 %setup -q -n docutils-%version
@@ -49,10 +51,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
-- bump to 0.12
-- fix IPS_Package_Name to match vendor-supplied Python modules
-* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
-- %include packagenamemacros.inc
-- change Requires to %{pnm_requires_python_default}
-* 10 Oct 2013 - Alex Viskovatoff
-- Initial spec, based on SFEpython26-dateutil.spec
+- Initial spec, based on SGEpython26-docutils.spec
