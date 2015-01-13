@@ -1,27 +1,32 @@
 #
-# spec file for package SFEpython26-docutils
+# spec file for package SFEpython27-feedgenerator
 #
-# includes module(s): docutils
+# includes module(s): feedgenerator
 #
 %include Solaris.inc
 %include packagenamemacros.inc
 
-Name:			SFEpython26-docutils
-IPS_Package_Name:	library/python-2/docutils-26
-Summary:		Process plaintext documentation into formats such as HTML, LaTeX, and man pages
-URL:			http://docutils.sourceforge.net/
-Version:		0.12
-Source:			%sf_download/project/docutils/docutils/%version/docutils-%version.tar.gz
+%define src_name feedgenerator
+
+Name:			SFEpython27-feedgenerator
+IPS_Package_Name:	library/python-2/feedgenerator-27
+Summary:		Standalone version of django.utils.feedgenerator
+License:		BSD
+URL:			https://pypi.python.org/pypi/feedgenerator
+Version:		1.7
+Source:			http://pypi.python.org/packages/source/f/%{src_name}/%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
-Requires:		%{pnm_requires_python_default}
+Requires:		runtime/python-27
 
 %include default-depend.inc
 
-%define python_version  2.6
+# Python27 isn't in packagenamemacros
+# Requires: %{pnm_requires_SUNWPython27}
+%define python_version  2.7
 
 %prep
-%setup -q -n docutils-%version
+%setup -q -n feedgenerator-%version
 
 %build
 python%{python_version} setup.py build
@@ -43,16 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%_bindir
 %dir %attr (0755, root, bin) %_libdir
 %_libdir/python%python_version/vendor-packages
 
 %changelog
 * Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
-- bump to 0.12
-- fix IPS_Package_Name to match vendor-supplied Python modules
-* Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
-- %include packagenamemacros.inc
-- change Requires to %{pnm_requires_python_default}
-* 10 Oct 2013 - Alex Viskovatoff
-- Initial spec, based on SFEpython26-dateutil.spec
+- Initial spec 1.7
