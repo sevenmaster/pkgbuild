@@ -12,22 +12,21 @@
 %include Solaris.inc
 
 %define cc_is_gcc 1
-%include base.inc
 
 #avoid ovelapping with SUNWhea and SUNWman
 %include usr-gnu.inc
+%include base.inc
 
 
 %define src_name openldap
 
 
 Name:                    SFEopenldap
-##TODO##
-#IPS_package_name:   
-#Group:
-Summary:                 OpenLDAP - LDAP Server, Tools and Libraries
+IPS_package_name:	sfe/library/openldap
+Group:			System/Services
+Summary:                 OpenLDAP - LDAP Server, Tools and Libraries (/usr/gnu)
 URL:                     http://www.openldap.org
-Version:                 2.4.38
+Version:                 2.4.40
 Source:                  http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-%{version}.tgz
 Source2:		ldap-olslapd.xml
 Source3:		openldap-exec_attr
@@ -243,6 +242,11 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Fri Jan 16 2015 - Thomas Wagner
+- add IPS_Package_Name and Group
+- correct %include order for usr-gnu.inc / base.inc
+* Mon Dec 15 2014 - Thomas Wagner
+- bump to 2.4.40
 * Tue Jan 21 2014 - Thomas Wagner
 - bump to 2.4.38
 - remove typo in CXXLAGS -> CXXFLAGS (no finds right BDB db.h in %{gnu_inc}, export CPPFLAGS=${CXXFLAGS}
