@@ -1011,8 +1011,8 @@
 %define pnm_buildrequires_SUNWgnu_dbm		SUNWgnu-dbm
 %define pnm_requires_SUNWgnu_dbm		SUNWgnu-dbm
 
-%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 )
-#running an old build or Solaris 10
+%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 '|' %{omnios} )
+#running an old build or Solaris 10 or OmniOS
 %define pnm_buildrequires_SFEgdbm		SFEgdbm
 %define pnm_requires_SFEgdbm		 	SFEgdbm
 %define pnm_buildrequires_SUNWgnu_dbm		SFEgdbm
@@ -1238,7 +1238,25 @@
 %endif
 #END >=156
 %endif
-#END solaris11express
+#END solaris11express (and newer, e.g. Solaris 11)
+
+# cases >=160
+# python
+# library/python-2/python-gnome-libs-26 changed to a renamed-to package,
+# so pkgtool can't see if its new dependents are installed.
+# this is a workaround, we just require one of the dependents.
+##TODO## improve: find the best matching replacement for library/python-2/python-gnome-libs-26
+#for now we replace with library/python-2/pygtk2-26
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 160        '|' %{solaris12} '>=' 1 '|' %{solaris12} '>=' 1 )
+%define pnm_buildrequires_SUNWgnome_python26_libs_devel		library/python-2/pygtk2-26
+%define pnm_requires_SUNWgnome_python26_libs_devel		library/python-2/pygtk2-26
+%define pnm_buildrequires_SUNWgnome_python26_libs		library/python-2/pygtk2-26
+%define pnm_requires_SUNWgnome_python26_libs			library/python-2/pygtk2-26
+%endif
+#END >=160
+%endif
+#END solaris11express (and newer, e.g. Solaris 11)
 
 # audio headers got renamed several times, then 
 # included in other package
@@ -2048,6 +2066,51 @@
 #END setting apache2, all builds, evaluated paths  - Part 3 of 3
 
 
+# Apache apr utility
+##TODO## upcoming osdistro may replace apr-13 wih apr-15
+##TODO## if requested, add targets for older osdistro with e.g. SVR4 - for now we only resolve to new naming / IPS
+#this is for all builds (below 151)
+#cases >=151
+%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 )
+#library/apr-util-13@1.3.9,5.11-0.151.0.1:20101105T055007Z 	Install 	Manifest
+#library/apr-util-13@1.3.9,5.11-0.151:20101027T143546Z 	Install 	Manifest
+##TODO## re-visit the package names if the left hand side really existed in that naming
+%define pnm_buildrequires_web_library_apache_apr_util_13			library/apr-util-13
+%define pnm_requires_web_library_apache_apr_util_13				library/apr-util-13
+%define pnm_buildrequires_library_apr_util_13					library/apr-util-13
+%define pnm_requires_library_apr_util_13					library/apr-util-13
+%define pnm_buildrequires_SUNWapu13_devel					library/apr-util-13
+%define pnm_buildrequires_SUNWapu13						library/apr-util-13
+%define pnm_requires_SUNWapu13							library/apr-util-13
+%define pnm_buildrequires_apu13							library/apr-util-13
+%define pnm_requires_apu13							library/apr-util-13
+%define pnm_buildrequires_web_library_apache_apr_util_13_documentation		library/apr-util-13/documentation
+%define pnm_buildrequires_library_apr_util_13_documentation			library/apr-util-13/documentation
+#web/library/apache/apr-13                         1.3.9-0.134                --r
+#web/library/apache/apr-13/documentation           1.3-0.134                  --r
+#library/apr-13                                    1.3.9-0.175.0.0.0.0.0      i--
+#library/apr-13/documentation                      1.3.9-0.175.0.0.0.0.0      ---
+#library/apr-util-13/apr-ldap                      1.3.9-0.175.0.0.0.0.0      i--
+#library/apr-util-13/dbd-mysql                     1.3.9-0.175.0.0.0.0.0      i--
+#library/apr-util-13/dbd-pgsql                     1.3.9-0.146                --o
+#library/apr-util-13/dbd-sqlite                    1.3.9-0.175.0.0.0.0.0      i--
+#library/apr-util-13/documentation                 1.3.9-0.175.0.0.0.0.0      ---
+%define pnm_buildrequires_web_library_apache_apr_13			library/apr-13
+%define pnm_requires_web_library_apache_apr_13				library/apr-13
+%define pnm_buildrequires_library_apr_13				library/apr-13
+%define pnm_requires_library_apr_13					library/apr-13
+%define pnm_buildrequires_SUNWapr13_devel				library/apr-13
+%define pnm_buildrequires_SUNWapr13					library/apr-13
+%define pnm_requires_SUNWapr13						library/apr-13
+%define pnm_buildrequires_apr13						library/apr-13
+%define pnm_requires_apr13						library/apr-13
+%define pnm_buildrequires_web_library_apache_apr_13_documentation	library/apr-13/documentation
+%define pnm_buildrequires_library_apr_13_documentation			library/apr-13/documentation
+%endif
+#END >= 151 | solaris12
+
+
+
 #START setting postgres, defaults  - Part 1 of 3
 #define postgres defaults, primarily shared settings and default version, paths
 #for older osbuilds/osdistros like OpenSolaris 134, SXCE/Nevada, Solaris 10
@@ -2291,6 +2354,11 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Fri Jan 16 2015 - Thomas Wagner
+- library/python-2/python-gnome-libs-26 is renamed=true - replace by library/python-2/pygtk2-26 (S11 >=160, S12)
+- add %{omnios} to SFEgdbm (<116, !S12, true for OM=omnios)
+- add  web/library/apache/apr-13      renamed to library/apr-13      (S11, S12, OI. For builds >=151)
+       web/library/apache/apr-13-util renamed to library/apr-13-util (S11, S12, OI. For builds >=151)
 * Fri Aug  8 2014 - Thomas Wagner
 - add missing defaults for pnm_buildrequires_SUNWgraphviz
 * Mon Jul  7 2014 - Thomas Wagner
