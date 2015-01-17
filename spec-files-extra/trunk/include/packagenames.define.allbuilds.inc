@@ -2109,6 +2109,83 @@
 %endif
 #END >= 151 | solaris12
 
+#xxxxxxxxxxxxxxxx
+#START setting apr, defaults  - Part 1 of 3
+#define apr defaults, primarily shared settings and default version, paths
+##TODO## Solaris 10's apr versions *not yet* complete here
+
+#from SXCE on we have this:
+#apr 2.2
+%define apr_version 1.3
+%define apr_major_version 1
+%define apr_major_minor_version 1.3
+##not defined %define apr_major_minor_micro_version 1.3.X
+%define apr_version_package_string 13
+
+%define pnm_buildrequires_apr_default			%{pnm_buildrequires_library_apr_13}
+%define pnm_requires_apr_default			%{pnm_buildrequires_library_apr_13}
+
+#END setting apr, defaults  - Part 1 of 3
+
+#START setting apr, changes with specific builds and distros  - Part 2 of 3
+#set apr for Solaris11(Express) or OpenIndiana or OpenSolaris
+##TODO## verify the correct osbuild when apr-15 appeares (S12)
+%if %( expr %{omnios} '>=1' '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 65 )
+%define apr_version 1.5
+%define apr_major_version 1
+%define apr_major_minor_version 1.5
+##not defined %define apr_major_minor_micro_version 1.3.X
+%define apr_version_package_string 15
+#note below: on OmniOS library/apr-15 comes from SFE, not the osdistro
+##TODO## verify that on S12 the osdistro package is used, not ours (resolveipspackages)
+%define pnm_buildrequires_apr_default		library/apr-15
+%define pnm_requires_apr_default		library/apr-15
+%endif
+#END setting apr, changes with specific builds and distros  - Part 2 of 3
+
+#START setting apr, all builds, evaluated paths  - Part 3 of 3
+# this is the section noted above which evaluates the resulting paths on the
+# disk for the defaults for apr or the distro specific changed values e.g.
+# if a more fresh apr version stores files somewehre else
+
+#set handy partial paths to default locations where important apr files
+#are stored
+#note: simplyfication: %{_prefix} must be prepended by the spec file itself
+
+#include files for apr
+#CFLAGS="-I%{_prefix}/%{apr_default_includedir}"
+#more information: #include "apr.h" -->> /usr/apr/1.5/include/apr.h
+%define apr_default_includedir	apr/%{apr_major_minor_version}/include
+#experimental: (see the idea at %{gnu_inc} in base.inc
+#-I/usr/apr/1.5/include
+%define apr_default_inc	-I%{_prefix}/%{apr_default_includedir}
+
+
+##TODO##
+##NOTE## below: subject to change. want a more clever way to auto-set the variables
+#        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
+#        the same variable to define the right library search path for current %_arch*...
+
+#the apr libs would be found with 
+#LDFLAGS and/or CFLAGS="-L%{_prefix}/%{apr_default_libdir} -R%{_prefix}/%{apr_default_libdir}"
+#you might need to keep an eye on 32-/64-bit locations of apr libs
+#NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{apr_default_libdir}/%{_arch64}"
+%define apr_default_libdir	apr/%{apr_major_minor_version}/lib
+#experimental: (see the idea at %{gnu_lib_path} in base.inc
+#this doesn't evaluate to the 64-bit lib directory unless apr_default_libdir gets prepared for 64-bit
+%define apr_default_lib_path	-L%{_prefix}/%{apr_default_libdir} -R%{_prefix}/%{apr_default_libdir}
+
+
+%define apr_default_apr_1_config	apr/%{apr_major_minor_version}/bin/apr-1-config
+##TODO## want more clever 32-bit / 64-bit handling!
+##TODO## does it work at all? maybe _arch is getting evaluated too late!
+#%define apr_default_apxs_64	apr/%{apr_major_minor_version}/bin/%{_arch64}/apxs
+#there is no nice workaround to get switched form 32- to 64-bits
+#experimental
+%define apr_default_apr_1_config_64	apr/%{apr_major_minor_version}/bin/64/apr-1-config
+
+#END setting apr, all builds, evaluated paths  - Part 3 of 3
+#xxxxxxxxxxxxxxxx
 
 
 #START setting postgres, defaults  - Part 1 of 3
@@ -2354,11 +2431,13 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Jan 17 2015 - Thomas Wagner
+- add pnm_requires_apr_default (1.3 default, 1.5 for OM and maybe S12)
 * Fri Jan 16 2015 - Thomas Wagner
 - library/python-2/python-gnome-libs-26 is renamed=true - replace by library/python-2/pygtk2-26 (S11 >=160, S12)
 - add %{omnios} to SFEgdbm (<116, !S12, true for OM=omnios)
 - add  web/library/apache/apr-13      renamed to library/apr-13      (S11, S12, OI. For builds >=151)
-       web/library/apache/apr-13-util renamed to library/apr-13-util (S11, S12, OI. For builds >=151)
+       web/library/apache/apr-util-13 renamed to library/apr-util-13 (S11, S12, OI. For builds >=151)
 * Fri Aug  8 2014 - Thomas Wagner
 - add missing defaults for pnm_buildrequires_SUNWgraphviz
 * Mon Jul  7 2014 - Thomas Wagner

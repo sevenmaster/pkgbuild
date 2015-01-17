@@ -197,6 +197,14 @@ pnm: apache2_default_libexecdir    	%{apache2_default_libexecdir}
 pnm: apache2_default_apxs  		%{apache2_default_apxs}
 pnm: apache2_default_apxs_64		%{apache2_default_apxs_64}
 
+pnm: pnm_buildrequires_apr_default	%{pnm_buildrequires_apr_default}
+pnm: pnm_requires_apr_default	        %{pnm_requires_apr_default}
+pnm: apr_version			%{apr_version}
+pnm: apr_major_version			%{apr_major_version}
+pnm: apr_major_minor_version		%{apr_major_minor_version}
+pnm: apr_version_package_string		%{apr_version_package_string}
+
+
 " >/dev/null
 
 
