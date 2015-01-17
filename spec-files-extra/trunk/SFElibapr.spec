@@ -32,8 +32,8 @@ Patch3:			apr-03-doxygen.conf.diff
 Patch4:			apr-04-extended_file.diff
 Patch5:			apr-05-largefile.diff
 Patch6:			apr-06-libtool.m4.diff
-Patch7:			apr-06-makefile-out.diff
-Patch8:			apr-06-parfait.diff
+Patch7:			apr-07-makefile-out.diff
+Patch8:			apr-08-parfait.diff
 
 URL:			http://apr.apache.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -147,5 +147,6 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Jan 17 2015 - Thomas Wagner
 - bump to 1.5.1
 - prepared for /usr/gnu but commented out. Only OmniOS need the package, so build it similar then S11/OI.
+- add patches from userland-gate
 * Tue Jan 22 2008 - moinak.ghosh@sun.com
 - Initial spec.
