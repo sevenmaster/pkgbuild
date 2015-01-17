@@ -5,8 +5,9 @@
 #
 
 %include Solaris.inc
+%define cc_is_gcc 1
 #%include usr-gnu.inc
-#%include base.inc
+%include base.inc
 
 Name:         SFEgdbm
 #Summary:      GNU Database Routines
@@ -21,7 +22,7 @@ Release:      1
 BuildRoot:    %{_tmppath}/gdbm-%{version}-build
 Source0:      http://ftp.gnu.org/gnu/gdbm/gdbm-%{version}.tar.gz
 URL:          http://directory.fsf.org/gdbm.html
-Patch1:       gdbm-01-fixmake.diff
+#Patch1:       gdbm-01-fixmake.diff
 SUNW_BaseDir: %{_basedir}
 %include default-depend.inc
 
@@ -36,9 +37,11 @@ Requires: %name
 
 %prep
 %setup -q -n gdbm-%version
-%patch1 -p1
+#%patch1 -p1
 
 %build
+
+export CC=gcc
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
@@ -56,7 +59,7 @@ CFLAGS="$CFLAGS $RPM_OPT_FLAGS"         \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make INSTALL_ROOT=$RPM_BUILD_ROOT install
+gmake DESTDIR=$RPM_BUILD_ROOT install
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
 
@@ -67,11 +70,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
+%dir %attr (0755, root, bin) %{_bindir}
+%{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*.1
 %dir %attr (0755, root, bin) %{_datadir}/info
 %{_datadir}/info/*
+%defattr (-, root, other)
+%dir %attr (0755, root, other) %{_localedir}
+%{_localedir}/*
+
 
 %files devel
 %defattr (-, root, bin)
@@ -83,6 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sat Jan 17 2015 - Thomas Wagner
+- compile with gcc, fix %files, remove patch1 gdbm-01-fixmake.diff
 * Mon Dec 23 2014 - Thomas Wagner
 - bump to 1.11
 - add IPS_Package_Name
