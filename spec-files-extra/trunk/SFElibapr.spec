@@ -10,15 +10,14 @@
 %define libapr_major_minor_version 1.5
 %define libapr_version_package_string %( echo %{libapr_major_minor_version} | sed -e 's?\.??g' )
 
-%define  _prefix %{_prefix}/apr/%{libapr_major_minor_version}
 #%include usr-gnu.inc
+%define  _prefix %{_basedir}/apr/%{libapr_major_minor_version}
 %include base.inc
 
 %include packagenamemacros.inc
 
 Name:			SFElibapr
 License:		Apache,LGPL,BSD
-Copyright:		%{name}.license
 #IPS_Package_Name:	library/gnu/apr-15
 IPS_Package_Name:	library/apr-15
 Version:		1.5.1
@@ -34,6 +33,7 @@ Patch5:			apr-05-largefile.diff
 Patch6:			apr-06-libtool.m4.diff
 Patch7:			apr-07-makefile-out.diff
 Patch8:			apr-08-parfait.diff
+SUNW_Copyright:		%{name}.license
 
 URL:			http://apr.apache.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -44,7 +44,6 @@ BuildRequires:	%{pnm_buildrequires_SUNWsfwhea}
 #Note: Installs into /usr/gnu directories.
 
 %description
-
 The shared libraries for any component using Apache Portable
 Runtime (APR) Version %{libapr_major_minor_version}
 
@@ -71,6 +70,8 @@ Requires:	%{pnm_buildrequires_SUNWsfwhea}
 %patch8 -p0
 
 %build
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')  
+
 export CFLAGS="%{optflags} -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export CXXFLAGS="%{cxx_optflags} -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export LDFLAGS="%{_ldflags}"
@@ -89,7 +90,7 @@ export LDFLAGS="%{_ldflags}"
     --enable-other-child   \
     --enable-nonportable-atomics \
     --enable-layout=Solaris      \
-    --with-installbuilddir=%{_prefix}/apr/%{libapr_major_minor_version}/build \
+    --with-installbuilddir=%{_prefix}/build \
     CFLAGS="${CFLAGS} -DSSL_EXPERIMENTAL -DSSL_ENGINE" \
     LTFLAGS="--tag=CC --silent"  \
 
@@ -111,16 +112,16 @@ export LDFLAGS="%{_ldflags}"
 
 
 
-gmake
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
 gmake install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT%{_infodir}
 
-find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.la" -exec rm -f {} ';'
-find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.a" -exec rm -f {} ';'
-find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.exp" -exec rm -f {} ';'
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.la" -exec rm -f {} ';' -print
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.a" -exec rm -f {} ';' -print
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.exp" -exec rm -f {} ';' -print
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,7 +130,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
-%{_prefix}/apr/%{libapr_major_minor_version}/build
+%{_prefix}/build
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
@@ -144,6 +145,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- add copyright file
+- fix paths for "build" dir, build with gmake -j$CPUS
 * Sat Jan 17 2015 - Thomas Wagner
 - bump to 1.5.1
 - prepared for /usr/gnu but commented out. Only OmniOS need the package, so build it similar then S11/OI.

@@ -30,6 +30,7 @@ Patch1:			apr-util-01-apr_common.m4.diff
 Patch2:			apr-util-02-config.layout.diff
 Patch3:			apr-util-03-doxygen.conf.diff
 Patch4:			apr-util-04-makefile-out.diff
+SUNW_Copyright:		%{name}.license
 
 URL:			http://apr.apache.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -72,6 +73,8 @@ Requires:	%{pnm_requires_SUNWsqlite3}
 
 
 %build
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')  
+
 export CFLAGS="%{optflags} -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export CXXFLAGS="%{cxx_optflags} -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export LDFLAGS="%{_ldflags}"
@@ -123,7 +126,7 @@ autoconf
 
 
 
-gmake
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -153,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- add copyright file
+- build with gmake -j$CPUS
 * Sat Jan 17 2015 - Thomas Wagner
 - bump to 1.5.4
 - prepared for /usr/gnu but commented out. Only OmniOS need the package, so build it similar then S11/OI.
