@@ -139,7 +139,6 @@ export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{ap
     --with-apr=%{_basedir}/%{apr_default_basedir}   \
     --with-apr-util=%{_basedir}/%{apr_util_default_basedir} \
 %if %{omnios}
-#no apache here, except you build your own
 %else
     --with-apxs=%{_basedir}/%{apache2_default_apxs} \
     --with-apache-libexecdir=%{_prefix}/%{apache2_default_libexecdir} \
