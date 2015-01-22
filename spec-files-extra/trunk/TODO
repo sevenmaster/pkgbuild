@@ -20,6 +20,7 @@ SFExmlto.spec: add pnm_macros for docbook
 SFErsnapshot.spec: pnm_macros for SUNWsshu
 SFEsmf-grey.spec:  pnm_macros for SUNWsndm* / sendmail
 SFEwine.spec: pnm_macros for audio headers
+SFEsamba35.spec/*: pnm_macro for SUNWbash or remove and say its core
 
 #
 #3)
@@ -246,9 +247,7 @@ reverse SFEgccruntime and SFEgcc to make pkgtool --autodeps find the spec file p
 remove intermediate symlink SFEgccruntime.spec -> SFEgcc.spec
 
 36)
-make these spec files dual 32/64 bit:
-  SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
-  SFElibiconv (cost: low - remember close ticket: https://sourceforge.net/p/pkgbuild/spec-files-extra/25/ )
+moved to 62)
  
 37) 
 Update: 20130113 currently working on this: tomww (see experimental/SFEphp54.spec)
@@ -537,7 +536,6 @@ SFElcms2                               OS has lcms2 as well, so place it into /u
 SFEufraw            OK     missing     try if 64-bit performs better (not that the 32-bit version is slow...)
 SFEfile             OK     missing
 
-
 63)
 check which osbuild need updated "expat" to get "xmlparse.h" header file (SFEaudacity.spec)
 
@@ -690,3 +688,16 @@ un-archive SFEgdbm.spec (OmniOS has no)
 pnm_macros needed to switch package name if the old package is now renamd_to
 pnm_macro to resolve pnm_buildrequires_SUNWprd_devel to library/nspr if osdistro >=160 (S11, probably others as well)
 
+68)
+packages missing badly on OmniOS and we don't want to pull from other repositories
+name		who works on it - comments and ideas
+aprutil		done - missing: dual 32/64-build for 64-bit projects
+libapr		done - missing: dual 32/64-build for 64-bit projects
+gdbm		done (commited with rev TBD))
+svn subversion	done
+apache2 series  no one, good examples available
+php5 series     no one, good examples available
+neon-gnu	no one, could build a sub-package only on OM to replace missing osdistro neon but use symlinks to /usr/gnu
+
+69)
+SFEmunin.spec needs library/perl-5/net-ssleay bit this varies on osdistro very much
