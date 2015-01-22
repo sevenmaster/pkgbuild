@@ -465,6 +465,15 @@
 ##END
 
 
+# if we are on a IPS based system, hopefully the package entire
+# is installed. record the output for later use to detect e.g. SRUs, build numbers
+%if %{os2nnn}
+%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+%else
+%define osdistro_entire 0
+%endif
+
+
 
 ### bail out, detection of the os2... distribution failed!
 ###%if %{osdet299999}
@@ -474,6 +483,8 @@
 
 
 %changelog
+* Thu Jan 22 2015 - Thomas Wagner
+- add a first experimental version of osdistro_entire
 * Sun Dec 14 2014 - Thomas Wagner
 - add s11 11.3 support, define s110300 and distrelnumber 201103 (S11.3)
 * Sat Apr 12 2014 - Thomas Wagner

@@ -1701,10 +1701,24 @@
 %if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #from build 133 and up we have
 #database/mysql-51
+#database/mysql-51                                 5.1.37-5.12.0.0.0.45.0     --o
+#database/mysql-51/library                         5.1.37-5.12.0.0.0.45.0     --o
 %define pnm_buildrequires_mysql_default	database/mysql-51,database/mysql-51/library
 %define pnm_requires_mysql_default	database/mysql-51,database/mysql-51/library
 %endif
 #END >= 133
+%if %( expr %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 )
+%define mysql_version 5.5
+%define mysql_major_version 5
+%define mysql_major_minor_version 5.5
+##not defined %define mysql_major_minor_micro_version 5.1.X
+#database/mysql-55                                 5.5.31-5.12.0.0.0.63.0     ---
+#database/mysql-55/client                          5.5.31-5.12.0.0.0.63.0     ---
+#database/mysql-55/library                         5.5.31-5.12.0.0.0.63.0     i--
+%define pnm_buildrequires_mysql_default	database/mysql-51,database/mysql-55/library
+%define pnm_requires_mysql_default	database/mysql-51,database/mysql-55/library
+%endif
+#END S12 & >= 63
 %endif
 #END os2nnn
 
@@ -2112,34 +2126,45 @@
 #xxxxxxxxxxxxxxxx
 #START setting apr, defaults  - Part 1 of 3
 #define apr defaults, primarily shared settings and default version, paths
-##TODO## Solaris 10's apr versions *not yet* complete here
 
-#from SXCE on we have this:
-#apr 2.2
 %define apr_version 1.3
 %define apr_major_version 1
 %define apr_major_minor_version 1.3
 ##not defined %define apr_major_minor_micro_version 1.3.X
 %define apr_version_package_string 13
 
+%define apr_util_version 1.3
+%define apr_util_major_version 1
+%define apr_util_major_minor_version 1.3
+##not defined %define apr_util_major_minor_micro_version 1.3.X
+%define apr_util_version_package_string 13
+
 %define pnm_buildrequires_apr_default			%{pnm_buildrequires_library_apr_13}
 %define pnm_requires_apr_default			%{pnm_buildrequires_library_apr_13}
+%define pnm_buildrequires_apr_util_default		%{pnm_buildrequires_library_apr_util_13}
+%define pnm_requires_apr_util_default			%{pnm_buildrequires_library_apr_util_13}
 
 #END setting apr, defaults  - Part 1 of 3
 
 #START setting apr, changes with specific builds and distros  - Part 2 of 3
 #set apr for Solaris11(Express) or OpenIndiana or OpenSolaris
-##TODO## verify the correct osbuild when apr-15 appeares (S12)
-%if %( expr %{omnios} '>=1' '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 65 )
+%if %( expr %{omnios} '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 )
 %define apr_version 1.5
 %define apr_major_version 1
 %define apr_major_minor_version 1.5
 ##not defined %define apr_major_minor_micro_version 1.3.X
 %define apr_version_package_string 15
+%define apr_util_version 1.5
+%define apr_util_major_version 1
+%define apr_util_major_minor_version 1.5
+##not defined %define apr_util_major_minor_micro_version 1.3.X
+%define apr_util_version_package_string 15
 #note below: on OmniOS library/apr-15 comes from SFE, not the osdistro
 ##TODO## verify that on S12 the osdistro package is used, not ours (resolveipspackages)
 %define pnm_buildrequires_apr_default		library/apr-15
 %define pnm_requires_apr_default		library/apr-15
+%define pnm_buildrequires_apr_util_default		library/apr-util-15
+%define pnm_requires_apr_util_default		library/apr-util-15
 %endif
 #END setting apr, changes with specific builds and distros  - Part 2 of 3
 
@@ -2155,10 +2180,12 @@
 #include files for apr
 #CFLAGS="-I%{_prefix}/%{apr_default_includedir}"
 #more information: #include "apr.h" -->> /usr/apr/1.5/include/apr.h
-%define apr_default_includedir	apr/%{apr_major_minor_version}/include
+%define apr_default_includedir		apr/%{apr_major_minor_version}/include
+%define apr_util_default_includedir	apr/%{apr_util_major_minor_version}/include
 #experimental: (see the idea at %{gnu_inc} in base.inc
 #-I/usr/apr/1.5/include
-%define apr_default_inc	-I%{_prefix}/%{apr_default_includedir}
+%define apr_default_inc			-I%{_prefix}/%{apr_default_includedir}
+%define apr_util_default_inc		-I%{_prefix}/%{apr_util_default_includedir}
 
 
 ##TODO##
@@ -2166,14 +2193,23 @@
 #        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
 #        the same variable to define the right library search path for current %_arch*...
 
+#                   %{_basedir}/apr/1.5
+#                          /usr/apr/1.5
+%define apr_default_basedir		apr/%{apr_major_minor_version}
+#                   %{_basedir}/apr-util/1.5
+#                          /usr/apr-util/1.5
+%define apr_util_default_basedir	apr-util/%{apr_util_major_minor_version}
+
 #the apr libs would be found with 
 #LDFLAGS and/or CFLAGS="-L%{_prefix}/%{apr_default_libdir} -R%{_prefix}/%{apr_default_libdir}"
 #you might need to keep an eye on 32-/64-bit locations of apr libs
 #NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{apr_default_libdir}/%{_arch64}"
 %define apr_default_libdir	apr/%{apr_major_minor_version}/lib
+%define apr_util_default_libdir	apr-util/%{apr_util_major_minor_version}/lib
 #experimental: (see the idea at %{gnu_lib_path} in base.inc
 #this doesn't evaluate to the 64-bit lib directory unless apr_default_libdir gets prepared for 64-bit
 %define apr_default_lib_path	-L%{_prefix}/%{apr_default_libdir} -R%{_prefix}/%{apr_default_libdir}
+%define apr_util_default_lib_path	-L%{_prefix}/%{apr_util_default_libdir} -R%{_prefix}/%{apr_util_default_libdir}
 
 
 %define apr_default_apr_1_config	apr/%{apr_major_minor_version}/bin/apr-1-config
@@ -2431,6 +2467,10 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Thu Jan 22 2015 - Thomas Wagner
+- set mysql_default version 5.5 (S12 >= 63)
+* Sun Jan 17 2015 - Thomas Wagner
+- add missing apr_util_default_libdir
 * Sat Jan 17 2015 - Thomas Wagner
 - add pnm_requires_apr_default (1.3 default, 1.5 for OM and maybe S12)
 * Fri Jan 16 2015 - Thomas Wagner
