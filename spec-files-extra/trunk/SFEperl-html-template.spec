@@ -22,7 +22,7 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~samtregar/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: perl.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/W/WO/WONKO/HTML-Template-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
@@ -40,6 +40,7 @@ a simple HTML templating system
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+#on older perl, e.g. 5.8.4
 #NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
 #export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
 perl Makefile.PL \
@@ -57,6 +58,7 @@ make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
 %install
 rm -rf $RPM_BUILD_ROOT
+#on older perl, e.g. 5.8.4
 #NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
 #export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
 make install
@@ -80,6 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Jan 23 2015 - Thomas Wagner
+- fix copyright tag
 * Mon Jun 30 2014 - Thomas Wagner
 - bump to 2.95, re-create, tested only on S11.2
 * Sat Aug 17 2013 - Thomas Wagner
