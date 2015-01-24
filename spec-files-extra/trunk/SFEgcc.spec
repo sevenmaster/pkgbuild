@@ -144,10 +144,17 @@
 #special handling of version / gcc_version
 
 #temporary setting, 4.8.4 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
-%if %{solaris12} %{omnios}
+%if %{solaris12}
 %define version 4.8.4
 %define build_gcc_with_gnu_ld 0
 #END solaris12
+%endif
+
+#temporary setting, 4.8.4 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
+%if %{omnios}
+%define version 4.8.4
+%define build_gcc_with_gnu_ld 0
+#END OmniOS
 %endif
 
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
@@ -419,20 +426,18 @@ nlsopt=-disable-nls
 #%if %(expr %{osbuild} '>=' 1517)
 %define build_gcc_with_gnu_ld 0
 
+##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
+#options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
 %if %build_gcc_with_gnu_ld
+%define _ldflags
+export LD="/usr/gnu/bin/ld"
+%else
+export LD=`which ld-wrapper`
+%endif
+
 %if %SFEbinutils_gpp
 export LD="/usr/g++/bin/ld"
 export PATH=/usr/g++/bin:$PATH
-%else
-export LD="/usr/gnu/bin/ld"
-%endif #SFEbinutils_gpp
-
-%define _ldflags
-#obsolete %define ld_options
-%else
-export LD=`which ld-wrapper`
-##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
-#options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
 %endif
 
 
@@ -468,14 +473,15 @@ export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
 export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
-export LD=/usr/gnu/bin/ld
 %if %build_gcc_with_gnu_ld
 export LD_FOR_TARGET=/usr/bin/ld
+%endif
 
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
 
 echo "current settings in SFE spec file: (1=yes, 0=no)
+version:	%{version}
 _prefix:	%{_prefix}
 _libdir:	%{_libdir}
 _libexecdir:	%{_libexecdir}
@@ -539,12 +545,6 @@ switch SFElibmpc : %SFElibmpc %{SFElibmpcbasedir}
 %endif
         --disable-no-exceptions                  \
 	$nlsopt
-
-#case %build_gcc_with_gnu_ld
-#  else
-#	--with-ld=$LD                           \
-#	--without-gnu-ld			\
-
 
 gmake -j$CPUS bootstrap-lean \
              BOOT_CFLAGS="$BOOT_CFLAGS"                  \
@@ -740,6 +740,7 @@ rm -rf $RPM_BUILD_ROOT
 - bump to 4.8.4
 - require bash only for S10, set SFEbinutils_gpp 1 for %{openindiana} & %{major_minor} >= 4.7 (OI, TODO: hipster)
 - on solaris12 use /usr/sfw/bin/gcc (3.x.x) of get with studio -fno-exceptions passed to the linker (fails)
+- fix syntax errors %if around *binutils for configure
 * Mon Apr 21 2014 - Thomas Wagner
 - exclude BuildRequires SUNWpostrun on OmniOS (OM)
 - rename variables SFEbinutils -> SFEbinutils_gpp
