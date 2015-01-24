@@ -21,18 +21,12 @@ Source:			http://mirror.serversupportforum.de/apache/subversion/subversion-%{ver
 
 # Home-grown svn-config needed by kdesdk
 Source1:                svn-config
-#Patch1:                 subversion-01-libneon.la.diff
 URL:			http://subversion.tigris.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:		%{_basedir}
 
-# missing package
-#BuildRequires: SFEserf
-#Requires:      SFEserf
-
-# 10 system/library/security/gss
-BuildRequires:  %{pnm_buildrequires_SUNWgss_devel}
-Requires:	%{pnm_buildrequires_SUNWgss}
+BuildRequires: SFEserf-gnu
+Requires:      SFEserf-gnu
 
 #  1 database/sqlite-3
 BuildRequires:     %{pnm_buildrequires_SUNWsqlite3}
@@ -57,7 +51,6 @@ BuildRequires: %{pnm_buildrequires_SUNWgnu_dbm}
 Requires:      %{pnm_requires_SUNWgnu_dbm}
 #  3 library/apr-15
 #  4 library/apr-util-15
-##TODO## change to something like apr_default apr_util_default once this appears in osbuilds
 BuildRequires: %{pnm_buildrequires_apr_default}
 Requires:      %{pnm_requires_apr_default}
 BuildRequires: %{pnm_buildrequires_apr_util_default}
@@ -118,7 +111,7 @@ export CXXFLAGS="${CXXFLAGS} -template=geninlinefuncs"
 export CXXFLAGS="${CXXFLAGS} -verbose=template"
 export CXXFLAGS="${CXXFLAGS} -xustr=ascii_utf16_ushort"
 export CXXFLAGS="${CXXFLAGS} -mt -D_REENTRANT -DNDEBUG -DSOLARIS"
-export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir}"
+export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_libdir}/svn"
 
 
 #from userland-gate components/subversion/Makefile
@@ -136,6 +129,7 @@ export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{ap
     --with-pic                     \
     --disable-mod-activation       \
     --with-openssl                 \
+    --with-serf=/usr/gnu           \
     --with-apr=%{_basedir}/%{apr_default_basedir}   \
     --with-apr-util=%{_basedir}/%{apr_util_default_basedir} \
 %if %{omnios}
@@ -146,7 +140,6 @@ export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{ap
     --disable-libtool-lock         \
     --disable-experimental-libtool \
     --enable-nls                   \
-    --with-gssapi=%{_basedir}      \
 
   # optional: --with-libmagic=PREFIX  libmagic filetype detection library
   # why should we disable?
@@ -216,6 +209,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- add (Build)Requires SFEserf-gnu (fetch from URLs)
+- --remove --with-gssapi (has been removed upstream r1449023)
 * Sat Jan 17 2015 - Thomas Wagner
 - change (Build)Requires to  %{pnm_buildrequires_apr_default} %{pnm_buildrequires_apr_util_default}
   use pnm_macros to point to the apr and apr-util install directories
