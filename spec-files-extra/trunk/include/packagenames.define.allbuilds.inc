@@ -2127,12 +2127,14 @@
 #START setting apr, defaults  - Part 1 of 3
 #define apr defaults, primarily shared settings and default version, paths
 
+%define build_library_apr_renamed_to_osdistro_package      0
 %define apr_version 1.3
 %define apr_major_version 1
 %define apr_major_minor_version 1.3
 ##not defined %define apr_major_minor_micro_version 1.3.X
 %define apr_version_package_string 13
 
+%define build_library_apr_util_renamed_to_osdistro_package 0
 %define apr_util_version 1.3
 %define apr_util_major_version 1
 %define apr_util_major_minor_version 1.3
@@ -2148,11 +2150,15 @@
 
 #START setting apr, changes with specific builds and distros  - Part 2 of 3
 #set apr for Solaris11(Express) or OpenIndiana or OpenSolaris
-%if %( expr %{omnios} '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 )
+#note: need to add ".0" to avoid integer too lager, use floating point instead
+%if %( expr %{omnios} '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 '|' expr %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%define build_library_apr_renamed_to_osdistro_package      1
 %define apr_version 1.5
 %define apr_major_version 1
 %define apr_major_minor_version 1.5
 ##not defined %define apr_major_minor_micro_version 1.3.X
+
+%define build_library_apr_util_renamed_to_osdistro_package 1
 %define apr_version_package_string 15
 %define apr_util_version 1.5
 %define apr_util_major_version 1
@@ -2467,6 +2473,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Jan 24 2015 - Thomas Wagner
+- prepare for renamed-to-package libapr apr-util
 * Thu Jan 22 2015 - Thomas Wagner
 - set mysql_default version 5.5 (S12 >= 63)
 * Sun Jan 17 2015 - Thomas Wagner

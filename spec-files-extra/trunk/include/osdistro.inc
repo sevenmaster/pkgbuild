@@ -467,8 +467,16 @@
 
 # if we are on a IPS based system, hopefully the package entire
 # is installed. record the output for later use to detect e.g. SRUs, build numbers
+# we could ask for entire, but if someone decided to uninstall that for a reason?
+# lets use this and hope no one ever uninstalls this package
+#    FMRI: pkg://solaris/release/name@5.12-5.12.0.0.0.63.1:20141215T141436Z
+# could use as well: system/core-os or system/kernel
 %if %{os2nnn}
-%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+#%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+%define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
+#echo 5.12.0.0.0.63.0 | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}'
+#0005001200000000000000630000
+%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
 %else
 %define osdistro_entire 0
 %endif
@@ -483,6 +491,9 @@
 
 
 %changelog
+* Fri Jan 23 2015 - Thomas Wagner
+- add experimental version of osdistro_entire_padded_number4 (IPS based Systems),
+  enables compares, e.g. expr %{osdistro_entire_padded_number4} '>=' 0005001200000000000000610000
 * Thu Jan 22 2015 - Thomas Wagner
 - add a first experimental version of osdistro_entire
 * Sun Dec 14 2014 - Thomas Wagner
