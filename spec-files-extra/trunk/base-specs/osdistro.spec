@@ -16,7 +16,7 @@
 
 
 #already included before?
-%if %{?osdistro}
+%if %{?osdistro:%{osdistro}}%{?!osdistro:0}
 #we are already included
 %else
 %include osdistro.inc

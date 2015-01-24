@@ -73,6 +73,8 @@ echo "
 pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
+pnm: osdistro_entire    %{osdistro_entire}
+pnm: osdistro_entire_padded_number4 %{osdistro_entire_padded_number4}
 pnm: solaris12       	%{solaris12} Solaris 12
 pnm: s110300         	%{s110300} Solaris 11.3 and up
 pnm: s110200         	%{s110200} Solaris 11.2 and up
@@ -203,7 +205,23 @@ pnm: apr_version			%{apr_version}
 pnm: apr_major_version			%{apr_major_version}
 pnm: apr_major_minor_version		%{apr_major_minor_version}
 pnm: apr_version_package_string		%{apr_version_package_string}
+pnm: apr_default_includedir		%{apr_default_includedir}
+pnm: apr_default_inc			%{apr_default_inc}
+pnm: apr_default_libdir			%{apr_default_libdir}
+pnm: apr_default_lib_path		%{apr_default_lib_path}
+pnm: apr_default_apr_1_config		%{apr_default_apr_1_config}
+#pnm: apr_default_apr_1_config_64	%{apr_default_apr_1_config_64}
 
+pnm: pnm_buildrequires_apr_util_default	%{pnm_buildrequires_apr_util_default}
+pnm: pnm_requires_apr_util_default	        %{pnm_requires_apr_util_default}
+pnm: apr_util_version			%{apr_util_version}
+pnm: apr_util_major_version			%{apr_util_major_version}
+pnm: apr_util_major_minor_version		%{apr_util_major_minor_version}
+pnm: apr_util_version_package_string		%{apr_util_version_package_string}
+pnm: apr_util_default_includedir		%{apr_util_default_includedir}
+pnm: apr_util_default_inc			%{apr_util_default_inc}
+pnm: apr_util_default_libdir			%{apr_util_default_libdir}
+pnm: apr_util_default_lib_path		%{apr_util_default_lib_path}
 
 " >/dev/null
 
@@ -258,6 +276,10 @@ requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build 
 
 
 %changelog
+* Thu Jan 22 2015 - Thomas Wagner
+- add %{osdistro_entire}
+* Sat Jan 17 2015 - Thomas Wagner
+- add %{pnm_buildrequires_apr_default}
 * Fri Jan  2 2015 - Thomas Wagner
 - modify infos on pkgbuild version, add more versions 1.3.105 .. 1.3.109
 * Tue Jul  1 2014 - Thomas Wagner
