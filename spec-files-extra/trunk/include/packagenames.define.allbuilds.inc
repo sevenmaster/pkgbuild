@@ -2169,8 +2169,16 @@
 ##TODO## verify that on S12 the osdistro package is used, not ours (resolveipspackages)
 %define pnm_buildrequires_apr_default		library/apr-15
 %define pnm_requires_apr_default		library/apr-15
-%define pnm_buildrequires_apr_util_default		library/apr-util-15
+%define pnm_buildrequires_apr_util_default	library/apr-util-15
 %define pnm_requires_apr_util_default		library/apr-util-15
+%if %{omnios}
+#we need to build the packages on OmniOS in any case.
+%define pnm_buildrequires_apr_default		SFElibapr
+%define pnm_requires_apr_default		SFElibapr
+%define pnm_buildrequires_apr_util_default	SFEapr-util
+%define pnm_requires_apr_util_default		SFEapr-util
+%endif
+#END omnios
 %endif
 #END setting apr, changes with specific builds and distros  - Part 2 of 3
 
@@ -2476,6 +2484,7 @@
 * Sat Jan 24 2015 - Thomas Wagner
 - prepare for renamed-to-package libapr apr-util
 - fix syntax error around osdistro_entire_padded_number4
+- work around for pkgtool not resolving library/apr-15 to spec file SFElibapr, library/apr-util-15 to SFEapr-util (OM)
 * Thu Jan 22 2015 - Thomas Wagner
 - set mysql_default version 5.5 (S12 >= 63)
 * Sun Jan 17 2015 - Thomas Wagner
