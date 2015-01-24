@@ -19,9 +19,9 @@
 
 Name:			SFEapr-util
 License:		Apache,LGPL,BSD
-Copyright:		%{name}.license
 #IPS_Package_Name:	library/gnu/apr-util-15
 IPS_Package_Name:	library/apr-util-15
+Group:                 Web Services/Application and Web Servers
 Version:		1.5.4
 #Summary:		Apache Portable Runtime Utility (APR-util) %{local_apr_util_major_minor_version} development header files and libraries (/usr/gnu)
 Summary:		Apache Portable Runtime Utility (APR-util) %{local_apr_util_major_minor_version} development header files and libraries
@@ -30,7 +30,7 @@ Patch1:			apr-util-01-apr_common.m4.diff
 Patch2:			apr-util-02-config.layout.diff
 Patch3:			apr-util-03-doxygen.conf.diff
 Patch4:			apr-util-04-makefile-out.diff
-SUNW_Copyright:		%{name}.license
+SUNW_Copyright:		%{name}.copyright
 
 URL:			http://apr.apache.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build

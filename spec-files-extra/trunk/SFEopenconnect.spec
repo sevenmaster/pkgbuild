@@ -20,8 +20,8 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	6.00
-IPS_Component_Version: 6.00
+Version:	7.03
+IPS_Component_Version: 7.3
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -36,6 +36,9 @@ Requires:	SFEtun
 %description
 This package provides a client for Cisco's AnyConnect VPN, which uses
 HTTPS and DTLS protocols.
+Notes:
+For Solaris support, and for IPv6 on any platform, the vpnc-script shipped with vpnc itself (as of v0.5.3) is not sufficient. It is necessary to use the script from the vpnc-scripts repository instead. That repository also contains an updated version of vpnc-script-win.js which is required for correct IPv6 configuration under Windows.
+http://git.infradead.org/users/dwmw2/vpnc-scripts.git
 
 %if %cc_is_gcc
 BuildRequires:	SFEgcc
@@ -70,7 +73,8 @@ ZLIB_CFLAGS="-I/usr/include" ZLIB_LIBS=-lz \
 	--docdir=%{_docdir}/openconnect \
 	--disable-static \
         --enable-shared \
-	--with-vpnc-script=/etc/vpnc/vpnc-script
+	--with-vpnc-script=/etc/vpnc/vpnc-script \
+        --without-libpcsclite
 
 gmake
 
@@ -120,6 +124,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Jan 22 2015 - Thomas Wagner
+- bump to 7.03 (IPS 7.3)
+- --without-libpcsclite or fail finding files related to pcsc
 * Fri Oct 24 2014 - Thomas Wagner
 - bump to 6.00
 - switched to gcc because no solution to get studio compile (missing: "openconnect.h".. warning: attribute "format" is unknown, ignored. ) - try again when solarisstudio 12.4 is released
