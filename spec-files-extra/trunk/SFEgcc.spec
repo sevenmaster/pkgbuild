@@ -53,9 +53,17 @@
 
 
 #default to SUNWbinutils
+%define SUNWbinutils 0
 ##TODO## if necessary add osbuild numbers to decide SUNW/SFE version
-%define SUNWbinutils    %(/usr/bin/pkginfo -q SUNWbinutils 2>/dev/null && echo 1 || echo 0)
-%define SFEbinutils     %(/usr/bin/pkginfo -q SFEbinutils-gpp  2>/dev/null && echo 1 || echo 0)
+%define SFEbinutils_gpp     %(/usr/bin/pkginfo -q SFEbinutils-gpp  2>/dev/null && echo 1 || echo 0)
+
+#overwrite the default for specific OS
+#name on omnios would be developer/gnu-binutils (check if that can be used, then deal with package names)
+%if %{omnios}
+%define SUNWbinutils 0
+%define SFEbinutils_gpp  1
+%endif
+
 #see below, older builds then 126 have too old gmp / mpfr to gcc version around 4.4.4
 #%define SFEgmp          %(/usr/bin/pkginfo -q SFEgmp  2>/dev/null  && echo 1 || echo 0)
 ##TODO## to be replaced by packagenamemacros, selecting SFEgmp on specific osbuilds where
@@ -66,17 +74,21 @@
 #it is too old for fresh gcc builds
 %define SFEmpfr         1
 
-# force using SFEbinutils
-#if SFEbinutils is not present, force it by the commandline switch --with_SFEbinutils
-%define with_SFEbinutils %{?_with_SFEbinutils:1}%{?!_with_SFEbinutils:0}
-%if %with_SFEbinutils
-%define SFEbinutils 1
+# force using SFEbinutils_gpp
+#if SFEbinutils_gpp is not present, force it by the commandline switch --with_SFEbinutils_gpp
+%define with_SFEbinutils_gpp %{?_with_SFEbinutils_gpp:1}%{?!_with_SFEbinutils_gpp:0}
+%if %with_SFEbinutils_gpp
+%define SFEbinutils_gpp 1
 %define SUNWbinutils 0
 %endif
 
-#if building gcc 4.7 or up force the use of SFEbinutils since OI's binutils is too old
-%if %( expr %{major_minor} '>=' 4.7 )
-%define SFEbinutils 1
+#if building gcc 4.7 or up force the use of SFEbinutils_gpp since OI's binutils is too old
+#S11.0    developer/gnu-binutils@2.21.1,5.11-0.175.1.0.0.24.0
+#S11.2                           2.23.1
+#oi151a9  developer/gnu-binutils@2.19,5.11-0.151.1.9
+##TODO## what do we need on OI hipster?
+%if %( expr %{openindiana} '>=1' '&' %{major_minor} '>=' 4.7 )
+%define SFEbinutils_gpp 1
 %define SUNWbinutils 0
 %endif
 
@@ -131,6 +143,13 @@
 %endif
 #special handling of version / gcc_version
 
+#temporary setting, 4.8.4 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
+%if %{solaris12} %{omnios}
+%define version 4.8.4
+%define build_gcc_with_gnu_ld 0
+#END solaris12
+%endif
+
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #%define major_minor %( echo %{version} | sed -e 's/\([0-9]*\)\.\([0-9]*\)\..*/\1.\2/' )
 #below is a workaround for pkgbuild 1.3.104 failing to parse the escaped \( and \)
@@ -160,16 +179,20 @@ Group:		Development/C
 SUNW_Copyright:      gcc.copyright
 Source:              ftp://ftp.gnu.org/pub/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
 Patch1:              gcc-01-libtool-rpath.diff
+
 %if %with_handle_pragma_pack_push_pop
 Patch2:              gcc-02-handle_pragma_pack_push_pop.diff
 %else
 %endif
+
 %if %( expr %{major_minor} '>=' 4.7 )
 Patch3:              gcc-03-gnulib-47.diff
 %else
 Patch3:              gcc-03-gnulib.diff
 %endif
 
+#see if 4.8 can propperly do C++ exceptions by loading libgcc_s.so / libstdc++.so.6 propperly
+%if  %( expr %{major_minor} '<' 4.8 )
 #LINK_LIBGCC_SPEC
 #gcc-05 could be reworked to know both, amd64 and sparcv9
 %ifarch i386 amd64
@@ -178,6 +201,8 @@ Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
 %ifarch sparcv9
 Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
 %endif
+%endif
+#END %{major_minor} < 4.8
 
 # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49347
 # if clause to apply only on specific gcc versions, see %prep
@@ -204,7 +229,9 @@ Requires:      SFEgccruntime
 
 BuildRequires: SFElibiconv-devel
 Requires:      SFElibiconv
-BuildRequires: SUNWbash
+%if %{is_s10}
+BuildRequires:  SUNWbash
+%endif
 
 %if %SFEgmp
 BuildRequires: SFEgmp-devel
@@ -236,7 +263,7 @@ Requires: SFElibmpc
 #Requires: empty
 %endif
 
-%if %SFEbinutils
+%if %SFEbinutils_gpp
 BuildRequires: SFEbinutils-gpp
 Requires: SFEbinutils-gpp
 %else
@@ -244,7 +271,12 @@ BuildRequires: SUNWbinutils
 Requires: SUNWbinutils
 %endif
 
+%if %{os2nnn}
+#no need for postrun
+%else
+BuildRequires: SUNWpostrun
 Requires: SUNWpostrun
+%endif
 
 %package -n SFEgcc-%{majorminornumber}
 IPS_package_name:        sfe/developer/gcc-%{majorminornumber}
@@ -293,8 +325,6 @@ Requires: SFElibmpc
 #BuildRequires: SUNWthis-package-not-availbale
 #Requires: SUNWthis-package-not-availbale
 %endif
-
-Requires: SUNWpostrun
 
 
 %if %build_l10n
@@ -355,14 +385,15 @@ cd gcc-%{version}
 %else
 %endif
 %patch3 -p1
+
+%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.8 )
 %patch5 -p1
-##TODOÃ## check versions which apply. bug says 4.3.3 is not, but 4.6.0 is
-#fix maybe in 4.7.x
-# if          major_minor   >=  4.4 and       major_minor   <  4.7 
-%if %( expr %{major_minor} '>=' 4.4 )
-%if %( expr %{major_minor} '<' 4.7 )
-%patch10 -p1
 %endif
+
+##TODO## check versions which apply. bug says 4.3.3 is not, but 4.6.0 is
+#fix maybe in 4.7.x
+%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.7 )
+%patch10 -p1
 %endif
 
 %build
@@ -389,33 +420,36 @@ nlsopt=-disable-nls
 %define build_gcc_with_gnu_ld 0
 
 %if %build_gcc_with_gnu_ld
-
-%if %SFEbinutils
+%if %SFEbinutils_gpp
 export LD="/usr/g++/bin/ld"
 export PATH=/usr/g++/bin:$PATH
 %else
 export LD="/usr/gnu/bin/ld"
-%endif
+%endif #SFEbinutils_gpp
+
 %define _ldflags
 #obsolete %define ld_options
-
 %else
-
 export LD=`which ld-wrapper`
-
 ##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
 #options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
-
 %endif
 
 
+%if %{solaris12}
+#running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
+export CC=/usr/sfw/bin/gcc
+export CXX=/usr/sfw/bin/g++
+%else
 export CC=cc
 export CXX=CC
-export CONFIG_SHELL=/usr/bin/ksh
 #maybe needed for stone old studio compilers, commented for reference
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
+%endif #solaris12
+
 export CFLAGS="-O"
+export CONFIG_SHELL=/usr/bin/ksh
 
 export BOOT_CFLAGS="-Os %gcc_picflags %gnu_lib_path"
 %if %build_gcc_with_gnu_ld
@@ -434,9 +468,28 @@ export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
 export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
+export LD=/usr/gnu/bin/ld
+%if %build_gcc_with_gnu_ld
+export LD_FOR_TARGET=/usr/bin/ld
+
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
 
+echo "current settings in SFE spec file: (1=yes, 0=no)
+_prefix:	%{_prefix}
+_libdir:	%{_libdir}
+_libexecdir:	%{_libexecdir}
+_mandir:	%{_mandir}
+_infodir:	%{_infodir}
+switch SFEbinutils_gpp:       %SFEbinutils_gpp
+switch SUNWbinutils:          %SUNWbinutils
+switch build_gcc_with_gnu_ld: %build_gcc_with_gnu_ld
+switch SFEgmp:     %SFEgmp    %{SFEgmpbasedir}
+switch SFEmpfr:    %SFEmpfr   %{SFEmpfrbasedir}
+switch SFElibmpc : %SFElibmpc %{SFElibmpcbasedir}
+	LD:            $LD
+	LD_FOR_TARGET: $LD_FOR_TARGET
+"
 
 ../gcc-%{version}/configure			\
 	--prefix=%{_prefix}			\
@@ -444,7 +497,7 @@ export PATH="$PATH:/usr/perl5/bin"
         --libexecdir=%{_libexecdir}		\
         --mandir=%{_mandir}			\
 	--infodir=%{_infodir}			\
-%if %SFEbinutils
+%if %SFEbinutils_gpp
 	--with-build-time-tools=/usr/g++	\
 	--with-as=/usr/g++/bin/as		\
 	--with-gnu-as				\
@@ -484,7 +537,14 @@ export PATH="$PATH:/usr/perl5/bin"
 %else
         --with-mpc_include=%{_basedir}/include	\
 %endif
+        --disable-no-exceptions                  \
 	$nlsopt
+
+#case %build_gcc_with_gnu_ld
+#  else
+#	--with-ld=$LD                           \
+#	--without-gnu-ld			\
+
 
 gmake -j$CPUS bootstrap-lean \
              BOOT_CFLAGS="$BOOT_CFLAGS"                  \
@@ -674,6 +734,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jan 23 2015 - Thomas Wagner
+- set gnu ld to off (again), or get gnu linker called and fail to understand Solaris linker switches
+- default to SUNWbinutils
+- bump to 4.8.4
+- require bash only for S10, set SFEbinutils_gpp 1 for %{openindiana} & %{major_minor} >= 4.7 (OI, TODO: hipster)
+- on solaris12 use /usr/sfw/bin/gcc (3.x.x) of get with studio -fno-exceptions passed to the linker (fails)
+* Mon Apr 21 2014 - Thomas Wagner
+- exclude BuildRequires SUNWpostrun on OmniOS (OM)
+- rename variables SFEbinutils -> SFEbinutils_gpp
+- bump to 4.8.3
 * Sat Dec  7 2013 - Thomas Wagner
 - %include osdistro.inc
 * Thu Oct 24 2013 - Thomas Wagner
