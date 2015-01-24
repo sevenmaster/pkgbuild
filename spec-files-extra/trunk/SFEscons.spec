@@ -11,7 +11,7 @@ Name:                    SFEscons
 IPS_Package_Name:	developer/build/scons
 Summary:                 SCons - a software construction tool (make replacement)
 Group:		Development/Distribution Tools
-Version:                 2.2.0
+Version:                 2.3.4
 URL:                     http://www.scons.org/
 License:                 MIT
 SUNW_copyright:          scons.copyright
@@ -62,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man*/*
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- bump to 2.3.4
 * Fri Nov  2 2012 - Thomas Wagner
 - add description
 - bump to 2.2.0

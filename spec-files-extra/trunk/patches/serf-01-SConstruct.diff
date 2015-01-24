@@ -1,0 +1,30 @@
+http://svn.haxx.se/dev/archive-2014-11/0143.shtml
+
+I had problems building serf on Solaris. I ended up with the patch
+below (a serf release should probably do something better):
+
+patched this patch, as env['PLATFORM'] = 'posix' runs into an error.
+might be the case, that PLATFORM variable doesn't exist and would need
+to be added instead just assigned a value?
+
+--- SConstruct.old Mon Mar 3 14:34:37 2014
++++ SConstruct Mon Mar 3 14:34:21 2014
+@@ -210,7 +210,7 @@
+ # Unfortunately we can't set the .dylib compatibility_version option separately
+ # from current_version, so don't use the PATCH level to avoid that build and
+ # runtime patch levels have to be identical.
+-env['SHLIBVERSION'] = '%d.%d.%d' % (MAJOR, MINOR, 0)
++#env['SHLIBVERSION'] = '%d.%d.%d' % (MAJOR, MINOR, 0)
+ 
+ LIBNAME = 'libserf-%d' % (MAJOR,)
+ if sys.platform != 'win32':
+@@ -248,6 +248,7 @@
+ 
+   if sys.platform == 'sunos5':
+     env.Append(LIBS='m')
++# env['PLATFORM'] = 'posix'
+ else:
+   # Warning level 4, no unused argument warnings
+   env.Append(CCFLAGS=['/W4', '/wd4100'])
+
+
