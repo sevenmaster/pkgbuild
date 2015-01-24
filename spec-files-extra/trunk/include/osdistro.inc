@@ -476,7 +476,10 @@
 %define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
 #echo 5.12.0.0.0.63.0 | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}'
 #0005001200000000000000630000
-%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+#%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+#%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+#note:  %% results in a % to awk
+%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, $4, $5, $6, $7}' )
 %else
 %define osdistro_entire 0
 %endif
