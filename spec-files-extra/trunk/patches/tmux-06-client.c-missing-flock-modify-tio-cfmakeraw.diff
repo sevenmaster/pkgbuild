@@ -1,16 +1,6 @@
-adopted from: https://java.net/projects/solaris-userland/sources/gate/content/components/tmux/patches/client.c.patch?rev=3564
-
-#from orig patch In-House Patch. Submitted to upstream, but not accepted yet.
-#from orig patch Check for flock(), which is available on BSD and not on Solaris. 
-#from orig patch Instead use fnctl() on Solaris. Also check if cfmakeraw(), which
-#from orig patch is not available on Solaris, so manually change the termios 
-#from orig patch structure, the same way cfmakeraw does.
-
-Patch needed to be re-worked as the source 1.8 -> 1.9 changed from 
-
---- tmux-1.9a/client.c.orig	2014-02-22 21:48:37.000000000 +0100
-+++ tmux-1.9a/client.c	2014-12-20 14:45:57.426418104 +0100
-@@ -75,16 +75,30 @@
+--- tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789/client.c.orig	2015-01-16 19:17:30.000000000 +0100
++++ tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789/client.c	2015-01-18 13:23:22.009662907 +0100
+@@ -75,11 +75,22 @@
  client_get_lock(char *lockfile)
  {
  	int lockfd;
@@ -20,6 +10,7 @@ Patch needed to be re-worked as the source 1.8 -> 1.9 changed from
  
  	if ((lockfd = open(lockfile, O_WRONLY|O_CREAT, 0600)) == -1)
  		fatal("open failed");
+ 	log_debug("lock file is %s", lockfile);
  
 +#ifdef F_SETLK
 +        if (fcntl(lockfd, F_SETLK, &lock) == -1 && errno == EAGAIN) {
@@ -29,25 +20,25 @@ Patch needed to be re-worked as the source 1.8 -> 1.9 changed from
 +		return(-1);
 +	}
 +#elif LOCK_EX
- 	if (lockf(lockfd, F_TLOCK, 0) == -1 && errno == EAGAIN) {
- 		while (lockf(lockfd, F_LOCK, 0) == -1 && errno == EINTR)
- 			/* nothing */;
- 		close(lockfd);
+ 	if (flock(lockfd, LOCK_EX|LOCK_NB) == -1) {
+ 		log_debug("flock failed: %s", strerror(errno));
+ 		if (errno != EAGAIN)
+@@ -90,6 +101,9 @@
  		return (-1);
  	}
+ 	log_debug("flock succeeded");
 +#else
 +#error  "You need locking support."
 +#endif
  
  	return (lockfd);
  }
-@@ -262,7 +276,15 @@
+@@ -286,7 +300,15 @@
  			    strerror(errno));
  			return (1);
  		}
--		cfmakeraw(&tio);
 +#ifdef HAVE_CFMAKERAW
-+                cfmakeraw(&tio);
+ 		cfmakeraw(&tio);
 +#else
 +		tio.c_iflag &= ~(IMAXBEL|IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
 +		tio.c_oflag &= ~OPOST;
