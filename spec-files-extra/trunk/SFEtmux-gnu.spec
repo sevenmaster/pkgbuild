@@ -7,19 +7,24 @@
 #
 
 %include Solaris.inc
+%include usr-gnu.inc
+%include base.inc
+
 %define srcname tmux
 %define _pkg_docdir %_docdir/%srcname
 
-Name:           SFE%srcname
-IPS_Package_Name:	terminal/tmux
-Summary:        Terminal multiplexer
-IPS_Component_Version: 1.9.0.1
-Version:        1.9a
+Name:           SFEtmux-gnu
+IPS_Package_Name:	terminal/gnu/tmux
+Summary:        Terminal multiplexer (/usr/gnu) - GIT Version
+#remember to increment the 4th digit with every git commit snapshot
+IPS_Component_Version: 1.9.0.2
+%define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
+Version:        1.9a.git.df6488
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.sourceforge.net/
-Source:         %{sf_download}/tmux/%{srcname}-%{version}.tar.gz
-Patch5:         tmux-05-include-errno.h.diff
-Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
+#Source:         %{sf_download}/tmux/%{srcname}-%{version}.tar.gz
+Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
+#Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -49,9 +54,11 @@ moved between sessions and otherwise manipulated. Each session may be attached
 to (display and accept keyboard input from) multiple clients.
 
 %prep
-%setup -q -n %{srcname}-%{version}
-%patch5 -p1
-%patch6 -p1
+%setup -q -n %{srcname}-%{srcname}-code-%{git_snapshot}
+#tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
+#cd %{srcname}-%{srcname}-code-%{git_snapshot}
+#%patch5 -p1
+#%patch6 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -59,9 +66,11 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CFLAGS="%optflags -I/usr/gnu/include"
 # Need to supply -lcurses, because otherwise, it tries to link against ncurses,
 # leading to "Undefined Symbol: delterm" error
-export LDFLAGS="%_ldflags -lcurses -L/usr/gnu/lib -R/usr/gnu/lib"
+# try avoiding core dumps by linking to 0@0.so.1
+export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -lcurses -L/usr/gnu/lib -R/usr/gnu/lib"
+bash autogen.sh
 ./configure
-make -j$CPUS
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -86,10 +95,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- move to get snapshot instead regular downlod (try if mark/copy_to_clipbord stops writing core dumps)
+- bump to df6488a47088ec8bcddc6a1cfa85fec1a462c789 (git snapshot df6488)
+- obsolete patch5
+- rework patch6
 * Sat Dec 20 2014 - Thomas Wagner
 - bump to 1.9a, add IPS_Component_Version 1.9.0.1
 - remove patch1, remove/replace patch2 and patch3 by new patch6 (adopted from Solaris Userland), 
 - add patch5 errno.h
+- %include usr-gnu.inc (conflicting with Solaris 11 tmux package)
 * Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
 - updated to 1.7, added ips name and updated patches
 * Mon Oct 31 2011 - Alex Viskovatoff
