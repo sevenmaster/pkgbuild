@@ -33,7 +33,7 @@ Patch5:			apr-05-largefile.diff
 Patch6:			apr-06-libtool.m4.diff
 Patch7:			apr-07-makefile-out.diff
 Patch8:			apr-08-parfait.diff
-SUNW_Copyright:		%{name}.license
+SUNW_Copyright:		%{name}.copyright
 
 URL:			http://apr.apache.org/
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
