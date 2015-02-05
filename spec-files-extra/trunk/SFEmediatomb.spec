@@ -9,6 +9,8 @@
 
 %include packagenamemacros.inc
 
+%define _use_internal_dependency_generator 0
+
 %define	src_name mediatomb
 
 Name:                SFEmediatomb
@@ -22,6 +24,7 @@ Patch2:              mediatomb-02-libav_0.7_support.patch.diff
 Patch3:              mediatomb-03-AVMetadataTag_not_defined.diff
 Patch4:              mediatomb-04-have-gnu-libiconv-remove-cast-const-char.diff
 Patch5:              mediatomb-05-remove-solaris-check-nullpointer-to-prtinf.diff
+Patch6:              mediatomb-06-libmp4v2_191_p479.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -40,6 +43,8 @@ BuildRequires:     %{pnm_buildrequires_SUNWcurl}
 Requires:          %{pnm_requires_SUNWcurl}
 BuildRequires:     SFEspidermonkey
 Requires:          SFEspidermonkey
+BuildRequires:     SFElibmp4v2
+Requires:          SFElibmp4v2
 
 %package devel
 Summary:                 %{summary} - development files
@@ -56,6 +61,7 @@ Requires: %name
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -67,7 +73,7 @@ fi
 export CC=gcc
 export CXX=g++
 export CFLAGS="%{optflags}"
-export CXXFLAGS="%{cxx_optflags}"
+export CXXFLAGS="%{cxx_optflags} -fpermissive"
 export CPPFLAGS="-I/usr/g++/include -I/usr/gnu/include"
 export LDFLAGS="%{_ldflags}  -L/usr/g++/lib -R/usr/g++/lib -L/usr/gnu/lib -R/usr/gnu/lib -liconv"
 
@@ -107,6 +113,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mediatomb
 
 %changelog
+* Thu Feb  5 2015 - Thomas Wagner
+- add -fpermissive (S12/gcc-4.8.4)
+- add patch6 mediatomb-06-libmp4v2_191_p479.diff
+* Fri Jan  9 2015 - Thomas Wagner
+- switch off pkgdepend. doesn't to the right thing: find the other taglib package and add false dependencies
 * Thu Jan  1 2015 - Thomas Wagner
 - bump to 0.12.1, use standard sf_download -URL
 - add patch1 patch2 patch3 patch4 for 0.12.1, remove solaris check with patch5
