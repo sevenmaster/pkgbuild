@@ -5,6 +5,7 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include osdistro.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libmpc_64 = libmpc.spec
@@ -59,7 +60,11 @@ BuildRequires: SUNWgnu-mp
 Requires: SUNWgnu-mp
 %endif
 
-Requires: SUNWpostrun
+%if %{os2nnn}
+#no need for postrun
+%else
+BuildRequires: SUNWpostrun
+%endif
 
 %package devel
 Name:		%{name}-devel
@@ -134,6 +139,8 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Sat Feb  7 2015 - Thomas Wagner
+- exclude SUNWpostrun on IPS based systems 
 * Thu Jun 27 2013 - Thomas Wagner
 - paused make checks, dumps core
 * Mon Dec 17 2012 - Logan Bruns <logan@gedanken.org>

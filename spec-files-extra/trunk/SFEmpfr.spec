@@ -5,6 +5,7 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include osdistro.inc
 
 ##TODO## need propper integration of arch64.inc
 %ifarch amd64
@@ -49,7 +50,11 @@ BuildRequires: SUNWgnu-mp
 Requires: SUNWgnu-mp
 %endif
 
+%if %{os2nnn}
+#no need for postrun
+%else
 Requires: SUNWpostrun
+%endif
 
 %package devel
 Summary:	%{summary} - developer files
@@ -189,6 +194,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sat Feb  7 2015 - Thomas Wagner
+- exclude SUNWpostrun on IPS based systems
 * Thu Jun 26 2013 - Thomas Wagner
 - bump to 3.1.2
 * Tue Feb 25 2013 - Ken Mays <kmays2000@gmail.com>
