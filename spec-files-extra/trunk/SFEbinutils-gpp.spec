@@ -1,3 +1,4 @@
+# /* vim: set filetype=spec : */ 
 #
 # spec file for package SFEbinutils-gpp
 #
@@ -7,11 +8,12 @@
 %define cc_is_gcc 1
 %include base.inc
 %define _prefix /usr/g++
+%include osdistro.inc
 
 
 Name:                SFEbinutils-gpp
 IPS_package_name:    developer/g++/gnu-binutils
-Summary:             GNU binutils (g++-built)
+Summary:             GNU binutils (/usr/g++)
 Version:             2.23.2
 Source:              http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 Patch1:              binutils-01-bug-2495.diff
@@ -22,7 +24,15 @@ Patch5:              binutils-05-lm.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
+#Requires: runtime ... gcc-3
+
+%if %{os2nnn}
+#no need for postrun
+%else
+BuildRequires: SUNWpostrun
 Requires: SUNWpostrun
+%endif
 
 %package devel
 Summary:                 %{summary} - developer files
@@ -82,6 +92,8 @@ export LDFLAGS="$LDFLAGS64"
 
 cd binutils-%{version}-64
 
+gsed -i.bak -e 's/-Werror//g' gold/configure
+
 ./configure --prefix=%{_prefix}			\
             --libdir=%{_libdir}/%{_arch64}	\
             --libexecdir=%{_libdir}/%{_arch64}	\
@@ -92,6 +104,14 @@ cd binutils-%{version}-64
 	    --enable-lto			\
 	    --enable-gold			\
 	    $nlsopt
+
+#around 2.23.x started to error with:
+#In file included from ehframe.h:31,
+#                 from ehframe.cc:32:
+#merge.h: In constructor `gold::Output_merge_base::Output_merge_base(uint64_t, uint64_t)':
+#merge.h:222: warning: converting of negative value `-0x00000000000000001' to `unsigned int'
+
+gsed -i.bak -e 's/-Werror//g' gold/configure
 
 make -j$CPUS
 cd ..
@@ -210,6 +230,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb  7 2015 - Thomas Wagner
+- exclude SUNWpostrun on IPS 
 * Sun Nov 10 2013 - Milan Jurik
 - bump to 2.23.2
 - fix IPS name
