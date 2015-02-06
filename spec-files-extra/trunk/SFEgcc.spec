@@ -9,6 +9,8 @@
 
 ##TODO## test sparc version of gcc-05-LINK_LIBGCC_SPEC-sparcv9.diff
 
+%define _use_internal_dependency_generator 0
+
 #provide symbolic links in places define below:
 #start the paths with a leading "/"
 #example:   %define gccsymlinks /usr/gcc /usr/gnu
@@ -73,24 +75,6 @@
 ##TODO## to be replaced by packagenamemacros, selecting SFEmpfr on specific osbuilds where
 #it is too old for fresh gcc builds
 %define SFEmpfr         1
-
-# force using SFEbinutils_gpp
-#if SFEbinutils_gpp is not present, force it by the commandline switch --with_SFEbinutils_gpp
-%define with_SFEbinutils_gpp %{?_with_SFEbinutils_gpp:1}%{?!_with_SFEbinutils_gpp:0}
-%if %with_SFEbinutils_gpp
-%define SFEbinutils_gpp 1
-%define SUNWbinutils 0
-%endif
-
-#if building gcc 4.7 or up force the use of SFEbinutils_gpp since OI's binutils is too old
-#S11.0    developer/gnu-binutils@2.21.1,5.11-0.175.1.0.0.24.0
-#S11.2                           2.23.1
-#oi151a9  developer/gnu-binutils@2.19,5.11-0.151.1.9
-##TODO## what do we need on OI hipster?
-%if %( expr %{openindiana} '>=1' '&' %{major_minor} '>=' 4.7 )
-%define SFEbinutils_gpp 1
-%define SUNWbinutils 0
-%endif
 
 # force using gmp | mpfr
 #if SFEgmp is not present, force them as required by the commandline switch --with_SFEgmp
@@ -167,6 +151,24 @@
 %define majorminornumber %( echo %{major_minor} | sed -e 's/\.//g' )
 %define _prefix /usr/gcc/%major_minor
 %define _infodir %{_prefix}/info
+
+# force using SFEbinutils_gpp
+#if SFEbinutils_gpp is not present, force it by the commandline switch --with_SFEbinutils_gpp
+%define with_SFEbinutils_gpp %{?_with_SFEbinutils_gpp:1}%{?!_with_SFEbinutils_gpp:0}
+%if %with_SFEbinutils_gpp
+%define SFEbinutils_gpp 1
+%define SUNWbinutils 0
+%endif
+
+#if building gcc 4.7 or up force the use of SFEbinutils_gpp since OI's binutils is too old
+#S11.0    developer/gnu-binutils@2.21.1,5.11-0.175.1.0.0.24.0
+#S11.2                           2.23.1
+#oi151a9  developer/gnu-binutils@2.19,5.11-0.151.1.9
+##TODO## what do we need on OI hipster?
+%if %( expr %{openindiana} '>=' 1 '&' %{major_minor} '>=' 4.7 )
+%define SFEbinutils_gpp 1
+%define SUNWbinutils 0
+%endif
 
 # This "Name:" SFEgcc and SFEgccruntime is a compatibility layer,
 # and delivering only symbolic links to corresponding versioned
@@ -521,7 +523,7 @@ switch SFElibmpc : %SFElibmpc %{SFElibmpcbasedir}
 	--with-ld=$LD                           \
 	--with-gnu-ld				\
 %else
-	--with-ld=$LD                           \
+	--with-ld=/usr/bin/ld                   \
 	--without-gnu-ld			\
 %endif
 	--enable-languages=c,c++,fortran,objc	\
@@ -734,6 +736,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Feb  2 2015 - Thomas Wagner
+- ld-wrapper is wrong, use --with-ld=/usr/bin/ld
+- move defines for binutils to get major_minor defines before, fix expr syntax
 * Fri Jan 23 2015 - Thomas Wagner
 - set gnu ld to off (again), or get gnu linker called and fail to understand Solaris linker switches
 - default to SUNWbinutils
