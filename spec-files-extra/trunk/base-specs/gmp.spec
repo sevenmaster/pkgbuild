@@ -36,10 +36,16 @@ export CFLAGS="%optflags %{gnu_lib_path}"
 export CXXFLAGS="%cxx_optflags %{gnu_lib_path}"
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
+#/usr/gnu/lib/amd64 or /usr/gnu/lib, depending on which %use section
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export ABI=64
+#running on SmartOS QEMU instance reports pentium2-solaris-2.11 which isn't seen as 64 bits
+        /usr/bin/isainfo | grep amd64 \
+        && /usr/sbin/psrinfo -v | grep -i "virtual processor" \
+        && EXTRACONFIGURE="--build=pentium4-pc-solaris2.11"
 else
         export ABI=32
+        EXTRACONFIGURE=""
 fi
 
 ./configure --prefix=%{_prefix}		\
@@ -51,7 +57,8 @@ fi
             --sysconfdir=%{_sysconfdir}	\
             --disable-static		\
 	    --enable-cxx                \
-	    --enable-fat
+	    --enable-fat                \
+            $EXTRACONFIGURE
 
 %if %cc_is_gcc
 %else
@@ -74,6 +81,8 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Apr 21 2014 - Thomas Wagner
+- add EXTRACONFIGURE="--build=pentium4-pc-solaris2.11" for running on virtual systems (or get ABI=64 invalid)
 * Sat Oct 26 2013 - Thomas Wagner
 - use %{_arch64} aware %{gnu_lib_path} in CFLAGS/CXXFLAGS/LDFLAGS
 * Mon Oct 21 2013 - Thomas Wagner
