@@ -86,8 +86,7 @@ export LDFLAGS="%{_ldflags}  -L/usr/g++/lib -R/usr/g++/lib -L/usr/gnu/lib -R/usr
             --mandir=%{_mandir}		\
 	    --infodir=%{_infodir}	\
             --enable-taglib             \
-            --with-taglib-h=/usr/g++/include   \
-            --with-taglib-libs=/usr/g++/lib    \
+            --with-taglib-cfg=/usr/g++/bin/taglib-config \
             --disable-id3lib            \
             --enable-curl               \
             --with-libmagic-h=/usr/gnu/include \
@@ -113,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mediatomb
 
 %changelog
+* Fri Feb  6 2015 - Thomas Wagner
+- taglib not found, use --with-taglib-cfg=path (S12, ..)
 * Thu Feb  5 2015 - Thomas Wagner
 - add -fpermissive (S12/gcc-4.8.4)
 - add patch6 mediatomb-06-libmp4v2_191_p479.diff
