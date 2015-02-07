@@ -62,8 +62,8 @@
 #overwrite the default for specific OS
 #name on omnios would be developer/gnu-binutils (check if that can be used, then deal with package names)
 %if %{omnios}
-%define SUNWbinutils 0
-%define SFEbinutils_gpp  1
+%define SUNWbinutils 1
+%define SFEbinutils_gpp  0
 %endif
 
 #see below, older builds then 126 have too old gmp / mpfr to gcc version around 4.4.4
@@ -275,6 +275,11 @@ Requires: SFElibmpc
 %if %SFEbinutils_gpp
 BuildRequires: SFEbinutils-gpp
 Requires: SFEbinutils-gpp
+%endif
+
+%if %( expr %SUNWbinutils '&' %{os2nnn} )
+BuildRequires: developer/gnu-binutils
+Requires: developer/gnu-binutils
 %else
 BuildRequires: SUNWbinutils
 Requires: SUNWbinutils
@@ -443,7 +448,7 @@ export PATH=/usr/g++/bin:$PATH
 %endif
 
 
-%if %{solaris12}
+%if %( expr %{solaris12} '|' %{omnios} )
 #running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
 export CC=/usr/sfw/bin/gcc
 export CXX=/usr/sfw/bin/g++
@@ -489,6 +494,8 @@ _libdir:	%{_libdir}
 _libexecdir:	%{_libexecdir}
 _mandir:	%{_mandir}
 _infodir:	%{_infodir}
+CC:		%CC
+CXX:		%CXX
 switch SFEbinutils_gpp:       %SFEbinutils_gpp
 switch SUNWbinutils:          %SUNWbinutils
 switch build_gcc_with_gnu_ld: %build_gcc_with_gnu_ld
@@ -736,6 +743,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+- use OmniOs's binutils (OM)
+- use gcc-3 on OmniOS for fix getopt_long (OM)
 * Mon Feb  2 2015 - Thomas Wagner
 - ld-wrapper is wrong, use --with-ld=/usr/bin/ld
 - move defines for binutils to get major_minor defines before, fix expr syntax
