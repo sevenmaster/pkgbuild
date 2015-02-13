@@ -908,7 +908,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 #For setups if sendmail is disabled and postfix enabled
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
-- bump to 3.0.0
+%changelog
 * Fri Feb 13 2015 - Thomas Wagner
 - bump to 2.11.4
 - change (Build)Requires to %{pnm_buildrequires_SUNWzlib}
