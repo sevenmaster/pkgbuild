@@ -139,8 +139,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 #TODO: BuildReqires:
 #BuildRequires: SFEcpio
 #BuildRequires: SUNWrpm
-BuildRequires: SUNWzlib
-Requires: SUNWzlib
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_SUNWbash}
 Requires:      %{pnm_requires_SUNWbash}
 BuildRequires: %{pnm_buildrequires_perl_default}
@@ -909,6 +909,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Fri Feb 13 2015 - Thomas Wagner
+- bump to 2.11.4
+- change (Build)Requires to %{pnm_buildrequires_SUNWzlib}
 * Sat Oct 25 2014 - Thomas Wagner
 - fix preserve for config files s/%iclass(renamenew)/%config/g
 - bump to 2.11.3
