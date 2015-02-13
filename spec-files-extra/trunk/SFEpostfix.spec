@@ -117,7 +117,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 2.11.3
+Version:                 2.11.4
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -908,7 +908,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 #For setups if sendmail is disabled and postfix enabled
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
-%changelog
+- bump to 3.0.0
 * Fri Feb 13 2015 - Thomas Wagner
 - bump to 2.11.4
 - change (Build)Requires to %{pnm_buildrequires_SUNWzlib}
