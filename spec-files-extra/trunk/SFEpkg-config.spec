@@ -5,6 +5,7 @@
 %include Solaris.inc
 
 Name:			SFEpkg-config
+IPS_Package_Name:	developer/build/pkg-config
 License:		GPLv2
 Group:			Development/System
 Version:		0.23
