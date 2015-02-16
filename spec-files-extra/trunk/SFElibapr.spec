@@ -78,6 +78,8 @@ export LDFLAGS="%{_ldflags}"
 
 #https://hg.openindiana.org/upstream/oracle/userland-gate/file/ebe894a8833e/components/apr-1_5/Makefile
 
+autoconf
+
 ./configure \
     --prefix=%{_prefix}    \
     --sysconfdir=%{_sysconfdir} \
@@ -91,9 +93,10 @@ export LDFLAGS="%{_ldflags}"
     --enable-nonportable-atomics \
     --enable-layout=Solaris      \
     --with-installbuilddir=%{_prefix}/build \
-    CFLAGS="${CFLAGS} -DSSL_EXPERIMENTAL -DSSL_ENGINE" \
+    CFLAGS="$(CFLAGS) -DSSL_EXPERIMENTAL -DSSL_ENGINE" \
     LTFLAGS="--tag=CC --silent"  \
 
+#    --enable-debug \
 #    --enable-layout=Solaris\
 #    --enable-layout=Solaris-$(MACH64)
 #raus    --with-installbuilddir=%{_datadir}/apr/build \
@@ -145,6 +148,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 16 2015 - Thomas Wagner
+- make CFLAGS work (fixes core dump of SFEsubversion.spec)
+* Sun Feb 15 2015 - Thomas Wagner
+- add autoconf to get patches for configure into effect
 * Sun Jan 18 2015 - Thomas Wagner
 - add copyright file
 - fix paths for "build" dir, build with gmake -j$CPUS

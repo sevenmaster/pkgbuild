@@ -90,8 +90,10 @@ autoconf
     --with-sqlite3=/usr         \
     --without-odbc              \
     --enable-layout=Solaris	\
-    CFLAGS="${CFLAGS}"     \
+    CFLAGS="$(CFLAGS)"     \
 
+#    --enable-debug \
+#    CFLAGS="${CFLAGS}"     \
 #    --with-dbm=gdbm \
 #    --with-gdbm=/usr \
 #    --with-pgsql=/usr \
@@ -156,6 +158,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Feb 16 2015 - Thomas Wagner
+- make CFLAGS work
 * Sun Jan 18 2015 - Thomas Wagner
 - add copyright file
 - build with gmake -j$CPUS
