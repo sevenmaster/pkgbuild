@@ -6,7 +6,7 @@
 Name:                    SFEbvi
 Summary:                 bvi - display-oriented editor for binary files (vi like)
 URL:			 http://bvi.sourceforge.net/
-Version:                 1.3.2
+Version:                 1.4.0
 Source:                  %{sf_download}/bvi/bvi-%{version}.src.tar.gz
 
 
@@ -59,6 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thr Feb 26 2015 - Thomas Wagner
+- bump to 1.4.0
 * Sun Jan 25 2009 - Thomas Wagner
 - adjust %doc and %files permissions
 * Wed Jan 07 2009  - Thomas Wagner
