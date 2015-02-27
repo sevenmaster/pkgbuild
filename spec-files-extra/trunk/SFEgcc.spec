@@ -200,8 +200,9 @@ Patch3:              gcc-03-gnulib-47.diff
 Patch3:              gcc-03-gnulib.diff
 %endif
 
-#see if 4.8 can propperly do C++ exceptions by loading libgcc_s.so / libstdc++.so.6 propperly
-%if  %( expr %{major_minor} '<' 4.8 )
+#it can't #see if 4.8 can propperly do C++ exceptions by loading libgcc_s.so / libstdc++.so.6 propperly
+#changes in version -> see %prep as well
+%if  %( expr %{major_minor} '<' 4.9 )
 #LINK_LIBGCC_SPEC
 #gcc-05 could be reworked to know both, amd64 and sparcv9
 %ifarch i386 amd64
@@ -400,7 +401,7 @@ cd gcc-%{version}
 %endif
 %patch3 -p1
 
-%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.8 )
+%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.9 )
 %patch5 -p1
 %endif
 
@@ -468,6 +469,9 @@ export BOOT_CFLAGS="-Os %gcc_picflags %gnu_lib_path"
 %else
 export BOOT_CFLAGS="$BOOT_CFLAGS -Xlinker -i"
 %endif
+
+#related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59788
+#Bug 59788 - Mixing libc and libgcc_s unwinders on 64-bit Solaris 10+/x86 breaks EH 
 export BOOT_LDFLAGS="-zinterpose %_ldflags -R%{_prefix}/lib %gnu_lib_path"
 
 # for target libraries (built with bootstrapped GCC)
@@ -743,6 +747,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 27 2015 - Thomas Wagner
+- re-introduce for 4.8: patch5 gcc-05-LINK_LIBGCC_SPEC-4.8.diff
+  to try avoiding osdistro provided /usr/lib/libgcc_s.so and /usr/lib/libstdc++.so.6
 - use OmniOs's binutils (OM)
 - use gcc-3 on OmniOS for fix getopt_long (OM)
 * Mon Feb  2 2015 - Thomas Wagner
