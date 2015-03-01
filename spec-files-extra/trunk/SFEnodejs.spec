@@ -10,19 +10,34 @@
 %define cc_is_gcc 1
 %include base.inc
 
+%include packagenamemacros.inc
+
 Summary:	Asynchronous JavaScript Engine  
 Name:		SFEnodejs  
 IPS_Package_Name:	runtime/javascript/nodejs
-Version:	0.10.35
+Version:	0.12.0
 License:	BSD  
 Group:		System/Libraries  
 URL:		http://nodejs.org/  
 Source:		http://nodejs.org/dist/v%{version}/node-v%{version}.tar.gz  
+#probably we want mdb, need libproc.h (ONbld)
+Patch1:		nodejs-01-configure-disable-mdb-is-this-sad.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
+
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
+
+%if %( expr %{solaris11} '|' %{solaris12} )
+#get ec.h
+##TODO## for SVR4 create and change this to pnm_buildrequires_SUNWopenssl_fips_140_include
+BuildRequires: library/security/openssl/openssl-fips-140
+Requires:      library/security/openssl/openssl-fips-140
+%else
+BuildRequires: %{pnm_buildrequires_SUNWopenssl}
+Requires:      %{pnm_requires_SUNWopenssl}
+%endif
 
 %description  
 Node's goal is to provide an easy way to build scalable network  
@@ -34,6 +49,9 @@ then it goes to sleep. If someone new connects, then it executes the
 callback, if the timeout expires, it executes the inner callback. Each  
 connection is only a small heap allocation.  
 
+mdb is disabled
+ssl3 is disabled
+
 %package devel  
 Summary:	Development headers for nodejs  
 Group:		Development/Libraries  
@@ -44,6 +62,10 @@ Development headers for nodejs.
 %prep  
 %setup -q -n node-v%{version}  
 
+%patch1 -p1
+
+
+
 %build  
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
@@ -52,21 +74,36 @@ fi
 
 export CC=gcc
 export CXX=g++
-export CFLAGS="%{optflags}"
-export LDFLAGS="%{_ldflags}"
+export LDFLAGS="%{_ldflags} -R/lib/openssl/fips-140/ -L/lib/openssl/fips-140/"
 
 ./configure --prefix=%{_prefix} \
-	--shared-openssl
+        --shared-openssl        \
+%if %( expr %{solaris11} '|' %{solaris12} )
+        --shared-openssl-includes=/usr/include/openssl/fips-140 \
+        --shared-openssl-libpath=/lib/openssl/fips-140          \
+%endif
 
-make -j$CPUS
+# --gdb
+
+#trick missing CXXFLAGS/CPPFLAGS in build system systems with ec.h in fips-140 location
+#illumos finds ec.h in /usr/include/openssl/ec.h, Solaris in /usr/include/openssl/fips-140/openssl/ec.h
+export CFLAGS="%{optflags}"
+%if %( expr %{solaris11} '|' %{solaris12} )
+[ -d src ] || mkdir src
+[ -s src/openssl ] || ln -s /usr/include/openssl/fips-140/openssl src/openssl
+%endif
+
+gmake -j$CPUS
 
 %install  
 rm -rf $RPM_BUILD_ROOT  
 export CC=gcc
 export CXX=g++
 export CFLAGS="%{optflags}"
+export CXXFLAGS="%{cxx_optflags}"
 export LDFLAGS="%{_ldflags}"
-make install DESTDIR=$RPM_BUILD_ROOT
+
+gmake install DESTDIR=$RPM_BUILD_ROOT
 
 %clean  
 rm -rf $RPM_BUILD_ROOT  
@@ -77,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/node
 %{_bindir}/npm
 %dir %attr (0755, root, sys) %{_datadir}
+#well, remove that in %install?
+%{_datadir}/systemtap/*
 %dir %attr (0755, root, other) %{_docdir}
 %{_mandir}
 #dir is gone %{_libdir}/node
@@ -89,6 +128,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/node  
 
 %changelog  
+* Sun Feb  8 2015 - Thomas Wagner
+- bump to 0.12.0
+- add patch nodejs-01-configure-disable-mdb-is-this-sad.diff
+- add (Build)Requires library/security/openssl/openssl-fips-14 (S11, S12)
+- find fips-140/openssl/ec.h headers via local symlink in src/openssl (S11, S12)
+- add Build)Requires %{pnm_buildrequires_SUNWopenssl}, include packagenamemacros.inc
 * Sun Jan  4 2015 - Thomas Wagner
 - fix %files for %{_bindir}/node-waf
 * Sat Jan  3 2015 - Thomas Wagner

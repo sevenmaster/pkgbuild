@@ -1,0 +1,19 @@
+
+https://github.com/joyent/node/issues/6439
+
+missing libproc.h (ONbld)
+so we leave out mdb for the moment
+
+--- node-v0.12.0/configure.orig	2015-02-06 21:04:23.000000000 +0100
++++ node-v0.12.0/configure	2015-02-08 14:39:52.154608716 +0100
+@@ -554,7 +554,9 @@
+   # if we're on illumos based systems wrap the helper library into the
+   # executable
+   if flavor == 'solaris':
+-    o['variables']['node_use_mdb'] = 'true'
++  #we are sorry, https://github.com/joyent/node/issues/6439
++  #the question to me is, is mdb on illumos enhanced beyond S10 and S11 mdb?
++    o['variables']['node_use_mdb'] = 'false'
+   else:
+     o['variables']['node_use_mdb'] = 'false'
+ 
