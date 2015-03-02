@@ -8,7 +8,7 @@
 Name:                   SFEmikutter
 IPS_package_name:		communication/twitter/mikutter
 Summary:                A moest twitter client
-Version:                3.0.6
+Version:                3.2.2
 Source:                 http://mikutter.hachune.net/bin/%{src_name}.%{version}.tar.gz
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
@@ -17,6 +17,8 @@ BuildRequires: SFEruby
 BuildRequires: SFEruby-gnome2
 Requires: SFEruby
 Requires: SFEruby-gnome2
+Requires: SFEruby-moneta
+Requires: SFEruby-nokogiri
 
 %prep
 %setup -q -n %{src_name}
@@ -60,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{src_name}/*
 
 %changelog
+* Thu Feb 26 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- BUmp to 3.2.2
 * Mon Oct 13 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Bump to 3.0.6
 * Thu Jul 17 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
