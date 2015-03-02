@@ -26,10 +26,10 @@ IPS_Package_Name:	 communication/irc/weechat
 Summary:	Lightweight console IRC client
 URL:		http://www.weechat.org/
 Vendor:		Sebastien Helleu <flashcode@flashtux.org>
-Version:	0.4.3
+Version:	1.1.1
 License:	GPLv3+
 Source:		http://www.weechat.org/files/src/%srcname-%version.tar.bz2
-Patch5:		weechat-05-remove-xopen-source-override.diff
+#Patch5:		weechat-05-remove-xopen-source-override.diff
 SUNW_Copyright:	weechat.copyright
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
@@ -65,7 +65,7 @@ Sebastien Helleu <flashcode@flashtux.org>
 
 %prep
 %setup -q -n %srcname-%version
-%patch5 -p1
+#%patch5 -p1
 
 mkdir build
 
@@ -136,6 +136,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Feb 19 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.1.1
+* Mon Jan 05 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.0.1
+- disable patch5 (fixed upstream)
 * Sat Feb 22 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 0.4.3
 - Remove weechat-06-add-string-h-include.diff (fixed upstream)
