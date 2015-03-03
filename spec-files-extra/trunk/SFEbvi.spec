@@ -4,6 +4,8 @@
 
 %include Solaris.inc
 Name:                    SFEbvi
+IPS_Package_Name:	 editor/bvi
+Group:			 Development/Editors
 Summary:                 bvi - display-oriented editor for binary files (vi like)
 URL:			 http://bvi.sourceforge.net/
 Version:                 1.4.0
@@ -49,9 +51,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES COPYING CREDITS README
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
-%dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/*
+#%dir %attr (0755, root, bin) %{_libdir}
+#%{_libdir}/*
 %dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/bvi/*
 %dir %attr (0755, root, other) %{_docdir}
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
@@ -59,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar  3 2015 - Thomas Wagner
+- add IPS_Package_Name, fix %files
 * Thr Feb 26 2015 - Thomas Wagner
 - bump to 1.4.0
 * Sun Jan 25 2009 - Thomas Wagner
