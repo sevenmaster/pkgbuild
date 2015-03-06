@@ -59,8 +59,15 @@ Patch14:		qt-gpp-14-webcore-sql.patch
 SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %_basedir
 %include default-depend.inc
+
+%if %( expr %{solaris12} '|' %{omnios} )
+#assume that use gcc 4.8.x
+BuildRequires:		SFEgcc
+Requires:		SFEgccruntime
+%else
 BuildRequires:		SFEgcc-46
 Requires:		SFEgccruntime-46
+%endif
 
 # Guarantee X/freetype environment concisely (hopefully):
 BuildRequires: SUNWgtk2
@@ -242,6 +249,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Mar  6 2015 - Thomas Wagner
+- change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12, OM)
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - use WebKit source for one JavaScript source file, as a partial fix for crashes
 * Sun Oct 27 2013 - Alex Viskovatoff
