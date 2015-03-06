@@ -1715,8 +1715,8 @@
 #database/mysql-55                                 5.5.31-5.12.0.0.0.63.0     ---
 #database/mysql-55/client                          5.5.31-5.12.0.0.0.63.0     ---
 #database/mysql-55/library                         5.5.31-5.12.0.0.0.63.0     i--
-%define pnm_buildrequires_mysql_default	database/mysql-51,database/mysql-55/library
-%define pnm_requires_mysql_default	database/mysql-51,database/mysql-55/library
+%define pnm_buildrequires_mysql_default	database/mysql-55,database/mysql-55/library
+%define pnm_requires_mysql_default	database/mysql-55,database/mysql-55/library
 %endif
 #END S12 & >= 63
 %endif
@@ -2481,6 +2481,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sun Feb  1 2015 - Thomas Wagner
+- fix package name for mysql_default version 5.5 (S12 >= 63)
 * Sat Jan 24 2015 - Thomas Wagner
 - prepare for renamed-to-package libapr apr-util
 - fix syntax error around osdistro_entire_padded_number4
