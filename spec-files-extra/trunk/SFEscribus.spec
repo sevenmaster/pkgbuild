@@ -1,4 +1,4 @@
-=#
+#
 # spec file for package SFEscribus
 #
 
