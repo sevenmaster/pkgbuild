@@ -1,10 +1,13 @@
-#
+=#
 # spec file for package SFEscribus
 #
 
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
+
+%include packagenamemacros.inc
+
 %define src_name scribus
 
 Name:           SFEscribus
@@ -12,8 +15,8 @@ IPS_Package_Name:	desktop/publishing/scribus
 Summary:        Graphical desktop publishing (DTP) application
 URL:		http://www.scribus.net/canvas/Scribus
 Group:		Applications/Office
-Version:        1.4.3
-Source:		%{sf_download}/%{src_name}/%{version}/%src_name-%version.tar.xz
+Version:        1.4.5
+Source:		%{sf_download}/%{src_name}/%{version}/%src_name-%version.tar.bz2
 License:	GPLv2
 Patch1:		scribus-01-math_c99.diff
 SUNW_BaseDir:   %_basedir
@@ -26,12 +29,15 @@ BuildRequires: 	SFEqt-gpp-devel
 Requires: 	SFEqt-gpp
 BuildRequires:	SFElibiconv
 Requires:	SFElibiconv
-BuildRequires:	SUNWlcms
-Requires:	SUNWlcms
+BuildRequires:	SFElcms2-gnu
+Requires:	SFElcms2-gnu
 
 BuildRequires: 	SFEcmake
-BuildRequires: 	SUNWPython26
-BuildRequires:  SUNWcupsu
+##TODO## check dependency on python26 or if other versions do as well
+BuildRequires: 	%{pnm_buildrequires_python_default}
+
+##TODO## 
+#BuildRequires:  SUNWcupsu
 
 SUNW_BaseDir:   %_basedir
 %include default-depend.inc
@@ -45,6 +51,9 @@ Scribus is a GUI desktop publishing (DTP) application for Unix/Linux.
 %patch1 -p1
 mkdir -p builddir
 
+#look for SFElcms2 in /usr/gnu/<lib|include>
+gsed -i -e 's?/usr/include?/usr/gnu/include?' -e 's?/usr/lib?/usr/gnu/lib?' cmake/modules/FindLCMS2.cmake
+
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 cd builddir
@@ -57,12 +66,13 @@ export CFLAGS="%optflags"
 # This is to avoid "error: `isfinite' is not a member of `std'"
 export CXXFLAGS="%cxx_optflags -D__C99FEATURES__"
 export LD="/usr/bin/ld"
-export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib  %{gnu_lib_path}"
 export PATH=/usr/g++/bin:$PATH
 export QMAKESPEC=solaris-g++
 
+
 # Use Qt Arthur, because library/desktop/cairo links to libpng12
-cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DPNG_PNG_INCLUDE_DIR:PATH=/usr/include/libpng14 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DWANT_QTARTHUR=1 -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python2.6 -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.6 -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.6.so ..
+cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DPNG_PNG_INCLUDE_DIR:PATH=/usr/include/libpng14 -DCMAKE_INSTALL_PREFIX:PATH=%_prefix -DWANT_QTARTHUR=1 -DHAVE_GCC_VISIBILITY:INTERNAL=0 -DHAVE_VISIBILITY_SWITCH:INTERNAL=0 -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python2.6 -DPYTHON_INCLUDE_DIR:PATH=/usr/include/python2.6 -DPYTHON_LIBRARY:FILEPATH=/usr/lib/libpython2.6.so -DLCMS_LIBRARY=/usr/gnu/lib -DLCMS_INCLUDE_DIR=/usr/gnu/include ..
 make -j$CPUS
 
 %install
@@ -110,6 +120,12 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Mar  6 2015 - Thomas Wagner
+- bump to 1.4.5, fix download extension .xz -> .tar.bz2
+- change (Build)Requires: Requires: %{pnm_buildrequires_python_default}
+- look for SFElcms2 in /usr/gnu/<include|lib>
+* Mon Apr 14 2014 - Thomas Wagner
+- change (Build)Requires: Requires: %{pnm_requires_SUNWPython26}, %include packagenamemacros.inc
 * Sun Sep 01 2013 - Milan Jurik
 - bump to 1.4.3
 * Mon Dec 10 2012 - Logan Bruns <logan@gedanken.org>
