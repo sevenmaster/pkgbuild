@@ -1,3 +1,13 @@
+#WARNING: dependency generator partially failed
+#  dependency discovered: library/audio/gstreamer@0.10.32-0.175.0.0.0.0.0
+#  dependency discovered: library/glib2@2.28.6-0.175.0.0.0.0.0
+#  dependency discovered: library/zlib@1.2.3-0.175.0.0.0.2.537
+#  dependency discovered: sfe/system/library/gcc-46-runtime@4.6.4-0.0.175.0.0.0.2.0
+#  dependency discovered: sfe/system/library/gcc-runtime@4.6.4-0.0.175.0.0.0.2.0
+#  dependency discovered: system/library/math@0.5.11-0.174.0.0.0.0.0
+#  dependency discovered: system/library@0.5.11-0.175.0.0.0.2.1
+#
+
 #
 # spec file for package SFEqt-gpp
 #
@@ -18,6 +28,9 @@
 %define run_autotests 0
 
 %include packagenamemacros.inc
+
+%define _use_internal_dependency_generator 0
+
 
 Name:                SFEqt-gpp
 IPS_Package_Name:	library/desktop/g++/qt
@@ -60,7 +73,7 @@ SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %_basedir
 %include default-depend.inc
 
-%if %( expr %{solaris12} '|' %{omnios} )
+%if %( expr %{solaris12} )
 #assume that use gcc 4.8.x
 BuildRequires:		SFEgcc
 Requires:		SFEgccruntime
@@ -129,8 +142,14 @@ cp -p %SOURCE1 src/3rdparty/webkit/Source/JavaScriptCore/wtf/StackBounds.cpp
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+#temprary fix until our mysql uses /usr/mysql/5.x/lib instead of /usr/mysql/5.x/lib/mysql
+%if %{solaris12}
+%define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}
+%define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir} -R%{standard_prefix}/%{mysql_default_libdir}
+%else
 %define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
 %define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir}/mysql -R%{standard_prefix}/%{mysql_default_libdir}/mysql
+%endif
 
 export CC=gcc
 export CXX=g++
@@ -250,7 +269,7 @@ rm -rf %buildroot
 
 %changelog
 * Fri Mar  6 2015 - Thomas Wagner
-- change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12, OM)
+- change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12)
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
 - use WebKit source for one JavaScript source file, as a partial fix for crashes
 * Sun Oct 27 2013 - Alex Viskovatoff
