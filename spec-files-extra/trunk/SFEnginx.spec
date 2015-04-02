@@ -5,7 +5,7 @@
 # package are under the same license as the package itself.
 #
 # Owner: lewellyn
-# Modified: ianj 2013-2014
+# Modified: ianj 2013-2015
 #
 
 # NOTE: This package will include all normally-optional modules which do not
@@ -38,7 +38,7 @@
 
 Name:		SFEnginx
 IPS_Package_Name:	web/server/nginx
-Version:	1.4.7
+Version:	1.7.11
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -221,6 +221,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.7.11
 * Fri Apr 18 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - add CFLAGS
 * Tue Apr 15 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
