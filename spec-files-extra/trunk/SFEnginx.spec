@@ -207,7 +207,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_sysconfdir}
 %dir %attr (0755, root, bin) %{_sysconfdir}/%{sname}
-%attr (0644, root, bin) %{_sysconfdir}/%{sname}/*
+%config %attr (0644, root, bin) %{_sysconfdir}/%{sname}/*
 %dir %attr (0755, root, sys) %{_localstatedir}
 %dir %attr (0755, %{nginxuser}, %{nginxgroup}) %{_localstatedir}/%{sname}
 %dir %attr (0755, root, bin) %{_localstatedir}/%{sname}/html
@@ -223,6 +223,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 1.7.11
+- add %config to config files
 * Fri Apr 18 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - add CFLAGS
 * Tue Apr 15 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
