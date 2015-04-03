@@ -117,7 +117,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 2.11.4
+Version:                 3.0.0
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -258,7 +258,10 @@ perl -w -pi -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -
 
 #change /usr/bin/perl to /usr/perl5/bin/perl (ON Perl Style Guidelines)
 #use -pi.bak if you need to examine the backups
-perl -w -pi -e "s,^#\!\s*/usr/bin/perl,#\!/usr/perl%{perl_major_version}/bin/perl," `find . -type f -exec grep -q "^#\!.*/usr/bin/perl" {} \; -print`
+
+#remove  -Wformat -Wno-comment -Wmissing-prototypes in Makefile Makefile.in
+perl -w -pi -e "s,(-Wformat|-Wno-comment|-Wmissing-prototypes),,g" Makefile Makefile.in
+
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -414,12 +417,6 @@ rm -rf $RPM_BUILD_ROOT
 
 #%{?!debug:strip -R .comment --strip-unneeded bin/* libexec/*}
 #%{?!debug:strip bin/* libexec/*}
-
-# rename man pages which may conflict with sendmail's
-[ -r man/man1/mailq.1 ]      && mv man/man1/mailq.1      man/man1/mailq.postfix.1
-[ -r man/man1/newaliases.1 ] && mv man/man1/newaliases.1 man/man1/newaliases.postfix.1
-[ -r man/man1/sendmail.1 ]   && mv man/man1/sendmail.1   man/man1/sendmail.postfix.1
-[ -r man/man5/aliases.5 ]    && mv man/man5/aliases.5    man/man5/aliases.postfix.5
 
 #adjust renamed manpages ./conf/postfix-files:$manpage_directory/man1/mailq.1:f:root:-:644
 perl -pi -e "s?/man(1|5)/(mailq|newaliases|sendmail|aliases).(1|5)?/man\1/\2.postfix.\3?; " \
@@ -694,6 +691,13 @@ cp -p tmp/filter.sh ${RPM_BUILD_ROOT}/%{_libexecdir}/postfix/filter.sh
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
+cd ${RPM_BUILD_ROOT}
+# rename man pages which may conflict with sendmail's
+[ -r man/man1/mailq.1 ]      && mv man/man1/mailq.1      man/man1/mailq.postfix.1
+[ -r man/man1/newaliases.1 ] && mv man/man1/newaliases.1 man/man1/newaliases.postfix.1
+[ -r man/man1/sendmail.1 ]   && mv man/man1/sendmail.1   man/man1/sendmail.postfix.1
+[ -r man/man5/aliases.5 ]    && mv man/man5/aliases.5    man/man5/aliases.postfix.5
+
 
 
 
@@ -831,7 +835,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %attr (0755, root, sys) %dir %{_sysconfdir}/%{src_name}
 #%{_sysconfdir}/%{src_name}/*
 %config %{_sysconfdir}/%{src_name}/master.cf
+        %{_sysconfdir}/%{src_name}/master.cf.proto
 %config %{_sysconfdir}/%{src_name}/main.cf
+        %{_sysconfdir}/%{src_name}/main.cf.proto
 %config %{_sysconfdir}/%{src_name}/aliases.unused
 %{_sysconfdir}/%{src_name}/examples
 %{_sysconfdir}/%{src_name}/bounce.cf.default
@@ -841,7 +847,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %config %{_sysconfdir}/%{src_name}/transport
 %config %{_sysconfdir}/%{src_name}/header_checks
 %{_sysconfdir}/%{src_name}/postfix.spec.cf
-#this file has gone? %{_sysconfdir}/%{src_name}/postfix-files
+%{_sysconfdir}/%{src_name}/postfix-files
+%{_sysconfdir}/%{src_name}/postfix-files.d
 %{_sysconfdir}/%{src_name}/README.rpm
 %{_sysconfdir}/%{src_name}/html
 %{_sysconfdir}/%{src_name}/LICENSE
@@ -909,6 +916,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Fri Feb 13 2015 - Thomas Wagner
+- bump to 3.0.0
+- remove  -Wformat -Wno-comment in Makefile Makefile.in
 * Fri Feb 13 2015 - Thomas Wagner
 - bump to 2.11.4
 - change (Build)Requires to %{pnm_buildrequires_SUNWzlib}
@@ -1016,4 +1026,3 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 - %doc made monstrous 
 * Sun Jan 2009 - Thomas Wagner
 - Initial spec, parts derived from postfix.spec from the original SRPM
-
