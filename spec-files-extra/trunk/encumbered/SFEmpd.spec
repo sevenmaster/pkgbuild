@@ -26,7 +26,7 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.18.8
+Version:             0.19.9
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://http://www.musicpd.org/
@@ -35,8 +35,8 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires:  %{pnm_buildrequires_system_header_header_audio}
-BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
+BuildRequires: %{pnm_buildrequires_system_header_header_audio}
+BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
 BuildRequires: SUNWogg-vorbis-devel
@@ -175,6 +175,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog 
+* Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 0.19.9
 * Thu Mar 20 2014 - Thomas Wagner
 - add SFEopus, SFEwavpack, SFElibmms, SUNWlibsoup, SFElibmpdclient
 - let pulseaudio be auto-detected for the moment, should be a pnm_macro in the future
