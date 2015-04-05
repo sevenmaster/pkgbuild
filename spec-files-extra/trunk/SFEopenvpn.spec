@@ -18,9 +18,10 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.3.5
+Version:	2.3.6
 #https://openvpn.net/index.php/open-source/downloads.html
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
+Patch1:         openvpn-01-get_default_gateway.diff
 SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -43,6 +44,8 @@ openvpn
 
 %prep
 %setup -q -n %srcname-%version
+
+%patch1 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -82,6 +85,9 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Sat Apr  4 2015 - Thomas Wagner
+- bump to 2.3.6
+- add patch1 openvpn-01-get_default_gateway.diff (credits leoric)
 * Sat Nov  1 2014 - Thomas Wagner
 - bump to 2.3.5
 * Mon Jan 27 2014 - Thomas Wagner
