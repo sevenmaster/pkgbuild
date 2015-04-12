@@ -4,30 +4,31 @@
 # Owner: dkenny
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
-%define src_version	0.9.0
 
 Name:		SFEfreemind
 IPS_Package_Name:	desktop/freemind
 Summary:	FreeMind - free mind-mapping software.
-Version:	0.9.0.10
+Version:	1.0.1
 License:	GPLv2
 Group:		Applications
-Source:		%{sf_download}/freemind/freemind-src-%{src_version}.tar.gz
+Source:		%{sf_download}/freemind/freemind-src-%{version}.tar.gz
 Source1:	freemind.desktop
 Patch0:		freemind-01-use_bash.diff
 URL:		http://freemind.sourceforge.net/wiki/index.php/Main_Page
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright: %{name}.copyright
-BuildRoot:	%{_tmppath}/%{name}-%{src_version}-build
-BuildRequires:  SUNWant
-BuildRequires:  SUNWj6dev
-Requires:       SUNWj6rt
+BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+BuildRequires:  %{pnm_buildrequires_SUNWant}
+Requires:       %{pnm_requires_SUNWant}
+Requires:       %{pnm_requires_java_runtime_default}
+
 
 %include default-depend.inc
 
 %prep
-%setup -c -q -n %{name}-%{src_version} 
+%setup -c -q -n %{name}-%{version} 
 cd  freemind
 %patch0 -p1
 
@@ -78,6 +79,12 @@ test -x $PKG_INSTALL_ROOT/usr/lib/postrun || exit 0
 %{_datadir}/applications/freemind.desktop
 
 %changelog
+* Sun Apr 12 2015 - Thomas Wagner
+- bump to 1.0.1
+* Mon Feb  3 2014 - Thomas Wagner
+- change BuildRequires to %{pnm_requires_java_runtime_default}, %include packagenamemacros.inc
+* Thu Jan 30 2014 - Thomas Wagner
+- bump to 1.0.0
 * Sun Feb 12 2012 - Milan Jurik
 - bump to 0.9.0
 * Sun May 09 2010 - Milan Jurik
