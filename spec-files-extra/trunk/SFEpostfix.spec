@@ -691,8 +691,10 @@ cp -p tmp/filter.sh ${RPM_BUILD_ROOT}/%{_libexecdir}/postfix/filter.sh
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
-cd ${RPM_BUILD_ROOT}
+cd ${RPM_BUILD_ROOT}/%{_datadir}
 # rename man pages which may conflict with sendmail's
+# ..../var/tmp/pkgbuild-user/SFEpostfix.../usr/share/man
+#    RPM_BUILD_ROOT                       %{_mandir}    = %{_datadir}/man
 [ -r man/man1/mailq.1 ]      && mv man/man1/mailq.1      man/man1/mailq.postfix.1
 [ -r man/man1/newaliases.1 ] && mv man/man1/newaliases.1 man/man1/newaliases.postfix.1
 [ -r man/man1/sendmail.1 ]   && mv man/man1/sendmail.1   man/man1/sendmail.postfix.1
@@ -916,6 +918,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Mon Apr 13 2015 - Thomas Wagner
+- fix the rename-section for manpages
 * Fri Feb 13 2015 - Thomas Wagner
 - bump to 3.0.0
 - remove  -Wformat -Wno-comment in Makefile Makefile.in
