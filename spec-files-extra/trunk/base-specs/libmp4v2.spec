@@ -34,10 +34,17 @@ if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
     export LDFLAGS="$LDFLAGS -m64"
 fi
 
+%if %( expr %{omnios} '>=' 1 '|' %{openindiana} '>=' 1 )
+#no aclocal/* please
+#avoid running autotools (make would do that from GNUMakefile)
+[ -L autoaux/missing ] || mv autoaux/missing autoaux/missing_away
+[ -f autoaux/missing ] || echo /usr/bin/true > autoaux/missing
+%else
 libtoolize --force
 aclocal
 automake -a -c -f
 autoconf
+%endif
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
@@ -56,6 +63,10 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun May 15 2015 - Thomas Wagner
+- disable script autoaux/missing on omnios and openindiana
+* Wed Mar  4 2015 - Thomas Wagner
+- %include osdistro.inc, exclude aclocal on %{omnios}
 * Sun Aug 19 2012 - Milan Jurik
 - use GCC
 * Sun Jul 29 2012 - Milan Jurik
