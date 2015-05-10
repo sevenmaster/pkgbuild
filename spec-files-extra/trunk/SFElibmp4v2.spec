@@ -5,6 +5,7 @@
 #
 %include Solaris.inc
 %define cc_is_gcc 1
+%include osdistro.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -20,6 +21,7 @@ Summary:                 %{libmp4v2.summary}
 License:                 GPLv2
 SUNW_Copyright:          libmp4v2.copyright
 Version:                 %{libmp4v2.version}
+URL:			https://code.google.com/p/mp4v2/
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -84,6 +86,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun May 15 2015 - Thomas Wagner
+- disable script autoaux/missing on omnios and openindiana
+* Wed Mar  4 2015 - Thomas Wagner
+- %include osdistro.inc, exclude aclocal on %{omnios}
 * Sun Aug 19 2012 - Milan Jurik
 - use GCC
 * Sun Oct 16 2011 - Milan Jurik
