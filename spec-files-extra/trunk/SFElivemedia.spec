@@ -4,13 +4,20 @@
 # includes module(s): livemedia
 #
 
+# 1 = on  0 = off
+%define automaticversion 0
 
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %automaticversion
 #%define src_version 2009.07.09
 #extract example: 2009.07.09
 %define src_version %( wget  -O - "http://www.live555.com/liveMedia/public" 2>/dev/null  | /usr/xpg4/bin/egrep -i "<a href.*live\.[0-9]{4}" | sed -e 's,^.*href=\"live\.,,' -e 's,\.tar\.gz\">.*,,' )
+%else
+###########NOTE: set the desired date of the tarball YYYY.MM.DD
+%define src_version 2014.12.17
+%endif
 
 #remove leading zero(s) from version-string for IPS compat
 #version example: 2009.7.9
@@ -53,6 +60,10 @@ BuildRequires: SUNWxcu4
 ln -s config.solaris-32bit config.solaris
 %patch1 -p1
 %patch2 -p1
+#newer liveMedia does no longer set -lgroupsock (around/before 2014.12.17)
+chmod +w config.solaris-*
+gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L/usr/lib/live/groupsock -lgroupsock?' config.solaris-32bit
+gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L/usr/lib/live/groupsock -lgroupsock?' config.solaris-64bit
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -77,6 +88,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Sun May 17 2015 - Thomas Wagner
+- add -lgroupsock or get "SendingInterfaceAddr: referenced symbol not found"
+- switch off automatic version setting to get reliable build results on the 
+  price for lower download success rates (liveMedia removes older tarballs)
+- lock version to 2014.12.17  (could be enhanced: if download fails, try automaticversion 1)
 * Sun Dec 21 2014 - Thomas Wagner
 - rework Patch1 liveMedia-01-SOLARIS-macro.diff, Patch2 liveMedia-02-config.diff (based on source live.2014.12.17.tar.gz)
 * Thu Jul 11 2013 - Thomas Wagner
