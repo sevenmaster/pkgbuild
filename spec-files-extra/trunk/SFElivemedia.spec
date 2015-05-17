@@ -62,8 +62,8 @@ ln -s config.solaris-32bit config.solaris
 %patch2 -p1
 #newer liveMedia does no longer set -lgroupsock (around/before 2014.12.17)
 chmod +w config.solaris-*
-gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L/usr/lib/live/groupsock -lgroupsock?' config.solaris-32bit
-gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L/usr/lib/live/groupsock -lgroupsock?' config.solaris-64bit
+gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L${RPM_BUILD_DIR}/live/groupsock?' config.solaris-32bit
+gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L${RPM_BUILD_DIR}/live/groupsock?' config.solaris-64bit
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -72,6 +72,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 ./genMakefiles solaris
+gsed -i.bak -n '/cd.*LIVEMEDIA_DIR.*MAKE/{h;n;G};p' Makefile 
+gsed -i.bak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -lgroupsock?' liveMedia/Makefile
 make -j$CPUS 
 
 %install
@@ -93,6 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 - switch off automatic version setting to get reliable build results on the 
   price for lower download success rates (liveMedia removes older tarballs)
 - lock version to 2014.12.17  (could be enhanced: if download fails, try automaticversion 1)
+- remove -lgroupsock from LINK_OPTS, use libgroupsock.so form build directory, build groupsock *first*, then build livemedia
 * Sun Dec 21 2014 - Thomas Wagner
 - rework Patch1 liveMedia-01-SOLARIS-macro.diff, Patch2 liveMedia-02-config.diff (based on source live.2014.12.17.tar.gz)
 * Thu Jul 11 2013 - Thomas Wagner
