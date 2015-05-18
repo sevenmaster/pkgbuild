@@ -2,10 +2,12 @@ This patch does not affect the behavior of the Makefile unless the added
 variables LOFLAGS, ARFLAG, or LIBSOFLAGS are specified when the Makefile
 is called.
 
---- libebml-1.0.0/make/linux/Makefile.orig	Fri Jun  4 04:44:54 2010
-+++ libebml-1.0.0/make/linux/Makefile	Sat Oct  9 16:26:15 2010
+reworked for libebml-1.3.0
+
+--- libebml-1.3.0/make/linux/Makefile.orig	2013-03-19 19:42:58.000000000 +0100
++++ libebml-1.3.0/make/linux/Makefile	2015-05-17 15:46:54.901571939 +0200
 @@ -64,6 +64,9 @@
- WARNINGFLAGS=-Wall -Wno-unknown-pragmas -ansi -fno-gnu-keywords -Wshadow
+ WARNINGFLAGS=-Wall -Wextra -Wno-unknown-pragmas -ansi -fno-gnu-keywords -Wshadow
  COMPILEFLAGS=$(WARNINGFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(DEBUGFLAGS) $(INCLUDE)
  DEPENDFLAGS  = $(CXXFLAGS) $(INCLUDE)
 +LOFLAGS=-fPIC

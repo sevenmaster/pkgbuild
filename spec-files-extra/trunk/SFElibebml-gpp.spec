@@ -71,6 +71,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun May 17 2015 - Thomas Wagner
+- rework patch libebml-01-makefile.diff
 * Sun Feb  9 2014 - Alex Viskovatoff
 - update to 1.3.0; restore correct IPS package name
 * Thu Jul 11 2013 - Thomas Wagner
