@@ -15,8 +15,6 @@
 
 ##TODO## might love a refresh of the patch1 for the more recent Makefile.am/Makefile.in
 
-##TODO## Make a SMF manifest for automatic perdition start / monitoring
-
 ##TODO## check (Build)Requirements
 
 %define src_name perdition
@@ -36,11 +34,13 @@ IPS_component_version: $( echo %{perditionparentversion} | sed -e '/-rc[0-9][0-9
 ## mysql version
 ##TODO## enhance packagenamemacros.inc to know the variables below,
 #then use the variables from packagenamemacros.inc instead defining locally
-%define mysql_version 5.1
-%define mysql_lib      /usr/mysql/%{mysql_version}/lib
+#defines by packagenamemacros.inc ... %define mysql_version 5.1
+##TODO## below: move those handy _path variabled to packagenamemacros.inc
+%define mysql_lib      %{_prefix}/%{mysql_default_libdir}
 %define mysql_lib_path -L%{mysql_lib} -R%{mysql_lib}
-%define mysql_include  /usr/mysql/%{mysql_version}/include
+%define mysql_include  %{_prefix}/%{mysql_default_includedir}
 %define mysql_include_path -I%{mysql_include}
+
 
 
 #%define cc_is_gcc 1
@@ -49,13 +49,16 @@ IPS_component_version: $( echo %{perditionparentversion} | sed -e '/-rc[0-9][0-9
 
 
 Name:                    SFEperdition
+IPS_Package_Name:	service/network/imap/perdition
 Summary:                 perdition - POP3/IMAP proxy to route requests based on tables (migrations, server grouping, load balancing)
 URL:                     http://www.vergenet.net/linux/perdition/
 #remember: version is set for all required specs in the include file 
 #include/perditionparentversion.inc
 Version:                 %{src_version}
 Source:                  http://www.vergenet.net/linux/perdition/download/%{src_version}/perdition-%{version}.tar.gz
+Source2:                 perdition.xml
 Patch1:			perdition-01-Makefile_in_am-LDFLAGS.diff
+Patch3:			perdition-03-remove-strcasestr.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -79,6 +82,7 @@ Requires: %name
 %prep
 %setup -q -n %{src_name}-%version
 %patch1 -p1
+%patch3 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -148,10 +152,18 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
-%attr (0755, root, sys) %dir %{_sysconfdir}/perdition
+%attr (0755, root, bin) %dir %{_sysconfdir}/openldap
+%{_sysconfdir}/openldap/*
+%attr (0755, root, bin) %dir %{_sysconfdir}/perdition
 %class(renamenew) %{_sysconfdir}/perdition/*
 
+
 %changelog
+* Thu May 21 2015 - Thomas Wagner
+- bump to version 2.1 (include/perditionparentversion.inc)
+- add SMF manifest, add IPS_Package_Name
+- use mysql defaults for the platform from packagenamenmacros.inc
+- iadd patch3 to remove strcasestr
 * Sun Feb  2 2012 - Thomas Wagner
 - bump to 1.19-rc4 (in file include/perditionparentversion.inc)
 * Mon Aug 02 2010 - Thomas Wagner
