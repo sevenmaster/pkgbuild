@@ -83,6 +83,8 @@ Requires: %name
 %setup -q -n %{src_name}-%version
 %patch1 -p1
 %patch3 -p1
+cp -p %{SOURCE2} perdition.xml
+
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -123,6 +125,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -r $RPM_BUILD_ROOT/etc/pam.d/perdition
 rmdir $RPM_BUILD_ROOT/etc/pam.d
 
+mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp perdition.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
 rm $RPM_BUILD_ROOT%{_libdir}/*la
 
 %clean
@@ -156,9 +161,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/openldap/*
 %attr (0755, root, bin) %dir %{_sysconfdir}/perdition
 %class(renamenew) %{_sysconfdir}/perdition/*
+%defattr (-, root, sys)
+%dir %attr (0755, root, sys) %{_localstatedir}
+%config %attr(0444, root, sys)/var/svc/manifest/site/perdition.xml
 
 
 %changelog
+* For May 21 2015 - Thomas Wagner
+- move SMF manifest in place for auto-import
 * Thu May 21 2015 - Thomas Wagner
 - bump to version 2.1 (include/perditionparentversion.inc)
 - add SMF manifest, add IPS_Package_Name
