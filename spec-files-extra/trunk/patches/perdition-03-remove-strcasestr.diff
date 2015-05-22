@@ -1,0 +1,30 @@
+--- perdition-2.1/perdition/str.c.orig	2015-05-22 14:11:40.294751589 +0200
++++ perdition-2.1/perdition/str.c	2015-05-22 14:13:21.567660110 +0200
+@@ -721,6 +721,7 @@
+  *       the time.
+  **********************************************************************/
+ 
++/*
+ const char *strcasestr(const char *haystack, const char *needle)
+ {
+ 	size_t i, haystack_len, needle_len;
+@@ -734,6 +735,7 @@
+ 
+ 	return NULL;
+ }
++*/
+ 
+ /**********************************************************************
+  * strcasedelimword
+--- perdition-2.1/perdition/str.h.orig	2013-10-04 03:44:12.000000000 +0200
++++ perdition-2.1/perdition/str.h	2015-05-22 13:40:35.951431000 +0200
+@@ -351,7 +351,9 @@
+  *       the time.
+  **********************************************************************/
+ 
++/*
+ const char *strcasestr(const char *haystack, const char *needle);
++*/
+ 
+ /**********************************************************************
+  * strcasedelimword
