@@ -11,6 +11,7 @@
 %include Solaris.inc
 
 Name:                    SFElibvanessa-adt
+IPS_Package_Name:	library/vanessa/adt
 Summary:                 vanessa-adt - abstract data type library to support perdition imap/pop3 proxy/loadbalancer
 URL:                     http://www.vergenet.net/linux/perdition/
 #Version:                 n.m.o
@@ -72,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 22 2015 - Thomas Wagner
+- add IPS_Package_Name
 * Mon Aug 02 2010 - Thomas Wagner
 - export Version to include/perditionparentversion.inc and detect automaticly 
   libraries version

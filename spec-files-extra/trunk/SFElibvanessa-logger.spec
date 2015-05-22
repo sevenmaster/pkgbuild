@@ -11,6 +11,7 @@
 %include Solaris.inc
 
 Name:                    SFElibvanessa-logger
+IPS_Package_Name:	library/vanessa/logger
 Summary:                 vanessa-logger - logging functions library to support perdition imap/pop3 proxy/loadbalancer
 URL:                     http://www.vergenet.net/linux/perdition/
 #Version:                 n.m.o
@@ -72,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 22 2015 - Thomas Wagner
+- add IPS_Package_Name
 * Sun Feb  2 2012 - Thomas Wagner
 - fix %files for pkgconfig/ not included
 * Mon Aug 02 2010 - Thomas Wagner
