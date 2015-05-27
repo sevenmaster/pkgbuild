@@ -10,8 +10,8 @@
 %include packagenamemacros.inc
 
 %define major 7
-%define minor 40
-%define buildnum 32
+%define minor 80
+%define buildnum 05
 %define srcname openjdk%{major}
 %define tag jdk%{major}u%{minor}-b%{buildnum}
 
@@ -21,26 +21,27 @@ Summary:                 OpenJDK - open-source Java SE implementation
 Group:                   Development/Java
 Version:                 %{major}.0.%{minor}.%{buildnum}
 URL:		         http://jdk%{major}.java.net
+#from openjdk9 JDK-8071501 http://hg.openjdk.java.net/jdk9/jdk9/hotspot/raw-rev/c3f28a6822dd
+Patch1:                  openjdk-n-01-JDK-8071501-dd_fd.diff
 License: 		 GPLv2
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: %pnm_buildrequires_java_runtime_default
-BuildRequires: SUNWant 
-BuildRequires:	SUNWcupsu
-BuildRequires: SUNWmercurial
-Requires:	SUNWcupsu
-BuildRequires: SUNWfreetype2
-Requires: SUNWfreetype2
+BuildRequires: %{pnm_buildrequires_java_runtime_default}
+BuildRequires: %{pnm_buildrequires_SUNWant}
+BuildRequires: %{pnm_buildrequires_SUNWcups_devel}
+Requires:      %{pnm_requires_SUNWcups}
+BuildRequires: %{pnm_buildrequires_SUNWmercurial}
+BuildRequires: %{pnm_buildrequires_SUNWfreetype2}
+Requires:      %{pnm_requires_SUNWfreetype2}
 # OpenJDK's AWT uses deja vu as the default font for latin character set languages
+##TODO## use pnm_macros for dejavu package
 BuildRequires: system/font/truetype/dejavu
-Requires: system/font/truetype/dejavu
-BuildRequires: SUNWaudh
-Requires: SUNWaudh
+Requires:      system/font/truetype/dejavu
+BuildRequires: %{pnm_buildrequires_SUNWaudh}
 BuildRequires: SUNWxorg-headers
-Requires: SUNWxorg-headers
 
 %define jdkroot %{_prefix}/jdk/instances/openjdk1.%{major}.0
 
@@ -57,6 +58,11 @@ hg clone -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u-dev %{sr
 cd %{srcname}
 gsed -i -e 's/hg clone/hg clone -r %{tag}/g' make/scripts/hgforest.sh
 bash ./make/scripts/hgforest.sh clone
+
+cd hotspot
+%patch -p1
+cd ..
+
 
 %build
 cd %{srcname}
@@ -111,6 +117,10 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Wed May 27 2015 - Thomas Wagner
+- Updated to JDK 7u80b05
+- change (Build)Requires to:  pnm_buildrequires_SUNWant, SUNWcups_devel, SUNWfreetype2, SUNWaudh, SUNWmercurial
+- add Patch1 openjdk-n-01-JDK-8071501-dd_fd.diff
 * Mon July 15 2013 - Logan Bruns <logan@gedanken.org>
 - Updated to JDK 7u40b32.
 * Mon Mar  4 2013 - Logan Bruns <logan@gedanken.org>
