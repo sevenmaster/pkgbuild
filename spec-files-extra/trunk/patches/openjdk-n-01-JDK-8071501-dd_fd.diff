@@ -1,0 +1,51 @@
+
+# HG changeset patch
+# User gthornbr
+# Date 1425691148 28800
+# Node ID c3f28a6822dd4fd418f09721f667f102a5f16fac
+# Parent  7d586d50e2643f8eaa737d993342f61353921184
+8071501: perfMemory_solaris.cpp failing to compile with "Error: dd_fd is not a member of DIR."
+Summary: Force all Solaris builds to use the same version of the DIR structure.
+Reviewed-by: dcubed, dholmes, kvn
+
+diff -r 7d586d50e264 -r c3f28a6822dd src/os/solaris/vm/jvm_solaris.h
+--- a/src/os/solaris/vm/jvm_solaris.h	Fri Mar 06 08:47:51 2015 -0800
++++ b/src/os/solaris/vm/jvm_solaris.h	Fri Mar 06 17:19:08 2015 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 1998, 2010, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 1998, 2015, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -41,7 +41,9 @@
+  * JNI conversion, which should be sorted out later.
+  */
+ 
++#define __USE_LEGACY_PROTOTYPES__
+ #include <dirent.h>             /* For DIR */
++#undef __USE_LEGACY_PROTOTYPES__
+ #include <sys/param.h>          /* For MAXPATHLEN */
+ #include <sys/socket.h>         /* For socklen_t */
+ #include <unistd.h>             /* For F_OK, R_OK, W_OK */
+diff -r 7d586d50e264 -r c3f28a6822dd src/share/vm/utilities/globalDefinitions_sparcWorks.hpp
+--- a/src/share/vm/utilities/globalDefinitions_sparcWorks.hpp	Fri Mar 06 08:47:51 2015 -0800
++++ b/src/share/vm/utilities/globalDefinitions_sparcWorks.hpp	Fri Mar 06 17:19:08 2015 -0800
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 1997, 2011, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 1997, 2015, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -33,7 +33,9 @@
+ 
+ 
+ # include <ctype.h>
++#define __USE_LEGACY_PROTOTYPES__
+ # include <dirent.h>
++#undef __USE_LEGACY_PROTOTYPES__
+ # include <string.h>
+ # include <strings.h>     // for bsd'isms
+ # include <stdarg.h>
+
