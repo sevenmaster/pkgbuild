@@ -14,12 +14,14 @@
 %define buildnum 05
 %define srcname openjdk%{major}
 %define tag jdk%{major}u%{minor}-b%{buildnum}
+%define local_source_cache_file jdk%{major}u%{minor}-b%{buildnum}.tar.bz2
 
 Name:                    SFEopenjdk%{major}
 IPS_Package_Name:	 developer/java/openjdk-%{major}
 Summary:                 OpenJDK - open-source Java SE implementation
 Group:                   Development/Java
 Version:                 %{major}.0.%{minor}.%{buildnum}
+IPS_Component_Version:     %( /usr/bin/echo %{version} | sed -e '/\.0[0-9]/ s#\.0*#.#g' )
 URL:		         http://jdk%{major}.java.net
 #from openjdk9 JDK-8071501 http://hg.openjdk.java.net/jdk9/jdk9/hotspot/raw-rev/c3f28a6822dd
 Patch1:                  openjdk-n-01-JDK-8071501-dd_fd.diff
@@ -54,13 +56,48 @@ applications require.
 
 %prep
 rm -rf %{srcname}
-hg clone -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u-dev %{srcname}
-cd %{srcname}
-gsed -i -e 's/hg clone/hg clone -r %{tag}/g' make/scripts/hgforest.sh
-bash ./make/scripts/hgforest.sh clone
+##TODO## #sorry, this doesn't check for the file in your extra ${tarballdirs} from .pkgtoolrc
+if [ -f  ${RPM_SOURCE_DIR}/%{local_source_cache_file} ]
+  then
+  #restore source from local cached and unpatched source (origin: created on first run)
+  bzip2 -d < ${RPM_SOURCE_DIR}/%{local_source_cache_file} | tar xf -
+  CREATECACHEFILE=no
+  HGMODE=update
+ else
+  CREATECACHEFILE=yes
+  HGMODE=clone
+  hg ${HGMODE} -r %{tag} http://hg.openjdk.java.net/jdk%{major}u/jdk%{major}u-dev %{srcname}
+  cd %{srcname}
+  gsed -i -e 's/{hg} clone/{hg} clone -r jdk%{major}-b%{buildnum}/g' ./make/scripts/hgforest.sh 
+  #do hg serially, not in parallel
+  gsed -i -e '/.tmp.\/repo.*cat ..tmp.\/repo.*&/ s?& *$??' ./make/scripts/hgforest.sh
+  #unfortunatly the next script has no error handling for hg clone which fails at least from time to time
+  for try in 1 2 3
+   do
+   [ -f re-run-hgforest.sh ] && rm re-run-hgforest.sh
+   bash ./make/scripts/hgforest.sh ${HGMODE} | tee >(egrep "(transaction abort|rollback completed|abort: stream ended unexpectedly)" && touch re-run-hgforest.sh)
+   #stop this loop if checkout has been successfull
+   [ ! -f re-run-hgforest.sh ] && break
+   done
+  #verify if hg clone from script hgforest.sh (above) has been successful: do an update to each repo in the next section
+fi
+
+cd $RPM_BUILD_DIR/%{srcname}
+for REPO in corba jaxp jaxws langtools jdk hotspot
+   do
+   cd $RPM_BUILD_DIR/%{srcname}/${REPO}
+   hg update
+done
+cd $RPM_BUILD_DIR/%{srcname}
+
+if [ ${CREATECACHEFILE} == "yes" ]
+ then
+  ( cd ${RPM_BUILD_DIR}; tar cf - %{srcname} ) | bzip2 > ${RPM_SOURCE_DIR}/%{local_source_cache_file}
+fi
+
 
 cd hotspot
-%patch -p1
+%patch1 -p1
 cd ..
 
 
@@ -117,6 +154,10 @@ rm -rf $RPM_BUILD_ROOT
 %{jdkroot}/*
 
 %changelog
+* Fri May 29 2015 - Thomas Wagner
+- fix %patch1 -p1
+- add cache file and store clean sources in ${RPM_SOURCE_DIR}
+- verify checkout results
 * Wed May 27 2015 - Thomas Wagner
 - Updated to JDK 7u80b05
 - change (Build)Requires to:  pnm_buildrequires_SUNWant, SUNWcups_devel, SUNWfreetype2, SUNWaudh, SUNWmercurial
