@@ -101,6 +101,7 @@
 %define with_pgsql        0
 %define with_sasl         1
 %define with_spf          0
+%define with_disable_eai  1
 %define with_dovecot      1
 %define with_tls          1
 %define with_tlsfix       1
@@ -117,7 +118,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.0.0
+Version:                 3.0.1
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -468,6 +469,18 @@ H
 w
 q
 EOF
+
+#add SFE workaround for missing EAI and disable smtputf8_enable = no 
+#this avoids: "warning: smtputf8_enable is true, but EAI support is not compiled in"
+# (see http://www.postfix.org/COMPATIBILITY_README.html).
+# see also https://bugs.archlinux.org/task/43789
+%if %{with_disable_eai}
+    bin/postconf -c ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix -e \
+	"smtputf8_enable = no" \
+    || exit 1
+%endif
+
+
 
 # Change alias_maps and alias_database default directory to use
 ### %{_sysconfdir}/postfix
@@ -918,6 +931,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Tue Jun  2 2015 - Thomas Wagner
+- bump to 3.0.1
+- add workaround with_disable_eai which sets smtputf8_enable = no
 * Mon Apr 13 2015 - Thomas Wagner
 - fix the rename-section for manpages
 * Fri Feb 13 2015 - Thomas Wagner
