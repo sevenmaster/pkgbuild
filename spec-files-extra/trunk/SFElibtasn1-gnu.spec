@@ -1,34 +1,26 @@
-
 #
-# spec file for package SFEnettle-gnu
+# spec file for package SFElibtasn1-gnu
 #
-# includes module(s): nettle
+# includes module(s): libtasn1
 #
 %include Solaris.inc
-
-
-##%define cc_is_gcc 1
-##%include base.inc
 
 %include usr-gnu.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
-%use nettle64 = nettle.spec
+%use libtasn164 = libtasn1.spec
 %endif
 
 %include base.inc
 
+%define	src_name libtasn1
+%use libtasn1 = libtasn1.spec
 
-%define	src_name nettle
-%use nettle = nettle.spec
-
-Name:                SFEnettle-gnu
-IPS_Package_Name:    library/gnu/nettle
-Summary:             Nettle is a cryptographic library
-Version:             %{nettle.version}
+Name:                SFElibtasn1-gnu
+IPS_Package_Name:    library/gnu/libtasn1
+Summary:             Tiny ASN.1 library (/usr/gnu)
+Version:             %{libtasn1.version}
 SUNW_BaseDir:        %{_prefix}
-%define _infodir %{_datadir}/info
-##TODO##License:	LGPL
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
@@ -43,31 +35,30 @@ rm -rf %name-%version
 mkdir -p %name-%version
 %ifarch amd64 sparcv9
 mkdir %name-%version/%_arch64
-%nettle64.prep -d %name-%version/%_arch64
+%libtasn164.prep -d %name-%version/%_arch64
 %endif
 
 mkdir %name-%version/%{base_arch}
-%nettle.prep -d %name-%version/%{base_arch}
+%libtasn1.prep -d %name-%version/%{base_arch}
 
 %build
 %ifarch amd64 sparcv9
-%nettle64.build -d %name-%version/%_arch64
+%libtasn164.build -d %name-%version/%_arch64
 %endif
 
-%nettle.build -d %name-%version/%{base_arch}
+%libtasn1.build -d %name-%version/%{base_arch}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %ifarch amd64 sparcv9
-%nettle64.install -d %name-%version/%_arch64
+%libtasn164.install -d %name-%version/%_arch64
 %endif
 
-%nettle.install -d %name-%version/%{base_arch}
+%libtasn1.install -d %name-%version/%{base_arch}
+##TODO## find $RPM_BUILD_ROOT%{_libdir} -name \*.la -exec rm {} \;
 
-#move $RPM_BUILD_ROOT/usr/share/info to in /usr/gnu/share/info
-mv $RPM_BUILD_ROOT/usr/share $RPM_BUILD_ROOT/%{_datadir}
-
-[ -f ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+[ -d "$RPM_BUILD_ROOT%{_datadir}" ] && rmdir $RPM_BUILD_ROOT%{_datadir}
+[ -d "$RPM_BUILD_ROOT%{_std_datadir}" ] && rmdir $RPM_BUILD_ROOT%{_std_datadir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -93,15 +84,18 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
 %{_libdir}/%{_arch64}/pkgconfig/*
 %endif
-%dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/info
+#%dir %attr (0755, root, sys) %{_datadir}
 #%dir %attr (0755, root, other) %{_datadir}/aclocal
 #%{_datadir}/aclocal/*
 
 
 %changelog
-* Fri Jun 12 2015 - Thomas Wagner
-- fix %files, remove file info/dir
-* Thu Jun 11 2015 - Thomas Wagner
-- initial spec
+* Sun Jun  7 2015 - Thomas Wagner
+- bump to 4.5
+- add IPS_Package_Name, relocate to usr-gnu.inc
 - make it 32/64-bit
+- fix %files
+* Fri Jul 27 2007 - dougs@truemail.co.th
+- Initial spec
+* Wed May 28 2008 - jeff.cai@sun.com
+- Split to two spec files
