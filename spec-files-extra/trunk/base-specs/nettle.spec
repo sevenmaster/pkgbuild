@@ -1,7 +1,7 @@
 
 #
 Name:     	nettle
-Version: 	3.1
+Version: 	2.7.1
 ##TODO##License:	LGPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Source:         http://ftp.gnu.org/gnu/nettle/nettle-%{version}.tar.gz
@@ -21,9 +21,22 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 ##CC=gcc
 ##CXX=g++
-export CFLAGS="%optflags -I%{gnu_inc}"
-export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%{_ldflags} %{gnu_lib_path}"
+export CFLAGS="%optflags -I%{_std_includedir}/openssl/fips-140 -I%{gnu_inc}"
+export CXXFLAGS="%cxx_optflags -I%{gnu_inc}"
+
+if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
+   export LDFLAGS="%{_ldflags} -R/lib/openssl/fips-140/%{_arch64} -L/lib/openssl/fips-140/%{_arch64} %{gnu_lib_path}"
+else
+   export LDFLAGS="%{_ldflags} -R/lib/openssl/fips-140 -L/lib/openssl/fips-140 %{gnu_lib_path}"
+fi
+
+
+
+echo "CFLAGS=$CFLAGS"
+echo "CXXLAGS=$CXXFLAGS"
+echo "LDLAGS=$LDFLAGS"
+echo "CC=$CC"
+echo "CXX=$CXX"
 
 
 ./configure --prefix=%{_prefix}         \
@@ -34,7 +47,6 @@ export LDFLAGS="%{_ldflags} %{gnu_lib_path}"
             --mandir=%{_mandir}         \
             --infodir=%{_infodir}       \
             --disable-assembler         \
-            --disable-static            \
             --enable-shared
 
 
@@ -43,13 +55,15 @@ make -j$CPUS
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-#find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
-#find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Jun 15 2015 - Thomas Wagner
+- downgrade to 2.7.1 (to suit gnutls)
+- fix _arch64 build
+- downgrade version to suit gnutls
 * Thu Jun 11 2015 - Thomas Wagner
 - initial spec
 - make it 32/64-bit
