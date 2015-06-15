@@ -69,6 +69,8 @@ mv $RPM_BUILD_ROOT/usr/share $RPM_BUILD_ROOT/%{_datadir}
 
 [ -f ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
 
+find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -100,7 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jun 12 2015 - Thomas Wagner
+* Mon Jun 15 2015 - Thomas Wagner
+- downgrade to 2.7.1 (to suit gnutls)
+- fix _arch64 build
 - fix %files, remove file info/dir
 * Thu Jun 11 2015 - Thomas Wagner
 - initial spec
