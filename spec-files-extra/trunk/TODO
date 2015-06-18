@@ -209,6 +209,7 @@ them installed.
 
 30)
 SFEtransmageddon.spec: use pnm_python_default  and *test* if it works
+SFEpython26-mpd.spec: remove hard definitions to python version, eventually create IPS_Package_Name from macro
 
 #resolved# 31)
 #resolved# SFEqt-gpp.spec -> Qt*pc wrong setting mysql: Libs.private: -L/usr/gnu/lib -L/usr/g++/{mysql/5.1/lib}  ...
@@ -528,11 +529,11 @@ Review C++11 decltype keyword support for GCC 4.6.3/4.7.2 (N3276)
 62)
 provide 32/64 bit packages
 specfile:           32       64        comment
-SFElibiconv.spec    OK     missing     https://sourceforge.net/p/pkgbuild/spec-files-extra/25/
+SFElibiconv.spec    OK       OK        done 20150618 (rev 5967)
 SFExmlrpc-c.spec    OK     missing     check deps as well
 #(from 36)
 SFEqt-gpp (cost: somewhat larger)  (owner:  TBD, volunteers?)
-SFElcms2                               OS has lcms2 as well, so place it into /usr/gnu in fresh version
+SFElcms2            OK       OK        done 20140103 (rev 5661)
 SFEufraw            OK     missing     try if 64-bit performs better (not that the 32-bit version is slow...)
 SFEfile             OK     missing
 
@@ -701,3 +702,40 @@ neon-gnu	no one, could build a sub-package only on OM to replace missing osdistr
 
 69)
 SFEmunin.spec needs library/perl-5/net-ssleay bit this varies on osdistro very much
+
+70)
+S12 removes package@version, updating dependencies necessary:
+pkg update: Das installierte Paket developer/desktop/g++/qt ist nicht zulässig.
+  Abweisen:  pkg://localhosts12/developer/desktop/g++/qt@4.8.5,5.12-0.5.12.0.0.0.32.2:20131205T115522Z
+  Grund:  Alle Versionen mit 'require'-Abhängigkeit pkg:/library/desktop/g++/qt werden abgewiesen
+    Abweisen:  pkg://localhosts12/library/desktop/g++/qt@4.8.5,5.12-0.5.12.0.0.0.32.2:20131205T115435Z
+    Grund:  Alle zulässigen Versionen mit 'require'-Abhängigkeit von pkg:/database/mysql-51/library@5.1.37,5.11-5.12.0.0.0.32.0 sind veraltet
+Das installierte Paket library/desktop/g++/qt ist nicht zulässig.
+  Abweisen:  pkg://localhosts12/library/desktop/g++/qt@4.8.5,5.12-0.5.12.0.0.0.32.2:20131205T115435Z
+  Grund:  Alle zulässigen Versionen mit 'require'-Abhängigkeit von pkg:/database/mysql-51/library@5.1.37,5.11-5.12.0.0.0.32.0 sind veraltet
+
+]
+71)
+make extra part /mysql into defines if version of mysql is old, if > 5.1 then remove part /mysql
+
+ pkg contents -r -m database/mysql-51/library database/mysql-51 database/mysql-55/library database/mysql-55  | egrep "my_dir.h|libmysqlclient.so"; pkg contents -r -m database/mysql-55 | egrep "my_dir.h|libmysqlclient.so " | grep -v variant 
+
+file 9370a8a70c0ced5fcbb2de964bd386d9c0065055 chash=7181a4411e66f4e19ea53ce939f1c26117647aa1 facet.devel=all group=bin mode=0444 owner=root path=usr/mysql/5.1/include/mysql/my_dir.h pkg.csize=1501 pkg.size=3460
+file 2cc545f744e3249d85ad5a7834f65539ba7420a7 chash=ffe9b08f69d43941d6bf26f4a3feb4a578255aee facet.devel=all group=bin mode=0444 owner=root path=usr/mysql/5.5/include/my_dir.h pkg.csize=1548 pkg.size=3573
+
+link path=usr/mysql/5.1/lib/mysql/libmysqlclient.so target=libmysqlclient.so.16
+link path=usr/mysql/5.5/lib/libmysqlclient.so target=libmysqlclient.so.18
+
+
+72)
+adjust pnm_default macros for S11, S12 (uses mediators for java jre and jdk)
+if %{pnm_requires_java_runtime_default} is used, does this play well with pkg mediator java?
+we need sometimes as BuildRequires the Java JDK and at runtime it is enought to require the JRE
+we could enter the mediator package if we don't care about the java version
+if we care about the java version, we need a way to require the corresponding package and
+maybe set the correct JAVA_HOME to find this version (if other versions are installed too)
+provide a pnm_macro to set the JDK JAVA_HOME (to reach $JAVA_HOME/bin/javac)
+and another pnm_macro to set the JRE JAVA_HOME (to reach $JAVA_HOME/bin/java of the specified platform default version)
+and another pnm_macro to set the JRE in explicit version (to reach jre_this_version/bin/java of the specified explicit version)
+
+
