@@ -1,20 +1,35 @@
-#
-# Copyright (c) 2006 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
 
 %include Solaris.inc
 %include usr-gnu.inc
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use libiconv64 = libiconv.spec
+%endif
+
+%include base.inc
+
+%use libiconv = libiconv.spec
+
+#stumbles into OS provided libs
+%define _use_internal_dependency_generator 0
+
 
 ##TODO## Bug SUNWncurses and SUNWtixi do not define group "other" for /usr/gnu/share/doc
 ##TODO## Bug No SUNWncurses TBD 
 ##TODO## Bug No SUNWtixi    TBD 
+
+# s12_37 sfe ~ pkg contents -r -m terminal/tack | grep usr/gnu/share/doc
+# dir facet.doc=true group=other mode=0755 owner=root path=usr/gnu/share/doc
+# dir facet.doc=true group=bin mode=0755 owner=root path=usr/gnu/share/doc/SUNWtack
+# 
+##TODO## /usr/gnu/share/doc might not already exist! maybe replace with querying IPS package on a os2nnn system!!
 %define workaround_gnu_share_doc_group %( /usr/bin/ls -dl /usr/gnu/share/doc | grep " root.*bin " > /dev/null 2>&1 && echo bin || echo other )
 
 
 Name:		SFElibiconv
+##TODO## one day we can change the name to /gnu/
 IPS_Package_Name:	library/libiconv 
-Summary:	GNU iconv - Code set conversion
+Summary:	GNU iconv - Code set conversion (/usr/gnu)
 Group:		System/Libraries
 License:	LGPLv2
 SUNW_Copyright:	libiconv.copyright
@@ -29,50 +44,39 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %package devel
 Summary:	%{summary} - development files
 SUNW_BaseDir:	%{_basedir}
+%include default-depend.inc
 Requires:	%name
 
-%if %build_l10n
-%package l10n
-Summary:	%{summary} - l10n files
-SUNW_BaseDir:	%{_basedir}
-Requires:	%{name}
+%prep
+rm -rf %name-%version
+mkdir -p %name-%version
+%ifarch amd64 sparcv9
+mkdir %name-%version/%_arch64
+%libiconv64.prep -d %name-%version/%_arch64
 %endif
 
-%prep
-%setup -q -n libiconv-%version
-%patch2 -p1
+mkdir %name-%version/%{base_arch}
+%libiconv.prep -d %name-%version/%{base_arch}
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+%ifarch amd64 sparcv9
+%libiconv64.build -d %name-%version/%_arch64
+%endif
 
-export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
-
-./configure \
-        --prefix=%{_prefix}	\
-        --libdir=%{_libdir}	\
-        --datadir=%{_datadir}	\
-        --mandir=%{_mandir}	\
-        --enable-static=no
-
-make -j$CPUS
+%libiconv.build -d %name-%version/%{base_arch}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-rm ${RPM_BUILD_ROOT}%{_libdir}/lib*.la
-rm $RPM_BUILD_ROOT%{_libdir}/charset.alias
-
-%if %build_l10n
-%else
-# REMOVE l10n FILES
-rm -fr $RPM_BUILD_ROOT%{_datadir}/locale
-#rm -r $RPM_BUILD_ROOT%{_datadir}/gnome/help/gnome-commander/[a-z]*
-#rm -r $RPM_BUILD_ROOT%{_datadir}/omf/gnome-commander/*-[a-z]*.omf
+%ifarch amd64 sparcv9
+%libiconv64.install -d %name-%version/%_arch64
 %endif
+
+%libiconv.install -d %name-%version/%{base_arch}
+
+##TODO##RAUS##[ -f ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+
+##TODO##PRUEFEN##
+find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -83,12 +87,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/iconv
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/*.so*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/*.so*
+%endif
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/iconv.1
 %dir %attr (0755, root, bin) %{_mandir}/man3
 %{_mandir}/man3/iconv*.3
+%defattr (-, root, bin)
+%dir %attr (0755, root, bin) %{_datadir}/locale
+%{_datadir}/locale/*
+
 
 %files devel
 %defattr (-, root, bin)
@@ -100,16 +112,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, %{workaround_gnu_share_doc_group}) %{_datadir}/doc
 %{_datadir}/doc/*
 
-%if %build_l10n
-%files l10n
-%defattr (-, root, bin)
-%dir %attr (0755, root, sys) %{_datadir}
-# The following is correct, but setting the group correctly conflicts with gnu-binutils
-#%attr (-, root, other) %_datadir/locale
-%{_datadir}/locale
-%endif
 
 %changelog
+* Tue Jun 16 2015 - Thomas Wagner
+- make it 32/64-bit
 * Thu Oct 06 2011 - Milan Jurik
 - bump to 1.14, add IPS package name
 * Wed Jul 20 2011 - Alex Viskovatoff
