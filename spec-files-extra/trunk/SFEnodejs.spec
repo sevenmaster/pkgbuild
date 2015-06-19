@@ -15,12 +15,13 @@
 Summary:	Asynchronous JavaScript Engine  
 Name:		SFEnodejs  
 IPS_Package_Name:	runtime/javascript/nodejs
-Version:	0.12.0
+Version:	0.12.4
 License:	BSD  
 Group:		System/Libraries  
 URL:		http://nodejs.org/  
 Source:		http://nodejs.org/dist/v%{version}/node-v%{version}.tar.gz  
 #probably we want mdb, need libproc.h (ONbld)
+#https://github.com/joyent/node/issues/6439
 Patch1:		nodejs-01-configure-disable-mdb-is-this-sad.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:	%{_basedir}
@@ -128,6 +129,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/node  
 
 %changelog  
+* Fri Jun 19 2015 - Thomas Wagner
+- bump to 0.12.4
 * Sun Feb  8 2015 - Thomas Wagner
 - bump to 0.12.0
 - add patch nodejs-01-configure-disable-mdb-is-this-sad.diff
