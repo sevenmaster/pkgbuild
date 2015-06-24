@@ -1,6 +1,7 @@
 #used by at least SFElibvanessa-* and SFEperdition.spec
 
-%define perditionparentversion 1.19-rc4
+%define perditionparentversion 2.1
+#%define perditionparentversion 1.19-rc4
 # echo 1.19-rc4 | sed -e 's/-rc\([0-9]*\)/.\1/'
 #1.19.4
 # echo 1.19-rc4 | sed -e 's/-rc\([0-9]*\)/.0.\1/'
@@ -29,6 +30,8 @@
 ##TODO## possibly define the lib versions as well (tied to the download-version directory)
 
 %changelog
+* Thu May 21 2015 - Thomas Wagner
+- bump to version 2.1
 * Sun Feb 26 2012 - Thomas Wagner
 - calculate perditionparentversionips for IPS use (numbers only, straight incremental)
 * Mon Aug 02 2010 - Thomas Wagner

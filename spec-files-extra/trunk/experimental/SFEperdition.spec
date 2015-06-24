@@ -167,7 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* For May 21 2015 - Thomas Wagner
+* Fri May 21 2015 - Thomas Wagner
 - move SMF manifest in place for auto-import
 * Thu May 21 2015 - Thomas Wagner
 - bump to version 2.1 (include/perditionparentversion.inc)
