@@ -1726,6 +1726,24 @@
 
 #END setting mysql, changes with specific builds and distros  - Part 2 of 3
 
+##TODO## below. different versions of Sun/Oracle built mysql had an extra
+#directory at the end:  include/mysql and lib/mysql  with newer versions > 5.1
+#that is e.g. 5.5 the part /mysql is gone.
+#introduce a switch or make the /mysql part of the defines depending on the
+#version mysql is
+# #
+#  pkg contents -r -m database/mysql-51/library database/mysql-51 database/mysql-55/library database/mysql-55  | egrep "my_dir.h|libmysqlclient.so"; pkg contents -r -m database/mysql-55 | egrep "my_dir.h|libmysqlclient.so " | grep -v variant 
+# 
+# file 9370a8a70c0ced5fcbb2de964bd386d9c0065055 chash=7181a4411e66f4e19ea53ce939f1c26117647aa1 facet.devel=all group=bin mode=0444 owner=root path=usr/mysql/5.1/include/mysql/my_dir.h pkg.csize=1501 pkg.size=3460
+# file 2cc545f744e3249d85ad5a7834f65539ba7420a7 chash=ffe9b08f69d43941d6bf26f4a3feb4a578255aee facet.devel=all group=bin mode=0444 owner=root path=usr/mysql/5.5/include/my_dir.h pkg.csize=1548 pkg.size=3573
+# 
+# link path=usr/mysql/5.1/lib/mysql/libmysqlclient.so target=libmysqlclient.so.16
+# link path=usr/mysql/5.5/lib/libmysqlclient.so target=libmysqlclient.so.18
+# 
+# remember to adjust SFEqt-gpp.spec once the /mysql offset is re-engineered here
+
+
+
 #START setting mysql, all builds, evaluated paths  - Part 3 of 3
 # this is the section noted above which evaluates the resulting paths on the
 # disk for the defaults for mysql or the distro specific changed values e.g.
@@ -2165,12 +2183,19 @@
 %define apr_util_major_minor_version 1.5
 ##not defined %define apr_util_major_minor_micro_version 1.3.X
 %define apr_util_version_package_string 15
-#note below: on OmniOS library/apr-15 comes from SFE, not the osdistro
-##TODO## verify that on S12 the osdistro package is used, not ours (resolveipspackages)
 %define pnm_buildrequires_apr_default		library/apr-15
 %define pnm_requires_apr_default		library/apr-15
 %define pnm_buildrequires_apr_util_default	library/apr-util-15
 %define pnm_requires_apr_util_default		library/apr-util-15
+#on S12 we need to make sure that apr comes from the osdistro repository
+%if %{solaris12}
+%define pnm_buildrequires_apr_default		pkg://solaris/library/apr-15
+%define pnm_requires_apr_default		pkg://solaris/library/apr-15
+%define pnm_buildrequires_apr_util_default	pkg://solaris/library/apr-util-15
+%define pnm_requires_apr_util_default		pkg://solaris/library/apr-util-15
+%endif
+#END solaris12
+#note below: on older S11 and OmniOS library/apr-15 comes from SFE, not the osdistro
 %if %{omnios}
 #we need to build the packages on OmniOS in any case.
 %define pnm_buildrequires_apr_default		SFElibapr
@@ -2481,6 +2506,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Thr Mar 19 2015 - Thomas Wagner
+- fix to fetch from S12 repo: pnm_requires_apr_default pnm_buildrequires_apr_util_default pkg://solaris/library/apr-15 pkg://solaris/library/apr-util-15
 * Sun Feb  1 2015 - Thomas Wagner
 - fix package name for mysql_default version 5.5 (S12 >= 63)
 * Sat Jan 24 2015 - Thomas Wagner
