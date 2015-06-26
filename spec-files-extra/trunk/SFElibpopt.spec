@@ -94,5 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 26 2015 - Thomas Wagner
+- remove %patch1
 * Thu Jul 25 2015 - Thomas Wagner
 - initial spec, based on spec-files/specs/SUNWlibpopt.spec .. Omnios lost libpopt

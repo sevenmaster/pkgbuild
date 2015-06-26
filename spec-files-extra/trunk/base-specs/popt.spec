@@ -5,8 +5,6 @@ Source:                  http://rpm5.org/files/popt/popt-%{version}.tar.gz
 %prep
 %setup  -q -n %{name}-%{version}
 
-%patch1 -p1
-
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
@@ -47,5 +45,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 26 2015 - Thomas Wagner
+- remove %patch1
 * Thu Jul 25 2015 - Thomas Wagner
 - initial spec, based on spec-files/specs/SUNWlibpopt.spec .. Omnios lost libpopt
