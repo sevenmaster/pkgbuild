@@ -65,13 +65,18 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires: SFElibvanessa-logger
-Requires: SFElibvanessa-adt
-Requires: SFElibvanessa-socket
-BuildRequires: SFElibvanessa-logger
-Requires: SFElibvanessa-adt
-Requires: SFElibvanessa-socket
+Requires:      SFElibvanessa-logger
+BuildRequires: SFElibvanessa-adt
+Requires:      SFElibvanessa-adt
+BuildRequires: SFElibvanessa-socket
+Requires:      SFElibvanessa-socket
 ##TODO## Add buildrequires to mysql (optional Requires mysql)
 ##TODO## parametrize path to mysql/version.version
+BuildRequires: SFEopenldap-gnu
+Requires:      SFEopenldap-gnu
+
+BuildRequires: %{pnm_buildrequires_SUNWgnu_dbm}
+Requires:      %{pnm_requires_SUNWgnu_dbm}
 
 Requires: %name-root
 %package root
@@ -93,10 +98,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 
-export CFLAGS="%{optflags}"
-export CXXFLAGS="%{cxx_optflags}"
+export CFLAGS="%{optflags} -I%{gnu_inc}"
+export CXXFLAGS="%{cxx_optflags} -I%{gnu_inc}"
 
-export LDFLAGS="%{_ldflags} -lsocket -lxnet %{mysql_lib_path}"
+export LDFLAGS="%{_ldflags} -lsocket -lxnet %{mysql_lib_path} %{gnu_lib_path}"
 
 #spyed on perdition.spec (from source tarball)
 aclocal
@@ -111,7 +116,10 @@ autoconf
             --disable-static     \
             --disable-odbc       \
             --with-mysql-includes=%{mysql_include} \
-            --with-mysql-libraries=%{mysql_lib}
+            --with-mysql-libraries=%{mysql_lib} \
+            --with-ldap-includes=/usr/gnu/include \
+            --with-ldap-libraries=/usr/gnu/lib  \
+            --with-ldap-schema-directory=/etc/gnu/openldap/schema 
 
 
 gmake -j $CPUS
@@ -157,8 +165,10 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
-%attr (0755, root, bin) %dir %{_sysconfdir}/openldap
-%{_sysconfdir}/openldap/*
+#%attr (0755, root, bin) %dir %{_sysconfdir}/openldap
+#%{_sysconfdir}/openldap/*
+%attr (0755, root, bin) %dir %{_sysconfdir}/gnu/openldap
+%{_sysconfdir}/gnu/openldap/*
 %attr (0755, root, bin) %dir %{_sysconfdir}/perdition
 %class(renamenew) %{_sysconfdir}/perdition/*
 %defattr (-, root, sys)
@@ -167,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 25 2015 - Thomas Wagner
+- add (Build)Requires: SFEopenldap-gnu, pnm_buildrequires_SUNWgnu_dbm
+- fix %files for etc/gnu/openldap
 * Fri May 21 2015 - Thomas Wagner
 - move SMF manifest in place for auto-import
 * Thu May 21 2015 - Thomas Wagner
