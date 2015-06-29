@@ -1,0 +1,23 @@
+--- perdition-2.1/makegdbm/options.h.orig	2013-10-04 03:44:12.000000000 +0200
++++ perdition-2.1/makegdbm/options.h	2015-06-29 18:05:13.057414890 +0200
+@@ -39,7 +39,7 @@
+ #endif
+ 
+ extern gdbm_error gdbm_errno;
+-extern char *gdbm_version;
++extern const char *gdbm_version;
+ 
+ #define COPYRIGHT \
+   "(c) 1999 Horms <horms@verge.net.au>\nReleased under the GNU GPL\n"
+--- perdition-2.1/perdition/db/gdbm/perditiondb_gdbm.h.orig     2013-10-04 03:44:12.000000000 +0200
++++ perdition-2.1/perdition/db/gdbm/perditiondb_gdbm.h  2015-06-29 18:11:22.356710345 +0200
+@@ -31,7 +31,7 @@
+ #include <gdbm.h>
+ 
+ extern gdbm_error gdbm_errno;
+-extern char *gdbm_version;
++extern const char *gdbm_version;
+ 
+ #ifndef PERDITIONDB_GDBM_SYSCONFDIR
+ #define PERDITIONDB_GDBM_SYSCONFDIR "/usr/local/etc/perdition"
+

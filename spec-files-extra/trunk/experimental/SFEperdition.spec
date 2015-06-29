@@ -59,6 +59,7 @@ Source:                  http://www.vergenet.net/linux/perdition/download/%{src_
 Source2:                 perdition.xml
 Patch1:			perdition-01-Makefile_in_am-LDFLAGS.diff
 Patch3:			perdition-03-remove-strcasestr.diff
+Patch4:			perdition-04-cont-char-gdbm_version.h.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -88,6 +89,10 @@ Requires: %name
 %setup -q -n %{src_name}-%version
 %patch1 -p1
 %patch3 -p1
+if grep "extern int const gdbm_version" /usr/include/gdbm.h
+ then
+ %patch4 -p1
+fi
 cp -p %{SOURCE2} perdition.xml
 
 
@@ -177,6 +182,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 29 2015 - Thomas Wagner
+- add patch4 to handle int const gdbm_version (1.11.x SFEgdbm on OM / int gdbm_version (older gdbm)
 * Thu Jun 25 2015 - Thomas Wagner
 - add (Build)Requires: SFEopenldap-gnu, pnm_buildrequires_SUNWgnu_dbm
 - fix %files for etc/gnu/openldap
