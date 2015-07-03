@@ -59,7 +59,7 @@ Source:                  http://www.vergenet.net/linux/perdition/download/%{src_
 Source2:                 perdition.xml
 Patch1:			perdition-01-Makefile_in_am-LDFLAGS.diff
 Patch3:			perdition-03-remove-strcasestr.diff
-Patch4:			perdition-04-cont-char-gdbm_version.h.diff
+Patch4:			perdition-04-const-char-gdbm_version.h.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -169,7 +169,9 @@ rm -rf $RPM_BUILD_ROOT
 ##TODO## below: /etc/perdition/pam.d/perdition not in Solaris format and location
 %files root
 %defattr (-, root, bin)
-%attr (0755, root, sys) %dir %{_sysconfdir}
+#%attr (0755, root, sys) %dir %{_sysconfdir}
+#why is this "bin" not "gnu" ... probably fault of SUNWa2psr SUNWffiltersr years ago
+%attr (0755, root, bin) %dir %{_sysconfdir}
 #%attr (0755, root, bin) %dir %{_sysconfdir}/openldap
 #%{_sysconfdir}/openldap/*
 %attr (0755, root, bin) %dir %{_sysconfdir}/gnu/openldap
@@ -182,8 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jun 29 2015 - Thomas Wagner
-- add patch4 to handle int const gdbm_version (1.11.x SFEgdbm on OM / int gdbm_version (older gdbm)
+* Fri Jul  3 2015 - Thomas Wagner
+- add patch4 to handle int const gdbm_version (1.11.x SFEgdbm on OM / int gdbm_version (older gdbm) - fix typo in name
+- fix %files for etc/gnu
 * Thu Jun 25 2015 - Thomas Wagner
 - add (Build)Requires: SFEopenldap-gnu, pnm_buildrequires_SUNWgnu_dbm
 - fix %files for etc/gnu/openldap
