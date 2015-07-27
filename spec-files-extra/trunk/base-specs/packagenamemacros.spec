@@ -33,6 +33,8 @@ Name: packagenamemacros
 %description
 Demo the packagenamemacros.inc use:
 
+   spectool get_block prep base-specs/packagenamemacros.spec
+or
    pkgtool --interactive prep base-specs/packagenamemacros.spec
 
 
@@ -70,6 +72,7 @@ NOTE:                library/security/openssl -> SUNWopenssl or openssl or libra
 
 %prep
 echo "
+rpm_source_dir ${RPM_SOURCE_DIR}
 pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
@@ -84,6 +87,10 @@ pnm: solaris11express	%{solaris11express} Solaris 11 Express yes/no
 pnm: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g. 166)
 pnm: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
 pnm: omnios		%{omnios} OmniOS
+pnm: oihipster			%{oihipster} OpenIndiana Hipster yes/no
+pnm: oih20150330		%{oih20150330} OpenIndiana Hipster Snap 20150330 or later
+pnm: oih20141010		%{oih20141010} OpenIndiana Hipster Snap 20141010 or later
+pnm: oih20140701		%{oih20140701} OpenIndiana Hipster Snap 20140701 or later
 pnm: openindiana		%{openindiana} OpenIndiana yes/no
 pnm: oi201100 		%{oi201100} OpenIndiana 151, experimental reworked
 pnm: oi201009 		%{oi201009} OpenIndiana 147/148, experimental reworked
@@ -150,13 +157,14 @@ pnm: sfe_ruby_major_version number is:       		%{sfe_ruby_major_version}
 pnm: sfe_ruby_major_minor_version number is: 		%{sfe_ruby_major_minor_version}
 pnm: sfe_ruby_major_minor_micro_version number is: 		%{sfe_ruby_major_minor_micro_version}
 
-pnm: ruby_default_prefix		%{ruby_default_prefix}
-pnm: ruby_default_includedir		%{ruby_default_includedir}
-pnm: ruby_default_libdir		%{ruby_default_libdir}
+pnm: sfe_ruby_default_libdir		        %{sfe_ruby_default_libdir}
+pnm: ruby_default_prefix			%{ruby_default_prefix}
+pnm: ruby_default_includedir			%{ruby_default_includedir}
+pnm: ruby_default_libdir			%{ruby_default_libdir}
 
-pnm: sfe_ruby_default_prefix		%{sfe_ruby_default_prefix}
+pnm: sfe_ruby_default_prefix			%{sfe_ruby_default_prefix}
 pnm: sfe_ruby_default_includedir		%{sfe_ruby_default_includedir}
-pnm: sfe_ruby_default_libdir		%{sfe_ruby_default_libdir}
+pnm: sfe_ruby_default_libdir			%{sfe_ruby_default_libdir}
 
 see include/packagenames.define.allbuilds.inc for detailed usage instructions!
 pnm: pnm_buildrequires_postgres_default		%{pnm_buildrequires_postgres_default}
@@ -170,14 +178,14 @@ pnm: _prefix/ . postgres/ . postgres_default_pg_config . /bin/pg_config		%{_pref
 pnm: _prefix/ . postgres/ . postgres_default_pg_config_64 . /bin/64/pg_config	%{_prefix}/postgres/%{postgres_major_minor_version}/bin/64/pg_config
 pnm: postgres_version				%{postgres_version}
 pnm: postgres_major_version			%{postgres_major_version}
-pnm: postgres_major_minor_version			%{postgres_major_minor_version}
+pnm: postgres_major_minor_version		%{postgres_major_minor_version}
 
 pnm: pnm_requires_java_runtime_default	%{pnm_requires_java_runtime_default}
 pnm: pnm_requires_java_runtime_default_32       %{pnm_requires_java_runtime_default_32}
 pnm: pnm_requires_java_runtime_default_64       %{pnm_requires_java_runtime_default_64}
 pnm: pnm_buildrequires_SUNWsmba                 %{pnm_buildrequires_SUNWsmba}
-pnm: pnm_buildrequires_SUNWsmbau                 %{pnm_buildrequires_SUNWsmbau}
-pnm: pnm_buildrequires_SUNWsmbar                 %{pnm_buildrequires_SUNWsmbar}
+pnm: pnm_buildrequires_SUNWsmbau                %{pnm_buildrequires_SUNWsmbau}
+pnm: pnm_buildrequires_SUNWsmbar                %{pnm_buildrequires_SUNWsmbar}
 pnm: pnm_requires_SUNWsmba                 %{pnm_requires_SUNWsmba}
 pnm: pnm_requires_SUNWsmbau                 %{pnm_requires_SUNWsmbau}
 pnm: pnm_requires_SUNWsmbar                 %{pnm_requires_SUNWsmbar}
@@ -210,7 +218,7 @@ pnm: apr_default_inc			%{apr_default_inc}
 pnm: apr_default_libdir			%{apr_default_libdir}
 pnm: apr_default_lib_path		%{apr_default_lib_path}
 pnm: apr_default_apr_1_config		%{apr_default_apr_1_config}
-#pnm: apr_default_apr_1_config_64	%{apr_default_apr_1_config_64}
+pnm: apr_default_apr_1_config_64	%{apr_default_apr_1_config_64}
 
 pnm: pnm_buildrequires_apr_util_default	%{pnm_buildrequires_apr_util_default}
 pnm: pnm_requires_apr_util_default	        %{pnm_requires_apr_util_default}
@@ -276,6 +284,10 @@ requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build 
 
 
 %changelog
+* Mon Jul 27 2015 - Thomas Wagner
+- merge with hipster changes (thanks pjama)
+* Sun May 24 2015 - pjama
+- add OI Hipster
 * Thu Jan 22 2015 - Thomas Wagner
 - add %{osdistro_entire}
 * Sat Jan 17 2015 - Thomas Wagner
