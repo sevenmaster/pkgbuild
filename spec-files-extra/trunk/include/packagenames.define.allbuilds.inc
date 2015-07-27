@@ -1006,13 +1006,17 @@
 #END <99
 
 #defaults for all builds >= 116 - let pkg do the names translation if needed
+%define pnm_buildrequires_library_database_gdbm	SUNWgnu-dbm
+%define pnm_requires_library_database_gdbm	SUNWgnu-dbm
 %define pnm_buildrequires_SFEgdbm		SUNWgnu-dbm
 %define pnm_requires_SFEgdbm			SUNWgnu-dbm
 %define pnm_buildrequires_SUNWgnu_dbm		SUNWgnu-dbm
 %define pnm_requires_SUNWgnu_dbm		SUNWgnu-dbm
 
-%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 '|' %{omnios} )
-#running an old build or Solaris 10 or OmniOS
+%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 '|' %{omnios} '|' %{oihipster} )
+#running an old build or Solaris 10, old OpenSolaris or OmniOS - and not on Solaris 12 or Solaris 11
+%define pnm_buildrequires_library_database_gdbm	SFEgdbm
+%define pnm_requires_library_database_gdbm	SFEgdbm
 %define pnm_buildrequires_SFEgdbm		SFEgdbm
 %define pnm_requires_SFEgdbm		 	SFEgdbm
 %define pnm_buildrequires_SUNWgnu_dbm		SFEgdbm
@@ -1131,8 +1135,8 @@
 %define pnm_buildrequires_compress_xz		SFExz-gnu
 %define pnm_requires_compress_xz		SFExz-gnu
 
-#cases >= 151 && ( OpenIndiana | OmniOS )
-%if %( expr %{openindiana} '+' %{omnios} )
+#cases >= 151 && ( OpenIndiana | OmniOS | OIHipster )
+%if %( expr %{openindiana} '+' %{omnios} '+' %{oihipster} )
 %if %( expr %{osbuild} '>=' 151 )
 %define pnm_buildrequires_SFExz_gnu		compress/xz
 %define pnm_requires_SFExz_gnu			compress/xz
@@ -1166,7 +1170,7 @@
 # osbuild >=133 AND os2nnn
 # note: system/library/c++-runtime is renamed on OI to system/library/c++/sunpro
 #cases >= 151 && OpenIndiana
-%if %{openindiana}
+%if %( expr %{openindiana}  '+' %{oihipster} )
 %if %( expr %{osbuild} '>=' 151 )
 %define pnm_buildrequires_SUNWlibC_devel		system/library/c++/sunpro
 %define pnm_buildrequires_SUNWlibC			system/library/c++/sunpro
@@ -1174,7 +1178,7 @@
 %endif
 #END >= 151
 %endif
-#END openindiana
+#END openindiana oihipster
 
 
 #-----------------------------------------------------------------
@@ -1512,6 +1516,23 @@
 %endif
 #END os2nnn
 
+#set perl5 for OIHipster
+%if %{os2nnn}
+%if %{oihipster}
+##TODO## monitor closely when OIHipster changes chipped perl-versions or adds perl-modules
+#set perl5 for OIHipster
+%define perl_version 5.16.3
+%define perl_major_minor_version 5.16
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.16.3
+#runtime/perl-516
+%define pnm_buildrequires_perl_default runtime/perl-516
+%define pnm_requires_perl_default	runtime/perl-516
+%endif
+#END oihipster
+%endif
+#END os2nnn
+
 #set perl5 for OmniOS
 %if %{os2nnn}
 %if %{omnios}
@@ -1526,6 +1547,7 @@
 %define pnm_requires_perl_default	runtime/perl-64
 %endif
 #END omnios
+
 %endif
 #END os2nnn
 
@@ -1634,11 +1656,17 @@
 %endif
 #END %{osbulild} => 133 or %{solaris12}
 
-# additinaly, in OmniOS we have a different python micro version number:
+# additionaly, in OmniOS we have a different python micro version number:
 %if %{omnios}
 %define python_major_minor_micro_version 2.6.8
 %endif
 #END %{omnios}
+
+# additionaly, in OIHpster we have a different python micro version number:
+%if %{oihipster}
+%define python_major_minor_micro_version 2.6.9
+%endif
+#END %{oihipster}
 
 
 #END setting python, changes with specific builds and distros  - Part 2 of 2
@@ -1723,6 +1751,7 @@
 #END os2nnn
 
 #add more distro here
+##TODO## # OIHipster moved to Mariadb, mysql 5.1 still available
 
 #END setting mysql, changes with specific builds and distros  - Part 2 of 3
 
@@ -1822,6 +1851,8 @@
 %endif
 #END os2nnn
 #END setting java, changes with specific builds and distros  - Part 2 of 3
+# oihipster going through huge changes with java ATM (circa mid 2015)
+# Defaults will propably suffice
 
 #START setting java, all builds, evaluated paths  - Part 3 of 3
 # this is the section noted above which evaluates the resulting paths on the
@@ -1924,6 +1955,19 @@
 #END solaris11
 %endif
 #END os2nnn
+
+#set ruby for OIHipster
+%if %{oihipster}
+##TODO## monitor closely when OIHipster starts shipping
+#set ruby for OIHipster
+%define ruby_version 1.9.3
+%define ruby_major_minor_version 1.9
+%define ruby_major_minor_micro_version 1.9.3
+#runtime/ruby-18 
+%define pnm_buildrequires_ruby_default  runtime/ruby-19
+%define pnm_requires_ruby_default       runtime/ruby-19
+%endif
+#END oihipster
 
 #set ruby for OpenIndiana
 %if %{os2nnn}
@@ -2167,9 +2211,9 @@
 #END setting apr, defaults  - Part 1 of 3
 
 #START setting apr, changes with specific builds and distros  - Part 2 of 3
-#set apr for Solaris11(Express) or OpenIndiana or OpenSolaris
-#note: need to add ".0" to avoid integer too lager, use floating point instead
-%if %( expr %{omnios} '|' %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+#note: need to add ".0" to avoid integer too lage, use floating point instead
+%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+#this is a special switch: Our SFE spec file will build a package using the same name as more recent distros do
 %define build_library_apr_renamed_to_osdistro_package      1
 %define apr_version 1.5
 %define apr_major_version 1
@@ -2187,23 +2231,24 @@
 %define pnm_requires_apr_default		library/apr-15
 %define pnm_buildrequires_apr_util_default	library/apr-util-15
 %define pnm_requires_apr_util_default		library/apr-util-15
-#on S12 we need to make sure that apr comes from the osdistro repository
-%if %{solaris12}
+#on S12 >= 63 and S11 >= entire .12. we need to make sure that apr apr-util comes from the osdistro repository
+%if %( expr %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
 %define pnm_buildrequires_apr_default		pkg://solaris/library/apr-15
 %define pnm_requires_apr_default		pkg://solaris/library/apr-15
 %define pnm_buildrequires_apr_util_default	pkg://solaris/library/apr-util-15
 %define pnm_requires_apr_util_default		pkg://solaris/library/apr-util-15
 %endif
-#END solaris12
-#note below: on older S11 and OmniOS library/apr-15 comes from SFE, not the osdistro
-%if %{omnios}
-#we need to build the packages on OmniOS in any case.
+#END solaris12 >= 63 and solaris 11 >= entire .12.
+
+#note below: openindiana, hipster and OmniOS: library/apr-15 comes from SFE, not the osdistro
+%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} )
+#to make that clear and avoid confusion in IPS package names, just set the SVR4/spec-file-name here
 %define pnm_buildrequires_apr_default		SFElibapr
 %define pnm_requires_apr_default		SFElibapr
 %define pnm_buildrequires_apr_util_default	SFEapr-util
 %define pnm_requires_apr_util_default		SFEapr-util
 %endif
-#END omnios
+#END omnios openindiana oihipster
 %endif
 #END setting apr, changes with specific builds and distros  - Part 2 of 3
 
@@ -2328,7 +2373,22 @@
 #END >= 147
 %endif
 
-#add more distro here
+#Repeat for Hipster. This time special switch for hipster
+# Needs more confirmation
+%if %{oihipster}
+
+%define postgres_version 9.3
+%define postgres_major_version 9
+%define postgres_major_minor_version 9.3
+##not defined %define postgres_major_minor_micro_version 9.3.4
+
+%define pnm_buildrequires_postgres_default	service/database/postgres-93
+%define pnm_requires_postgres_default		service/database/postgres-93
+%endif
+#END oihipster
+
+
+#add more distro here/below
 
 #END setting postgres, changes with specific builds and distros  - Part 2 of 3
 
@@ -2506,6 +2566,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Fri Jul  3 2015 - Thomas Wagner
+- extend SFEgdbm selection for pnm_buildrequires_library_database_gdbm
 * Thr Mar 19 2015 - Thomas Wagner
 - fix to fetch from S12 repo: pnm_requires_apr_default pnm_buildrequires_apr_util_default pkg://solaris/library/apr-15 pkg://solaris/library/apr-util-15
 * Sun Feb  1 2015 - Thomas Wagner
