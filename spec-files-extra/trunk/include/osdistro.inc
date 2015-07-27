@@ -85,6 +85,13 @@
 %endif
 
 #quick and dirty hack, only works on OI hipster printing "illumos" with "uname -v". DON'T USE ON ANY OTHER OSDISTRO PLEASE!
+# For want of a line in the sand between different "versions", I'm using the date of significant milestones like 
+# iso snapshot date (per http://dlc.openindiana.org/isos/hipster/) or significant update dates between snapshots if needs be.
+# To determine date I'll use the "Packaging Date" of the package consolidation/osnet/osnet-incorporation.
+# Dates of last iso snapshots. eg
+# 20150330 = Iso Snapshot
+# 20141010 = Iso Snapshot
+# 20140701 = Iso Snapshot
 %if %( uname -v | egrep '^illumos-' > /dev/null && echo 1 || echo 0 )
 %define osbuild 151
 %endif
@@ -121,6 +128,7 @@
 
 #boolean flags for major osdistro names
 #no versioning here
+%define oihipster 0
 %define openindiana 0
 %define solaris11express 0
 %define solaris11 0
@@ -132,6 +140,12 @@
 #use osbuild in addition to finer granularity, e.g. osbuild >= 148
 #OpenSolaris and Solaris11Express below. We need something to tell the release as well
 #Solaris11Express gets its own name prefix though it's close to what OpenSolaris was
+
+#OI/Hipster
+#has most C++ stuff compiled with GCC
+%define oih20150330 0
+%define oih20141010 0
+%define oih20140701 0
 
 #OpenIndiana
 # could be oi201009 and oi201100 or something, the first development release and following
@@ -243,6 +257,51 @@
 %define osdistrelname   "OmniOS"
 #this was the last check, skip all others
 %define osdet299999 0
+%else
+%endif
+%else
+%endif
+%else
+%endif
+##END
+
+##START build 151 circa 20150330 and up, OI/Hipster
+# but still flags ealier versions although not dealt with as such.
+%if %{osdet299999}
+%if %( expr %{osbuild} '>=' 151 )
+%if %( egrep 'OpenIndiana Development' /etc/release > /dev/null && echo 1 || echo 0 )
+# Detect if hipsterish
+%if %( uname -v | egrep '^illumos-' > /dev/null && echo 1 || echo 0 )
+#we are on an IPS based OS distro
+%define os2nnn   1
+#below: subject to change!
+%define oihipster 1
+# Find date of osnet-incorporation and change to ISO date format
+# Not sure how this will go with pre-iso snapshot updated to post-iso packages
+%define osbuilddate %(pkg info osnet-incorporation | grep 'Packaging Date' | cut -d' ' -f 3,4,5 | date --date=- +%Y%m%d)
+
+# Post 20140701
+%if %( expr %{osbuilddate} '>=' 20140701 )
+%define oih20140701    1
+#may be overwritten later
+%define osdistrelnumber 20140701
+%endif
+# Post 20141010
+%if %( expr %{osbuilddate} '>=' 20141010 )
+%define oih20141010    1
+%define osdistrelnumber 20141010
+%endif
+# Post 20150330
+%if %( expr %{osbuilddate} '>=' 20150330 )
+%define oih20150330    1
+%define osdistrelnumber 20150330
+%endif
+#                                below: subject to change!
+%define osdistrelname   "OIHipster"
+#this was the last check, skip all others
+%define osdet299999 0
+%else
+%endif
 %else
 %endif
 %else
@@ -476,10 +535,10 @@
 %define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
 #echo 5.12.0.0.0.63.0 | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}'
 #0005001200000000000000630000
-#%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
-#%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+#%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+#%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d\%.4d", $1, $2, $3, $4, $5, $6, $7}' )
 #note:  %% results in a % to awk
-%define osdistro_entire_padded_number4 $( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, $4, $5, $6, $7}' )
+%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, $4, $5, $6, $7}' )
 %else
 %define osdistro_entire 0
 %endif
@@ -494,6 +553,10 @@
 
 
 %changelog
+* Mon Jul 27 2015 - Thomas Wagner
+- verify/merge hipster integration (thanks to pjama)
+* Mon May 25 2015 - pjama
+- add config for hipster
 * Fri Jan 23 2015 - Thomas Wagner
 - add experimental version of osdistro_entire_padded_number4 (IPS based Systems),
   enables compares, e.g. expr %{osdistro_entire_padded_number4} '>=' 0005001200000000000000610000

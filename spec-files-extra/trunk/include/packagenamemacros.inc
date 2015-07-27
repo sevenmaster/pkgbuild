@@ -98,6 +98,14 @@
 #>=133
 %endif
 
+#NOTE: cumulative
+#Hipster in process of replacing legacy package names. Therefore we 
+#need to add pnm_macros for translate those from e.g. SUNWzlib to library/zlib
+%if %{oihipster}
+%include packagenames.define.oihipster.inc
+%include packagenames.define.oihipster-specialcases.inc
+%endif
+
 
 # finally including a general file with definitions, to overwrite possible
 # special cases (and eventually overriding content which got defined above)
@@ -105,6 +113,8 @@
 %include packagenames.define.allbuilds.inc
 
 %changelog
+* Sat May 22 2015 - pjama
+- add support for hipster with packagenames.define.oihipster.inc / packagenames.define.oihipster-specialcases.inc
 * Fri May 16 2014 - Thomas Wagner
 - %include packagenames.define.initial.inc to pre-load defaults
 - add Support for OmniOS with packagenames.define.omnios.inc / packagenames.define.omnios-specialcases.inc
