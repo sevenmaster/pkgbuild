@@ -738,4 +738,4 @@ provide a pnm_macro to set the JDK JAVA_HOME (to reach $JAVA_HOME/bin/javac)
 and another pnm_macro to set the JRE JAVA_HOME (to reach $JAVA_HOME/bin/java of the specified platform default version)
 and another pnm_macro to set the JRE in explicit version (to reach jre_this_version/bin/java of the specified explicit version)
 
-
+Test-commit for IRC notification
