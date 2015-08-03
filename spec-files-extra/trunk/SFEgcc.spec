@@ -9,13 +9,15 @@
 
 ##TODO## test sparc version of gcc-05-LINK_LIBGCC_SPEC-sparcv9.diff
 
+%include Solaris.inc
+%include base.inc
+%include osdistro.inc
+
 %define _use_internal_dependency_generator 0
 
 #provide symbolic links in places define below:
 #start the paths with a leading "/"
-#example:   %define gccsymlinks /usr/gcc /usr/gnu
 
-%define gccsymlinks /usr/gcc /usr/gnu
 #IMPORTANT! READ ON BELOW and set switches and paths accordingly
 
 #hack for the %files section. use define for each directory from above
@@ -32,6 +34,27 @@
 %define symlinktarget3enabled      0
 %define symlinktarget3path /usr
 
+#overwrite
+%if %{omnios}
+%define symlinktarget3enabled      1
+%define symlinktarget3path /usr/sfw
+#mediators?
+%define create_gcc_3_dummypackage  1
+%endif
+
+#construct used targets into one variable
+%if %{symlinktarget1enabled}
+%define gccsymlinks1 %{symlinktarget1path}
+%endif
+%if %{symlinktarget2enabled}
+%define gccsymlinks2 %{symlinktarget2path}
+%endif
+%if %{symlinktarget3enabled}
+%define gccsymlinks3 %{symlinktarget3path}
+%endif
+
+%define gccsymlinks %{gccsymlinks1} %{gccsymlinks2} %{gccsymlinks3}
+
 # check for /usr/gnu/bin/cc and bail out
 # CR 7031722 (Solaris)
 # Bug-ID <TBD> (OI)
@@ -40,10 +63,6 @@
 # to more widely test if this change causes regressions, by default off:
 # want this? compile with: --with-handle_pragma_pack_push_pop
 %define with_handle_pragma_pack_push_pop %{?_with_handle_pragma_pack_push_pop:1}%{?!_with_handle_pragma_pack_push_pop:0}
-
-%include Solaris.inc
-%include base.inc
-%include osdistro.inc
 
 ##TODO## should include/arch64.inc consider setting _arch64 that way?
 #        gcc builds 64-bit libs/binaries even on 32-bit CPUs/Kernels (e.g. ATOM CPU)
@@ -59,6 +78,7 @@
 ##TODO## if necessary add osbuild numbers to decide SUNW/SFE version
 %define SFEbinutils_gpp     %(/usr/bin/pkginfo -q SFEbinutils-gpp  2>/dev/null && echo 1 || echo 0)
 
+##TODO## check binutils version in OIH, if sufficiently new, then set SUNWbinutils 1, SFEbinutils_gpp  0
 #overwrite the default for specific OS
 #name on omnios would be developer/gnu-binutils (check if that can be used, then deal with package names)
 %if %{omnios}
@@ -142,6 +162,14 @@
 %endif
 
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
+#temporary setting, 4.8.4 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
+%if %{oihipster}
+%define version 4.8.4
+%define build_gcc_with_gnu_ld 0
+#END OIHipster
+%endif
+
+#transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #%define major_minor %( echo %{version} | sed -e 's/\([0-9]*\)\.\([0-9]*\)\..*/\1.\2/' )
 #below is a workaround for pkgbuild 1.3.104 failing to parse the escaped \( and \)
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
@@ -165,7 +193,7 @@
 #S11.2                           2.23.1
 #oi151a9  developer/gnu-binutils@2.19,5.11-0.151.1.9
 ##TODO## what do we need on OI hipster?
-%if %( expr %{openindiana} '>=' 1 '&' %{major_minor} '>=' 4.7 )
+%if %( expr %{openindiana} '+' %{oihipster} '>=' 1 '&' %{major_minor} '>=' 4.7 )
 %define SFEbinutils_gpp 1
 %define SUNWbinutils 0
 %endif
@@ -241,6 +269,13 @@ BuildRequires: SFElibiconv-devel
 Requires:      SFElibiconv
 %if %{is_s10}
 BuildRequires:  SUNWbash
+%endif
+
+#OmniOS R151012 has no gcc-3 any more, request OmniOS's gcc-48
+#as a replacement and in %build, point the CC and CXX variable to this compiler
+%if %{omnios}
+#mind the modification of the CC and CXX variables in %build
+BuildRequires: developer/gcc48
 %endif
 
 %if %SFEgmp
@@ -411,6 +446,9 @@ cd gcc-%{version}
 %patch10 -p1
 %endif
 
+##get rid of these options to (Solaris) LD
+#gsed -i.bak -e 's/-fno-exceptions//g' -e 's/-fno-rtti//g' -e 's/-fasynchronous-unwind-tables//g' configure.ac configure
+
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
@@ -441,6 +479,14 @@ nlsopt=-disable-nls
 export LD="/usr/gnu/bin/ld"
 %else
 export LD=`which ld-wrapper`
+#around 4.8, configure ignores disabling -fno-exception
+#create a filter script to remove -fno-exceptions from linker calls
+##cat - > ld_filtered << EOF--
+###!/bin/ksh
+##/usr/bin/ld \`echo \${@} | sed -e 's/-fno-exceptions//g' -e 's/-fno-rtti//g' -e 's/-fasynchronous-unwind-tables//g\`
+##EOF--
+##chmod a+rx ld_filtered
+##export LD=`pwd`/ld_filtered
 %endif
 
 %if %SFEbinutils_gpp
@@ -449,17 +495,27 @@ export PATH=/usr/g++/bin:$PATH
 %endif
 
 
-%if %( expr %{solaris12} '|' %{omnios} )
-#running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
-export CC=/usr/sfw/bin/gcc
-export CXX=/usr/sfw/bin/g++
-%else
+#defaults:
 export CC=cc
 export CXX=CC
 #maybe needed for stone old studio compilers, commented for reference
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
+
+%if %{solaris12}
+#%if %( expr %{solaris12} '|' %{omnios} )
+#running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
+export CC=/usr/sfw/bin/gcc
+export CXX=/usr/sfw/bin/g++
+unset CPP
 %endif #solaris12
+
+#R151012 is missing the gcc-3 package, use gcc48 instead
+%if %{omnios}
+export CC=$( ls -1 /opt/gcc-4.8.*/bin/gcc | tail -1 )
+export CXX=$( ls -1 /opt/gcc-4.8.*/bin/g++ | tail -1 )
+unset CPP
+%endif
 
 export CFLAGS="-O"
 export CONFIG_SHELL=/usr/bin/ksh
@@ -492,14 +548,18 @@ export LD_FOR_TARGET=/usr/bin/ld
 export PATH="$PATH:/usr/perl5/bin"
 
 echo "current settings in SFE spec file: (1=yes, 0=no)
+
 version:	%{version}
 _prefix:	%{_prefix}
 _libdir:	%{_libdir}
 _libexecdir:	%{_libexecdir}
 _mandir:	%{_mandir}
 _infodir:	%{_infodir}
-CC:		%CC
-CXX:		%CXX
+
+symlinks in     %{gccsymlinks}
+
+CC:		$CC
+CXX:		$CXX
 switch SFEbinutils_gpp:       %SFEbinutils_gpp
 switch SUNWbinutils:          %SUNWbinutils
 switch build_gcc_with_gnu_ld: %build_gcc_with_gnu_ld
@@ -534,7 +594,7 @@ switch SFElibmpc : %SFElibmpc %{SFElibmpcbasedir}
 	--with-ld=$LD                           \
 	--with-gnu-ld				\
 %else
-	--with-ld=/usr/bin/ld                   \
+	--with-ld=$LD                           \
 	--without-gnu-ld			\
 %endif
 	--enable-languages=c,c++,fortran,objc	\
@@ -747,6 +807,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug  3 2015 - Thomas Wagner
+- bump to 4.8.5
+- prepare for OIHipster (OIH)
+- rework finding a suitable compiler for bootstrapping gcc (S12, OM)
 * Fri Feb 27 2015 - Thomas Wagner
 - re-introduce for 4.8: patch5 gcc-05-LINK_LIBGCC_SPEC-4.8.diff
   to try avoiding osdistro provided /usr/lib/libgcc_s.so and /usr/lib/libstdc++.so.6
