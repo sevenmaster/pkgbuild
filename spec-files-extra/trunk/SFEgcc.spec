@@ -10,8 +10,11 @@
 ##TODO## test sparc version of gcc-05-LINK_LIBGCC_SPEC-sparcv9.diff
 
 %include Solaris.inc
-%include base.inc
 %include osdistro.inc
+%if %( expr %{solaris12} '|' %{oihipster} )
+%define cc_is_gcc 1
+%endif
+%include base.inc
 
 %define _use_internal_dependency_generator 0
 
@@ -45,12 +48,20 @@
 #construct used targets into one variable
 %if %{symlinktarget1enabled}
 %define gccsymlinks1 %{symlinktarget1path}
+%else 
+%define gccsymlinks1
 %endif
+
 %if %{symlinktarget2enabled}
 %define gccsymlinks2 %{symlinktarget2path}
+%else 
+%define gccsymlinks2
 %endif
+
 %if %{symlinktarget3enabled}
 %define gccsymlinks3 %{symlinktarget3path}
+%else 
+%define gccsymlinks3
 %endif
 
 %define gccsymlinks %{gccsymlinks1} %{gccsymlinks2} %{gccsymlinks3}
@@ -132,6 +143,30 @@
 %define SFElibmpc 1
 %endif
 
+#temporary setting, 4.8.5 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
+%if %{solaris12}
+%define version 4.8.5
+#%define build_gcc_with_gnu_ld 0
+#try with gnu_ld to avoid having -fno-exception passed to the linker which only accepts this for dynamic objects
+%define build_gcc_with_gnu_ld 1
+#END solaris12
+%endif
+
+#temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
+%if %{omnios}
+%define version 4.8.5
+%define build_gcc_with_gnu_ld 0
+#END OmniOS
+%endif
+
+#transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
+#temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
+%if %{oihipster}
+%define version 4.8.5
+%define build_gcc_with_gnu_ld 1
+#END OIHipster
+%endif
+
 #if you want a specific version of gcc be built, then change the default setting
 #below *or* specify the number on the command line (gcc_version), example see below
 
@@ -147,27 +182,6 @@
 %endif
 #special handling of version / gcc_version
 
-#temporary setting, 4.8.4 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
-%if %{solaris12}
-%define version 4.8.4
-%define build_gcc_with_gnu_ld 0
-#END solaris12
-%endif
-
-#temporary setting, 4.8.4 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
-%if %{omnios}
-%define version 4.8.4
-%define build_gcc_with_gnu_ld 0
-#END OmniOS
-%endif
-
-#transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
-#temporary setting, 4.8.4 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
-%if %{oihipster}
-%define version 4.8.4
-%define build_gcc_with_gnu_ld 0
-#END OIHipster
-%endif
 
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #%define major_minor %( echo %{version} | sed -e 's/\([0-9]*\)\.\([0-9]*\)\..*/\1.\2/' )
@@ -193,7 +207,8 @@
 #S11.2                           2.23.1
 #oi151a9  developer/gnu-binutils@2.19,5.11-0.151.1.9
 ##TODO## what do we need on OI hipster?
-%if %( expr %{openindiana} '+' %{oihipster} '>=' 1 '&' %{major_minor} '>=' 4.7 )
+#%if %( expr %{openindiana} '+' %{oihipster} '>=' 1 '&' %{major_minor} '>=' 4.7 )
+%if %( expr %{openindiana} '>=' 1 '&' %{major_minor} '>=' 4.7 )
 %define SFEbinutils_gpp 1
 %define SUNWbinutils 0
 %endif
@@ -211,6 +226,7 @@ Name:		SFEgcc
 IPS_package_name:	sfe/developer/gcc
 Summary:	GNU gcc compiler - metapackage with symbolic links to version %{major_minor} compiler files available in %{gccsymlinks}
 #Version:	see above, %{version} is set elsewhere
+Version:	%{version}
 License:             GPLv3+
 Group:		Development/C
 SUNW_Copyright:      gcc.copyright
@@ -376,6 +392,10 @@ Requires: SFElibmpc
 #Requires: SUNWthis-package-not-availbale
 %endif
 
+%if %( expr %{solaris12} '|' %{oihipster} )   
+BuildRequires: developer/gcc-3
+##TODO## check if required: Requires: developer/gcc-3-runtime
+%enif
 
 %if %build_l10n
 %package -n SFEgcc-l10n
@@ -474,6 +494,7 @@ nlsopt=-disable-nls
 
 ##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
 #options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
+#build with gnu ld if requested or on OI hipster
 %if %build_gcc_with_gnu_ld
 %define _ldflags
 export LD="/usr/gnu/bin/ld"
@@ -502,7 +523,7 @@ export CXX=CC
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
 
-%if %{solaris12}
+%if %( expr %{solaris12} '|' %{oihipster} )
 #%if %( expr %{solaris12} '|' %{omnios} )
 #running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
 export CC=/usr/sfw/bin/gcc
@@ -556,19 +577,23 @@ _libexecdir:	%{_libexecdir}
 _mandir:	%{_mandir}
 _infodir:	%{_infodir}
 
+PATH:		$PATH
 symlinks in     %{gccsymlinks}
 
-CC:		$CC
-CXX:		$CXX
+CC:		${CC}
+CXX:		${CXX}
+CPP:		${CPP}
+
+switch cc_is_gcc:	      %{cc_is_gcc}
 switch SFEbinutils_gpp:       %SFEbinutils_gpp
 switch SUNWbinutils:          %SUNWbinutils
 switch build_gcc_with_gnu_ld: %build_gcc_with_gnu_ld
 switch SFEgmp:     %SFEgmp    %{SFEgmpbasedir}
 switch SFEmpfr:    %SFEmpfr   %{SFEmpfrbasedir}
 switch SFElibmpc : %SFElibmpc %{SFElibmpcbasedir}
-	LD:            $LD
-	LD_FOR_TARGET: $LD_FOR_TARGET
-"
+LD:            ${LD}
+LD_FOR_TARGET: ${LD_FOR_TARGET}
+" | tee -a SFEgcc.spec.compileinfo
 
 ../gcc-%{version}/configure			\
 	--prefix=%{_prefix}			\
@@ -807,8 +832,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug  4 2015 - Thomas Wagner
+- initialize gccsymlinks[123] in any case
+- BuildRequires: developer/gcc-3 (S12, OIH)
 * Mon Aug  3 2015 - Thomas Wagner
-- bump to 4.8.5
+- bump to 4.8.5 for (S12, OIH, OM) only
 - prepare for OIHipster (OIH)
 - rework finding a suitable compiler for bootstrapping gcc (S12, OM)
 * Fri Feb 27 2015 - Thomas Wagner
