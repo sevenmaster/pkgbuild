@@ -143,9 +143,12 @@
 %define SFElibmpc 1
 %endif
 
+#set default gcc version
+%define default_version 4.6.4
+
 #temporary setting, 4.8.5 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
 %if %{solaris12}
-%define version 4.8.5
+%define default_version 4.8.5
 #%define build_gcc_with_gnu_ld 0
 #try with gnu_ld to avoid having -fno-exception passed to the linker which only accepts this for dynamic objects
 %define build_gcc_with_gnu_ld 1
@@ -154,7 +157,7 @@
 
 #temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{omnios}
-%define version 4.8.5
+%define default_version 4.8.5
 %define build_gcc_with_gnu_ld 0
 #END OmniOS
 %endif
@@ -162,7 +165,7 @@
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{oihipster}
-%define version 4.8.5
+%define default_version 4.8.5
 %define build_gcc_with_gnu_ld 1
 #END OIHipster
 %endif
@@ -175,7 +178,7 @@
 
 %if %{!?gcc_version:1}
 #make version bump *here* - this is the default version being built
-%define version 4.6.4
+%define version %{default_version}
 %else
 #gcc version is already defined from *outside*, from the pkgtool command line
 %define version %{gcc_version}
@@ -395,7 +398,7 @@ Requires: SFElibmpc
 %if %( expr %{solaris12} '|' %{oihipster} )   
 BuildRequires: developer/gcc-3
 ##TODO## check if required: Requires: developer/gcc-3-runtime
-%enif
+%endif
 
 %if %build_l10n
 %package -n SFEgcc-l10n
@@ -835,6 +838,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Aug  4 2015 - Thomas Wagner
 - initialize gccsymlinks[123] in any case
 - BuildRequires: developer/gcc-3 (S12, OIH)
+- fix logic for --define 'gcc_version 4.x.y'
 * Mon Aug  3 2015 - Thomas Wagner
 - bump to 4.8.5 for (S12, OIH, OM) only
 - prepare for OIHipster (OIH)
