@@ -72,7 +72,31 @@ NOTE:                library/security/openssl -> SUNWopenssl or openssl or libra
 
 %prep
 echo "
-rpm_source_dir ${RPM_SOURCE_DIR}
+\$RPM_SOURCE_DIR		%{_sourcedir}
+\$RPM_BUILD_DIR		%{_builddir}
+buildroot             %{buildroot}
+_arch                 %{_arch}
+_build_arch		%{_build_arch}
+_vendor		%{_vendor}
+_os			%{_os}
+_target_platform	%{_target_platform}
+
+_build                 %{_host}
+_build_alias           %{_host_alias}
+_build_cpu             %{_host_cpu}
+_build_vendor          %{_host_vendor}
+_build_os              %{_host_os}
+_host                  %{_target_platform}
+_host_alias            %{_host_alias}
+_host_cpu              %{_host_cpu}
+_host_vendor           %{_vendor}
+_host_os               %{_os}
+_target                %{_host}
+_target_alias          %{_host_alias}
+_target_cpu            %{_host_cpu}
+_target_vendor         %{_host_vendor}
+_target_os             %{_host_os}
+
 pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
@@ -103,6 +127,7 @@ pnm: osdistrelnumber 	%{osdistrelnumber}
 pnm: osdistrelname   	%{osdistrelname}
 pnm: osdet299999 		%{osdet299999}
 
+pnm: _pkgbuild_version	        %{_pkgbuild_version}
 pnm: pkgbuild_ver_numeric	%{pkgbuild_ver_numeric}  (version encoded in a large number, usefull for comparisons)
 pnm: pkgbuild_ips_legacy	%{pkgbuild_ips_legacy}   (is supporting IPS system)
 pnm: pkgbuild_renamed_to	%{pkgbuild_renamed_to}   (is supporting the renamed_to package name tags)
@@ -278,6 +303,15 @@ requesting package  SFEgnugetopt resolves on %{osdistrelname} %{osdistrelnumber}
 requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build %{osbuild}:
   BuildRequires for SFExz is contained in  %{pnm_buildrequires_SFExz_gnu}
        Requires for SFExz is contained in  %{pnm_requires_SFExz_gnu}
+
+compact display for resolve package names:
+pnm_buildrequires_SUNWzlib_devel pnm_requires_SUNWzlib           -> %{pnm_buildrequires_SUNWzlib_devel} %{pnm_requires_SUNWzlib}
+pnm_buildrequires_SUNWfreetype2_devel pnm_requires_SUNWfreetype2 -> %{pnm_buildrequires_SUNWfreetype2_devel} %{pnm_requires_SUNWfreetype2}
+#not defined pnm_buildrequires_boost_default                                  -> %{pnm_buildrequires_boost_default}
+pnm_buildrequires_boost_gpp_default                              -> %{pnm_buildrequires_boost_gpp_default}
+pnm_buildrequires_developer_cppunit                              -> %{pnm_buildrequires_developer_cppunit}
+
+
 
 " >/dev/null
 
