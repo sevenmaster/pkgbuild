@@ -64,10 +64,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %nettle.install -d %name-%version/%{base_arch}
 
+##TODO## one osdistro has /usr/gnu/share/info/nettle.info the other doesn't. Get rid of the file for now.
 #move $RPM_BUILD_ROOT/usr/share/info to in /usr/gnu/share/info
-mv $RPM_BUILD_ROOT/usr/share $RPM_BUILD_ROOT/%{_datadir}
-
-[ -f ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+#[ -d $RPM_BUILD_ROOT/usr/share ] && mv $RPM_BUILD_ROOT/usr/share $RPM_BUILD_ROOT/%{_datadir}
+#avoid %files stumbling over inexistent directory
+#[ -d $RPM_BUILD_ROOT/%{_datadir} ] || mkdir -p  $RPM_BUILD_ROOT/%{_datadir}
+#[ -d  ${RPM_BUILD_ROOT}%{_datadir}/info ] && rm -r ${RPM_BUILD_ROOT}%{_datadir}/info
+[ -d  ${RPM_BUILD_ROOT}%{_std_datadir} ] && rm -r ${RPM_BUILD_ROOT}%{_std_datadir}
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
 
@@ -95,13 +98,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
 %{_libdir}/%{_arch64}/pkgconfig/*
 %endif
-%dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/info
+#%dir %attr (0755, root, sys) %{_datadir}
 #%dir %attr (0755, root, other) %{_datadir}/aclocal
 #%{_datadir}/aclocal/*
 
 
 %changelog
+* Tue Aug  4 2015 - Thomas Wagner
+- fix %files and remove share/info 
 * Mon Jun 15 2015 - Thomas Wagner
 - downgrade to 2.7.1 (to suit gnutls)
 - fix _arch64 build
