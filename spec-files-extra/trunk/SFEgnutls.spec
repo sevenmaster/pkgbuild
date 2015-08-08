@@ -41,8 +41,8 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SFEnettle-gnu-devel
 Requires:	SFEnettle-gnu
 
-BuildRequires:           %{pnm_buildrequires_SUNWlibgcrypt_devel}
-Requires:                %{pnm_buildrequires_SUNWlibgcrypt}
+##TODO## obsolete, we use nettle BuildRequires:           %{pnm_buildrequires_SUNWlibgcrypt_devel}
+##TODO## obsolete, we use nettle Requires:                %{pnm_buildrequires_SUNWlibgcrypt}
 
 BuildRequires:           %{pnm_buildrequires_SUNWzlib_devel}
 Requires:                %{pnm_buildrequires_SUNWzlib}
@@ -53,7 +53,7 @@ Requires:                %{pnm_buildrequires_SUNWzlib}
 Summary:       %{summary} - development files
 SUNW_BaseDir:  %{_basedir}
 %include default-depend.inc
-Requires: SUNWgnutls
+Requires: SFEgnutls
 
 
 %prep
@@ -133,6 +133,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Tue Aug  4 2015 - Thomas Wagner
+- remove %{pnm_buildrequires_SUNWlibgcrypt}
+- fix Requires for -devel to be SFEgnutls
+- bump to 3.3.16
 * Thu Jun 18 2015 - Thomas Wagner
 - unarchvied
 - relocate to /usr/gnu, add IPS_Package_Name
