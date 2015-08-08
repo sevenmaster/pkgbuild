@@ -5,6 +5,8 @@
 #
 %include Solaris.inc
 
+%include packagenamemacros.inc
+
 %define src_name	cppunit
 
 Name:		SFEcppunit
@@ -16,8 +18,9 @@ Patch1:		cppunit-01-finite.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWdoxygen
-BuildRequires: SFEgraphviz
+
+BuildRequires: %{pnm_buildrequires_SUNWdoxygen}
+BuildRequires: %{pnm_buildrequires_SUNWgraphviz}
 
 %package devel
 Summary:	%{summary} - development files
@@ -78,6 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug  5 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgraphviz} %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 * Mon May 14 2012 - Milan Jurik
 - bump to 1.12.1
 * Fri Jan 18 2008 - moinak.ghosh@sun.com
