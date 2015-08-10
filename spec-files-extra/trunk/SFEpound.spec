@@ -12,6 +12,8 @@
 %include packagenamemacros.inc
 
 Name:           SFEpound
+IPS_Package_Name: web/proxy/pound
+Group:		WebServices/ApplicationandWebServers
 Summary:        The Pound program is a reverse proxy, load balancer and HTTPS front-end for Web server(s)
 Version:        2.6
 License:        GPLv3
@@ -127,6 +129,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Aug 11 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Fri Aug  1 2014 - Thomas Wagner
 - bump version to 2.6
 - change to (Build)Requires to %{pnm_buildrequires_SUNWopenssl} SUNWzlib SUNWbzip, %include packagenamacros.inc
