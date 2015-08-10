@@ -314,8 +314,9 @@ Requires: SUNWlibproxy
 Requires: SUNWgnome-vfs
 Requires: SUNWlibrsvg
 Requires: SFEtwolame
-#Requires: SFEgccruntime
-Requires: SFEgccruntime-46
+Requires: SFEgccruntime
+#Requires: SFEgccruntime-46
+#Requires: SFEgccruntime-48
 Requires: SUNWavahi-bridge-dsd
 Requires: SUNWlibgpg-error
 BuildRequires: SFEtwolame-devel
@@ -732,6 +733,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- relax Requires: SFEgccruntime (w/o version)
 * Sat Aug  9 2014 - Thomas Wagner
 - bump to 2.1.5
 * Wed Jun 25 2014 - Thomas Wagner
