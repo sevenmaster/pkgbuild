@@ -1015,6 +1015,9 @@
 
 %if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 '|' %{omnios} '|' %{oihipster} )
 #running an old build or Solaris 10, old OpenSolaris or OmniOS - and not on Solaris 12 or Solaris 11
+#library/database/gdbm@1.8.3,5.11-0.175.3.0.0.18.0 >= use from osdistro
+#library/database/gdbm@1.8.3,5.12-5.12.0.0.0.70.0  >= use from osdistro
+#omnios? oihipster? oi151a8?
 %define pnm_buildrequires_library_database_gdbm	SFEgdbm
 %define pnm_requires_library_database_gdbm	SFEgdbm
 %define pnm_buildrequires_SFEgdbm		SFEgdbm
@@ -1064,7 +1067,7 @@
 %define pnm_requires_compatibility_packages_SUNWxwplt		compatibility/packages/SUNWxwplt
 
 #SUNWxwopt is now a compatibility package wich pulles in a number of smaller packages
-#pkg:/compatibility/packages/SUNWxwopt@0.5.11,5.11-0.144
+#pkg://compatibility/packages/SUNWxwopt@0.5.11,5.11-0.144
 %define pnm_buildrequires_SUNWxwopt_devel		compatibility/packages/SUNWxwopt
 %define pnm_buildrequires_SUNWxwopt			compatibility/packages/SUNWxwopt
 %define pnm_requires_SUNWxwopt				compatibility/packages/SUNWxwopt
@@ -1094,7 +1097,7 @@
 #set parameters for more fresh osbuild / osdistro
 #Solaris 11 Solaris 12 
 ##TODO## add OI OpenIndiana Hipster image/graphviz@2.28.0,5.11-2014.0.1.3:20140528T102249Z
-%if %( expr %{solaris11} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11} '+' %{solaris12} '+' %{oihipster} '>=' 1 )
 %define pnm_buildrequires_SUNWgraphviz		image/graphviz
 %define pnm_requires_SUNWgraphviz		image/graphviz
 %define pnm_buildrequires_SFEgraphviz		image/graphviz
@@ -1103,7 +1106,7 @@
 %define graphviz_default_include		/usr/include
 %define graphviz_default_libdir			/usr/lib
 %endif
-#END solaris11 solaris12
+#END solaris11 solaris12 oihipster
 
 
 
@@ -1169,7 +1172,7 @@
 # this section overwrites settings form above originally applying to 
 # osbuild >=133 AND os2nnn
 # note: system/library/c++-runtime is renamed on OI to system/library/c++/sunpro
-#cases >= 151 && OpenIndiana
+#cases >= 151 && OpenIndiana or OIHipster
 %if %( expr %{openindiana}  '+' %{oihipster} )
 %if %( expr %{osbuild} '>=' 151 )
 %define pnm_buildrequires_SUNWlibC_devel		system/library/c++/sunpro
@@ -1180,6 +1183,30 @@
 %endif
 #END openindiana oihipster
 
+
+#-----------------------------------------------------------------
+# all distro
+#cppunit
+%define pnm_buildrequires_SFEcppunit		SFEcppunit
+%define pnm_requires_SFEcppunit			SFEcppunit
+%define pnm_buildrequires_developer_cppunit	SFEcppunit
+%define pnm_requires_developer_cppunit		SFEcppunit
+
+# but OIHipster brings its own packages, then use those (for those, osdistro delivered pkg is good enough)
+%if %{oihipster}
+#cppunit
+#unfortunatly pkgtool can't see the complete name pkg://openindiana.org/.../... if this is intalled, only developer/cppunit
+#but as we just don't have or local SFEccpunit in the repo/in an allowed version, this should work
+#%define pnm_buildrequires_SFEcppunit		pkg://openindiana.org/developer/cppunit
+#%define pnm_requires_SFEcppunit			pkg://openindiana.org/developer/cppunit
+#%define pnm_buildrequires_developer_cppunit	pkg://openindiana.org/developer/cppunit
+#%define pnm_requires_developer_cppunit		pkg://openindiana.org/developer/cppunit
+%define pnm_buildrequires_SFEcppunit		developer/cppunit
+%define pnm_requires_SFEcppunit			developer/cppunit
+%define pnm_buildrequires_developer_cppunit	developer/cppunit
+%define pnm_requires_developer_cppunit		developer/cppunit
+%endif
+#END oihipster
 
 #-----------------------------------------------------------------
 #special cases, set defaults first
@@ -1289,13 +1316,12 @@
 %endif
 #END solaris11express
 
-# math headers went from pkg:/system/library/math/header-math
-#                     to pkg:/system/library/math@0.5.11-0.174.0.0.0.0.0
+# math headers went from pkg://system/library/math/header-math
+#                     to pkg://system/library/math@0.5.11-0.174.0.0.0.0.0
 # OI stays unchanged for a while
-#solaris11express >=174, solaris 11 solaris 12
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
-%if %( expr %{osbuild} '>=' 174        '|' %{solaris12} '>=' 1 )
-#with 174 library/math/header-math moved into system/library/math
+# Hipster has header-math integrated into math
+#with build 174 library/math/header-math moved into system/library/math, as well on S12 OIH
+%if %( expr %{solaris12} '+' %{oihipster} '>=' 1 '|' %{osbuild} '>=' 174 )
 %define pnm_buildrequires_system_library_math_header_math	system/library/math
 %define pnm_requires_system_library_math_header_math		system/library/math
 %define pnm_buildrequires_SUNWlibm_devel			system/library/math
@@ -1303,11 +1329,8 @@
 %define pnm_requires_SUNWlibm					system/library/math
 %define pnm_buildrequires_libm					system/library/math
 %define pnm_requires_libm					system/library/math
-
 %endif
-#END >=174
-%endif
-#END solaris11express >=174, solaris 11 solaris 12
+#END solaris12 oihipster osbuild >= 174 ....
 
 ##TODO## maybe re-locate the definitions below if that helps getting better overview
 #SEE ALSO: new include file packagenames.define.initial.inc
@@ -1339,6 +1362,7 @@
 %define pnm_requires_SFEgdbm		 	library/database/gdbm
 %define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
 %define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
+
 
 
 #NOTE# now overlay the above definitions if needed:
@@ -1517,7 +1541,6 @@
 #END os2nnn
 
 #set perl5 for OIHipster
-%if %{os2nnn}
 %if %{oihipster}
 ##TODO## monitor closely when OIHipster changes chipped perl-versions or adds perl-modules
 #set perl5 for OIHipster
@@ -1530,11 +1553,8 @@
 %define pnm_requires_perl_default	runtime/perl-516
 %endif
 #END oihipster
-%endif
-#END os2nnn
 
 #set perl5 for OmniOS
-%if %{os2nnn}
 %if %{omnios}
 ##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
 #set perl5 for OmniOS
@@ -1548,8 +1568,6 @@
 %endif
 #END omnios
 
-%endif
-#END os2nnn
 
 #add more distro here
 
@@ -1941,7 +1959,7 @@
 #END os2nnn
 
 #set ruby for Solaris 11
-#pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#pkg://runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
 %if %{os2nnn}
 %if %( expr %{solaris11express} '>=' 1 )
 #set ruby for Solaris 11, Solaris 11 Express
@@ -2021,11 +2039,11 @@
 #      e.g. /usr/ruby/1.8/lib/ruby/1.8/i386-solaris2.11/ruby.h  (osdistro)
 #      e.g. /usr/gnu/include/ruby-1.9.3/ruby.h   (sfe)
 #
-#s11 (wrong) usr/lib/ruby/1.8/i386-solaris2.11/ruby.h           pkg:/sfe/runtime/ruby-18@1.8.7.371-0.11.0
-#s11 (wrong) usr/include/ruby-1.9.1/ruby.h                      pkg:/runtime/ruby-19@1.9.3-0.11.0
-#s11 (wrong) usr/include/ruby-1.9.1/ruby/ruby.h                 pkg:/runtime/ruby-19@1.9.3-0.11.0
-#s11 usr/ruby/1.8/lib/ruby/1.8/i386-solaris2.11/ruby.h  pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
-#s11 usr/ruby/1.8/lib/ruby/1.8/sparc-solaris2.11/ruby.h pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#s11 (wrong) usr/lib/ruby/1.8/i386-solaris2.11/ruby.h           pkg://sfe/runtime/ruby-18@1.8.7.371-0.11.0
+#s11 (wrong) usr/include/ruby-1.9.1/ruby.h                      pkg://runtime/ruby-19@1.9.3-0.11.0
+#s11 (wrong) usr/include/ruby-1.9.1/ruby/ruby.h                 pkg://runtime/ruby-19@1.9.3-0.11.0
+#s11 usr/ruby/1.8/lib/ruby/1.8/i386-solaris2.11/ruby.h  pkg://runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#s11 usr/ruby/1.8/lib/ruby/1.8/sparc-solaris2.11/ruby.h pkg://runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
 
 #the ruby.h file would be found with CFLAGS="-I{ruby_default_includedir}"
 #the SFE's ruby.h file would be found with CFLAGS="-I{sfe_ruby_default_includedir}"
@@ -2043,8 +2061,8 @@
 
 #the ruby libs would be found with LDFLAGS and/or CFLAGS="-L%{ruby_default_libdir}     -R%{ruby_default_libdir}"
 #                                  or                "-L%{sfe_ruby_default_libdir} -R%{sfe_ruby_default_libdir}"
-#basename   link   usr/ruby/1.8/lib/libruby.so pkg:/runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
-#basename   link   usr/gnu/lib/libruby.so          pkg:/runtime/ruby-19@1.9.3-0.11.0
+#basename   link   usr/ruby/1.8/lib/libruby.so pkg://runtime/ruby-18@1.8.7.334-0.175.0.0.0.2.537
+#basename   link   usr/gnu/lib/libruby.so          pkg://runtime/ruby-19@1.9.3-0.11.0
 %define ruby_default_libdir	%{ruby_default_prefix}/ruby/%{ruby_major_minor_version}/lib
 #after fixing sfe_ruby directory layout: %define sfe_ruby_default_libdir	%{sfe_ruby_default_prefix}/ruby/%{sfe_ruby_major_minor_version}/lib
 #now with wrong sfe_ruby directory layout (SFEruby.spec version 1.9.3 svn rev =< 5117)
@@ -2432,6 +2450,109 @@
 #END setting postgres, all builds, evaluated paths  - Part 3 of 3
 
 
+##NOTE## we only resolve for boost compiled with GCC/G++ for now, so there is
+#        only a macro with _gpp_ in the name
+
+#START setting boost, defaults  - Part 1 of 3 START
+#define boost defaults, primarily shared settings and default version, paths
+#STRONG NOTE: located *below* the osdistro and osbuild sections, there is *another*
+#section evaluating the resulting paths on the disk, those are specific
+#to the boost version in use. We hope, that we do not need to handle special
+#cases there, e.g. this would be an odd distro deciding to relocate to 
+#another path layout on disk....
+
+%define boost_gpp_version 1.55.0
+%define boost_gpp_major_version 1
+%define boost_gpp_major_minor_version 1.55
+##not defined %define boost_gpp_major_minor_micro_version 1.53.0
+
+#on SVR4 SFEboost-gpp-devel ?
+%define pnm_buildrequires_boost_gpp_default	SFEboost-gpp
+%define pnm_requires_boost_gpp_default		SFEboost-gpp
+
+#END setting boost, defaults  - Part 1 of 3 END
+
+#START setting boost, changes with specific builds and distros  - Part 2 of 3 START
+%if %{oihipster}
+#note, this section will be overwritten again in case ophipster is newer, see below
+#for the moment, we use boost supplied by OIHipster
+%define boost_gpp_version 1.55.0
+%define boost_gpp_major_version 1
+%define boost_gpp_major_minor_version 1.55
+##not defined %define boost_gpp_major_minor_micro_version 1.55.0
+
+%define pnm_buildrequires_boost_gpp_default	system/library/g++/boost
+%define pnm_requires_boost_gpp_default		system/library/g++/boost
+%endif
+#END oihipster
+
+#http://pkg.openindiana.org/hipster-2015 as of 20150808
+#system/library/boost@1.55.0,5.11-2014.1.3.1:20141212T044927Z 	Install 	Manifest
+#system/library/boost@1.58.0,5.11-2015.0.1.3:20150623T013126Z 	Install 	Manifest
+#system/library/boost@1.58.0,5.11-2015.0.1.3:20150715T072510Z 	Install 	Manifest
+#system/library/boost@1.58.0,5.11-2015.0.1.3:20150715T074103Z 	Install 	Manifest
+#system/library/g++/boost@1.55.0,5.11-2014.0.1.0:20150309T141137Z 	Install 	Manifest
+#system/library/g++/boost@1.55.0,5.11-2014.0.1.0:20150529T113204Z 	Install 	Manifest
+#system/library/g++/boost@1.55.0,5.11-2014.0.1.0:20150612T192514Z 	Install 	Manifest
+#system/library/g++/boost@1.55.0,5.11-2014.0.1.0:20150727T195654Z 	Install 	Manifest
+#system/library/g++/boost@1.55.0,5.11-2014.0.1.0:20150727T231744Z 	Install 	Manifest
+
+##TODO## make the release detection more precise. e.g with osdistro_entire_padded_number4 >= 2015000000010003 aka 2015.0.1.3
+%if %( expr %{oihipster} '&' %{oih20150330} )
+#for the moment, we use boost supplied by OIHipster
+%define boost_gpp_version 1.58.0
+%define boost_gpp_major_version 1
+%define boost_gpp_major_minor_version 1.55
+##not defined %define boost_gpp_major_minor_micro_version 1.58.0
+
+%define pnm_buildrequires_boost_gpp_default	system/library/boost
+%define pnm_requires_boost_gpp_default		system/library/boost
+%endif
+#END oihipster >= 20150330
+
+#END setting boost, changes with specific builds and distros  - Part 2 of 3 END
+
+#START setting boost, all builds, evaluated paths  - Part 3 of 3
+# this is the section noted above which evaluates the resulting paths on the
+# disk for the defaults for boost or the distro specific changed values e.g.
+# if a more fresh boost version stores files somewehre else
+
+#set handy partial paths to default locations where important boost files
+#are stored
+#note: simplyfication: %{_prefix} must be prepended by the spec file itself
+
+#default install directory of boost
+##NOT_IMPLEMENTED## %define boost_gpp_default_prefix	boost/%{boost_gpp_major_minor_version}
+
+#example:
+#the libpq/libpg.h or libpq-fe.h file would be found with 
+#CFLAGS="-I%{_prefix}/%{boost_gpp_default_includedir}"
+#more information: #include "libpq-fe.h" -->> /usr/boost/8.4/include/libpq-fe.h 
+#more information: #include "server/libpq.h" -->> /usr/boost/8.4/include/server/libpq.h 
+##NOT_IMPLEMENTED## %define boost_gpp_default_includedir	boost/%{boost_gpp_major_minor_version}/include
+
+##TODO##
+##NOTE## below: subject to change. want a more clever way to auto-set the variables
+#        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
+#        the same variable to define the right library search path for current %_arch*...
+
+#the boost libs would be found with 
+#LDFLAGS and/or CFLAGS="-L%{_prefix}/%{boost_gpp_default_libdir} -R%{_prefix}/%{boost_gpp_default_libdir}"
+#you might need to keep an eye on 32-/64-bit locations of boost libs
+#NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{boost_gpp_default_libdir}/%{_arch64}"
+#more information: /usr/boost/8.4/lib /usr/boost/8.4/lib/amd64 /usr/boost/8.4/lib/sparcv9
+##NOT_IMPLEMENTED## %define boost_gpp_default_libdir	boost/%{boost_gpp_major_minor_version}/lib
+
+#pg_config to tell consuming programs how that boost version is configured
+##TODO## want more clever 32-bit / 64-bit handling!
+#there is no nice workaround to get switched form 32- to 64-bits
+##NOT_IMPLEMENTED## %define boost_gpp_default_pg_config	boost/%{boost_gpp_major_minor_version}/bin/pg_config
+##NOT_IMPLEMENTED## %define boost_gpp_default_pg_config_64	boost/%{boost_gpp_major_minor_version}/bin/64/pg_config
+
+#END setting boost, all builds, evaluated paths  - Part 3 of 3
+
+#add more distro here/below
+
 ##TODO## below: dumping place to collect examples to be integrated later
 
 #  pkg contents -r -m system/header/header-audio
@@ -2566,6 +2687,12 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Wed Aug  5 2015 - Thomas Wagner
+- add pnm_buildrequires_boost_gpp_default pnm_requires_boost_gpp_default (ALL: 0.55 from SFE, except OIH 0.55 or 0.58 from osdistro)
+- add pnm_buildrequires_developer_cppunit (ALL: SFEcppunit, except OIH from osdistro)
+- add %{oihipster} to handle pnm_buildrequires_SUNWgraphviz (OI, hipster)
+* Mon Aug  3 2015 - Thomas Wagner
+- library/math/header-math moved into system/library/math - add OIH
 * Fri Jul  3 2015 - Thomas Wagner
 - extend SFEgdbm selection for pnm_buildrequires_library_database_gdbm
 * Thr Mar 19 2015 - Thomas Wagner
