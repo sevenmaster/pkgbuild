@@ -1,6 +1,3 @@
-
-##TODO## solve compile error (missing: "openconnect.h".. warning: attribute "format" is unknown, ignored. )
-#        - try again when solarisstudio 12.4 is released - then switch back from gcc compiler
 ##TODO## provide better vpnc-script (maybe in a separate package)
 #http://www.infradead.org/openconnect/platforms.html
 #For Solaris support, and for IPv6 on any platform, the vpnc-script shipped with vpnc itself (as of v0.5.3) is not sufficient. It is necessary to use the script from the vpnc-scripts repository instead. That repository also contains an updated version of vpnc-script-win.js which is required for correct IPv6 configuration under Windows.
@@ -20,8 +17,8 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	7.03
-IPS_Component_Version: 7.3
+Version:	7.06
+IPS_Component_Version: 7.6
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -105,8 +102,8 @@ rm -rf %{buildroot}
 %defattr(-, root, bin)
 %{_sbindir}/openconnect
 %dir %attr (0755, root, sys) %{_datadir}
-#%dir %attr (0755, root, other) %{_docdir}
-#%{_docdir}/openconnect
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/openconnect
 %{_mandir}/man1m/*
 %{_libdir}/libopenconnect.so*
 
@@ -124,6 +121,10 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- bump to 7.06 (IPS 7.6)
+* Tue Mar  4 2015 - Thomas Wagner
+- fix %files for %docdir
 * Thu Jan 22 2015 - Thomas Wagner
 - bump to 7.03 (IPS 7.3)
 - --without-libpcsclite or fail finding files related to pcsc
