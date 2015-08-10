@@ -1,3 +1,4 @@
+
 #
 # spec file for package boost
 #
@@ -8,11 +9,6 @@
 # Owner: jchoi42
 #
 
-%define        major      1
-%define        minor      55
-%define        patchlevel 0
-%define        ver_boost  %{major}_%{minor}_%{patchlevel}
-
 %{!?boost_with_mt: %define boost_with_mt 0}
 
 Name:         boost
@@ -21,48 +17,79 @@ Group:        System/Libraries
 Version:      %{major}.%{minor}.%{patchlevel}
 Summary:      boost - free peer-reviewed portable C++ source libraries
 Source:       %{sf_download}/boost/boost_%{ver_boost}.tar.bz2
+URL:          http://www.boost.org/
+
+#note: below patch resources can be overwritten by new definitions for newer boost
+# older boost (< 58, around 55)
 # Ticket #6161
 Patch1:       boost-01-putenv.diff
 Patch2:       boost-gpp-01-cstdint.diff
 # stlport4/stdcxx4
 Patch3:       boost-stdcxx-01-stl.diff
 Patch4:       boost-stdcxx-02-wchar.diff
-# S9, S10, SXCE, Ticket #6659
-#Patch5:       boost-05-remove-fchmodat.diff
-URL:          http://www.boost.org/
+
+#NOTE# patches start counting with "1"
+#use new patches boost >= 1.58.0 (imported thankfully from openindiana source repo)
+#https://github.com/OpenIndiana/oi-userland/tree/oi/hipster/components/boost/patches
+%if %(expr %cc_is_gcc '&' %{minor} '>=' 58)
+Patch1: boost-gpp-01-cstdint.patch
+Patch2: boost-gpp-02-usr-include.patch
+Patch3: boost-gpp-03-log-xopensource.patch
+Patch4: boost-gpp-04-0001-Fix-exec_file-for-Python-3-3.4.patch
+Patch5: boost-gpp-05-0002-Fix-a-regression-with-non-constexpr-types.patch
+%endif
+#minor >= 58
+
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %{name}_%{major}_%{minor}_%{patchlevel}
-%if %cc_is_gcc
-%patch2 -p0
-%else
-%patch1 -p0
-%if %stl_is_stdcxx
-%patch3 -p0
-%patch4 -p0
+
+%if %(expr %cc_is_gcc '&' %{minor} '>=' 58)
+%patch1 -p1 
+%patch2 -p1 
+%patch3 -p1 
+%patch4 -p1 
+%patch5 -p1 
 %endif
+#cc_is_gcc AND minor >= 58
+
+
+##below older patch stuff, might be removed once 0.55 is eliminated in every SFEboost-<somehting>.spec
+
+#is it studio?
+%if %cc_is_gcc
+#nothing here
+%else
+#studio
+%patch1 -p0
+%endif 
+
+#separate for readbility
+#cc_is_gcc and old minor < 53
+%if %(expr %cc_is_gcc '&' %{minor} '<' 58)
+%patch2 -p0
 %endif
 
-#S9, S10, SXCE
-#%if %{SXCE}
-#%patch5 -p0
-#%endif
+#paused# %if %( expr %cc_is_gcc '&' 0%stl_is_stdcxx )
+#paused# %patch3 -p0
+#paused# %patch4 -p0
+#paused# %endif
+
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 BOOST_ROOT=`pwd`
+
+export CFLAGS="%optflags -D_XPG6"
+export CXXFLAGS="%cxx_optflags -D_XPG6"
+
 %if %cc_is_gcc
 export CC=gcc
 export CXX=g++
-export CXXFLAGS="%gcc_cxx_optflags"
 export LDFLAGS="%_ldflags"
 %else
-export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags"
 %endif
 
@@ -79,6 +106,15 @@ export LDFLAGS="%_ldflags"
 ./bjam install --prefix=$RPM_BUILD_ROOT%{_prefix}
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- patch1 .. patch5 thankfully imported patches for boost 0.58 from openindiana source repo
+- temporarily comment stdcxx patches, check once needed
+- try keeping older patches, may be phased out once other uses are updated or have ended
+##TODO## work on studio compiled boost once it is needed
+- bump to 1.58.0
+* Sat Apr  6 2013 - Thomas Wagner
+- align SFEboost-gpp.spec and SFEboost-stdcxx.spec
+- pause patch fchmod for version 1.53.0
 * Sat Dec 14 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 1.55.0
 * Thu Feb 21 2013 - Ken Mays <kmays2000@gmail.com>

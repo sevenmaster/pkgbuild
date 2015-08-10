@@ -3,8 +3,9 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
-%define _basedir /usr/g++
 %include Solaris.inc
+%include usr-g++.inc
+%include base.inc
 %include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -12,21 +13,34 @@
 %define boost_with_mt 1
 
 
+%define        major      1
+%define        minor      58
+%define        patchlevel 0
+%define        ver_boost  %{major}_%{minor}_%{patchlevel}
 %use boost = boost.spec
 
-Name:                SFEboost-gpp
+Name:		SFEboost-gpp
 IPS_Package_Name:	system/library/g++/boost
-Summary:             Free peer-reviewed portable C++ libraries (g++-built)
-License:             Boost License Version
-SUNW_Copyright:      boost.copyright
-Version:             %{boost.version}
+Summary:	Free peer-reviewed portable C++ libraries (g++-built)
+License:	Boost License Version
+Group:		System/Libraries
+URL:		http://www.boost.org/
+#Source:		%{sf_download}/boost/boost_%{ver_boost}.tar.bz2
+SUNW_Copyright:	boost.copyright
+Version:	%{boost.version}
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 BuildRequires: %{pnm_buildrequires_python_default}
+
+%if %{solaris12}
+BuildRequires:  developer/icu
+Requires:       developer/icu
+%else
 BuildRequires:	SFEicu-gpp-devel
 Requires:	SFEicu-gpp
+%endif
 
 %package -n %name-devel
 IPS_package_name:	system/library/g++/boost/header-boost
@@ -98,6 +112,18 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- contionally use BuildRequires developer/icu on S12 instead of SFEicu-gpp
+- patch1 .. patch5 thankfully imported patches for boost 0.58 from openindiana source repo
+- temporarily comment stdcxx patches, check once needed
+- try keeping older patches, may be phased out once other uses are updated or have ended
+##TODO## work on studio compiled boost once it is needed
+- bump to 1.58.0
+* Thu Jan  1 2015 - Thomas Wagner
+- bump to 1.55.0
+* Sat Apr  6 2013 - Thomas Wagner
+- align SFEboost-gpp.spec and SFEboost-stdcxx.spec
+- pause patch5 boost-05-remove-fchmodat.diff for version 1.53.0
 * Wed Feb  6 2013 - Thomas Wagner
 - add patch5 for S10, SXCE to remove fchmodat
 - include packagenamemacros.inc earlier
