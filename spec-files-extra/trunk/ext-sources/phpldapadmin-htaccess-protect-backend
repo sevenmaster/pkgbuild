@@ -1,0 +1,11 @@
+#
+#      AuthUserFile /choosepathoutside_http_Documentroot/htpasswd.admin
+#      AuthName "phpldapadmin auth"
+#
+#  or
+#
+#      AuthType Basicrequire valid-user
+#      AuthName "phpldapadmin auth"
+#      AuthType BasicAuthLDAPURL ldap://localhost/dc=employees,dc=example,dc=org?name??
+#      require valid-user
+#

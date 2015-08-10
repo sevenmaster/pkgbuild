@@ -1,14 +1,16 @@
+#SFE: re-worked for openssh-6.7p1
+
 #
 # We changed the OpenSSH to not record the last login time when the "UsePAM"
 # option is on, because the PAM session module in Solaris will record the last
 # login time.  This is for Solaris only, so we will not contribute back this
 # change to the upstream community.
 #
---- orig/sshd.c	Thu Feb 27 00:20:08 2014
-+++ new/sshd.c	Sun May  4 20:50:52 2014
-@@ -129,6 +129,10 @@
- int deny_severity;
- #endif /* LIBWRAP */
+--- old/sshd.c.orig	2014-08-26 20:11:55.000000000 +0200
++++ openssh-6.7p1/sshd.c	2015-02-24 14:08:24.944309705 +0100
+@@ -123,6 +123,10 @@
+ #include "ssh-sandbox.h"
+ #include "version.h"
  
 +#if defined(LASTLOG_FIX) && defined(USE_PAM)
 +#include "sshlogin.h"
@@ -17,7 +19,7 @@
  #ifndef O_NOCTTY
  #define O_NOCTTY	0
  #endif
-@@ -2140,6 +2144,10 @@
+@@ -2146,6 +2150,10 @@
  #endif
  #ifdef USE_PAM
  	if (options.use_pam) {
@@ -28,21 +30,9 @@
  		do_pam_setcred(1);
  		do_pam_session();
  	}
---- orig/sshlogin.h	Thu Aug  1 06:34:17 2013
-+++ new/sshlogin.h	Sun May  4 20:50:52 2014
-@@ -14,6 +14,9 @@
- 
- void	record_login(pid_t, const char *, const char *, uid_t,
-     const char *, struct sockaddr *, socklen_t);
-+#ifdef LASTLOG_FIX
-+void store_lastlog_message(const char *, uid_t);
-+#endif
- void   record_logout(pid_t, const char *, const char *);
- time_t	get_last_login_time(uid_t, const char *, char *, size_t);
- 
---- orig/sshlogin.c	Sun May  4 20:50:39 2014
-+++ new/sshlogin.c	Sun May  4 20:50:52 2014
-@@ -83,7 +83,11 @@
+--- old/sshlogin.c.orig	2014-07-18 06:11:27.000000000 +0200
++++ openssh-6.7p1/sshlogin.c	2015-02-24 12:18:07.651764580 +0100
+@@ -84,7 +84,11 @@
   * Generate and store last login message.  This must be done before
   * login_login() is called and lastlog is updated.
   */
@@ -54,7 +44,7 @@
  store_lastlog_message(const char *user, uid_t uid)
  {
  #ifndef NO_SSH_LASTLOG
-@@ -128,6 +132,10 @@
+@@ -129,6 +133,10 @@
  {
  	struct logininfo *li;
  
@@ -65,7 +55,7 @@
  	/* save previous login details before writing new */
  	store_lastlog_message(user, uid);
  
-@@ -135,6 +143,10 @@
+@@ -136,6 +144,10 @@
  	login_set_addr(li, addr, addrlen);
  	login_login(li);
  	login_free_entry(li);
@@ -76,3 +66,15 @@
  }
  
  #ifdef LOGIN_NEEDS_UTMPX
+--- old/sshlogin.h.orig	2013-08-01 06:34:17.000000000 +0200
++++ openssh-6.7p1/sshlogin.h	2015-02-24 14:09:02.227730296 +0100
+@@ -14,6 +14,9 @@
+ 
+ void	record_login(pid_t, const char *, const char *, uid_t,
+     const char *, struct sockaddr *, socklen_t);
++#ifdef LASTLOG_FIX
++void store_lastlog_message(const char *, uid_t);
++#endif
+ void   record_logout(pid_t, const char *, const char *);
+ time_t	get_last_login_time(uid_t, const char *, char *, size_t);
+ 

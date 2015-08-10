@@ -17,12 +17,20 @@ getprop() {
 }
 
 getprop application/config_file
-if [ "${PROPVAL}" != "" -a -O "${PROPVAL}" ] ; then
+if [ "${PROPVAL}" != "" ] ; then
  #find user setting and strip whitespace from beginning and end of username
  #RUNUSER=`/usr/bin/egrep "^\s*user.*=" ${PROPVAL} | /usr/bin/sed -e 's/^.*user.*?=[ 	]*//' -e 's/[ 	]*$//'`
  #find user setting and let variable assignment strip whitespace from beginning and end of username
- SMF_START_RUNUSER=`/usr/bin/egrep "^\s*user.*=" ${PROPVAL} | /usr/bin/sed -e 's/^.*user.*=//'`
+ SMF_START_RUNUSER=`/usr/bin/egrep "^\s*user.*=" ${PROPVAL} | tail -1 | /usr/bin/sed -e 's/^.*user.*=[ 	]*//' -e 's/[ 	]*$//'`
  export SMF_START_RUNUSER
+echo ">${SMF_START_RUNUSER}<"
+ #sanity checks: config file should be owned by root who runs this script
+ # *or* by the runuser specified as the "user =" in the configfile itself
+ # (protect chmod in start section)
+##TODO## insert a check on "this file "${PROPVAL}" is owned by the userid ${SMF_START_RUNUSER}
+#        instead of fixed asking if "freerad" owns that file
+CONFIIGFILEOWENDBYUSER=`/usr/bin/ls -l ${PROPVAL} | cut -d ' ' -f5` 
+ [ -O "${PROPVAL}" -o "${SMF_START_RUNUSER}" == "${CONFIIGFILEOWENDBYUSER}" ] || SMF_START_RUNUSER=""
 fi
 
 getprop config/debug
@@ -35,7 +43,7 @@ case "$1" in
 
         ##TODO## improvement: Might only set owner for the directory if not owned by freeradius runuser.
         #for now set the owner if the directory is owened by root, who runs this script
-        [ -n ${SMF_START_RUNUSER} -a -d /var/run/radiusd -a -O /var/run/radiusd ] && chown ${SMF_START_RUNUSER} /var/run/radiusd;
+        [ -n "${SMF_START_RUNUSER}" -a -d /var/run/radiusd -a -O /var/run/radiusd ] && chown ${SMF_START_RUNUSER} /var/run/radiusd;
 
 	if [ "x$debug" = "xtrue" ]; then
 	   /usr/sbin/radiusd -X &

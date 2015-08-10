@@ -36,11 +36,9 @@
 
 <service_bundle type='manifest' name='SFEpostfix:postfix'>
 
-<service name='site/postfix' type='service' version='1'>
+<service name='network/smtp' type='service' version='1'>
 
-	<create_default_instance enabled='false' />
-
-	<single_instance />
+	<instance name='postfix' enabled='false'>
 
 	<dependency name='net-loopback' grouping='require_any'
 			restart_on='none' type='service'>
@@ -109,8 +107,6 @@
 		exec='/usr/sbin/postfix reload'
 		timeout_seconds='60' />
 
-	<stability value='Unstable' />
-
 <!--
 	<property_group name='general' type='framework'>
 			<propval name='action_authorization' type='astring'
@@ -130,6 +126,7 @@
 			    manpath='/usr/share/man' />
 		</documentation>
 	</template>
+</instance>
 </service>
 
 </service_bundle>
