@@ -1,3 +1,13 @@
+##TODO##
+##TODO## Import scripts
+##TODO##
+##TODO##
+##TODO##
+
+
+
+
+
 #
 # spec file for package SFEmediatomb
 #
@@ -11,6 +21,26 @@
 
 %define _use_internal_dependency_generator 0
 
+#http://slackbuilds.org/uid_gid.txt would say 241:241
+%define  daemonuser  mediatomb
+%define  daemonuid   65583
+%define  daemongcosfield mediatomb Reserved UID
+
+##TODO## check if this should be nogroup or nobody group
+##TODO## make this configurable at compile time with --define 'daemongroup nogroup' --define 'daemongid 65534'
+#if you change the number, then you change as well the text and the group will be created, else nogroup with 65534 is used
+#nogroup = 65534
+%define  daemongroup nogroup
+%define  daemongid   65534
+
+#config file can be centrally located
+#default would be to look for $HOME/.mediatomb/config.xml
+#for initial user experience, #we deliver a default 
+#confi file in /etc/mediatomb/config.xml
+#and create a cache / database directory in /var/mediatomb
+#with write permissions for %{daemonuser} %{daemongroup}
+%define	 configfile /etc/mediatomb/config.xml
+
 %define	src_name mediatomb
 
 Name:                SFEmediatomb
@@ -19,6 +49,7 @@ Summary:             UPnP AV MediaServer
 Version:             0.12.1
 URL:                 http://mediatomb.cc
 Source:              %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
+Source2:             mediatomb.xml
 Patch1:              mediatomb-01-0.12.1-gcc46.patch.diff
 Patch2:              mediatomb-02-libav_0.7_support.patch.diff
 Patch3:              mediatomb-03-AVMetadataTag_not_defined.diff
@@ -28,8 +59,6 @@ Patch6:              mediatomb-06-libmp4v2_191_p479.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:     SUNWlibexif-devel
-Requires:          SUNWlibexif
 BuildRequires:     SFEtaglib-gpp-devel
 Requires:          SFEtaglib-gpp
 BuildRequires:     %{pnm_buildrequires_SUNWsqlite3}
@@ -101,8 +130,28 @@ gmake -j$CPUS
 rm -rf $RPM_BUILD_ROOT
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
+%if %( expr %{daemongid} '!=' 65534 )
+# <method_credential user="mediatomb" group="nogroup"/>
+gsed -i -e '/method_credential user=/ s?mediatomb?%{daemonuser}?g'  \
+        -e '/method_credential .*group=/ s?nogroup?%{daemongroup}?g'  \
+        %{SOURCE2}
+%endif
+
+#with write permissions for %{daemonuser} %{daemongroup}
+mkdir -p $RPM_BUILD_ROOT/%{_localstatedir}/%{src_name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+
+#IPS
+%actions 
+user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
+%if %( expr %{daemongid} '!=' 65534 )
+#not needed _if_ group is nogroup  (65534)
+group groupname="%{daemongroup}" gid="%{daemongid}"
+%endif
+
 
 %files
 %defattr (-, root, bin)
@@ -110,8 +159,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %{_mandir}
 %{_datadir}/mediatomb
+#%class config
+#%volatile ...
+%{_localstatedir}/%{src_name}
 
 %changelog
+* Wed Mar  4 2015 - Thomas Wagner
+- remove (Build)Requires SUNWlibexif (use pnm_requires_image_library_libexif)
+* Sat Feb 15 2015 - Thomas Wagner
+- add SMF manifest mediatomb.xml
+- add userid/groupid
 * Fri Feb  6 2015 - Thomas Wagner
 - taglib not found, use --with-taglib-cfg=path (S12, ..)
 * Thu Feb  5 2015 - Thomas Wagner
