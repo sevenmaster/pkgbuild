@@ -1,10 +1,9 @@
 #
-# spec file for package SFElibvisio
+# spec file for package SFElibwps
 #
-# includes module: libvisio
+# includes module: libwps
 #
 ## TODO ##
-# It would be nice if libs linked to libicuuc.so instead of libicuuc.so.<version_no_at_compile_time> and friends
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -12,22 +11,25 @@
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
 
-%define src_name libvisio
-%define src_url  http://dev-www.libreoffice.org/src/libvisio
 
-%define major_version 0.1
+%define src_name libwps
+%define src_url  http://downloads.sourceforge.net/libwps
+
+%define major_version 0.3
 %define minor_version 1
+# LO 4.4.5.2 expects 0.3
+#%define major_version 0.4
+#%define minor_version 0
 
-Name:			SFElibvisio
-IPS_Package_Name:	sfe/library/g++/libvisio
-Summary:		Libvisio is a library that parses the file format of Microsoft Visio documents of all versions.
+Name:			SFElibwps
+IPS_Package_Name:	sfe/library/g++/libwps
+Summary:		Library for importing the Microsoft Works word processor file format.
 Group:			System/Libraries
-URL:			https://wiki.documentfoundation.org/DLP/Libraries/libvisio
+URL:			http://libwps.sourceforge.net/
 Version:		%major_version.%minor_version
-License:		MPL2.0
+License:		LGPLv2
 SUNW_Copyright:		%{license}.copyright
 Source:			%{src_url}/%{src_name}-%{version}.tar.xz
-Patch1:			libvisio-01-pow.diff
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
 
@@ -44,24 +46,18 @@ BuildRequires:  %{pnm_requires_developer_icu}
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
 
-BuildRequires:  %{pnm_buildrequires_developer_gperf}
-Requires:       %{pnm_requires_developer_gperf}
-
 BuildRequires:  %{pnm_buildrequires_SUNWzlib}
 Requires:       %{pnm_requires_SUNWzlib}
 
-BuildRequires:  %{pnm_buildrequires_SUNWlxml_devel}
-Requires:       %{pnm_requires_SUNWlxml}
-
 BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
 
-BuildRequires:	SFElibrevenge
-Requires:	SFElibrevenge
+BuildRequires:  SFElibrevenge
+Requires:       SFElibrevenge
+
 
 %description
-libvisio is an import filter library for Microsoft Visio files, based on librevenge.
-It can import .vsd and .vss files of all versions.
-It is a part of the Document Liberation Project.
+libwps is a library (for use by word procesors, for example) for
+importing the Microsoft Works word processor file format.
 
 %package devel
 Summary:        %summary - development files
@@ -75,8 +71,6 @@ Requires: %name
 #don't unpack please
 %setup -q -c -T -n %src_name-%version
 xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
-
-%patch1 -p0
 
 
 %build
@@ -92,13 +86,6 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 ./configure	\
 	--prefix=%_prefix	\
 	;
-
-#from studio compiled icu.pc
-#g++: error: unrecognized command line option '-compat=5'
-#./Makefile:ICU_CFLAGS =   -compat=5
-#./Makefile:LIBVISIO_CXXFLAGS = -I/usr/include/librevenge-0.0   -I/usr/include/libxml2      -compat=5
-perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
-
 
 make -j$CPUS
 
@@ -116,8 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %_bindir
-%_bindir/vsd2*
-%_bindir/vss2*
+%_bindir/wps2*
+%_bindir/wks2*
 
 %dir %attr (0755, root, bin) %_libdir
 %_libdir/%src_name-%major_version.so*
@@ -137,15 +124,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Aug 10 2015 - Thomas Wagner
+- disable _use_internal_dependency_generator
 - rename IPS_Package_Name to propperly reflect g++ compiler
 ##TODO## relocation to /usr/g++ (depends on LO package)
 * Sat Aug  8 2015 - Thomas Wagner
-- edit out -compat=5 from all files, comes from studio compiles icu libraries but g++ doesn't know that switch
 - initial commit to svn for pjama
 - unpack with xz
-- change to (Build)Requires %{pnm_buildrequires_SUNWzlib}, %{pnm_buildrequires_boost_gpp_default}, developer_icu, library_math_header_math, SUNWlxml_devel, add SFExz_gnu
-- add (Build)Requires developer_gperf
+- change to (Build)Requires %{pnm_buildrequires_SUNWzlib}, %{pnm_buildrequires_boost_gpp_default}, developer_icu, library_math_header_math, add SFExz_gnu
 - disable _use_internal_dependency_generator
 * Sun Jun 14 2015 - pjama
 - initial spec
-- Thanks to Peter Tribble for sharing http://ptribble.blogspot.co.uk/2015/06/building-libreoffice-on-tribblix.html
