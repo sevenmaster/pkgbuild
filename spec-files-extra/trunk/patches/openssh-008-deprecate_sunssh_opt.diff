@@ -1,8 +1,8 @@
---- orig/readconf.c	Mon Feb 24 05:57:56 2014
-+++ new/readconf.c	Sun May  4 20:40:37 2014
-@@ -262,7 +262,26 @@
- 	{ "canonicalizemaxdots", oCanonicalizeMaxDots },
- 	{ "canonicalizepermittedcnames", oCanonicalizePermittedCNAMEs },
+--- old/readconf.c.orig	2014-07-18 06:11:26.000000000 +0200
++++ openssh-6.7p1/readconf.c	2015-02-24 16:30:51.432877189 +0100
+@@ -266,7 +266,26 @@
+ 	{ "streamlocalbindmask", oStreamLocalBindMask },
+ 	{ "streamlocalbindunlink", oStreamLocalBindUnlink },
  	{ "ignoreunknown", oIgnoreUnknown },
 -
 +#ifdef DEPRECATE_SUNSSH_OPT

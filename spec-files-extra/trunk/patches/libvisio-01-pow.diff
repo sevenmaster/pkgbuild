@@ -1,0 +1,11 @@
+--- src/lib/VSDMetaData.cpp.orig	2015-01-02 07:11:45.000000000 +1000
++++ src/lib/VSDMetaData.cpp	2015-06-16 11:40:10.547133571 +1000
+@@ -210,7 +210,7 @@
+   uint32_t firstDirSectorLocation = readU32(input);
+ 
+   // Seek to the Root Directory Entry
+-  size_t sectorSize = pow(2, sectorShift);
++  size_t sectorSize = std::pow(2, sectorShift);
+   input->seek((firstDirSectorLocation + 1) * sectorSize, librevenge::RVNG_SEEK_SET);
+   // DirectoryEntryName: 64 bytes
+   // DirectoryEntryNameLength: 2 bytes
