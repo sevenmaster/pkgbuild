@@ -81,8 +81,9 @@ Requires: %name
 
 
 %prep
-%setup -q -n %src_name-%version
-#%setup -q -n %src_name-0.7.0
+#don't unpack please
+%setup -q -c -T -n %src_name-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 
 %build
