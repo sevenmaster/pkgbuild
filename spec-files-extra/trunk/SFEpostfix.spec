@@ -36,6 +36,7 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%define _use_internal_dependency_generator 0
 
 #change these defaults if needed 
 ##TODO## ##FIXME##
@@ -114,11 +115,15 @@
 %define	V_postfinger	1.30
 
 Name:                    SFEpostfix
+%if %{solaris12}
+IPS_Package_Name:	 sfe/service/network/smtp/postfix
+%else
 IPS_Package_Name:	 service/network/smtp/postfix
+%endif
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.0.1
+Version:                 3.0.2
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -207,6 +212,10 @@ SUNW_PkgType:		root
 
 
 
+%description
+Email MTA
+See the wiki page for SFEpostfix.spec for installation guidance:
+  http://pkgbuild.wiki.sourceforge.net/SFEpostfix.spec
 
 
 %prep
@@ -931,6 +940,12 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Fri Aug  7 2015 - Thomas Wagner
+- bump to 3.0.2
+- set _use_internal_dependency_generator 0 to save time
+##TODO## check dependencies compared to older package where dependency_generator was on and add necessary deps in the spec file
+- change IPS_Package_Name on S12 to sfe/service/network/smtp/postfix or get updates to pkg:/consolidation/userland/userland-incorporation@0.5.12-5.12.0.0.0.79.0
+  (there is an osdistro provided older postfix)
 * Tue Jun  2 2015 - Thomas Wagner
 - bump to 3.0.1
 - add workaround with_disable_eai which sets smtputf8_enable = no
