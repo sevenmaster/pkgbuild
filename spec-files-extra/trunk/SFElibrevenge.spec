@@ -21,7 +21,7 @@
 %define minor_version 2
 
 Name:			SFElibrevenge
-IPS_Package_Name:	sfe/library/librevenge
+IPS_Package_Name:	sfe/library/g++/librevenge
 Summary:		Library for reading and converting WordPerfect(tm) documents
 Group:			System/Libraries
 URL:			http://sourceforge.net/p/libwpd/wiki/librevenge/
@@ -117,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- rename IPS_Package_Name to propperly reflect g++ compiler
+##TODO## relocation to /usr/g++ (depends on LO package)
 * Wed Aug  5 2015 - Thomas Wagner
 - initial commit to svn for pjama
 - unpack with xz
