@@ -39,9 +39,7 @@ BuildRoot:		%_tmppath/%name-%version-build
 ##TODO## Requires:	SFEgccruntime
 
 %description
-libgraphite2 is an import filter library for Microsoft Visio files, based on librevenge.
-It can import .vsd and .vss files of all versions.
-It is a part of the Document Liberation Project.
+Graphite is a project within SIL's scripts and software dev groups to provide cross-platform rendering for complex writing systems.
 
 %package devel
 Summary:        %summary - development files
@@ -115,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %_libdir
 %_libdir/*.so*
 
-%dir %attr (0755, root, other) %_datadir/
+%dir %attr (0755, root, sys) %_datadir
 %_datadir/%src_name/*
 
 %files devel
