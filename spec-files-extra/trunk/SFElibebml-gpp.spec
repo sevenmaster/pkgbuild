@@ -45,13 +45,34 @@ Requires: %name
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CFLAGS="%_optflags"
 export CXXFLAGS="%cxx_optflags"
+export LDFLAGS="%_ldflags"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
 export MSGFMT=/usr/bin/msgfmt
 
+##TODO## revisit this. why should studio CC be used to extract and not solaris "ar" or gnu "ar"
 cd make/linux
-gmake -j$CPUS CXX=g++ AR=CC  DEBUGFLAGS=-g WARNINGFLAGS="" \
-ARFLAGS="-xar -o" LOFLAGS=-fpic LIBSOFLAGS="%_ldflags -G -h "
+%if %cc_is_gcc
+  gmake -j$CPUS \
+  CXX=g++ \
+  AR=/usr/gnu/bin/ar \
+  DEBUGFLAGS=-g \
+  WARNINGFLAGS="" \
+  LOFLAGS=-fpic \
+  LIBSOFLAGS="%_ldflags -G -h " \
+  ;
+%else
+  gmake -j$CPUS \
+  CXX=g++ \
+  AR=CC  \
+  DEBUGFLAGS=-g \
+  WARNINGFLAGS="" \
+  ARFLAGS="-xar -o" \
+  LOFLAGS=-fpic \
+  LIBSOFLAGS="%_ldflags -G -h " \
+  ;
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -71,6 +92,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Aug 14 2015 - Thomas Wagner
+- set normal CFLAGS, LDFLAGS
+##TODO## revisit AR=CC
+- AR=/usr/gnu/bin/ar in case cc_is_gcc is true
 * Sun May 17 2015 - Thomas Wagner
 - rework patch libebml-01-makefile.diff
 * Sun Feb  9 2014 - Alex Viskovatoff
