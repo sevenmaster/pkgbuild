@@ -45,7 +45,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 export CPPPFLAGS="-I/usr/include/a52dec"
-%if cc_is_gcc
+%if %cc_is_gcc
 export CFLAGS="%optflags -KPIC"
 %else
 export CFLAGS="%optflags"
