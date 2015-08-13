@@ -125,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3
 
 %changelog
+* Thr Aug 13 2015 - Thomas Wagner
+- remove PICFLAG="-KPIC" for gcc, needs testing with studio compiler (OIH)
 * Sun Oct 23 2011 - Milan Jurik
 - fix multiarch
 * Mon Oct 10 2011 - Milan Jurik

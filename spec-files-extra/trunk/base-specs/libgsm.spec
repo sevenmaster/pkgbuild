@@ -26,10 +26,12 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %build
 rm -f bin/* lib/* shared/* src/*.o test/*.o
+ln -s libgsm.so.1 lib/libgsm.so  
 
 %install
-export PICFLAG="-KPIC"
+#hipster with gcc fails export PICFLAG="-KPIC"
 export OPTFLAGS="%optflags"
+export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
@@ -62,6 +64,11 @@ fi
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thr Aug 13 2015 - Thomas Wagner
+- remove PICFLAG="-KPIC" for gcc, needs testing with studio compiler (OIH)
+* Sat Apr 28 2012 - Thomas Wagner
+- rework rm and symlink of libgsm.so* files
+- change order ... -L./lib first, then -lgsm, then $(LDLIB)
 * Sun Oct 23 2011 - Milan Jurik
 - fix multiarch
 * Sun Nov 28 2010 - Milan Jurik
