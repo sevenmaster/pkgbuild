@@ -39,6 +39,10 @@ fi
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
+%if %cc_is_gcc
+gsed -e 's?-KPIC??' lib/Makefile*
+%endif
+
 libtoolize --copy --force
 autoconf -f -I autoconf
 ./configure --prefix=%{_prefix}		\
@@ -73,5 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Thu Aug 13 2015 - Thomas Wagner
+- remove -KPIC from Makefile if cc_is_gcc
 * Sat Jul 14 2007 - dougs@truemail.co.th
 - Initial spec
