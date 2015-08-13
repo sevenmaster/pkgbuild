@@ -68,6 +68,7 @@ Patch11:		qt-gpp-11-pthread_getattr.diff
 Patch12:		qt-gpp-12-plt.diff
 Patch13:		qt-gpp-13-fix-namespace-tr1.diff
 Patch14:		qt-gpp-14-webcore-sql.patch
+Patch15:		qt-gpp-15-4.8.5-disable-QtCore.dynlist.diff
 
 SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %_basedir
@@ -130,6 +131,7 @@ tar xzf %{SOURCE1}
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
 %if %{run_autotests}
 %patch4
 %patch5
@@ -268,6 +270,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Thr Aug 13 2015 - Thomas Wagner
+- add Patch15 qt-gpp-15-4.8.5-disable-QtCore.dynlist.diff linker doesn't know
 * Fri Mar  6 2015 - Thomas Wagner
 - change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12)
 * Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
