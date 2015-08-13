@@ -10,13 +10,17 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+#note: cc_is_gcc is used below to trick the call to "cc" end in "gcc"
+
 %if %automaticversion
 #%define src_version 2009.07.09
 #extract example: 2009.07.09
 %define src_version %( wget  -O - "http://www.live555.com/liveMedia/public" 2>/dev/null  | /usr/xpg4/bin/egrep -i "<a href.*live\.[0-9]{4}" | sed -e 's,^.*href=\"live\.,,' -e 's,\.tar\.gz\">.*,,' )
 %else
 ###########NOTE: set the desired date of the tarball YYYY.MM.DD
-%define src_version 2014.12.17
+#%define src_version 2014.12.17
+#pjama tested this version:
+%define src_version 2015.05.12
 %endif
 
 #remove leading zero(s) from version-string for IPS compat
@@ -71,6 +75,16 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
+%if %cc_is_gcc
+mkdir bin
+export PATH=`pwd`/bin:$PATH
+echo "workaround for genMakefile not looking at variables \$CC and \$CXX"
+echo "creating symlinks from  $CC  to bin/cc and  $CXX  to bin/c++"
+[ -n "$CC" ] || echo "Error variable CC is not set"
+ln -s $CC bin/cc
+ln -s $CXX bin/c++
+%endif
+
 ./genMakefiles solaris
 gsed -i.bak -n '/cd.*LIVEMEDIA_DIR.*MAKE/{h;n;G};p' Makefile 
 gsed -i.bak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -lgroupsock?' liveMedia/Makefile
@@ -90,6 +104,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Thu Aug 13 2015 - Thomas Wagner
+- fix compiler used if CC=gcc (gcc based env like OIH
+* Sat May 24 2015 - Thomas Wagner
+- bump to version 2015.05.12
 * Sun May 17 2015 - Thomas Wagner
 - add -lgroupsock or get "SendingInterfaceAddr: referenced symbol not found"
 - switch off automatic version setting to get reliable build results on the 
