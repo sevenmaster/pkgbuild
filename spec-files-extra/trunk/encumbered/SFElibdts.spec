@@ -21,15 +21,15 @@ Patch4:                  libdts-04-tweaks-to-fix-trivial-compiler-errors.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{src_name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWlibms
-Requires: SFEliba52
+Requires:	%{pnm_buildrequires_SUNWlibms}
+Requires:	SFEliba52
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
-Requires: %name
-Requires: SFEliba52-devel
+Requires:	%name
+Requires:	SFEliba52-devel
 
 %prep
 %setup -q -n %src_name-%version
@@ -45,7 +45,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 export CPPPFLAGS="-I/usr/include/a52dec"
+%if cc_is_gcc
 export CFLAGS="%optflags -KPIC"
+%else
+export CFLAGS="%optflags"
+%endif
 
 aclocal $ACLOCAL_FLAGS
 libtoolize --force
@@ -89,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Aug 14 2015 - Thomas Wagner
+- only add -KPIC if cc_is_gcc is not true
 * Mon Dec 31 2007 - markwright@internode.on.net
 - Bump to 0.0.5. Comment patch1, patch2 and patch3.
 - Add patch 4 to fix trivial compiler errors.
