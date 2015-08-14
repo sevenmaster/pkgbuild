@@ -68,13 +68,12 @@ Patch11:		qt-gpp-11-pthread_getattr.diff
 Patch12:		qt-gpp-12-plt.diff
 Patch13:		qt-gpp-13-fix-namespace-tr1.diff
 Patch14:		qt-gpp-14-webcore-sql.patch
-Patch15:		qt-gpp-15-4.8.5-disable-QtCore.dynlist.diff
 
 SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %_basedir
 %include default-depend.inc
 
-%if %( expr %{solaris12} )
+%if %( expr %{solaris12} '|' %{oihipster} )
 #assume that use gcc 4.8.x
 BuildRequires:		SFEgcc
 Requires:		SFEgccruntime
@@ -84,18 +83,19 @@ Requires:		SFEgccruntime-46
 %endif
 
 # Guarantee X/freetype environment concisely (hopefully):
-BuildRequires: SUNWgtk2
-Requires:      SUNWgtk2
+BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
+Requires:      %{pnm_requires_SUNWgtk2}
 BuildRequires: %{pnm_buildrequires_SUNWxwplt}
-Requires: %{pnm_requires_SUNWxwplt}
+Requires:      %{pnm_requires_SUNWxwplt}
 # The above bring in many things, including SUNWxwice and SUNWzlib
-Requires: SUNWxwxft
+BuildRequires: %{pnm_buildrequires_SUNWxwxft_devel}
+Requires:      %{pnm_requires_SUNWxwxft}
 # The above also pulls in SUNWfreetype2
 # This package only provides libraries
 BuildRequires: %{pnm_buildrequires_mysql_default}
-Requires: %{pnm_requires_mysql_default}
-BuildRequires: SUNWdbus
-Requires: SUNWdbus
+Requires:      %{pnm_requires_mysql_default}
+BuildRequires: %{pnm_buildrequires_SUNWdbus_devel}
+Requires:      %{pnm_requires_SUNWdbus}
 
 # Follow example of developer/icu for IPS package name
 %package devel
@@ -131,7 +131,7 @@ tar xzf %{SOURCE1}
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
+
 %if %{run_autotests}
 %patch4
 %patch5
@@ -195,6 +195,18 @@ export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthre
            %extra_includes \
            %extra_libs
 
+#Sun Linker can't use QtGui.dynlist
+#     "ld: fatal: file /s12pool/sfe/packages/BUILD/qt-everywhere-opensource-src-4.8.5/src/gui/QtGui.dynlist: not an ELF object"
+#./src/gui/gui.pro:QMAKE_DYNAMIC_LIST_FILE = $$PWD/QtGui.dynlist
+#./src/corelib/corelib.pro:QMAKE_DYNAMIC_LIST_FILE = $$PWD/QtCore.dynlist
+#./src/corelib/Makefile
+#LFLAGS        = -Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -L/usr/g++/lib -R/usr/g++/lib -L/usr/gnu/lib -R/usr/gnu/lib -pthreads -fPIC -R/usr/g++/lib -R/usr/g++/lib -R/usr/gnu/lib -R/usr/mysql/5.5/lib -shared /s12pool/sfe/packages/BUILD/qt-everywhere-opensource-src-4.8.5/src/corelib/QtCore.dynlist -h   libQtCore.so.4
+echo "removing QtCore.dynlist from src/corelib/corelib.pro, src/gui/gui.pro, src/corelib/Makefile"
+gsed -i.bak -e 's?^QMAKE_DYNAMIC_LIST_FILE?#QMAKE_DYNAMIC_LIST_FILE?' src/corelib/corelib.pro src/gui/gui.pro 
+gsed -i.bak -e 's? \([A-z0-9_/\.-]*QtCore\.dynlist\)??' src/corelib/Makefile
+(diff -u src/corelib/Makefile.bak src/corelib/Makefile; exit 0)
+egrep -i "QMAKE_DYNAMIC_LIST_FILE|dynlist" src/gui/gui.pro src/corelib/corelib.pro src/corelib/Makefile
+echo "above: check output above if compilation fails with \"QtGui.dynlist: not an ELF object\""
 
 make -j$CPUS
 
@@ -270,7 +282,10 @@ rm -rf %buildroot
 
 
 %changelog
-* Thr Aug 13 2015 - Thomas Wagner
+* Thu Aug 13 2015 - Thomas Wagner
+- remove Patch15 again, now remove dynlist with gsed regex right before the make run
+- change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (OIH)
+* Thu Aug 13 2015 - Thomas Wagner
 - add Patch15 qt-gpp-15-4.8.5-disable-QtCore.dynlist.diff linker doesn't know
 * Fri Mar  6 2015 - Thomas Wagner
 - change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12)
