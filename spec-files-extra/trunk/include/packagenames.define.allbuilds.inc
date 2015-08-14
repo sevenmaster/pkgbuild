@@ -953,19 +953,19 @@
 %endif
 #END <107
 
-##TODO##define exact osbuild number where SUNWfreetype disappeared
-#rules: if osdistro does not know freetype2, then use SFEfreetype (2.x)
-#defaults for all builds < 133 (just to have somehting to start with)
+#paused# ##TODO##define exact osbuild number where SUNWfreetype disappeared
+#paused# #rules: if osdistro does not know freetype2, then use SFEfreetype (2.x)
+#paused# #defaults for all builds < 133 (just to have somehting to start with)
 
-#the default settings from the other p*inc files are valid or overwritten here
-%define pnm_buildrequires_SUNWfreetype2		SUNWfreetype2
-%define pnm_requires_SUNWfreetype2		SUNWfreetype2
-%define pnm_buildrequires_freetype2		SUNWfreetype2
-%define pnm_requires_freetype2			SUNWfreetype2
-#SFEfreetype replaced with SUNWfreetype2 
-#NOTE: no "2" at the end!
-%define pnm_buildrequires_SUNWfreetype_devel 	SUNWfreetype2
-%define pnm_requires_SUNWfreetype		SUNWfreetype2
+#paused# #the default settings from the other p*inc files are valid or overwritten here
+#paused# %define pnm_buildrequires_SUNWfreetype2		SUNWfreetype2
+#paused# %define pnm_requires_SUNWfreetype2		SUNWfreetype2
+#paused# %define pnm_buildrequires_freetype2		SUNWfreetype2
+#paused# %define pnm_requires_freetype2			SUNWfreetype2
+#paused# #SFEfreetype replaced with SUNWfreetype2 
+#paused# #NOTE: no "2" at the end!
+#paused# %define pnm_buildrequires_SUNWfreetype_devel 	SUNWfreetype2
+#paused# %define pnm_requires_SUNWfreetype		SUNWfreetype2
 
 ##TODO## below: probably obsolete or needs rethinking:
 ##TODO## which osbuild version is right?
@@ -2500,6 +2500,7 @@
 ##TODO## make the release detection more precise. e.g with osdistro_entire_padded_number4 >= 2015000000010003 aka 2015.0.1.3
 %if %( expr %{oihipster} '&' %{oih20150330} )
 #for the moment, we use boost supplied by OIHipster
+#this means, this is subject to change if it is e.g. more stable or better matching SFE versioning needs or compile options or ...
 %define boost_gpp_version 1.58.0
 %define boost_gpp_major_version 1
 %define boost_gpp_major_minor_version 1.55
@@ -2522,14 +2523,14 @@
 #note: simplyfication: %{_prefix} must be prepended by the spec file itself
 
 #default install directory of boost
-##NOT_IMPLEMENTED## %define boost_gpp_default_prefix	boost/%{boost_gpp_major_minor_version}
+%define boost_gpp_default_prefix	/usr/g++
 
 #example:
 #the libpq/libpg.h or libpq-fe.h file would be found with 
 #CFLAGS="-I%{_prefix}/%{boost_gpp_default_includedir}"
 #more information: #include "libpq-fe.h" -->> /usr/boost/8.4/include/libpq-fe.h 
 #more information: #include "server/libpq.h" -->> /usr/boost/8.4/include/server/libpq.h 
-##NOT_IMPLEMENTED## %define boost_gpp_default_includedir	boost/%{boost_gpp_major_minor_version}/include
+%define boost_gpp_default_includedir	/usr/g++/include
 
 ##TODO##
 ##NOTE## below: subject to change. want a more clever way to auto-set the variables
@@ -2541,13 +2542,21 @@
 #you might need to keep an eye on 32-/64-bit locations of boost libs
 #NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{boost_gpp_default_libdir}/%{_arch64}"
 #more information: /usr/boost/8.4/lib /usr/boost/8.4/lib/amd64 /usr/boost/8.4/lib/sparcv9
-##NOT_IMPLEMENTED## %define boost_gpp_default_libdir	boost/%{boost_gpp_major_minor_version}/lib
+%define boost_gpp_default_libdir	/usr/g++/lib
 
 #pg_config to tell consuming programs how that boost version is configured
 ##TODO## want more clever 32-bit / 64-bit handling!
 #there is no nice workaround to get switched form 32- to 64-bits
 ##NOT_IMPLEMENTED## %define boost_gpp_default_pg_config	boost/%{boost_gpp_major_minor_version}/bin/pg_config
 ##NOT_IMPLEMENTED## %define boost_gpp_default_pg_config_64	boost/%{boost_gpp_major_minor_version}/bin/64/pg_config
+
+#overwrite paths for special osdistro
+%if %( expr %{oihipster} '&' %{oih20150330} )
+%define boost_gpp_default_prefix	/usr
+%define boost_gpp_default_includedir	/usr/include
+boost_gpp_default_libdir	/usr/lib
+%endif
+#END oihipster >= 20150330
 
 #END setting boost, all builds, evaluated paths  - Part 3 of 3
 
@@ -2687,6 +2696,10 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Aug 15 2015 - Thomas Wagner
+- set directories for boost_gpp_default (/usr/g++ for S11 S12 OI, /usr for OIH) - OIH is subject to change if we decide for SFEboost-gpp as default one day
+* Mon Aug 10 2015 - Thomas Wagner
+- pause unconditional section for pnm_buildrequires_SUNWfreetype2 (needs to be clamped by osdistro != %{os2nnn} or more
 * Wed Aug  5 2015 - Thomas Wagner
 - add pnm_buildrequires_boost_gpp_default pnm_requires_boost_gpp_default (ALL: 0.55 from SFE, except OIH 0.55 or 0.58 from osdistro)
 - add pnm_buildrequires_developer_cppunit (ALL: SFEcppunit, except OIH from osdistro)
