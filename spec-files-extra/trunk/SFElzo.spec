@@ -5,7 +5,7 @@
 
 %include Solaris.inc
 
-%define src_version  2.06
+%define src_version  2.09
 
 Name:                SFElzo
 IPS_Package_Name:	library/lzo
@@ -14,7 +14,7 @@ License:             GPLv2
 SUNW_Copyright:	     lzo.copyright
 URL:                 http://www.oberhumer.com/opensource/lzo/
 Meta(info.upstream): Markus F.X.J. Oberhumer <markus@oberhumer.com>
-Version:             2.6
+Version:             2.9
 Group:               System/Libraries
 Source:              http://www.oberhumer.com/opensource/lzo/download/lzo-%{src_version}.tar.gz
 
@@ -72,6 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/lzo
 
 %changelog
+* Fri Aug 14 2015 - Thomas Wagner
+- bump to version 2.09 (2.9 on IPS)
 * Mon Oct 17 2011 - Milan Jurik
 - add IPS package name
 - bump to 2.06
