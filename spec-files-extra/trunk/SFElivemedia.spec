@@ -20,7 +20,8 @@
 ###########NOTE: set the desired date of the tarball YYYY.MM.DD
 #%define src_version 2014.12.17
 #pjama tested this version:
-%define src_version 2015.05.12
+#%define src_version 2015.05.12
+%define src_version 2015.08.07
 %endif
 
 #remove leading zero(s) from version-string for IPS compat
@@ -104,6 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Fri Aug 14 2015 - Thomas Wagner
+- bump to version 2015.08.07
 * Thu Aug 13 2015 - Thomas Wagner
 - fix compiler used if CC=gcc (gcc based env like OIH
 * Sat May 24 2015 - Thomas Wagner
