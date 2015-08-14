@@ -97,8 +97,8 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 #g++: error: unrecognized command line option '-compat=5'
 #./Makefile:ICU_CFLAGS =   -compat=5
 #./Makefile:LIBVISIO_CXXFLAGS = -I/usr/include/librevenge-0.0   -I/usr/include/libxml2      -compat=5
-perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
-
+grep "compat=5" Makefile && \
+  perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
 
 make -j$CPUS
 

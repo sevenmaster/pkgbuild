@@ -48,6 +48,7 @@ BuildRequires:  %{pnm_requires_developer_icu}
 ##TODO## check this dependency. Is it a hard 2.7 or just a default module needed for 2.6Ã6?
 # probably a fib but 0.9.2 requires python >= 2.7.1
 BuildRequires:	runtime/python-27 >= 2.7.1
+Requires:	runtime/python-27 >= 2.7.1
 
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
@@ -110,8 +111,18 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 # above doesn't like -pthreads
 
 
+#somehow S11 S12 OI151a8 OI151a9 don't have zlib.pc
+%if %( expr %{solaris12} )
+#override configure autodetection
+export ZLIB_LIBS="-lz"
+export ZLIB_CFLAGS="-I/usr/include"
+%endif
+
+#note, boost for example on %{oihipster} is /usr, other osdistro use SFEboost-gpp in /usr/g++
+
 ./configure	\
 	--prefix=%_prefix	\
+        --with-boost=%{boost_gpp_default_prefix} \
 	;
 
 ## TODO ##
@@ -158,12 +169,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 15 2015 - Thomas Wagner
+- override configure autodetection (missing zlib.pc) (S11 S12 OI)
+- use --with-boost=%{boost_gpp_default_prefix} for e.g. /usr/g++ (S11 S12 OI)
+- add Requires: runtime/python-27 (to get pkgtool --autodeps work)
 * Mon Aug 10 2015 - Thomas Wagner
 - rename IPS_Package_Name to propperly reflect g++ compiler
 ##TODO## relocation to /usr/g++ (depends on LO package)
 - initial commit to svn for pjama
 - unpack with xz
-##TODO## check python 2.7 only, or is python 2.6 plus modules enough?
+##TODO## check python 2.7 only or is python 2.6 plus modules enough?
 - change to (Build)Requires %{pnm_buildrequires_SUNWzlib}, %{pnm_buildrequires_boost_gpp_default}, developer_icu, library_math_header_math, SUNWlxml_devel, add SFExz_gnu, library_math_header_math, add SFExz_gnu
 * Sun Jun 14 2015 - pjama
 - initial spec

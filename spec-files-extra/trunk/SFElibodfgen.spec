@@ -69,6 +69,8 @@ xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/lib/pkgconfig
+
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
@@ -77,6 +79,7 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 ./configure	\
 	--prefix=%_prefix	\
+        --disable-weffc         \
 	;
 
 make -j$CPUS
@@ -111,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 11 2015 - Thomas Wagner
+- disable warnings with --disable-weffc (Disable -Weffc++ warnings in configure to avoid "Could not find Boost implementation of shared_ptr")
 * Mon Aug 10 2015 - Thomas Wagner
 - rename IPS_Package_Name to propperly reflect g++ compiler
 ##TODO## relocation to /usr/g++ (depends on LO package)
