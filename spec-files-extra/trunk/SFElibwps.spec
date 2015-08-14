@@ -85,6 +85,7 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 ./configure	\
 	--prefix=%_prefix	\
+        --disable-weffc         \
 	;
 
 make -j$CPUS
@@ -123,6 +124,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 11 2015 - Thomas Wagner
+- disable warnings with --disable-weffc (Disable -Weffc++ warnings in configure to avoid "Could not find Boost implementation of shared_ptr")
 * Mon Aug 10 2015 - Thomas Wagner
 - disable _use_internal_dependency_generator
 - rename IPS_Package_Name to propperly reflect g++ compiler

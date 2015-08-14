@@ -85,6 +85,13 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 	--prefix=%_prefix	\
 	;
 
+#from studio compiled icu.pc
+#g++: error: unrecognized command line option '-compat=5'
+#./Makefile:ICU_CFLAGS =   -compat=5
+#./Makefile:LIBVISIO_CXXFLAGS = -I/usr/include/librevenge-0.0   -I/usr/include/libxml2      -compat=5
+grep "compat=5" Makefile && \
+  perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
+
 make -j$CPUS
 
 
@@ -120,6 +127,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 14 2015 - Thomas Wagner
+- edit out -compat=5 from all files, comes from studio compiles icu libraries but g++ doesn't know that switch
 * Mon Aug 10 2015 - Thomas Wagner
 - rename IPS_Package_Name to propperly reflect g++ compiler
 ##TODO## relocation to /usr/g++ (depends on LO package)
