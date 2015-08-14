@@ -738,4 +738,27 @@ provide a pnm_macro to set the JDK JAVA_HOME (to reach $JAVA_HOME/bin/javac)
 and another pnm_macro to set the JRE JAVA_HOME (to reach $JAVA_HOME/bin/java of the specified platform default version)
 and another pnm_macro to set the JRE in explicit version (to reach jre_this_version/bin/java of the specified explicit version)
 
-Test-commit for IRC notification
+73)
+verify if older existing spec files are present  &  align package name and filesystem location with common SFE practise (g++ compiled -> /g++/ in name and in /usr/g++/ filesystem path) ... but this should wait until SFElibreoffice4.spec is propper
+work on new spec files to be submitted:
+kommandant tom ~/spec-files-extra pkgtool build-order SFEglm.spec SFElibixion.spec SFElibmspub.spec SFElibodfgen.spec SFEliborcus.spec SFElibrevenge.spec SFElibvisio.spec SFElibwpd.spec SFElibwpg.spec SFElibwps.spec SFEmdds.spec     
+INFO: Copying %use'd or %include'd spec files to SPECS directory
+INFO: Processing spec files
+/localhomes/tom/spec-files-extra/SFEglm.spec
+/localhomes/tom/spec-files-extra/SFElibixion.spec
+/localhomes/tom/spec-files-extra/SFElibrevenge.spec
+/localhomes/tom/spec-files-extra/SFElibmspub.spec
+/localhomes/tom/spec-files-extra/SFElibodfgen.spec
+/localhomes/tom/spec-files-extra/SFEliborcus.spec
+/localhomes/tom/spec-files-extra/SFElibvisio.spec
+/localhomes/tom/spec-files-extra/SFElibwpd.spec
+/localhomes/tom/spec-files-extra/SFElibwpg.spec
+/localhomes/tom/spec-files-extra/SFElibwps.spec
+/localhomes/tom/spec-files-extra/SFEmdds.spec
+libreoffice
+
+74) investigate linking
+SFElibebml-gpp.spec
+revisit AR=CC +- AR=/usr/gnu/bin/ar in case cc_is_gcc is true - use if AR=CC is not working on !studio env
+
+75) obsolete - verify
