@@ -34,9 +34,10 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: %{pnm_buildrequires_python_default}
 
-%if %{solaris12}
+#need icu compiled with GXX/gpp/g++ and only oihipster has it in osdistro
+%if %{oihipster}
 BuildRequires:  developer/icu
-Requires:       developer/icu
+Requires:       library/icu
 %else
 BuildRequires:	SFEicu-gpp-devel
 Requires:	SFEicu-gpp
@@ -112,6 +113,8 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+* Sat Aug 15 2015 - Thomas Wagner
+- use BuildRequires:  developer/icu (OIH)  else use BuildRequires  SFEicu-gpp-devel (all other)
 * Mon Aug 10 2015 - Thomas Wagner
 - contionally use BuildRequires developer/icu on S12 instead of SFEicu-gpp
 - patch1 .. patch5 thankfully imported patches for boost 0.58 from openindiana source repo
