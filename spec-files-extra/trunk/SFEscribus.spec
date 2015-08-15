@@ -36,6 +36,9 @@ BuildRequires: 	SFEcmake
 ##TODO## check dependency on python26 or if other versions do as well
 BuildRequires: 	%{pnm_buildrequires_python_default}
 
+BuildRequires:  %{pnm_buildrequires_SUNWfreetype2_devel}
+Requires:       %{pnm_buildrequires_SUNWfreetype2}
+
 ##TODO## 
 #BuildRequires:  SUNWcupsu
 
@@ -120,6 +123,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- add (Build)Requires pnm_buildrequires_SUNWfreetype2_devel
 * Fri Mar  6 2015 - Thomas Wagner
 - bump to 1.4.5, fix download extension .xz -> .tar.bz2
 - change (Build)Requires: Requires: %{pnm_buildrequires_python_default}
