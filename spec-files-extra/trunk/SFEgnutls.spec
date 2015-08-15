@@ -133,6 +133,30 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+- 
+Index: base-specs/gnutls.spec
+===================================================================
+--- base-specs/gnutls.spec	(revision 5968)
++++ base-specs/gnutls.spec	(working copy)
+@@ -1,7 +1,7 @@
+ #
+ #
+ Name:     	gnutls
+-Version: 	3.3.15
++Version: 	3.3.16
+ Copyright:	LGPL/GPL
+ BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+ Docdir:         %{_datadir}/doc
+@@ -48,6 +48,9 @@
+ 
+ 
+ %changelog
+* Tue Aug  4 2015 - Thomas Wagner
+- fix Requires for -devel to be SFEgnutls
+- bump to 3.3.16
+ * Thu Jun 18 2015 - Thomas Wagner
+ - unarchvied
+ - relocate to /usr/gnu, add IPS_Package_Name
 * Tue Aug  4 2015 - Thomas Wagner
 - remove %{pnm_buildrequires_SUNWlibgcrypt}
 - fix Requires for -devel to be SFEgnutls

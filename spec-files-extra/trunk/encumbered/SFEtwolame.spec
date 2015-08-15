@@ -21,11 +21,11 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
-Requires:      %{pnm_requires_SFElibsndfile}
-BuildRequires:	SUNWgnome-common-devel
+BuildRequires:	%{pnm_buildrequires_SFElibsndfile_devel}
+Requires:	%{pnm_requires_SFElibsndfile}
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 
-Requires: SUNWlibms
+Requires:	%{pnm_buildrequires_SUNWlibms}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -36,12 +36,17 @@ Requires: %name
 %prep
 %setup -q -n twolame-%version
 
+#configure doesn't keep the order for -lsndfile
+gsed -i.bak -e 's?-lsndfile?-R/usr/gnu/lib -L/usr/gnu/lib -lsndfile?' configure
+
+
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
-export CFLAGS="%optflags -xcrossfile=1"
+export CFLAGS="%optflags -I%{gnu_inc} -xcrossfile=1"
+export LDFLAGS="%{gnu_lib_path} %_ldflags"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal -I ."
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
@@ -83,9 +88,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+- Mon May 25 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWgnome_common_devel
+* Sun Dec  1 2013 - Thomas Wagner
+- work around wrong order for -lsndfile in configure 
 * Fri Jul  5 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
-##TODO## include and link against correct libsndfile
 * Mon Oct 10 2011 - Milan Jurik
 - bump to 0.3.13, add IPS package name
 * Mon Jul 25 2011 - N.B.Prashanth

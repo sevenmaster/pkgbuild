@@ -12,6 +12,8 @@
 
 %define src_url		%{sf_download}/%{sname}
 
+%include packagenamemacros.inc
+
 # To attempt building a certain wine version, as opposed to the latest
 # Wine version available from Sourceforge, pass the version as an argument.
 # example version number: 1.6.2
@@ -31,7 +33,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.22
+Version:                1.7.38
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -74,6 +76,7 @@ Requires:	SUNWdbus
 Requires:	SUNWxorg-clientlibs
 BuildRequires:	SUNWxorg-headers
 Requires:	SUNWxorg-mesa
+##TODO## use SFElcms2 only?
 Requires:	SUNWlcms
 BuildRequires:	SUNWjpg-devel
 Requires:	SUNWjpg
@@ -81,12 +84,14 @@ BuildRequires:	SUNWpng-devel
 Requires:	SUNWpng
 Requires:	SUNWlxml
 Requires:	SUNWlxsl
+##TODO## might need a pnm macro
 Requires:	SUNWcupsu
+##TODO## might need a pnm macro
 Requires:	SUNWsane-backendu
-BuildRequires:	SUNWncurses-devel
-Requires:	SUNWncurses
-BuildRequires:	SUNWopenssl-include
-Requires:	SUNWopenssl-libraries
+BuildRequires:  %{pnm_buildrequires_SUNWncurses_devel}
+Requires:       %{pnm_requires_SUNWncurses}
+BuildRequires:  %{pnm_buildrequires_SUNWopenssl_include}
+Requires:       %{pnm_requires_SUNWopenssl_libraries}
 BuildRequires:	SUNWgnutls-devel
 Requires:	SUNWgnutls
 Requires:	SUNWfreetype2
@@ -96,8 +101,10 @@ Requires:       SFElibgsm
 Requires:       SFEmpg123
 Requires:       SFEopenal
 Requires:       SUNWaudh
-BuildRequires:	SFElcms2
-Requires:	SFElcms2
+BuildRequires:	SFElcms2-gnu
+Requires:	SFElcms2-gnu
+BuildRequires:  x11/library/libxcursor
+Requires:       x11/library/libxcursor
 
 %package devel
 Summary:                 wine - developer files, /usr
@@ -265,6 +272,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sat Mar  7 2015 - Thomas Wagner
+- bump to 1.7.38
+- change (Build)Requires to %{pnm_requires_SUNWopenssl_include}, %include packagenamemacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}
 * Wed Jul 9 2014 - Ken Mays <kmays2000@gmail.com>
 - Bump to 1.7.22
 * Tue Feb 11 2014 - Ken Mays <kmays2000@gmail.com>

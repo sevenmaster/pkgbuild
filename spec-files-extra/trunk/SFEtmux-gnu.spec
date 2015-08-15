@@ -7,23 +7,25 @@
 #
 
 %include Solaris.inc
-%include usr-gnu.inc
 %include base.inc
+%include usr-gnu.inc
 
 %define srcname tmux
 %define _pkg_docdir %_docdir/%srcname
 
 Name:           SFEtmux-gnu
 IPS_Package_Name:	terminal/gnu/tmux
-Summary:        Terminal multiplexer (/usr/gnu) - GIT Version
-#remember to increment the 4th digit with every git commit snapshot
-IPS_Component_Version: 1.9.0.2
-%define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
-Version:        1.9a.git.df6488
+Summary:        Terminal multiplexer (/usr/gnu)
+#Summary:        Terminal multiplexer (/usr/gnu) - GIT Version
+#remember to increment the 4th digit with every git commit snapshot to help upgrading git checked out tmux
+#git IPS_Component_Version: 1.9.0.2
+#git %define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
+#git Version:        1.9a.git.df6488
+Version:        2.0
 License:        ISC ; BSD3c ; BSD 2-Clause
-Url:            http://tmux.sourceforge.net/
-#Source:         %{sf_download}/tmux/%{srcname}-%{version}.tar.gz
-Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
+Url:            http://tmux.github.io/
+#git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
+Source:		https://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
 #Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
@@ -95,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- bump to 2.0
+- new URL, new SOURCE (pause git checkout)
 * Sun Jan 18 2015 - Thomas Wagner
 - move to get snapshot instead regular downlod (try if mark/copy_to_clipbord stops writing core dumps)
 - bump to df6488a47088ec8bcddc6a1cfa85fec1a462c789 (git snapshot df6488)

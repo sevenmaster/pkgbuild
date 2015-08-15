@@ -10,6 +10,8 @@
 
 %include Solaris.inc
 
+%include packagenamemacros.inc
+
 %define as_optional %{?_with_optional_sshd:1}%{?!_with_optional_sshd:0}
 
 %define	src_name	openssh
@@ -17,8 +19,8 @@
 Name:		SFEopenssh-server
 IPS_Package_Name:	service/network/openssh
 Summary:	Secure Shell protocol Server
-Version:	6.6p1
-IPS_Component_Version:	6.6.1
+Version:	6.9p1
+IPS_Component_Version:	6.9.1
 URL:		http://www.openssh.org/
 Source:		http://ftp5.usa.openbsd.org/pub/OpenBSD/OpenSSH/portable/%{src_name}-%{version}.tar.gz
 Source1:	ssh.xml
@@ -36,13 +38,22 @@ Group:		System/Security
 License:	BSD
 SUNW_BaseDir:	/
 BuildRoot:	%{_tmppath}/%{name}_%{version}-build
+
 %include default-depend.inc
+
 BuildRequires:	SFEldns-devel
 Requires:	SFEldns
-BuildRequires:	SUNWopenssl-include
-Requires:	SUNWopenssl-libraries
+BuildRequires:  %{pnm_buildrequires_SUNWopenssl_include}
+Requires:	%{pnm_requires_SUNWopenssl_libraries}
+BuildRequires:	%{pnm_buildrequires_SUNWopenssl_fips_140_devel}
+Requires:	%{pnm_requires_SUNWopenssl_fips_140}
+%if %{os2nnn}
+BuildRequires:	library/libedit
+Requires:	library/libedit
+%else
 BuildRequires:	SFEeditline-devel
 Requires:	SFEeditline
+%endif
 
 %description
 OpenSSH is a FREE version of the SSH connectivity tools that technical users of the Internet rely on. Users of telnet, rlogin, and ftp may not realize that their password is transmitted across the Internet unencrypted, but it is. OpenSSH encrypts all traffic (including passwords) to effectively eliminate eavesdropping, connection hijacking, and other attacks. Additionally, OpenSSH provides secure tunneling capabilities and several authentication methods, and supports all SSH protocol versions.
@@ -54,8 +65,10 @@ SUNW_BaseDir:	/
 %include default-depend.inc
 BuildRequires:	SFEldns-devel
 Requires:	SFEldns
-BuildRequires:	SUNWopenssl-include
-Requires:	SUNWopenssl-libraries
+BuildRequires:  %{pnm_buildrequires_SUNWopenssl_include}
+Requires:	%{pnm_requires_SUNWopenssl_libraries}
+BuildRequires:	%{pnm_buildrequires_SUNWopenssl_fips_140_devel}
+Requires:	%{pnm_requires_SUNWopenssl_fips_140}
 
 %package -n SFEopenssh-common
 IPS_package_name:	network/openssh/ssh-key
@@ -85,6 +98,12 @@ fi
 %endif
 
 export CFLAGS="%{optflags}"
+
+#which build exactly?
+%if %{solaris11} %{solaris12}
+export CFLAGS="${CFLAGS} -DS11_BSM_API"
+%endif
+
 export LDFLAGS="%{_ldflags} -B direct -z nolazyload"
 
 ./configure --prefix=%{_prefix}	\
@@ -240,6 +259,10 @@ legacy desc="Secure Shell protocol common Utilities" name="SSH Common, (Usr)" pk
 %{_mandir}/man1m/%{path_suffix}-keysign.1m
 
 %changelog
+* Mon Aug 10 2015 - Thomas Wagner
+- bump to 6.9p1
+* Tue Feb 24 2015 - Thomas Wagner
+- bump to 6.7p1, rework patch3 patch8
 * Sun May 04 2014 - Milan Jurik
 - bump to 6.6p2
 - add openssh as optional to system ssh

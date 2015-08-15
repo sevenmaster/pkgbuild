@@ -25,6 +25,10 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires:	SUNWzlib
 
+%description
+ID3 tag manipulation library a wide range of multimedia formats
+
+
 %package devel
 Summary:	%{summary} - development files
 SUNW_BaseDir:	%{_basedir}
@@ -83,6 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+*     Mar 27  2013 - Thomas Wagner
+- description
 * Wed Jul 20 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
 * Sun Sep 26 2010 - Alex Viskovatoff

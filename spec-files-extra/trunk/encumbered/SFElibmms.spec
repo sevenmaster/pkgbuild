@@ -26,12 +26,12 @@ Version:	%{libmms.version}
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires:	SUNWgnome-base-libs
-BuildRequires: %{pnm_buildrequires_SUNWlibm}
-Requires:      %{pnm_buildrequires_SUNWlibm}
-BuildRequires:	SUNWgnome-base-libs-devel
+Requires:	%{pnm_buildrequires_SUNWgnome_base_libs}
+BuildRequires:	%{pnm_buildrequires_SUNWlibm}
+Requires:	%{pnm_buildrequires_SUNWlibm}
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_base_libs_devel}
 Conflicts:	SUNWmmsu
-BuildRequires:	SUNWgnome-common-devel
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 
 %package devel
 Summary:	%{summary} - development files
@@ -70,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat May 23 2015 - pjama
+- change (Build)Requires to pnm_buildrequires_SUNWgnome_base_libs, SUNWgnome_base_libs_devel, SUNWgnome_common_devel
 * Mon Apr 28 2014 - Thomas Wagner
 - add CFLAGS, LDFLAGS with -lxnet
 - bump to 0.6.4

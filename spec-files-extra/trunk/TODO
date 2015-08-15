@@ -762,3 +762,8 @@ SFElibebml-gpp.spec
 revisit AR=CC +- AR=/usr/gnu/bin/ar in case cc_is_gcc is true - use if AR=CC is not working on !studio env
 
 75) obsolete - verify
+
+76) occational version bumps
+name            old_ver   target_ver   who   comment
+SFEgmpc.spec              11.8         any   new numbering, please all/most at the same time -> plugin
+SFEgmpc-plugin-*          11.8         any   new numbering, please all/most at the same time -> main package

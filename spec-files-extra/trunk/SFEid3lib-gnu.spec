@@ -6,13 +6,13 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
-%include usr-gnu.inc
 %include base.inc
+%include usr-gnu.inc
 
 
 Name:                    SFEid3lib-gnu
 IPS_package_name:	 library/audio/id3lib-gnu
-Summary:                 id3lib - a software library for manipulating ID3v1/v1.1 and ID3v2 tags
+Summary:                 id3lib - a software library for manipulating ID3v1/v1.1 and ID3v2 tags (/usr/gnu)
 URL:                     http://id3lib.sourceforge.net/
 Version:                 3.8.3
 Source:                  %{sf_download}/id3lib/id3lib-%{version}.tar.gz
@@ -86,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Wed Mar  4 2015 - Thomas Wagner
+- swap %include base.inc and %include usr-gnu.inc
 * Sat Jun 29 2013 - Thomas Wagner
 - align Summary with SFEid3lib-gpp.spec
 - add URL

@@ -1,7 +1,7 @@
 #
 #
 Name:     	gnutls
-Version: 	3.3.15
+Version: 	3.3.16
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug  4 2015 - Thomas Wagner
+- fix Requires for -devel to be SFEgnutls
+- bump to 3.3.16
 * Thu Jun 18 2015 - Thomas Wagner
 - unarchvied
 - relocate to /usr/gnu, add IPS_Package_Name

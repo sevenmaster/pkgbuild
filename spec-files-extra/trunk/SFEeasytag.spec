@@ -57,8 +57,6 @@ BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
 Requires:      %{pnm_requires_SUNWspeex}
 BuildRequires: SFElibid3tag-devel
 Requires:      SFElibid3tag
-#2.1.8 uses taglib BuildRequires: SFElibmp4v2-devel
-#2.1.8 uses taglib Requires:      SFElibmp4v2
 #C++ by studio compilers:
 BuildRequires: SUNWid3lib
 Requires:      SUNWid3lib
@@ -106,6 +104,7 @@ export AR=/usr/bin/ar
             --libdir=%{_libdir} \
             --bindir=%{_bindir} \
             --sysconfdir=%{_sysconfdir} \
+            --disable-mp4    \
             --disable-static \
             --enable-dynamic
 
@@ -157,6 +156,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jan  8 2013 - Thomas Wagner
+- explicitly disable-mp4 (prevent autom. inclusion)
 * Sun Aug  4 2013 - Thomas Wagner
 - remove obsolete dependency on SFElibmp4v2
   might require you to uninstall SFElibmp4v2 library/video/libmp4v2 before compiling this spec file

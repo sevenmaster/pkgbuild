@@ -11,8 +11,8 @@
 # This package does not conflict with library/icu because its base directory
 # is /usr/g++.
 
-%define _basedir /usr/g++
 %include Solaris.inc
+%include usr-g++.inc
 %define cc_is_gcc 1
 %include base.inc
 %ifarch amd64 sparcv9
@@ -25,7 +25,7 @@
 
 Name:			SFEicu-gpp
 IPS_Package_Name:	library/g++/icu
-Summary:		%icu.summary (g++ built)
+Summary:		%icu.summary (/usr/g++)
 Version:		%icu.version
 URL:			http://site.icu-project.org/
 License:		BSD.icu
@@ -135,6 +135,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug  8 - 2015 Thomas Wagner
+- moved %build up before configure step to solve "make" running without our ENV variables (CFLAGS,...)
+- bump to 55.1          
+- imported new patch0 - patch7 from OI Userland
 * Thu Jun 23 2011 - Alex Viskovatoff
 - Fork SFEicu-gpp.spec off SFEicu.spec
 * Mon Apr 11 2011 - Alex Viskovatoff

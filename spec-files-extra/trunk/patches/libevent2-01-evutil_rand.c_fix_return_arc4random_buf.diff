@@ -1,0 +1,12 @@
+--- libevent-2.0.22-stable/evutil_rand.c.orig	2013-11-01 19:18:57.000000000 +0100
++++ libevent-2.0.22-stable/evutil_rand.c	2015-03-02 00:38:58.378910418 +0100
+@@ -65,7 +65,8 @@
+ ev_arc4random_buf(void *buf, size_t n)
+ {
+ #if defined(_EVENT_HAVE_ARC4RANDOM_BUF) && !defined(__APPLE__)
+-	return arc4random_buf(buf, n);
++        arc4random_buf(buf, n);
++	return;
+ #else
+ 	unsigned char *b = buf;
+ 

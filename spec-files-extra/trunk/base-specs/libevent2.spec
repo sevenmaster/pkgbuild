@@ -5,13 +5,16 @@
 
 Name:		libevent2
 Summary:	An event notification library for event-driven network servers.
-Version:	2.0.21
-Source:		http://github.com/downloads/libevent/libevent/libevent-%version-stable.tar.gz
+Version:	2.0.22
+Source:		%{sf_download}/levent/libevent/libevent-2.0/libevent-%{version}-stable.tar.gz
+Patch1:         libevent2-01-evutil_rand.c_fix_return_arc4random_buf.diff
 URL:		http://monkey.org/~provos/libevent/
 Group:		System/Libraries
 
 %prep
 %setup -q -n libevent-%version-stable
+
+%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -38,6 +41,9 @@ rm $RPM_BUILD_ROOT%{_libdir}/libevent*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Mar  2 2015 - Thomas Wagner
+- bump to 2.0.22
+- add patch1 no return value from arc4random_buf 
 * Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
 - updated download url
 * Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>

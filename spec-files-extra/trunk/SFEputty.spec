@@ -11,6 +11,8 @@
 %define CC gcc
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
 Name:                    SFEputty
 Summary:                 putty - A graphical SSH Client
 URL:                     http://www.chiark.greenend.org.uk/~sgtatham/putty/
@@ -24,13 +26,10 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 
-##TODO## all Requirements
-BuildRequires: CBEenv
-# if your are < b134
-#Requires:	SUNWGtk
-#Requires:	SUNWGlib
-Requires:	library/desktop/gtk1
-Requires:	library/glib1
+BuildRequires:	%{pnm_buildrequires_SUNWGtk}
+BuildRequires:	%{pnm_buildrequires_SUNWGlib}
+Requires:	%{pnm_requires_SUNWGtk}
+Requires:	%{pnm_requires_SUNWGlib}
 
 
 %prep
@@ -43,7 +42,6 @@ export CC=gcc
 export CXX=g++
 #be carefull *not* to set wired LDFLAGS in your compile-environment!
 export LDFLAGS="${LDFLAGS} -lsocket -lxnet -L/usr/sfw/lib -R/usr/sfw/lib"
-export INSTALL="`pkgparam CBEenv BASEDIR`/bin/install -c -D"
 
 
 cd unix
@@ -75,6 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug  7 2011 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWGtk} %{pnm_buildrequires_SUNWGlib}
+  %include packagenamemacros.inc
+- remove (Build)Requires CBEenv and special req to "install" command
 * Tue Dec 23 2008 - Thomas Wagner
 - create %{_docdir} in case old pkgbuild doesn't
 * Tue Dec 23 2008 - Thomas Wagner

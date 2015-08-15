@@ -10,7 +10,12 @@
 %define src_name	cppunit
 
 Name:		SFEcppunit
-IPS_Package_Name:	developer/cppunit
+#IPS_Package_Name:	developer/cppunit
+%if %{oihipster}
+IPS_Package_Name:	 sfe/developer/cppunit
+%else
+IPS_Package_Name:	 developer/cppunit
+%endif
 Summary:	C++ port of JUnit
 Version:	1.12.1
 Source:		%{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
@@ -83,6 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Aug  5 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWgraphviz} %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- add sfe/ to IPS_Package_Name only on OIH or get duplicate package name (at the end, don't build on oihipter for now - subject to change)
 * Mon May 14 2012 - Milan Jurik
 - bump to 1.12.1
 * Fri Jan 18 2008 - moinak.ghosh@sun.com

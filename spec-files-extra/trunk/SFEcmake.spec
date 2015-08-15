@@ -13,8 +13,14 @@
 # Avoid conflict with SUNWcmake
 %include usr-gnu.inc
 
+#developer/build/cmake                             2.8.6-5.12.0.0.0.70.0      ---
+
 Name:		SFEcmake
+%if %( expr %{solaris12} '&' %{osbuild} '>=' 70 )
 IPS_Package_Name:	sfe/developer/build/cmake 
+%else
+IPS_Package_Name:	developer/build/cmake 
+%endif
 Summary:	Cross platform make system
 Version:	2.8.11
 License:	BSD3c

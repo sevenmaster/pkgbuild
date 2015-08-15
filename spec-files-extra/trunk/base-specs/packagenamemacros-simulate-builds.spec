@@ -235,6 +235,8 @@ Name: packagenamemacros
 %description
 Demo the packagenamemacros.inc use for (see filename which OS and osbuild is simulated):
 
+   spectool get_block prep base-specs/packagenamemacros.spec
+or
    pkgtool --interactive prep base-specs/packagenamemacros-simulate-builds.spec
 
 
