@@ -9,6 +9,8 @@
 %include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
+%define _use_internal_dependency_generator 0
+
 
 Name:		SFEtaglib-gpp
 IPS_Package_Name:	library/audio/g++/taglib
@@ -74,6 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Jan  9 2015 - Thomas Wagner
+- switch off pkgdepend. doesn't to the right thing: find the other taglib package and add false dependencies
 * Fri Jan  2 2015 - Thomas Wagner
 - make g++ version
 - bump to 1.7.2

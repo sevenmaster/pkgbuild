@@ -6,6 +6,9 @@
 %include Solaris.inc
 %include usr-gnu.inc
 %include osdistro.inc
+
+%define _use_internal_dependency_generator 0
+
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libmpc_64 = libmpc.spec
@@ -139,6 +142,8 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Mon Aug  3 2015 - Thomas Wagner
+- disable _use_internal_dependency_generator or stumble over osdistro's gmp / mpfr
 * Sat Feb  7 2015 - Thomas Wagner
 - exclude SUNWpostrun on IPS based systems 
 * Thu Jun 27 2013 - Thomas Wagner
