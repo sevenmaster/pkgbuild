@@ -6,9 +6,9 @@
 
 %include Solaris.inc
 %include packagenamemacros.inc
+%include base.inc
 %include usr-gnu.inc
 #studio not gcc %define cc_is_gcc 1
-%include base.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -16,6 +16,7 @@
 %endif
 
 %include base.inc
+%include usr-gnu.inc
 %use wxwidgets = wxwidgets.spec
 
 
@@ -126,6 +127,8 @@ rm -rf %{name}-%{version}
 %endif
 
 %changelog
+* Wed Mar  4 2015 - Thomas Wagner
+- fix %include order usr-gnu.inc
 * Fri Nov  1 2013 - Thomas Wagner
 - use export PKG_CONFIG_PATH=%{_pkg_config_path} (before: was always using amd64/sparcv9)
 * Fri Jun 29 2012 - Thomas Wagner

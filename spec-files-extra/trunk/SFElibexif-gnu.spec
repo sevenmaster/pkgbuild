@@ -14,8 +14,8 @@
 %include base.inc
 %use libexif = libexif.spec
 
-Name:		SFElibexif
-IPS_Package_Name:	library/libexif
+Name:		SFElibexif-gnu
+IPS_Package_Name:	library/gnu/libexif
 Summary:      EXIF Tag Parsing Library (/usr/gnu)
 Group:		Development/Libraries
 Version:      %{libexif.version}
@@ -104,3 +104,4 @@ rm -rf %{buildroot}
 %changelog
 * Mon May 27 2013 - Thomas Wagner
 - initial spec version 0.6.21
+- fix pacakge name to include -gnu

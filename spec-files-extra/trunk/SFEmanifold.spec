@@ -26,8 +26,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires: %{pnm_buildrequires_python_default}
 Requires:      %{pnm_requires_python_default}
 BuildRequires: %{pnm_buildrequires_SUNWpython26_setuptools_devel}
-##TODO## is this required? BuildRequires: %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
-##TODO## is this required? Requires:      %{pnm_requires_SUNWgnome_python26_libs}
+BuildRequires: %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
+Requires:      %{pnm_requires_SUNWgnome_python26_libs}
 ##TODO## #paused, needed only for very old osdistro# BuildRequires: %{pnm_buildrequires_SUNWlibpigment_python26_devel}
 BuildRequires: SFEpython26-genshi
 Requires:      SFEpython26-genshi
@@ -123,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_cxx_libdir}/*
 
 %changelog
+- Mon Jan  5 2015 - Thomas Wagner
+- change BuildRequires to pnm_requires_SUNWgnome_python26_libs
 * Sun Jan  4 2015 - Thomas Wagner
 - fix (Build)Requires for newer osdisto
 * Thr Mar 17 2011 - Thomas Wagner

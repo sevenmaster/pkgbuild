@@ -39,6 +39,7 @@ export CXXFLAGS="-norunpath -xO3 -xlibmil -xlibmopt -features=tmplife"
 
 autoreconf --install
 
+chmod u+w ltmain.sh
 rm ltmain.sh
 libtoolize --force
 
@@ -61,6 +62,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat May 22 2015 - pjama
+- change mod u+w on ltmain.sh to permit rm of same
 * Tue Dec 24 2013 - Thomas Wagner
 - libtoolize --force (S12) or get incomplete compiler command lines (base-specs/faad2.spec)
 - export AR=/usr/bin/ar (S12) (SFEfaad2.spec)

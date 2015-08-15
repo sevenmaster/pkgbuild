@@ -1,6 +1,5 @@
 #
 # Copyright (c) 2006 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
 %include Solaris.inc
@@ -22,6 +21,7 @@ SUNW_Copyright:	libevent.copyright
 Version:	%{libevent2.version}
 URL:		http://monkey.org/~provos/libevent/
 Group:		System/Libraries
+Patch1:		libevent2-01-evutil_rand.c_fix_return_arc4random_buf.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -79,6 +79,9 @@ rm -rf %{buildroot}
 %{_includedir}
 
 %changelog
+* Sun Mar  2 2015 - Thomas Wagner
+- bump to 2.0.22
+- add patch1 no return value from arc4random_buf
 * Tue Dec 18 2012 - Logan Bruns <logan@gedanken.org>
 - updated download url
 * Sat Dec 8 2012 - Ken Mays <kmays2000@gmail.com>

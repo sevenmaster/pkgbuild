@@ -252,7 +252,7 @@
 %define os2nnn   1
 #below: subject to change!
 %define omnios 1
-%define osdistrelnumber $( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
+%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
 #                                below: subject to change!
 %define osdistrelname   "OmniOS"
 #this was the last check, skip all others
@@ -553,6 +553,8 @@
 
 
 %changelog
+* Wed Aug  5 2015 - Thomas Wagner
+- typo $->% in %define osdistrelnumber (OOS/OM)
 * Mon Jul 27 2015 - Thomas Wagner
 - verify/merge hipster integration (thanks to pjama)
 * Mon May 25 2015 - pjama

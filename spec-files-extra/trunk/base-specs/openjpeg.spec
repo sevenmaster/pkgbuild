@@ -4,7 +4,7 @@
 
 Summary:	Open Source multimedia framework
 Version:	%{version}
-Source:		http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
+Source:		%{sf_download}/openjpeg.mirror/openjpeg-%{version}.tar.gz
 
 
 
@@ -64,6 +64,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_pkg_config_path}
 
 
 %changelog
+* Sat May 22 2015 - pjama
+- update download URL
 * Sat Mar 22 2014 - Thomas Wagner
 - Workaround broken search for liblcms2.so in configure.
   On some OS and installed package mix, the amd64 build traps over /usr/gnu/lib/lcms2.so (=32bit)

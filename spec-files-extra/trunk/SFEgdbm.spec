@@ -4,16 +4,29 @@
 # includes module(s): gdbm
 #
 
+##NOTE## only works on osdistro which misses the gdbm package. For example on OmniOS.
+
 %include Solaris.inc
 %define cc_is_gcc 1
-#%include usr-gnu.inc
+
+%include packagenamemacros.inc
+#%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%if %( test %{pnm_buildrequires_SUNWgnu_dbm} != SFEgdbm && echo 1 )
+%include usr-gnu.inc
+%endif
 %include base.inc
 
+
 Name:         SFEgdbm
-#Summary:      GNU Database Routines
+%if %( test %{pnm_buildrequires_SUNWgnu_dbm} != SFEgdbm && echo 1 )
 Summary:      GNU Database Routines (/usr/gnu)
-#IPS_Package_Name: library/database/gnu/gdbm
+IPS_Package_Name: library/database/gnu/gdbm
+#noting to do
+%else
+##only build if osdistro has no gdbm
+Summary:      GNU Database Routines
 IPS_Package_Name: library/database/gdbm
+%endif
 Group:        libraries/database
 Version:      1.11
 License:      GPL
@@ -94,7 +107,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}/man3
 %{_mandir}/man3/*
 
+
 %changelog
+* Mon Aug  3 2015 - Thomas Wagner
+- relocate with usr-gnu.inc if osdisto's gdbm is the default S12, S11 >= 116, OI
+* Mon Jun 29 2015 - Thomas Wagner
+- prevent building on S12, S11 >= 116, OI
 * Sat Jan 17 2015 - Thomas Wagner
 - compile with gcc, fix %files, remove patch1 gdbm-01-fixmake.diff
 * Mon Dec 23 2014 - Thomas Wagner
