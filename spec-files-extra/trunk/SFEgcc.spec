@@ -395,7 +395,7 @@ Requires: SFElibmpc
 #Requires: SUNWthis-package-not-availbale
 %endif
 
-%if %( expr %{solaris12} '|' %{oihipster} )   
+%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} )   
 BuildRequires: developer/gcc-3
 ##TODO## check if required: Requires: developer/gcc-3-runtime
 %endif
@@ -526,7 +526,7 @@ export CXX=CC
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
 
-%if %( expr %{solaris12} '|' %{oihipster} )
+%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} )
 #%if %( expr %{solaris12} '|' %{omnios} )
 #running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
 export CC=/usr/sfw/bin/gcc
@@ -540,6 +540,22 @@ export CC=$( ls -1 /opt/gcc-4.8.*/bin/gcc | tail -1 )
 export CXX=$( ls -1 /opt/gcc-4.8.*/bin/g++ | tail -1 )
 unset CPP
 %endif
+
+#set the bootstrap compiler optionally on the command line
+#is 1 if variable is set
+%if %{?gcc_boot_cc:1}
+#yes
+export CC=%{gcc_boot_cc}
+%if %{!?gcc_boot_cxx:1}
+ echo "gcc_boot_cxx needs to be set to C++ compiler!"
+ echo "you may need as well need define cc_is_gcc 1 in case of GCC/G++"
+ exit 1
+%endif
+export CXX=%{gcc_boot_cxx}
+%else
+#no
+%endif
+
 
 export CFLAGS="-O"
 export CONFIG_SHELL=/usr/bin/ksh
@@ -718,7 +734,7 @@ do
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
 # leave out sfw gcc 3.x.x uses this name already ln -s ../../gcc/%major_minor/bin/cpp
-  for filepath in bin/c++ bin/g++ bin/gcc bin/gcov bin/gfortran
+  for filepath in bin/c++ bin/g++ bin/gcc bin/cpp bin/gcov bin/gfortran
   do
   [ -r $OFFSET/gcc/%major_minor/$filepath ] && ln -s $OFFSET/gcc/%major_minor/$filepath
   done #for file
@@ -835,6 +851,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Aug 12 2015 - Thomas Wagner
+- build with /usr/sfw/bin/gcc on S11 (studio w/ need __STDC__ or get arg-count error getopt_long )
+- BuildRequires: developer/gcc-3 (S11)
+- add testing switches to set bootstrap compiler on command line --define 'gcc_boot_cc /usr/usethis/bin/gcc' --define 'gcc_boot_cxx /usr/usethis/bin/g++' 
+* Wed Aug  5 2015 - Thomas Wagner
+- add symlink to cpp
 * Tue Aug  4 2015 - Thomas Wagner
 - initialize gccsymlinks[123] in any case
 - BuildRequires: developer/gcc-3 (S12, OIH)
