@@ -15,8 +15,8 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
-%include base.inc
 %include usr-gnu.inc
+%include base.inc
 %include packagenamemacros.inc
 %define source_name transmission
 
@@ -144,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Fri Sep 20 2013 - Ian Johnson
 - Bump to 2.60
 - Add configure.ac patch to drop GTK2_MINIMUM version to the one included in Solaris

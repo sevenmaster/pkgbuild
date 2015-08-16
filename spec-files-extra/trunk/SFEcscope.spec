@@ -57,6 +57,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Thu Mar 17 2011 - Thomas Wagner
 - move to /usr/gnu to avoid conflicts with sunstudio12u1 (/usr/bin/cscope and manpage)
 * Wed Nov 18 2009 - halton.huo@sun.com

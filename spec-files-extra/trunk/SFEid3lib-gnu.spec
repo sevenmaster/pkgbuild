@@ -6,8 +6,8 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
-%include base.inc
 %include usr-gnu.inc
+%include base.inc
 
 
 Name:                    SFEid3lib-gnu
@@ -86,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Wed Mar  4 2015 - Thomas Wagner
 - swap %include base.inc and %include usr-gnu.inc
 * Sat Jun 29 2013 - Thomas Wagner

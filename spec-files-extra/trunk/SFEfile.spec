@@ -74,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/*.4
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Fri Jan  2 2015 - Thomas Wagner
 - bump to 5.21
 - add dependencies

@@ -5,13 +5,13 @@
 #
 #
 %include Solaris.inc
-%include usr-g++.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 
 Name:                    SFEid3lib-gpp
 IPS_package_name:	 library/audio/g++/id3lib
-Summary:                 id3lib (g++) - a software library for manipulating ID3v1/v1.1 and ID3v2 tags (g++)
+Summary:                 id3lib (g++) - a software library for manipulating ID3v1/v1.1 and ID3v2 tags (/usr/g++)
 URL:                     http://id3lib.sourceforge.net/
 Version:                 3.8.3
 Source:                  %{sf_download}/id3lib/id3lib-%{version}.tar.gz
@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Sat Jun 29 2013 - Thomas Wagner
 - use std macros for *FLAGS, cc_is_gcc switches content for us
 - remove dependency on SUNWlibC (we use gcc)

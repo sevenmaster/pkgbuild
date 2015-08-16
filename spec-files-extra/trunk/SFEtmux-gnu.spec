@@ -7,8 +7,8 @@
 #
 
 %include Solaris.inc
-%include base.inc
 %include usr-gnu.inc
+%include base.inc
 
 %define srcname tmux
 %define _pkg_docdir %_docdir/%srcname
@@ -97,6 +97,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Mon Aug 10 2015 - Thomas Wagner
 - bump to 2.0
 - new URL, new SOURCE (pause git checkout)

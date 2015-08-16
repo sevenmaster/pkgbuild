@@ -4,10 +4,10 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
-%include base.inc
 
 # Avoid conflict with editor/gnu-emacs
 %include usr-gnu.inc
+%include base.inc
 %define _infodir %_datadir/info
 
 %include packagenamemacros.inc
@@ -149,6 +149,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Thu Sep 12 2014 - Alex Viskovatoff
 - disable sound - the only reason I added alsa was because the documentation
   indicated that sound does not work on Solaris

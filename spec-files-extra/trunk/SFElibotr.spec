@@ -15,7 +15,7 @@
 
 Name:                    SFElibotr
 IPS_Package_Name:	 library/security/gnu/libotr
-Summary:                 libotr - Off-the-Record Messaging Library and Toolkit
+Summary:                 libotr - Off-the-Record Messaging Library and Toolkit (/usr/gnu)
 Group:                   Utility
 Version:                 3.2.1
 URL:		         http://www.cypherpunks.ca/otr/
@@ -96,6 +96,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Sun Dec 16 2012 - Thomas Wagner
 - move to /usr/gnu by %include usr-gnu.inc (interferes with files from solaris/communication/im/pidgin)
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibgcrypt_devel}, %include packagenamemacros.inc

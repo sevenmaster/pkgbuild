@@ -6,8 +6,8 @@
 
 %include Solaris.inc
 %include packagenamemacros.inc
-%include base.inc
 %include usr-gnu.inc
+%include base.inc
 #studio not gcc %define cc_is_gcc 1
 
 %ifarch amd64 sparcv9
@@ -15,8 +15,8 @@
 %use wxwidgets_64 = wxwidgets.spec
 %endif
 
+#%include usr-gnu.inc
 %include base.inc
-%include usr-gnu.inc
 %use wxwidgets = wxwidgets.spec
 
 
