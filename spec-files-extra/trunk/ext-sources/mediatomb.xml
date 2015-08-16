@@ -4,7 +4,7 @@
         Created by Manifold
 --><service_bundle type="manifest" name="mediatomb">
 
-    <service name="/application/mediatomb" type="service" version="1">
+    <service name="network/media/mediatomb" type="service" version="1">
 
         
         
@@ -38,7 +38,7 @@
             </property_group>
 
             <property_group name="application" type="application">
-                <propval name="config_file" type="astring" value="/etc/mediatomb/config.xml"/>
+                <propval name="config_file" type="astring" value="/etc/mediatomb/.mediatomb/config.xml"/>
             </property_group>
 
         </instance>
@@ -50,7 +50,7 @@
         <template>
             <common_name>
                 <loctext xml:lang="C">
-                    MediaTomb UPnP MediaServer
+                    MediaTomb UPnP MediaServer DLNA
                 </loctext>
             </common_name>
         </template>
