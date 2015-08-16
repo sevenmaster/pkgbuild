@@ -11,8 +11,8 @@
 %include packagenamemacros.inc
 
 %define cc_is_gcc 1
-%include base.inc
 %include usr-g++.inc
+%include base.inc
 
 %use glibmm = glibmm.spec
 
@@ -91,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/devhelp
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Thu Nov 14 2013 - Thomas Wagner
 - fix dependencies to be g++ compiled SFEsigcpp-gpp.spec (we are fully in g++ world)
 - change (Build)Requires to %{pnm_requires_SUNWgnome_base_libs_devel}, %include packagenamemacros.inc

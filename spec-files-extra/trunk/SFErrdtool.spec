@@ -4,6 +4,9 @@
 
 #TODO# python might love a subdirectory "rrdtool" under site-packages:  lib/python2.4/site-packages/rrdtoolmodule.so
 
+##TODO## 32-/64-bit Version might have different binary database file contents - check and build both
+#maybe a mediator could switch 32/64-bit modes?
+
 
 %include Solaris.inc
 %include usr-gnu.inc
@@ -29,9 +32,9 @@
 
 
 
-Name:                    SFErrdtool
-IPS_Package_Name:	 sfe/image/rrdtool
-Summary:                 rrdtool - data logging and graphing system for time series data.
+Name:                    SFErrdtool-gnu
+IPS_Package_Name:	 image/gnu/rrdtool
+Summary:                 rrdtool - data logging and graphing system for time series data. (/usr/gnu)
 URL:                     http://oss.oetiker.ch/rrdtool/
 Version:                 1.4.8
 ##TODO##License:		
@@ -223,6 +226,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Thu Jun  5 2014 - Thomas Wagner
 - bump to 1.4.8, rework spec file to meet new style
 - relocate to /usr/gnu to co-exist with OS provided rrdtool (which misses RRDs.pm)

@@ -57,6 +57,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Mon Sep 19 2011 - Thomas Wagner
 - bump to 3.0.4
 - add IPS_Package_Name

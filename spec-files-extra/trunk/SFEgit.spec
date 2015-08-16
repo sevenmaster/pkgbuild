@@ -1,3 +1,41 @@
+# check this # 
+# check this # +https://github.com/OpenIndiana/oi-userland/commit/0bad6d05fd05e8afa3fd5d21bfd2e4dd433ec2ef
+# check this # +
+# check this # +o@@ -0,0 +1,33 @@
+# check this # ++From fe054b8cbe161d01a66637976c1cabad0ce1c973 Mon Sep 17 00:00:00 2001
+# check this # ++From: Ben Walton <bwalton@opencsw.org>
+# check this # ++Date: Mon, 30 Jul 2012 18:13:23 +0200
+# check this # ++Subject: [PATCH] Use getpassphrase instead of getpass when prompting for
+# check this # ++ passwords
+# check this # ++
+# check this # ++The legacy getpass function returns at most 9 characters, including
+# check this # ++null termination which means an 8-character password. Instead, use
+# check this # ++getpassphrase which allows up to 257 characters.
+# check this # ++
+# check this # ++Mantis ID 4943
+# check this # ++
+# check this # ++Signed-off-by: Ben Walton <bwalton@opencsw.org>
+# check this # ++---
+# check this # ++ compat/terminal.c | 2 +-
+# check this # ++ 1 file changed, 1 insertion(+), 1 deletion(-)
+# check this # ++
+# check this # ++diff --git a/compat/terminal.c b/compat/terminal.c
+# check this # ++index 6d16c8f..2585436 100644
+# check this # ++--- a/compat/terminal.c
+# check this # +++++ b/compat/terminal.c
+# check this # ++@@ -75,7 +75,7 @@ char *git_terminal_prompt(const char *prompt, int echo)
+# check this # ++
+# check this # ++ char *git_terminal_prompt(const char *prompt, int echo)
+# check this # ++ {
+# check this # ++- return getpass(prompt);
+# check this # +++ return getpassphrase(prompt);
+# check this # ++ }
+# check this # ++
+# check this # ++ #endif
+# check this # ++--
+# check this # ++1.7.10.3
+# check this # ++
+# check this # +
 #
 # spec file for package : SFEgit
 #
@@ -13,8 +51,8 @@
 #
 %include Solaris.inc
 %define cc_is_gcc 1
-%include base.inc
 %include usr-gnu.inc
+%include base.inc
 %include packagenamemacros.inc
 
 Name:                SFEgit
@@ -29,24 +67,22 @@ Patch1:              git-01-solaris-shell.diff
 Patch2:              git-02-fixshell.diff
 Patch3:              git-03-xmlto.diff
 SUNW_BaseDir:        %{_basedir}
+BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWzlib
-Requires: SUNWsshu
-Requires: SUNWopenssl-libraries
+Requires: %{pnm_reqires_SUNWsshu}
+BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
+Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: SUNWlexpt
 Requires: SUNWcurl
-Requires: %pnm_requires_perl_default
+Requires: %{pnm_requires_perl_default}
 #Requires: SFEpython3
 Requires: SUNWbash
 Requires: SUNWlexpt
-%if %(pkginfo -q SUNWgnu-diffutils && echo 1 || echo 0)
-Requires: SUNWgnu-diffutils
-%else
-Requires: SFEdiffutils
-%endif
+Requires: %{pnm_requires_text_gnu_diffutils}
 Requires: SUNWTk
-BuildRequires: SFEasciidoc
+BuildRequires: %{pnm_buildrequires_SFEasciidoc}
 BuildRequires: SFExmlto
 
 %prep
@@ -140,10 +176,22 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_prefix}/perl5/vendor_perl
 %dir %attr (0755, root, bin) %{_prefix}/perl5/vendor_perl/%{perl_version}
 %{_prefix}/perl5/vendor_perl/%{perl_version}/*
-%dir %attr (0755, root, bin) %{_datadir}/locale
+%if %{_share_locale_group_changed}
+%dir %attr (0755, root, %{_share_locale_group}) %{_datadir}/locale
+%defattr (-, root, %{_share_locale_group})
+%else
+%dir %attr (0755, root, other) %{_datadir}/locale
+%defattr (-, root, other)
+%endif
+#END if _share_locale_group_changed
 %{_datadir}/locale/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
+* Fri Apr 26 2014 - Thomas Wagner
+- use auto-switch for changing group owner of /usr/gnu/share/locale
+- change (Build)Requires to %{pnm_buildrequires_SFEasciidoc} (S12)
 * Sun Feb 9  2014 - Alex Viskovatoff
 - update to 1.8.5.4
 * Thu Sep 12 2013 - Alex Viskovatoff

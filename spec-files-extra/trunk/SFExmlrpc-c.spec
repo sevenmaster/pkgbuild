@@ -73,6 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
+* Thu Jan  1 2015 - Thomas Wagner
+- bump to 1.33.15
 * Sun Oct 13 2013 - Thomas Wagner
 - bump to 1.25.26
 - IPS bring back IPS_component_version to regular format (needs manual 

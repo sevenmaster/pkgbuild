@@ -151,6 +151,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Wed Aug 14 2013 - Thomas Wagner
 - fix %files
 * Sun Dec 16 2012 - Thomas Wagner
