@@ -45,7 +45,7 @@
 
 Name:                SFEmediatomb
 IPS_Package_Name:    media/mediatomb
-Summary:             UPnP AV MediaServer
+Summary:             UPnP AV MediaServer / DLNA Server / transcoding
 Version:             0.12.1
 URL:                 http://mediatomb.cc
 Source:              %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
@@ -80,6 +80,38 @@ Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_prefix}
 %include default-depend.inc
 Requires: %name
+
+%description
+This server might open access to your local files if not confiured and firewalled
+propperly. Be warned.
+
+AV Media Server
+DNLA
+
+can even serve your LAN connected TV set, tables, smartphone.
+
+config file is in in /etc/mediatomb/.mediatomb/config.xml (can be changed in SMF)
+
+svcadm enable mediatomb
+
+make your media-files readable for group "nogroup" or user "mediatomb"
+(running userid/group can be changed in SMF, mind chmod -R /etc/mediatomb
+as well!)
+
+read the fine online documentation, e.g.:
+http://mediatomb.cc/pages/documentation
+
+google "mediatomb transcoding" if you want turning local large files
+into small bandwidth streams to the net
+
+on android you may use "UPnPlay" and the like to find your mediatomb server,
+play video e.g. with vlc including pause / seek
+
+on the webbrowser configure mediatomb to include the directories you want to serve.
+
+initial results are quick, configuring transcoding is a nightmare but it is the
+coolest feature!
+
 
 %prep
 %setup -q -n %{src_name}-%version
@@ -137,8 +169,13 @@ gsed -i -e '/method_credential user=/ s?mediatomb?%{daemonuser}?g'  \
         %{SOURCE2}
 %endif
 
+mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp %{SOURCE2} ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
 #with write permissions for %{daemonuser} %{daemongroup}
 mkdir -p $RPM_BUILD_ROOT/%{_localstatedir}/%{src_name}
+
+mkdir ${RPM_BUILD_ROOT}/%{_sysconfdir}/%{src_name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -146,7 +183,7 @@ rm -rf $RPM_BUILD_ROOT
 
 #IPS
 %actions 
-user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
+user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}" home-dir="%{_sysconfdir}/%{src_name}" login-shell="/bin/false"
 %if %( expr %{daemongid} '!=' 65534 )
 #not needed _if_ group is nogroup  (65534)
 group groupname="%{daemongroup}" gid="%{daemongid}"
@@ -156,6 +193,7 @@ group groupname="%{daemongroup}" gid="%{daemongid}"
 %files
 %defattr (-, root, bin)
 %{_bindir}
+%dir %attr (0700, %{daemonuser}, %{daemongroup} %{_sysconfdir}/%{src_name}
 %dir %attr (0755, root, sys) %{_datadir}
 %{_mandir}
 %{_datadir}/mediatomb
@@ -164,6 +202,10 @@ group groupname="%{daemongroup}" gid="%{daemongid}"
 %{_localstatedir}/%{src_name}
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- copy SMF manifest to /var/svc/manifest/site/
+- create %{_sysconfdir}/%{src_name}, set user's homedir to this location
+  config file is in /etc/mediatomb/.mediatomb/config.xml (can be changed)
 * Wed Mar  4 2015 - Thomas Wagner
 - remove (Build)Requires SUNWlibexif (use pnm_requires_image_library_libexif)
 * Sat Feb 15 2015 - Thomas Wagner
