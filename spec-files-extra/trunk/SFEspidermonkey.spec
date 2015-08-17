@@ -26,14 +26,28 @@ Patch7:                  spidermonkey-07-makefile.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
+##TODO## pnn_macro to resolve pnm_buildrequires_SUNWprd_devel to library/security/nss if osdistro >=160
 #resolves to library/nspr/header-nspr but this was
 #renamed to:
 #depend fmri=library/nspr@0.5.11-0.160 type=require
 #so for the moment, require library/nspr
 #BuildRequires: %{pnm_buildrequires_SUNWprd_devel}
-##TODO## pnn_macro to resolve pnm_buildrequires_SUNWprd_devel to library/nspr if osdistro >=160
+#We want the libs. For compiling add the headers
+#S11 library/security/nss@4.17.2,5.11-0.175.3.0.0.20.0
+#S12 library/security/nss@4.17.2,5.12-5.12.0.0.0.67.0
+#pkgname for runtime libs? probably the same
+#BuildRequires: %{pnm_requires_library_nspr_header_nspr}
+#old: SUNWtlsd -> mps/ssl.h
+#pkg:/library/security/nss -> usr/include/mps/ssl.h     
+BuildRequires: library/security/nss
+#       library/mozilla-nss
+#system/library/mozilla-nss
+#Requires:      %{pnm_requires_tls}
+Requires:      library/security/nss
+
 BuildRequires: %{pnm_buildrequires_SUNWpr}
-Requires:      %{pnm_buildrequires_SUNWpr}
+Requires:      %{pnm_requires_SUNWpr}
 BuildRequires: SUNWzip
 
 %package devel
@@ -52,7 +66,8 @@ SUNW_BaseDir: %{_basedir}
 %patch7 -p1
 
 %build
-export LDFLAGS="-B direct -z ignore"
+#libnspr4.sp in /usr/lib/mps
+export LDFLAGS="-B direct -z ignore -R/usr/lib/mps -L/usr/lib/mps"
 export CFLAGS="-xlibmopt"
 export OS_DEFINES="-D__USE_LEGACY_PROTOTYPES__"
 export CXXFLAGS="-xlibmil -xlibmopt -D_XOPEN_SOURCE=500 -D__EXTENSIONS__"
@@ -70,6 +85,11 @@ make
 
 cd js/src
 make install DESTDIR=$RPM_BUILD_ROOT
+
+#deliver a unversioned symlink libmozjs.so as well
+#e.g. mediatomb looks for -ljs and -lsmjs and -lmozjs
+#ln -s $RPM_BUILD_ROOT/%{_libdir}/libmozjs.so libmozjs185.so
+ln -s libmozjs185.so $RPM_BUILD_ROOT/%{_libdir}/libmozjs.so 
 
 find $RPM_BUILD_ROOT/%{_libdir} -type f -name "*.a" -exec rm -f {} ';'
 
@@ -94,6 +114,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Aug 17 2015 - Thomas Wagner
+- add rpath to find libnspr4.so in /usr/lib/mps/
+- add symlink libmozjs.so for mediatomb to libmozjs185.so.1.0.0
+- add BuildRequires is unfinished, for now library/security/nss
 * Fri Jan  2 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWprd_devel} %{pnm_buildrequires_SUNWpr}, %include packagenamemacros.inc, needs more work in pnm_macros: library/nspr/header-nspr is renamed to library/nspr >= 160
 - fix patch spidermonkey-04-jemalloc.diff (you might verify this, it was an empty section at the end)
