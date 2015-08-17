@@ -26,7 +26,7 @@
                 <method_credential user="mediatomb" group="nogroup"/>
             </method_context>
 
-            <exec_method type="method" name="start" exec="/usr/bin/mediatomb %{config_file}" timeout_seconds="60"/>
+            <exec_method type="method" name="start" exec="/etc/mediatomb/mediatomb.sh %{config_file}" timeout_seconds="60"/>
 
             <exec_method type="method" name="stop" exec=":kill" timeout_seconds="60"/>
 

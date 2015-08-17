@@ -1,0 +1,12 @@
+--- src/tools.cc~	2013-01-15 06:13:14.000000000 -0600
++++ src/tools.cc	2013-01-15 06:13:50.468668167 -0600
+@@ -1223,7 +1223,8 @@
+         String param = params->get(i);
+         String newParam = param.replace(_("%in"), in);
+         newParam = newParam.replace(_("%out"), out);
+-        newParam = newParam.replace(_("%range"), range);
++	if ( range != nil)
++	    newParam = newParam.replace(_("%range"), range);
+         if (param != newParam)
+             params->set(newParam, i);
+     }
