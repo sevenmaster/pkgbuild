@@ -1,7 +1,7 @@
 #
 #
 Name:     	gnutls
-Version: 	3.3.16
+Version: 	3.4.4
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
@@ -48,6 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 20 2015 - Thomas Wagner
+- bump to 3.4.4
 * Tue Aug  4 2015 - Thomas Wagner
 - fix Requires for -devel to be SFEgnutls
 - bump to 3.3.16
