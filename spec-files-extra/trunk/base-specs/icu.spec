@@ -22,14 +22,14 @@ Source:			http://download.icu-project.org/files/%tarball_name/%version/%tarball_
 #remove# This is executed in the context either of 32- or 64-bit builds.
 
 #imported from OI Userland gate
-Patch00: icu-00-patch-common_uposixdefs.h.patch.diff
-Patch01: icu-01-source_common_tetdata_conversion.txt.patch.diff
-Patch02: icu-02-source_common_ucnv_u7.c.patch.diff
-Patch03: icu-03-source_config_mh_solaris.patch.diff
-Patch04: icu-04-source_data_mappings_johab.ucm.patch.diff
-Patch05: icu-05-source_i18n_decNumber.h.patch.diff
-Patch06: icu-06-source_runConfigureICU.patch.diff
-Patch07: icu-07-source_test_ccapitst.c.patch.diff
+Patch1: icu-01-patch-common_uposixdefs.h.patch.diff
+Patch2: icu-02-source_common_testdata_conversion.txt.patch.diff
+Patch3: icu-03-source_common_ucnv_u7.c.patch.diff
+Patch4: icu-04-source_config_mh_solaris.patch.diff
+Patch5: icu-05-source_data_mappings_johab.ucm.patch.diff
+Patch6: icu-06-source_i18n_decNumber.h.patch.diff
+Patch7: icu-07-source_runConfigureICU.patch.diff
+Patch8: icu-08-source_test_ccapitst.c.patch.diff
 
 
 %prep
@@ -38,14 +38,23 @@ Patch07: icu-07-source_test_ccapitst.c.patch.diff
 #%patch3
 #removed %patch4 -p 1
 # Patch2 applied below
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+
 
 %build
 
 %if %cc_is_gcc
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags -D_XPG6"
-export CXXFLAGS="%cxx_optflags -std=c99 -D_XPG6"
+export CFLAGS="%optflags -std=c99 -D_XPG6"
+export CXXFLAGS="%cxx_optflags -D_XPG6"
 
 %if %opt_arch64
  export LDFLAGS="%_ldflags -L/usr/gnu/lib/%bld_arch -R/usr/gnu/lib/%bld_arch"
@@ -93,9 +102,7 @@ chmod 0755 ./runConfigureICU
 	--libexecdir=%{_libexecdir} \
 	--libdir=%{_libdir} \
 	--mandir=%{_mandir} \
-	--disable-warnings \
 	--disable-debug \
-	--disable-dependency-tracking \
 	--disable-strict \
 %if %opt_arch64
 	--with-library-bits=64 \
@@ -104,9 +111,7 @@ chmod 0755 ./runConfigureICU
 %endif
 	--enable-release \
 	--enable-draft \
-	--disable-renaming \
 	--enable-rpath \
-	--enable-threads \
 	--enable-extras \
 	--enable-icuio \
 	--enable-layout \
@@ -115,7 +120,27 @@ chmod 0755 ./runConfigureICU
 	--enable-shared \
 	--disable-static \
         --with-data-packaging=library \
+%if %{with_disable_renaming}
+        --disable-renaming \
+%else
+        --enable-renaming \
+%endif
         || { r=$?; cat config.log; exit $r; }
+
+%if %{with_disable_renaming}
+        echo "WARNING: "
+        echo "WARNING: "
+        echo "WARNING: "
+        echo "WARNING: "
+        echo "WARNING: "
+        echo "WARNING: --disable-renaming"
+        echo "WARNING: "
+        echo "WARNING: this icu library needs every consuming software be rebuilt to match this icu library's version"
+        echo "WARNING: "
+        echo "WARNING: see http://userguide.icu-project.org/design paragraph ICU Binary Compatibility: Using ICU as an Operating System Level Library"
+        echo "WARNING: "
+        echo "WARNING: "
+%endif
 
 #from Oi Userland Makefile
 echo 'CPPFLAGS += -DICU_DATA_DIR=\"%{_prefix}/share/icu/%{version}\"' >> icudefs.mk 
@@ -159,6 +184,16 @@ ${MAKE} install DESTDIR=${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sun Aug 23 2015 - Thomas Wagner
+- remove wrong --disable-renamings, as it causes unkown symbol errors in consuming libaries (e.g. libvisio, libmspub)
+- remove unrecognized configure opts: --disable-warnings, --disable-dependency-tracking, --enable-threads
+- add switch (default off) to build icu without the function renaming for testing (don't switch that on in normal cases)
+* Tue Aug 18 - 2015 Thomas Wagner
+- really submit missing patches with propper names and numbering, and apply them
+- move -std=c99 to CFLAGS
+- fix %files for %{_bindir}/genctd now %{_bindir}/gendict
+* Tue Aug 18 2015 - Thomas Wagner
+- add missing patches
 * Sat Aug  8 - 2015 Thomas Wagner
 - moved %build up before configure step to solve "make" running without our ENV variables (CFLAGS,...)
 - bump to 55.1

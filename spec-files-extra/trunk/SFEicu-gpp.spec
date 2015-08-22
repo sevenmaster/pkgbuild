@@ -1,3 +1,25 @@
+#functions get version numbers starting with ICU 49
+#read: http://userguide.icu-project.org/design paragraph ICU Binary Compatibility: Using ICU as an Operating System Level Library
+#if set --disable-renaming then you *need* every consumter be rebuilt to match features / functions of the icu version used at compile time
+#pkgtool --with-disable_renaming
+%define with_disable_renaming %{?_with_disable_renaming:1}%{?!_with_disable_renaming:0}
+
+
+
+# beware! If you recompile this spec file while another, older lib of the same is still 
+
+#         installed on your system, you most likely run into "symbol not found"
+
+#         errors. Try uninstalling the previous icu and its dependents before the new compile run!
+
+#         display one level of the installed dependency chain with "pkg search :depend:require:library/g++/icu"
+
+#         (repeat for each dependency found then uninstall in reverse order)
+
+
+#         or, if you have, use "cd spec-files-extra; pkgtool-uninstall-recoursive SFEicu-gpp.spec"
+
+
 #
 # spec file for package SFEicu
 #
@@ -87,7 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/genbrk
 %{_bindir}/gencfu
 %{_bindir}/gencnval
-%{_bindir}/genctd
+#%{_bindir}/genctd
+%{_bindir}/gendict
 %{_bindir}/genrb
 %{_bindir}/icu-config
 %{_bindir}/icuinfo
@@ -135,9 +158,19 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 23 2015 - Thomas Wagner
+- remove wrong --disable-renamings, as it causes unkown symbol errors in consuming libaries (e.g. libvisio, libmspub)
+- remove unrecognized configure opts: --disable-warnings, --disable-dependency-tracking, --enable-threads
+- add switch (default off) to build icu without the function renaming for testing (don't switch that on in normal cases)
+* Tue Aug 18 - 2015 Thomas Wagner
+- really submit missing patches with propper names and numbering, and apply them
+- move -std=c99 to CFLAGS
+- fix %files for %{_bindir}/genctd now %{_bindir}/gendict
+* Tue Aug 18 2015 - Thomas Wagner
+- add missing patches
 * Sat Aug  8 - 2015 Thomas Wagner
 - moved %build up before configure step to solve "make" running without our ENV variables (CFLAGS,...)
-- bump to 55.1          
+- bump to 55.1
 - imported new patch0 - patch7 from OI Userland
 * Thu Jun 23 2011 - Alex Viskovatoff
 - Fork SFEicu-gpp.spec off SFEicu.spec
