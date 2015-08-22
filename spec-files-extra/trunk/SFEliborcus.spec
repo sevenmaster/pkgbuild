@@ -57,6 +57,13 @@ Requires:	%{pnm_requires_system_library_math_header_math}
 BuildRequires:  %{pnm_buildrequires_SUNWzlib}
 Requires:       %{pnm_requires_SUNWzlib}
 
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+#S11 S12 need zlib.pc
+BuildRequires:  SFEzlib-pkgconfig 
+#for pkgtool's dependency resoultion
+Requires:       SFEzlib-pkgconfig 
+%endif
+
 BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
 
 BuildRequires:  SFElibrevenge
@@ -97,6 +104,12 @@ export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
+##try #mdds.pc in wrong location!
+##try export PKG_CONFIG_PATH=/usr/share/pkgconfig:$PKG_CONFIG_PATH
+
+##TODO## Verified on S11 S12 to not appear, remove the comment of the folowing osdistro are (now) w/o this error
+##TODO## verify on OIHipster if this appears
+##TODO## verify on oi151a9 if this appears
 ## TODO ##
 # Fix this
 #checking boost/thread.hpp presence... no
@@ -111,12 +124,26 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 # above doesn't like -pthreads
 
 
-#somehow S11 S12 OI151a8 OI151a9 don't have zlib.pc
-%if %( expr %{solaris12} )
-#override configure autodetection
-export ZLIB_LIBS="-lz"
-export ZLIB_CFLAGS="-I/usr/include"
+#S12
+%if %{solaris12}
+   gsed -i.bak0 -e '/^CXXFLAGS=/ s/-fvisibility=hidden//' \
+   configure.ac \
+   ;
 %endif
+
+#debug [ -f configure.ac.bak0 ] && (diff -u configure.ac.bak0 configure.ac; exit 0)
+
+#  Peter Tribbles' sneaky hack to insert -pthreads in all the Makefiles at:
+#For liborcus, run the following against all the Makefiles that the configure step generates:
+#gsed -i 's:-DMDDS_HASH_CONTAINER_BOOST:-pthreads -DMDDS_HASH_CONTAINER_BOOST:'
+
+#this is the same then Peter did to Makefile but this time done to configure.ac (gets rebuilt, creates Makefile at ./configure time)
+gsed -i.bak1 -e 's/-DMDDS_HASH_CONTAINER_BOOST/-pthreads -DMDDS_HASH_CONTAINER_BOOST/' configure.ac
+
+#debug [ -f configure.ac.bak1 ] && (diff -u configure.ac.bak1 configure.ac; exit 0)
+
+echo "verify that \"-pthreads\" is in CXXFLAGS"
+grep "CXXFLAGS.*pthreads" configure*
 
 #note, boost for example on %{oihipster} is /usr, other osdistro use SFEboost-gpp in /usr/g++
 
@@ -125,15 +152,19 @@ export ZLIB_CFLAGS="-I/usr/include"
         --with-boost=%{boost_gpp_default_prefix} \
 	;
 
-## TODO ##
-#  Peter Tribbles' sneaky hack to insert -pthreads in all the Makefiles at:
-#For liborcus, run the following against all the Makefiles that the configure step generates:
-#gsed -i 's:-DMDDS_HASH_CONTAINER_BOOST:-pthreads -DMDDS_HASH_CONTAINER_BOOST:'
+echo "verify that \"-pthreads\" is in CXXFLAGS"
+grep "CXXFLAGS.*pthreads" configure*
 
-gsed -i -e 's/-DMDDS_HASH_CONTAINER_BOOST/-pthreads -DMDDS_HASH_CONTAINER_BOOST/' \
-    `find . -name Makefile`
+#touch Makefile.in
+#touch configure
+#touch config.status
+#touch Makefile
+#touch stamp-h1
 
-make -j$CPUS
+#I can't help, that super smart Makefile immediately re-creates everything by running: 
+#/bin/bash ./config.status --recheck
+#you'll see in "make" for the second time a configure run. Only costs a bit of time, so stop fixing an overly sensitive Makefile.
+make V=2 -j$CPUS
 
 
 %install
@@ -169,6 +200,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 22 2015 - Thomas Wagner
+- move injection of "-pthreads" to CXXFLAGS from Makefile to configure.ac (avoid throwing out the "-fvisibility=hidden" removal from configure configure.ac (S12)
+- leave a bit debug output on, don't set PKG_CONFIG_PATH to /usr/share/pkgconfig and see if mdds.pc is still propperly / configured (tested on S11, S12)
+* Thu Aug 20 2015 - Thomas Wagner
+- add BuildRequires SFEzlib-pkgconfig, remove variables pointing to ZLIB
+- remove in configure script -fvisibility=hidden from CXXFLAGS on S12
 * Sat Aug 15 2015 - Thomas Wagner
 - override configure autodetection (missing zlib.pc) (S11 S12 OI)
 - use --with-boost=%{boost_gpp_default_prefix} for e.g. /usr/g++ (S11 S12 OI)
