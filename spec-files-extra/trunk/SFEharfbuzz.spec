@@ -92,6 +92,12 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 %install
 rm -rf $RPM_BUILD_ROOT
 
+export CC=gcc
+export CXX=g++
+#export CFLAGS="%optflags -I/usr/g++/include"
+#export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
+#export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
 rmdir $RPM_BUILD_ROOT/%{_bindir}
@@ -126,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Weg 19 Aug 2015 - Thomas Wagner
+- init ENV in %install (else might catch wrong compiler)
 * Mon Aug 10 2015 - Thomas Wagner
 - initial spec 0.9.38, more fresh versions untested. Note: LibreOffice4 uses harfbuzz
 ##TODO## make a 32/64 bit package
