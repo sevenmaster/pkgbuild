@@ -10,13 +10,13 @@
 Name:	        SFErcs
 IPS_Package_Name:	developer/versioning/rcs
 Summary:	GNU Revision Control System
-URL:		http://www.cs.purdue.edu/homes/trinkle/RCS/
+URL:		http://www.gnu.org/software/rcs/
 Vendor:		GNU Project
-Version:        5.8
-License:	GPLv2
+Version:        5.9.4
+License:	GPLv3
 Group:		Development/Source Code Management
-SUNW_Copyright:	rcs.copyright
-Source:		http://www.cs.purdue.edu/homes/trinkle/RCS/%srcname-%version.tar.gz
+SUNW_Copyright:	GPLv3.copyright
+Source:		ftp://ftp.gnu.org/gnu/rcs/%srcname-%version.tar.xz
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
@@ -28,26 +28,23 @@ BuildRoot:	%_tmppath/%name-%version-build
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
-./configure --prefix=%{_prefix} --mandir=%{_mandir}
+./configure --prefix=%_prefix
 
 make -j$CPUS
 
 %install
-rm -rf %{buildroot}
-make install DESTDIR=%{buildroot}
+rm -rf %buildroot
+make install DESTDIR=%buildroot
 
-rm -rf %{buildroot}%{_infodir}
+rm %buildroot%_infodir/dir
 
 %clean
-rm -rf %{buildroot}
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
@@ -59,9 +56,13 @@ rm -rf %{buildroot}
 %_mandir/man1/*.1
 %dir %attr (0755, root, bin) %_mandir/man5
 %_mandir/man5/rcsfile.5
+%dir %attr (0755, root, bin) %_datadir/info
+%_datadir/info/%srcname.info
 
 
 %changelog
+* Sat Aug 22 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 5.9.4; install rcs.info
 * Mon Dec 05 2011 - Milan Jurik
 - bump to 5.8
 * Mon Jul 25 2011 - N.B.Prashanth
