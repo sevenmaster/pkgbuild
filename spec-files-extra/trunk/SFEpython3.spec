@@ -4,8 +4,8 @@
 #
 
 %define src_name Python
-%define version 3.2.3
-%define unmangled_version 3.2.3
+%define version 3.2.6
+%define unmangled_version 3.2.6
 
 %include Solaris.inc
 
@@ -15,7 +15,7 @@ Summary: The Python interpreter, libraries and utilities
 Group: Development/Python
 Version: %{version}
 License: PSF license
-Source: http://www.python.org/ftp/python/%{unmangled_version}/%{src_name}-%{unmangled_version}.tar.bz2
+Source: http://www.python.org/ftp/python/%{unmangled_version}/%{src_name}-%{unmangled_version}.tar.xz
 URL: http://www.python.org/
 
 %include default-depend.inc
@@ -84,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Aug 24 2015 - Alex Viskovotoff <herzen@imap.cc>
+- bump to 3.2.6
 * Fri Aug 31 2012 - Milan Jurik
 - more packaging fixes, shared library added
 * Thu Jul 19 2012 - Thomas Wagner
