@@ -15,11 +15,10 @@
 Name:                    SFEemacs
 IPS_Package_Name:	 sfe/editor/gnu-emacs
 Summary:                 GNU Emacs - an operating system in a text editor
-Version:                 24.3.1
+Version:                 24.5
 License:                 GPLv3+
 SUNW_Copyright:          GPLv3.copyright
-%define emacs_version    24.3
-Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%emacs_version.tar.gz
+Source:                  http://ftp.gnu.org/pub/gnu/emacs/emacs-%version.tar.xz
 URL:                     http://www.gnu.org/software/emacs/emacs.html
 SUNW_BaseDir:            %_basedir
 %include default-depend.inc
@@ -62,7 +61,7 @@ SUNW_BaseDir:            /
 %include default-depend.inc
 
 %prep
-%setup -q -n emacs-%emacs_version
+%setup -q -n emacs-%version
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -86,32 +85,30 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:/usr/lib/pk
             --with-xft				\
 	    --without-sound
 
-make -j$CPUS 
+make -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install prefix=$RPM_BUILD_ROOT%{_prefix} \
-	mandir=$RPM_BUILD_ROOT%{_mandir} \
-	libexecdir=$RPM_BUILD_ROOT%{_libexecdir} \
-        infodir=$RPM_BUILD_ROOT%{_infodir} \
-        localstatedir=$RPM_BUILD_ROOT%{_localstatedir}
-
-rm -f $RPM_BUILD_ROOT%{_bindir}/ctags
-rm -f $RPM_BUILD_ROOT%{_mandir}/man1/ctags.1
+make install prefix=%buildroot%_prefix \
+	mandir=%buildroot%_mandir \
+	libexecdir=%buildroot%_libexecdir \
+	infodir=%buildroot%_infodir \
+	localstatedir=%buildroot%_localstatedir
+# Avoid conflict with system gnu-emacs.  (It uses /usr/gnu/bin)
+mkdir -p %buildroot/usr/g++/bin
+mv %buildroot%_bindir/ctags %buildroot%_bindir/etags %buildroot/usr/g++/bin
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
-%defattr (-, root, root)
-%dir %attr (0755, root, bin) %{_prefix}
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
-%dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/*
+%defattr (-, root, bin)
+%dir %_prefix
+%_bindir
+%_libdir
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, root) %{_datadir}/emacs
+%dir %_datadir/emacs
 %dir %attr (0755, root, other) %{_datadir}/applications
 %{_datadir}/applications/emacs.desktop
 %dir %attr (0755, root, other) %{_datadir}/icons
@@ -140,6 +137,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
 %attr (0755, root, bin) %{_infodir}
+%dir /usr/g++
+%dir /usr/g++/bin
+/usr/g++/bin/ctags
+/usr/g++/bin/etags
 
 %files root
 %defattr (-, root, sys)
@@ -149,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/games/emacs/*
 
 %changelog
+* Tue Aug 24 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 24.5; follow Oracle's practice of ignoring third number of version
+- install two files in /usr/g++/bin to avoid conflicts with system Emacs
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Thu Sep 12 2014 - Alex Viskovatoff
