@@ -9,13 +9,10 @@
 %include base.inc
 
 %define src_name	ImageMagick
-%define major		6.8.5
-%define minor		10
+%define major		6.9.2
+%define minor		0
 
-# Note: we purposely take the latest version from legacy since these
-# are stable (permanent) links whereas the absolute latest version is
-# placed one directory up but only temporarily while it is new.
-%define src_url		ftp://ftp.imagemagick.org/pub/ImageMagick/legacy
+%define src_url		ftp://ftp.imagemagick.org/pub/ImageMagick/releases
 
 Name:                   SFElibmagick-gpp
 IPS_Package_Name:	image/library/g++/imagemagick
@@ -23,7 +20,7 @@ Summary:                Image Manipulation Libraries
 Version:                %{major}.%{minor}
 License:                ImageMagick License
 SUNW_Copyright:         imagemagick.copyright
-Source:                 %{src_url}/%{src_name}-%{major}-%{minor}.tar.gz
+Source:                 %{src_url}/%{src_name}-%{major}-%{minor}.tar.xz
 Group:			Graphics
 SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
@@ -33,7 +30,6 @@ BuildRequires:	SFEjasper-devel
 Requires:	SFEjasper
 BuildRequires:	SFElibwebp-devel
 Requires:	SFElibwebp
-Requires:	SFEimagemagick
 
 %package devel
 Summary:                 %{summary} - development files
@@ -44,10 +40,7 @@ SUNW_BaseDir:            %{_prefix}
 %setup -q -n %{src_name}-%{major}-%{minor}
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++ 
@@ -94,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Tue Aug 24 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 6.9.5; remove build dependency on SFEimagemagick
+  (the latter conflicts with pkg://solaris/image/imagemagick)
 * Thu Sep 12 2013 - Alex Viskovatoff
 - bump to 6.8.5
 * Sat Apr 13 2013 - Logan Bruns <logan@gedanken.org>
