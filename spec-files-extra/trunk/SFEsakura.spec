@@ -17,7 +17,7 @@ Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%versio
 %include default-depend.inc
 SUNW_Copyright: sakura.copyright
 SUNW_BaseDir:	%_basedir
-BuildRequires:	SFEcmake
+BuildRequires:	developer/build/cmake
 BuildRequires:	SUNWgtk2-devel
 Requires:	SUNWgtk2
 BuildRequires:	SUNWgnome-terminal
@@ -82,6 +82,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sat Aug 22 2015 - Alex Viskovatoff <hezen@imapmail.org>
+- Allow use of system cmake
 * Sun Feb 16 2014 - Alex Viskovatoff
 - Update to 2.4.2
 * Mon Jul 25 2011 - N.B.Prashanth
