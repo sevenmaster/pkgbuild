@@ -13,7 +13,7 @@ Summary:	Note-taking and sketching application
 Group:		Applications/Office
 URL:		http://xournal.sourceforge.net
 Meta(info.upstream):	Dennis Auroux
-Version:	0.4.7
+Version:	0.4.8
 License:	GPLv2
 SUNW_Copyright:	xournal.copyright
 Source:		http://downloads.sourceforge.net/%{srcname}/%{srcname}-%{version}.tar.gz
@@ -22,8 +22,6 @@ Patch:		xournal-01-inline.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: SUNWgmake
-BuildRequires: SUNWaconf
 BuildRequires: SUNWgnome-pdf-viewer-devel
 BuildRequires: SUNWgnome-common-devel
 Requires: SUNWgtk2
@@ -51,10 +49,7 @@ Requires:       %{name}
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CFLAGS="%optflags"
 export LIBS=-lz
 
@@ -108,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 26 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 0.4.8
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 0.4.7
 * Tue Jul 26 2011 - N.B.Prashanth
