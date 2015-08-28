@@ -7,7 +7,7 @@
 %include packagenamemacros.inc
 
 %define _prefix /usr
-%define	tarball_version	0.1.4
+%define	tarball_version	0.1.6
 %define	tarball_name yaml
 %define	src_url	http://pyyaml.org/download/libyaml
 
@@ -32,11 +32,7 @@ cp -rp %{tarball_name}-%{tarball_version} %{tarball_name}-%{tarball_version}-64
 %endif
 
 %build
-
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 cd %{tarball_name}-%{tarball_version}
 %ifarch sparc
@@ -45,17 +41,11 @@ cd %{tarball_name}-%{tarball_version}
 %define target i386-sun-solaris
 %endif
 
-export CC=cc
 export CFLAGS="-i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
 
-./configure\
- --prefix=%{_prefix}\
- --exec-prefix=%{_prefix}\
- --libdir=%{_libdir} \
- --includedir=%{_includedir} \
- --mandir=%{_mandir}
+./configure\ --prefix=%_prefix
 
-gmake -j$CPUS
+make -j$CPUS
 
 %ifarch amd64 sparcv9
 cd ../%{tarball_name}-%{tarball_version}-64
@@ -99,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 0.1.6
 * Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
 - fixed some permissions.
 * Sat Jun 25 JST 2011 TAKI, Yasushi <taki@justplayer.com>
