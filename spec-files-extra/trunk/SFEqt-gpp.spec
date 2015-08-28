@@ -38,7 +38,7 @@ Summary:             Cross-platform development framework/toolkit (g++)
 Group:               Desktop (GNOME)/Libraries
 URL:                 http://qt-project.org
 License:             LGPLv2
-Version:             4.8.5
+Version:             4.8.7
 Source:              http://download.qt-project.org/official_releases/qt/4.8/%version/%srcname-%version.tar.gz
 Source1:	     qt-webkit-StackBounds.cpp
 
@@ -282,6 +282,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 4.8.7
 * Thu Aug 13 2015 - Thomas Wagner
 - remove Patch15 again, now remove dynlist with gsed regex right before the make run
 - change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (OIH)
@@ -289,7 +291,7 @@ rm -rf %buildroot
 - add Patch15 qt-gpp-15-4.8.5-disable-QtCore.dynlist.diff linker doesn't know
 * Fri Mar  6 2015 - Thomas Wagner
 - change (Build)Requires to SFEgcc / SFEgcc-runtime (4.8.x) (S12)
-* Sun Nov  3 2013 - Alex Viskovatoff <herzen@imapmail.org>
+* Sun Nov  3 2013 - Alex Viskovatoff <herzen@imap.cc>
 - use WebKit source for one JavaScript source file, as a partial fix for crashes
 * Sun Oct 27 2013 - Alex Viskovatoff
 - bump to 4.8.5

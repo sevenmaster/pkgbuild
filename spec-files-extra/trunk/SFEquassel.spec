@@ -13,7 +13,7 @@ Name:			SFEquassel
 IPS_package_name:	desktop/irc/quassel
 Group:			Applications/Internet
 Summary:		Graphical IRC client based on a client-server model
-Version:		0.9.2
+Version:		0.12.2
 URL:			http://quassel-irc.org/
 License:		GPLv2
 SUNW_Copyright:		GPLv2.copyright
@@ -21,6 +21,7 @@ Source:			http://quassel-irc.org/pub/%srcname-%version.tar.bz2
 SUNW_BaseDir:		%_basedir
 %include		default-depend.inc
 
+BuildRequires:		SFEcmake
 BuildRequires:		SFEqt-gpp
 
 %description
@@ -39,8 +40,9 @@ to as "Quassel Mono".
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CC=gcc
-export CXX=g++
+# gcc 4.6 produces "unrecognized command line option '-std=c++11'" error
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
 export PATH=/usr/g++/bin:$PATH
 export CFLAGS="%gcc_optflags"
 export CXXFLAGS="%gcc_cxx_optflags"
@@ -61,11 +63,6 @@ rm -rf %buildroot
 cd builds/unix
 make install DESTDIR=%buildroot
 
-cd %buildroot/%_datadir
-mv apps/quassel .
-rmdir apps
-
-
 %clean
 rm -rf %buildroot
 
@@ -84,6 +81,9 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.12.2; build with system gcc (SFEgcc can't compile this)
+- use SFEcmake (Solaris 11.2's cmake is too ald)
 * Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
 - bump to 0.9.2
 * Fri Nov  1 2013 - Alex Viskovatoff <herzen@imapmail.org>
