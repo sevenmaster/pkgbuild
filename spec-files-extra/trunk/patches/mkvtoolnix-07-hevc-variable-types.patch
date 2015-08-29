@@ -1,0 +1,19 @@
+Thanks to Moritz Bukus (mosu) for help with code that was contributed by DivX.
+
+--- src/common/hevc.cpp.orig	Sat Aug 15 05:22:58 2015
++++ src/common/hevc.cpp	Fri Aug 28 12:38:46 2015
+@@ -2057,11 +2057,11 @@
+       bool Log2MinCbSizeY = sps.log2_min_luma_coding_block_size_minus3 + 3;
+       bool Log2CtbSizeY = Log2MinCbSizeY + sps.log2_diff_max_min_luma_coding_block_size;
+       bool CtbSizeY = 1 << Log2CtbSizeY;
+-      bool PicWidthInCtbsY = ceil(sps.width / CtbSizeY);
+-      bool PicHeightInCtbsY = ceil(sps.height / CtbSizeY);
++      bool PicWidthInCtbsY = ceil(static_cast<double>(sps.width / CtbSizeY));
++      bool PicHeightInCtbsY = ceil(static_cast<double>(sps.height / CtbSizeY));
+       bool PicSizeInCtbsY = PicWidthInCtbsY * PicHeightInCtbsY;
+ 
+-      unsigned int v = ceil(mtx::math::int_log2(PicSizeInCtbsY));
++      unsigned int v = ceil(static_cast<double>(mtx::math::int_log2(PicSizeInCtbsY)));
+       r.get_bits(v);  // slice_segment_address
+     }
+ 

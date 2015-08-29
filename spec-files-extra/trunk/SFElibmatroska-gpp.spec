@@ -15,9 +15,8 @@ Summary:	Matroska Video Container
 Group:		System Environment/Libraries
 URL:		http://www.matroska.org
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
-Version:	1.4.1
+Version:	1.4.2
 Source:		http://dl.matroska.org/downloads/%srcname/%srcname-%version.tar.bz2
-Patch1:		libmatroska-01-makefile.diff
 
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
@@ -42,38 +41,42 @@ Requires: %name
 
 %prep
 %setup -q -n %srcname-%version
-%patch1 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
+export CXX=g++
 export CXXFLAGS="%cxx_optflags -I%/usr/g++/include"
 export ACLOCAL_FLAGS="-I/usr/share/aclocal -I %{_datadir}/aclocal"
 export MSGFMT="/usr/bin/msgfmt"
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
 
-cd make/linux
-gmake -j$CPUS  CXX=g++ AR=CC  DEBUGFLAGS=-g WARNINGFLAGS="" \
-ARFLAGS="-xar -o" LOFLAGS=-fpic \
-LIBSOFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -G -h "
+./configure --prefix=%_prefix
+make -j$CPUS
 
 %install
-rm -rf $RPM_BUILD_ROOT
-cd make/linux
-gmake install_headers prefix=$RPM_BUILD_ROOT%{_prefix} INSTALL=ginstall
-gmake install_sharedlib prefix=$RPM_BUILD_ROOT%{_prefix} INSTALL=ginstall
+
+rm -rf %buildroot
+make install DESTDIR=%buildroot
+rm %buildroot%_libdir/%srcname.*a
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
-%{_libdir}/lib*.so*
+%_libdir/%srcname.so*
 
 %files devel
 %defattr (-, root, bin)
-%{_includedir}
+%_includedir
+%dir %attr (-, root, other) %_pkg_config_path
+%_pkg_config_path/%srcname.pc
 
 %changelog
+* Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 1.4.2 (the build system is more conventional now)
 * Sun Feb  9 2014 - Alex Viskovatoff
 - update to 1.4.1
 * Sun Aug 05 2012 - Milan Jurik
