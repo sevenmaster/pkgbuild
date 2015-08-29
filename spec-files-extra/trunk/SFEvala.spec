@@ -5,12 +5,16 @@
 #
 %include Solaris.inc
 
+# NOTE 29.08.2015:							     ###
+# vala 0.12.1 does not build on an SFE environment under Solaris 11.2.	     ###
+
 %define	src_name vala
 %define	src_url	http://download.gnome.org/sources/vala/0.12
 
 Name:                SFEvala
 Summary:             Vala programming language
 Version:             0.12.0
+IPS_package_name:    sfe/developer/vala
 URL:                 http://live.gnome.org/Vala
 Source:              %{src_url}/%{src_name}-%{version}.tar.bz2
 License:	     GPLv2
@@ -87,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Aug 29 2015 - Alex Viskovatoff <herzen@imap.cc>
+- add IPS package name
 * Mon Jul 25 2011 - N.B.Prashanth
 - add SUNW_Copyright
 * Sat May 14 2011 - nbprashanth <nbprash.mit@gmail.com>

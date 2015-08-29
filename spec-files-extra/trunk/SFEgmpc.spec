@@ -17,16 +17,16 @@
 Name:                    SFEgmpc
 IPS_package_name:	 audio/mpd/gmpc
 Summary:                 Gnome Music Player Daemon client
-URL:                     http://sarine.nl/gmpc/
-Version:                 0.20.0
-License:                 GPLv2+
-SUNW_Copyright:          gmpc.copyright
+URL:                     http://gmpclient.org/
+Version:                 11.8.16
+License:                 GPLv2
+SUNW_Copyright:          GPLv2.copyright
 Source:                  http://download.sarine.nl/Programs/%srcname/%{version}/%srcname-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 BuildRequires:		 SFEgob
-BuildRequires:		 %{pnm_buildrequires_developer_vala}
-Requires:		 %{pnm_requires_developer_vala}
+#			Solaris 11.2 system vala is too old to build this
+BuildRequires:		 SFEvala
 BuildRequires:		 SUNWperl-xml-parser
 Requires:		 SUNWperl-xml-parser
 BuildRequires:		 SFElibmpd-devel
@@ -111,53 +111,23 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/*
 %dir %attr (0755, root, other) %{_datadir}/gmpc
 %{_datadir}/gmpc/*
-%defattr(-, root, other)
-#%dir %attr (0755, root, other) %{_datadir}/icons
-#%{_datadir}/icons/*
-%defattr(-, root, bin)
+%dir %attr (0755, root, other) %_datadir/gnome
+%dir %_datadir/gnome/help
+%dir %_datadir/gnome/help/gmpc
+%_datadir/gnome/help/gmpc/C
 %dir %attr (0755, root, bin) %{_libdir}
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %_mandir
-
-%dir %attr (-, root, other) %_datadir/icons
+%defattr(-, root, other)
+%dir %_datadir/icons
 %_datadir/icons/Humanity
-%dir %attr (-, root, other) %_datadir/icons/hicolor
-%dir %attr (-, root, other) %_datadir/icons/hicolor/scalable
-%dir %attr (-, root, other) %_datadir/icons/hicolor/scalable/apps
-%_datadir/icons/hicolor/scalable/apps/%srcname.svg
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16
-%dir %attr (-, root, other) %_datadir/icons/hicolor/16x16/apps
-%_datadir/icons/hicolor/16x16/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/22x22
-%dir %attr (-, root, other) %_datadir/icons/hicolor/22x22/apps
-%_datadir/icons/hicolor/22x22/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32
-%dir %attr (-, root, other) %_datadir/icons/hicolor/32x32/apps
-%_datadir/icons/hicolor/32x32/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48
-%dir %attr (-, root, other) %_datadir/icons/hicolor/48x48/apps
-%_datadir/icons/hicolor/48x48/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64
-%dir %attr (-, root, other) %_datadir/icons/hicolor/64x64/apps
-%_datadir/icons/hicolor/64x64/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/72x72
-%dir %attr (-, root, other) %_datadir/icons/hicolor/72x72/apps
-%_datadir/icons/hicolor/72x72/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/96x96
-%dir %attr (-, root, other) %_datadir/icons/hicolor/96x96/apps
-%_datadir/icons/hicolor/96x96/apps/%srcname.png
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128
-%dir %attr (-, root, other) %_datadir/icons/hicolor/128x128/apps
-%_datadir/icons/hicolor/128x128/apps/%srcname.png
-
-
+%_datadir/icons/hicolor
 
 %files devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
-
 
 %if %build_l10n
 %files l10n
@@ -168,6 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 29 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 11.8.16; remove runtime dependency on vala
 * Tue Apr 24 2012 - Thomas Wagner
 - merge with workspace changes
 - change BuildRequires to %{pnm_buildrequires_developer_vala}
