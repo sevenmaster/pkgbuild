@@ -2,6 +2,9 @@
 # spec file for package SFEmkvtoolnix
 #
 
+# Don't try to get GUIs to build.
+%define enable_gui 0
+
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -14,12 +17,11 @@ Summary:	Tools for the Matroska video container
 Group:		Applications/Sound and Video
 URL:		http://www.bunkus.org/videotools/mkvtoolnix
 Meta(info.upstream):	Moritz Bunkus <moritz@bunkus.org>
-Version:	6.7.0
+Version:	8.3.0
 License:	GPLv2
 SUNW_Copyright:	mkvtoolnix.copyright
 Source:		http://www.bunkus.org/videotools/%srcname/sources/%srcname-%version.tar.xz
-Patch5:		mkvtoolnix-05-terminal.diff
-Patch6:		mkvtoolnix-06-ldexp.diff
+Patch7:	mkvtoolnix-07-hevc-variable-types.patch
 
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
@@ -32,7 +34,9 @@ BuildRequires: library/zlib
 BuildRequires: library/lzo
 BuildRequires: SUNWogg-vorbis
 BuildRequires: SUNWflac
+%if %enable_gui
 BuildRequires: SFEwxwidgets-gpp-devel
+%endif
 BuildRequires: text/gnu-gettext
 # configure can't find libmagick because it's in /usr/gnu;
 # adding its path to CXXFLAGS keeps other things from being found
@@ -57,24 +61,32 @@ Requires:       %name
 
 %prep
 %setup -q -n %srcname-%version
-%patch5 -p1
-%patch6 -p1
+%patch7 -p0
 
 
 %build
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CC=gcc
-export CXX=g++
-export USER_CXXFLAGS="%cxx_optflags -fpermissive -D_POSIX_PTHREAD_SEMANTICS"
+# gcc 4.6 is too old to build this.  It builds with 4.8.2.
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+export USER_CXXFLAGS="%cxx_optflags -fpermissive -D_POSIX_PTHREAD_SEMANTICS -D_GLIBCXX_USE_C99_MATH_TR1"
 export USER_LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 export ZLIB_CFLAGS="-I/usr/include"
 export ZLIB_LIBS=-lz
+%if %enable_gui
+export PATH=/usr/g++/bin:$PATH
+%endif
 
 CXXFLAGS=$USER_CXXFLAGS LDFLAGS=$USER_LDFLAGS ./configure --prefix=%_prefix \
 --with-extra-includes=/usr/g++/include --with-boost-libdir=/usr/g++/lib \
+%if %enable_gui
 --with-wx-config=/usr/g++/bin/wx-config
+%else
+--disable-gui
+%endif
+
 ./drake -j$CPUS
 
 
@@ -96,10 +108,12 @@ rm -rf %buildroot
 %files
 %defattr (-, root, bin)
 %dir %attr (-, root, other) %_docdir
-%doc ChangeLog README AUTHORS
+%doc ChangeLog README.md AUTHORS
 %_bindir
 %dir %attr (-, root, sys) %_datadir
 %_mandir
+
+%if %enable_gui
 %_docdir/%srcname/guide
 %dir %attr (-, root, other) %_datadir/applications
 %_datadir/applications/mkvinfo.desktop
@@ -109,6 +123,7 @@ rm -rf %buildroot
 %_datadir/mime/packages/%srcname.xml
 %defattr (-, root, other)
 %_datadir/icons
+%endif
 
 %if %build_l10n
 %files l10n
@@ -119,6 +134,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Aug 28 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 8.3.0; disable GUIs; build with system gcc (SFEgcc is too old)
 * Sun Feb  9 2014 - Alex Viskovatoff <herzen@imap.cc>
 - require libmatroska: that and libebml can be external libraries again
 * Sun Feb  2 2014 - Alex Viskovatoff <herzen@imap.cc>

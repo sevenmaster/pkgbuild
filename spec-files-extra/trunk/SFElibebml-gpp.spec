@@ -17,10 +17,8 @@ Summary:	Extensible Binary Meta Language
 Group:		System Environment/Libraries
 URL:		http://ebml.sourceforge.net
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
-Version:	1.3.0
+Version:	1.3.1
 Source:		http://dl.matroska.org/downloads/%srcname/%srcname-%version.tar.bz2
-Patch1:		libebml-01-makefile.diff
-#Patch2:		libebml-02-headers.diff
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
 
@@ -39,59 +37,42 @@ Requires: %name
 
 %prep
 %setup -q -n %srcname-%version
-%patch1 -p1
-#%patch2 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
+export CXX=g++
 export CFLAGS="%_optflags"
 export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
 export MSGFMT=/usr/bin/msgfmt
 
-##TODO## revisit this. why should studio CC be used to extract and not solaris "ar" or gnu "ar"
-cd make/linux
-%if %cc_is_gcc
-  gmake -j$CPUS \
-  CXX=g++ \
-  AR=/usr/gnu/bin/ar \
-  DEBUGFLAGS=-g \
-  WARNINGFLAGS="" \
-  LOFLAGS=-fpic \
-  LIBSOFLAGS="%_ldflags -G -h " \
-  ;
-%else
-  gmake -j$CPUS \
-  CXX=g++ \
-  AR=CC  \
-  DEBUGFLAGS=-g \
-  WARNINGFLAGS="" \
-  ARFLAGS="-xar -o" \
-  LOFLAGS=-fpic \
-  LIBSOFLAGS="%_ldflags -G -h " \
-  ;
-%endif
+./configure --prefix=%_prefix
+make -j$CPUS
 
 %install
-rm -rf $RPM_BUILD_ROOT
-cd make/linux
-gmake install_headers prefix=$RPM_BUILD_ROOT%{_prefix} INSTALL=ginstall
-gmake install_sharedlib prefix=$RPM_BUILD_ROOT%{_prefix} INSTALL=ginstall
+rm -rf %buildroot
+make install DESTDIR=%buildroot
+rm %buildroot%_libdir/%srcname.*a
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
-%{_libdir}/lib*.so*
+%_libdir/%srcname.so*
 
 %files devel
 %defattr (-, root, bin)
-%{_includedir}
+%_includedir
+%dir %attr (-, root, other) %_pkg_config_path
+%_pkg_config_path/%srcname.pc
 
 %changelog
+* Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 1.3.1 (the build system is more conventional now)
 * Fri Aug 14 2015 - Thomas Wagner
 - set normal CFLAGS, LDFLAGS
 ##TODO## revisit AR=CC
