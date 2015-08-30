@@ -4,20 +4,21 @@
 
 %include Solaris.inc
 %define srcname sakura
+%include packagenamemacros.inc
 
 Name:		SFEsakura
 IPS_Package_Name:	terminal/sakura
 Summary:	Lightweight terminal emulator based on GTK and VTE
 Group:		Applications/System Utilities
 URL:		http://www.pleyades.net/david/projects/sakura
-# This is the last release that doesn't depend on gtk-3.0
+# This is the last release that doesn't depend on gtk-3
 Version:	2.4.2
 License:	GPLv2
 Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%version.tar.bz2
 %include default-depend.inc
 SUNW_Copyright: sakura.copyright
 SUNW_BaseDir:	%_basedir
-BuildRequires:	developer/build/cmake
+BuildRequires:	%pnm_buildrequires_developer_build_cmake
 BuildRequires:	SUNWgtk2-devel
 Requires:	SUNWgtk2
 BuildRequires:	SUNWgnome-terminal
@@ -82,7 +83,9 @@ rm -rf %buildroot
 
 
 %changelog
-* Sat Aug 22 2015 - Alex Viskovatoff <hezen@imapmail.org>
+* Sun Aug 30 2015 - Alex Viskovatoff <hezen@imap.cc>
+- use pnm macro for cmake depedency
+* Sat Aug 22 2015 - Alex Viskovatoff <hezen@imap.cc>
 - Allow use of system cmake
 * Sun Feb 16 2014 - Alex Viskovatoff
 - Update to 2.4.2
