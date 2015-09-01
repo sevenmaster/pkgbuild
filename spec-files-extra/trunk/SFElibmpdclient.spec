@@ -16,10 +16,7 @@ Version:	2.10
 License:	BSD
 Group:		System/Multimedia Libraries
 SUNW_Copyright:	libmpdclient.copyright
-#Source:		%sf_download/project/musicpd/%srcname/2/%srcname-%version.tar.xz
 Source:		http://www.musicpd.org/download/%srcname/2/%srcname-%version.tar.xz
-SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
 
@@ -35,21 +32,13 @@ Requires: %name
 
 
 %build
-
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 # --disable-static doesn't do what it's supposed to, but use it anyway
 ./configure --prefix=%_prefix --disable-static
-
-# Be modern and use libxnet instead of libsocket
-sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
-mv Makefile.xnet Makefile
 
 gmake -j$CPUS
 

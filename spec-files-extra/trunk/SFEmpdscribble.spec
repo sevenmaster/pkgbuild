@@ -15,7 +15,7 @@ Meta(info.upstream):	Max Kellermann <max@duempel.org>
 License:	GPLv2
 SUNW_Copyright:	mpdscribble.copyright
 Version:	0.22
-Source:		http://downloads.sourceforge.net/project/musicpd/%srcname/%version/%srcname-%version.tar.bz2
+Source:		http://www.musicpd.org/download/%srcname/%version/%srcname-%version.tar.bz2
 SUNW_BaseDir:	%_basedir
 BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
@@ -36,19 +36,12 @@ Requires: %name
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 ./configure --prefix=%_prefix --sysconfdir=%_sysconfdir
-
-# Be modern and use libxnet instead of libsocket
-sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
-mv Makefile.xnet Makefile
 
 gmake -j$CPUS
 
@@ -80,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 01 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update source url
 * Tue Oct 25 2011 - Alex Viskovatoff
 - Bump to 0.22
 * Sat Jul 23 2011 - Alex Viskovatoff
