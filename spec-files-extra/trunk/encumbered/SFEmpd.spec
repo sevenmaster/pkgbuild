@@ -11,6 +11,8 @@
 #     driver	"sun"
 # }
 
+%define with_icu 0
+
 %define build_encumbered %{?_without_encumbered:0}%{?!_without_encumbered:1}
 
 %include Solaris.inc
@@ -26,7 +28,7 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.19.9
+Version:             0.19.10
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://http://www.musicpd.org/
@@ -36,7 +38,6 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires: %{pnm_buildrequires_system_header_header_audio}
-BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
 BuildRequires: SUNWogg-vorbis-devel
@@ -91,7 +92,11 @@ Requires: SFEtwolame
 Requires: SFEmpg123
 Requires: SFElibid3tag
 %endif
-
+BuildRequires: SFEboost-g++-devel
+%if %with_icu
+BuildRequires: SFEicu-gpp
+Requires: SFEicu-gpp
+%endif
 
 %description
 Music Daemon to play common audio fileformats to audio devices or 
@@ -104,9 +109,7 @@ auto-network SFEpulseaudio ( via pulseaudio, libao (sun|pulse) ).
 
 
 %prep
-#don't unpack please
-%setup -q -c -T -n %src_name-%version
-xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+%setup -q -n %src_name-%version
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -119,11 +122,18 @@ export CXX=g++
 export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
 export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -Wl,-znodeferred"
+%if %with_icu
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
+%endif
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
 ./configure --prefix=%{_prefix}  \
-            --mandir=%{_mandir}  \
+            --with-boost=/usr/g++ \
+%if %with_icu
+%else
+	    --disable-icu	 \
+%endif
     	    --enable-ao          \
 	    --enable-iso9660     \
 	    --enable-shout       \
@@ -175,6 +185,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog 
+* Tue Sep 01 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.19.10; disable icu for now (link fails)
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 0.19.9
 * Thu Mar 20 2014 - Thomas Wagner
