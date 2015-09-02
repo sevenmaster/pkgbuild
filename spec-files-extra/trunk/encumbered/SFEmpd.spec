@@ -92,7 +92,7 @@ Requires: SFEtwolame
 Requires: SFEmpg123
 Requires: SFElibid3tag
 %endif
-BuildRequires: SFEboost-g++-devel
+BuildRequires: %pnm_buildrequires_boost_gpp_default
 %if %with_icu
 BuildRequires: SFEicu-gpp
 Requires: SFEicu-gpp
