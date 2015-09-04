@@ -34,6 +34,8 @@
 
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %define srcname hunspell
 %define _pkg_docdir %_docdir/%srcname
 
@@ -43,14 +45,13 @@ Summary:	Spell checker
 Group:		Applications/Accessories
 URL:		http://hunspell.sourceforge.net
 Vendor:		László Németh
-Version:	1.3.2
+Version:	1.3.3
 License:	MPLv1.1 or GPLv2+ or LGPLv2.1+
 SUNW_Copyright:	hunspell.copyright
 Source:		http://downloads.sourceforge.net/%srcname/%srcname-%version.tar.gz
 Patch1:		hunspell-01-dict-path.diff
 
 %include default-depend.inc
-SUNW_BaseDir:	%_basedir
 
 BuildRequires:	library/ncurses
 Requires:	ncurses
@@ -60,21 +61,22 @@ Requires:	library/myspell/dictionary/en
 
 %package devel
 Summary:	%summary - development files
-SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 Requires:	%name
 
 
 %prep
 %setup -q -n %srcname-%version
-%patch1 -p1
+%patch1 -p0
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
+export CXX=g++
 export CFLAGS="%optflags"
 export CXXFLAGS="%cxx_optflags -I/usr/include/ncurses"
-export LIBS="-lsocket -lpthread -lCrun"
+export LIBS="-lsocket -lpthread"
 export LDFLAGS="%_ldflags %gnu_lib_path"
 sed -i 's/-lcurses/-lncurses/g' configure
 ./configure --prefix=%_prefix --enable-threads=posix --disable-static --with-ui --with-readline
@@ -116,6 +118,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Sep  3 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 1.3.3; build with gcc (does not build with Studio)
 * Wed Nov  7 2013 - Alex Viskovatoff
 - add documentation
 * Wed Oct 30 2013 - Alex Viskovatoff
