@@ -9,12 +9,11 @@
 %include Solaris.inc
 
 Name:              SFEgxmessage
+IPS_package_name:  desktop/gxmessage
 Summary:           gxmessage - xmessage clone for GNOME
-Version:           2.12.4
+Version:           2.20.4
 URL:               http://homepages.ihug.co.nz/~trmusson/programs.html#gxmessage
 Source:            http://homepages.ihug.co.nz/~trmusson/stuff/gxmessage-%{version}.tar.gz
-SUNW_BaseDir:      %{_basedir}
-BuildRoot:         %{_tmppath}/%{name}-%{version}-build
 License:           GPLv3
 SUNW_Copyright:    %{name}.copyright
 Distribution:      OpenSolaris
@@ -31,7 +30,7 @@ Requires:          SUNWxwrtl
 BuildRequires:     SUNWbtool
 BuildRequires:     SUNWggrp
 BuildRequires:     SUNWgnome-common-devel
-BuildRequires:     SUNWgnu-gettext
+BuildRequires:     text/gnu-gettext
 BuildRequires:     SUNWperl-xml-parser
 BuildRequires:     SUNWxorg-headers
 BuildRequires:     SUNWxwinc
@@ -47,10 +46,7 @@ any option xmessage would, and returns the same exit codes.
 %setup -q -n gxmessage-%version
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%{optflags}"
 export LDFLAGS="%{_ldflags}"
@@ -113,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 10 2015 - Alex Viskovatoff <herzen@imap.cc>
+- Bump to 2.20.4; add IPS package name
 * Wed Apr 28 2010 - Matt Lewandowsky <matt@greenviolet.net>
 - Sync with jucr spec:
 - Added IPS classification.
