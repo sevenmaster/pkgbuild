@@ -1,22 +1,30 @@
 #
-# Copyright (c) 2006 Sun Microsystems, Inc.
+# spec file for package SFEboost-gpp
+#
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
+
 %include Solaris.inc
 %include usr-g++.inc
-%include base.inc
 %include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 # Build multithreaded libs: no need for non-multithreaded libs
 %define boost_with_mt 1
 
-
 %define        major      1
 %define        minor      58
 %define        patchlevel 0
 %define        ver_boost  %{major}_%{minor}_%{patchlevel}
+
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use boost_64 = boost.spec
+%endif
+
+%include usr-g++.inc
+%include base.inc
 %use boost = boost.spec
 
 Name:		SFEboost-gpp
@@ -60,36 +68,74 @@ Requires: %name
 %prep
 rm -rf %name-%version
 mkdir %name-%version
-%boost.prep -d %name-%version
+%ifarch amd64 sparcv9
+mkdir %name-%version/%_arch64
+%boost_64.prep -d %name-%version/%_arch64
+%endif
 
+mkdir %name-%version/%{base_arch}
+%boost.prep -d %name-%version/%{base_arch}
 
 %build
-%boost.build -d %name-%version
+PKG_CONFIG_PATH_ORIG=$PKG_CONFIG_PATH
 
+%ifarch amd64 sparcv9
+#+ openindiana?
+%if %( expr %{solaris11} '+' %{solaris12} )
+export PKG_CONFIG_PATH=/usr/g++/lib/%_arch64/pkgconfig:$PKG_CONFIG_PATH_ORIG
+%endif
+%define BITS 64
+%boost_64.build -d %name-%version/%_arch64
+%endif
+
+#+ openindiana?
+%if %( expr %{solaris11} '+' %{solaris12} )
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:$PKG_CONFIG_PATH_ORIG
+%endif
+%define BITS 32
+%boost.build -d %name-%version/%{base_arch}
 
 %install
-rm -rf %buildroot
-%boost.install -d %name-%version
+rm -rf $RPM_BUILD_ROOT
+%ifarch amd64 sparcv9
+%define BITS 64
+%boost_64.install -d %name-%version/%_arch64
+%endif
 
-cd %_builddir/%name-%version/boost_%boost.ver_boost
+%define BITS 32
+%boost.install -d %name-%version/%base_arch
 
-mkdir -p %buildroot%_docdir/boost-%version
+find $RPM_BUILD_ROOT \( -name \*.la -o -name \*.a \) -exec rm {} \;
+
+mkdir -p %{buildroot}%{_docdir}/boost-%{version}
+
+cd %{_builddir}/%{name}-%{version}/%{base_arch}/boost_%{boost.ver_boost}
+
 cd "doc/html"
 for i in `find . -type d`; do
-  mkdir -p %buildroot%_docdir/boost-%version/$i
+  mkdir -p %{buildroot}%{_docdir}/boost-%{version}/$i
 done
 for i in `find . -type f`; do
-  cp $i %buildroot%_docdir/boost-%version/$i
+  cp $i %{buildroot}%{_docdir}/boost-%{version}/$i
 done
 
-# It's not worth figuring out how to get the Boost build system
-# to set the runpath correctly
-%define rpath 'dyn:runpath /usr/g++/lib:/usr/gnu/lib'
-pushd %buildroot%_libdir
-for i in *.so.*; do
-  /usr/bin/elfedit -e %rpath $i
-done
-popd
+#Test case for RUNPATH:
+# boost locale and boost regex need to have the icu library path in RPATH
+# test command: ldd boost_locale.so -->> prints the correct icu, e.g. /usr/g++/lib/libuu*so* and *not* /usr/lib/libuu*so* ...
+#note: /usr/g++/bin in RPATH is a flaw, will be corrected later
+#
+# cd /usr/g++;  find . -name libboost_locale.so.\* -exec file {} \; -exec ldd {} \; -exec elfdump -d {} \; -print | egrep "RPATH|/libicui18n|bit"
+#
+#./lib/amd64/libboost_locale.so.1.58.0: ELF 64-bit LSB shared object, x86-64, version 1, dynamically linked, not stripped
+#        libicui18n.so.55 =>      /usr/g++/lib/amd64/libicui18n.so.55
+#     [17]  RPATH           0x21de2   /usr/g++/lib/amd64:/usr/gcc/4.8/lib/amd64:/usr/gcc/lib/amd64:/usr/g++/bin
+#
+#./lib/libboost_locale.so.1.58.0: ELF 32-bit LSB shared object, Intel 80386, version 1, dynamically linked, not stripped
+#        libicui18n.so.55 =>      /usr/g++/lib/libicui18n.so.55
+#     [17]  RPATH           0x20c25  /usr/g++/lib:/usr/gcc/4.8/lib:/usr/gcc/lib:/usr/g++/bin
+
+
+
 
 %clean
 rm -rf %buildroot
@@ -99,12 +145,14 @@ rm -rf %buildroot
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%ifarch amd64 sparcv9
+%_libdir/%_arch64
+%endif
 
 %files -n %name-devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/boost
-%{_libdir}/lib*.a
 
 %files -n %name-doc
 %defattr (-, root, bin)
@@ -113,6 +161,15 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+* Sat Sep 19 2015 - Thomas Wagner
+- make it 32/64-bit
+- fix finding correct icu libs in /usr/g++/lib (ICU_LINK)
+- remove elfedit, RPATH might be edited in a later spec version and have /usr/g++/bin removed from RPATH
+- add mpi (as in boost from OI userland)
+* Wed Sep 16 2015 - Thomas Wagner
+- add --with-locale (spits Boost.Locale needs either iconv or ICU library to be built, see next changelog line)
+- add dirty hack to change config cache to have icu set to true (the change is not yet 32/64-bit safe, remove once bjam detecting icu is fixed!)
+- add echo 'using mpi ;' > ./user-config.jam; (adopted from OI userland)
 * Sat Aug 15 2015 - Thomas Wagner
 - use BuildRequires:  developer/icu (OIH)  else use BuildRequires  SFEicu-gpp-devel (all other)
 * Mon Aug 10 2015 - Thomas Wagner

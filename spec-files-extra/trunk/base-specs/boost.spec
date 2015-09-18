@@ -1,4 +1,3 @@
-
 #
 # spec file for package boost
 #
@@ -78,6 +77,10 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 
 
 %build
+
+#variable BITS=<32|64> comes from calling spec file, e.g SFEboost-gpp.spec
+##TODO## add BITS to other spec files then SFEboost-gpp.spec
+
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 BOOST_ROOT=`pwd`
@@ -88,25 +91,77 @@ export CXXFLAGS="%cxx_optflags -D_XPG6"
 %if %cc_is_gcc
 export CC=gcc
 export CXX=g++
-export LDFLAGS="%_ldflags"
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 %else
 export LDFLAGS="%_ldflags"
 %endif
+
+#prepare a user config
+echo 'using mpi ;' > ./user-config.jam
 
 %if %cc_is_gcc
-./bootstrap.sh --prefix=%{_prefix} --with-toolset=gcc --with-icu=/usr/g++
+./bootstrap.sh --prefix=%{_prefix} --libdir=%{_libdir} --with-toolset=gcc --with-icu=/usr/g++
+%define ICU_ROOT /usr/g++
+%define ICU_PATH /usr/g++
+%define ICU_LINK '-L%{_libdir} -R%{_libdir}  -licudata -licui18n -licuuc '
 %else
-./bootstrap.sh --prefix=%{_prefix} --with-toolset=sun --with-icu
+./bootstrap.sh --prefix=%{_prefix} --libdir=%{_libdir} --with-toolset=sun --with-icu
+%define ICU_ROOT /usr
+%define ICU_PATH /usr
+#e.g. -L/usr/g++/lib       -R/usr/g++/lib       -licudata -licui18n -licuuc
+#e.g. -L/usr/g++/lib/amd64 -R/usr/g++/lib/amd64 -licudata -licui18n -licuuc
+%define ICU_LINK '-L%{_libdir} -R%{_libdir}  -licudata -licui18n -licuuc '
 %endif
 
-./bjam --v2 -d+2 -q -j$CPUS -sBUILD="release <threading>single/multi" \
-  release stage
+#with ICU_LINK set, then the configure test gcc.link bin.v2/libs/regex/build/gcc-4.8.5/debug/address-model-64/has_icu
+# succeeds, see in /amd64/boost_1_58_0/bin.v2/config.log
+# the build system looks like not honouring LDFLAGS to find icu libs in /usr/g++/lib
+
+echo "debug: BITS     is %{BITS}"
+echo "debug: _libdir  is %{_libdir}"
+echo "debug: ICU_LINK is %{ICU_LINK}"
+echo "debug: CPUS     is ${CPUS}"
+
+./bjam --v2 -d+2 -q address-model=%{BITS}   \
+  -j$CPUS \
+  -sBUILD="release <threading>single/multi" \
+  -sICU_ROOT=%{ICU_ROOT} \
+  -sICU_PATH=%{ICU_PATH} \
+  -sICU_LINK=%{ICU_LINK} \
+  --prefix=%{_prefix} \
+  --libdir=%{_libdir} \
+  --includedir=/usr/g++/include \
+  --user-config=./user-config.jam \
+
+
 
 %install
-./bjam install --prefix=$RPM_BUILD_ROOT%{_prefix}
+
+./bjam --v2 -d+2 -q address-model=%{BITS}   \
+  -sBUILD="release <threading>single/multi" \
+  -sICU_ROOT=%{ICU_ROOT} \
+  -sICU_PATH=%{ICU_PATH} \
+  -sICU_LINK=%{ICU_LINK} \
+  --prefix=$RPM_BUILD_ROOT%{_prefix} \
+  --libdir=$RPM_BUILD_ROOT%{_libdir} \
+  --user-config=./user-config.jam \
+  install
+
 
 %changelog
+* Sat Sep 19 2015 - Thomas Wagner
+- make it 32/64-bit
+- fix finding correct icu libs in /usr/g++/lib (ICU_LINK)
+- remove elfedit, RPATH might be edited in a later spec version and have /usr/g++/bin removed from RPATH
+- add mpi (as in boost from OI userland)
+* Wed Sep 16 2015 - Thomas Wagner
+- add --with-locale (spits Boost.Locale needs either iconv or ICU library to be built, see next changelog line)
+- add dirty hack to change config cache to have icu set to true (the change is not yet 32/64-bit safe, remove once bjam detecting icu is fixed!)
+- add echo 'using mpi ;' > ./user-config.jam; (adopted from OI userland)
+* Sat Aug 15 2015 - Thomas Wagner
+- use BuildRequires:  developer/icu (OIH)  else use BuildRequires  SFEicu-gpp-devel (all other)
 * Mon Aug 10 2015 - Thomas Wagner
+- contionally use BuildRequires developer/icu on S12 instead of SFEicu-gpp
 - patch1 .. patch5 thankfully imported patches for boost 0.58 from openindiana source repo
 - temporarily comment stdcxx patches, check once needed
 - try keeping older patches, may be phased out once other uses are updated or have ended
