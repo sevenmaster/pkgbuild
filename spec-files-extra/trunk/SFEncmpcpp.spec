@@ -1,8 +1,6 @@
 #
 # spec file for package SFEncmpcpp
 #
-# includes module: ncmpcpp
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -21,56 +19,37 @@ License:	GPLv2
 Source:		http://ncmpcpp.rybczak.net/stable/%srcname-%version.tar.bz2
 
 %include default-depend.inc
-SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
-BuildRequires:	SFEgcc
-Requires:	SFEgccruntime
-BuildRequires:	SUNWncurses
-Requires:	SUNWncurses
+BuildRequires:	library/ncurses
+Requires:	library/ncurses
 BuildRequires:	SFElibmpdclient-devel
 Requires:	SFElibmpdclient
-
 
 %prep
 %setup -q -n %srcname-%version
 
 %build
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
 export CFLAGS="%optflags"
-
-# Get compile errors with CC
 export CC=gcc
 export CXX=g++
-export CXXFLAGS="%cxx_optflags -fpermissive -I/usr/include/ncurses -L/usr/gnu/lib -R/usr/gnu/lib"
+export CPPFLAGS="-I/usr/include/ncurses"
+export CXXFLAGS="%cxx_optflags -L/usr/gnu/lib -R/usr/gnu/lib:/usr/g++/lib"
 export LIBS=-lsocket
-export LDFLAGS="%_ldflags %gnu_lib_path"
-# Very strangely, without "--without-taglib" link errors are produced
-# even if taglib is not installed
-./configure --prefix=%_prefix \
-            --without-taglib
-
-# line 90 of /usr/gnu/bin/ncursesw5-config inserts a ":" 
-# in the lib options
-sed 's|-R :/usr/gnu/lib ||' Makefile > Makefile.fixed
-mv Makefile.fixed Makefile
-cd src
-sed 's|-R :/usr/gnu/lib ||' Makefile > Makefile.fixed
-mv Makefile.fixed Makefile
-cd ..
+export LDFLAGS="%_ldflags"
+# Make taglib-config get found
+export PATH=$PATH:/usr/g++/bin
+./configure --prefix=%_prefix
 
 gmake -j$CPUS
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
-gmake install DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=%buildroot
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files
@@ -83,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 19 2015 - Alex Viskovatoff <herzen@imap.cc>
+- link to taglib; clean up
 * Sat Jan 25 2013 - Alex Viskovatoff
 - do not hardcode path of gcc; follow new naming convention for mpd clients
 * Fri Sep 13 2013 - Alex Viskovatoff
