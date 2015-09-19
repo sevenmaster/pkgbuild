@@ -1,28 +1,27 @@
 #
 # spec file for package SFEtaglib
 #
-# includes module(s): taglib
 #
-#
+
 %include Solaris.inc
 %define cc_is_gcc 1
 %include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
+%define srcname taglib
 %define _use_internal_dependency_generator 0
 
 
 Name:		SFEtaglib-gpp
 IPS_Package_Name:	library/audio/g++/taglib
-Summary:	TagLib  - a library for reading and editing the meta-data of several popular audio formats (/usr/g++)
+Summary:	A library for reading and editing the meta-data of several popular audio formats (/usr/g++)
 Group:		System/Multimedia Libraries
-Version:	1.7.2
-Source:		http://developer.kde.org/~wheeler/files/src/taglib-%{version}.tar.gz
+URL:		http://taglib.github.io/
+Version:	1.9.1
+Source:		http://taglib.github.io/releases/%srcname-%version.tar.gz
 License:	LGPLv2.1
 Patch1:		taglib-01-map.diff
 SUNW_Copyright:	taglib.copyright
-SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:	SFEcmake
 
@@ -33,14 +32,11 @@ SUNW_BaseDir:	%{_basedir}
 Requires: %name
 
 %prep
-%setup -q -n taglib-%version
+%setup -q -n %srcname-%version
 %patch1 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
@@ -48,17 +44,15 @@ export CFLAGS="%optflags"
 export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags -Wl,-zmuldefs"
 
-cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_RELEASE_TYPE=Release -DWITH_MP4=ON -DWITH_ASF=ON  .
+cmake -DCMAKE_INSTALL_PREFIX=%_prefix -DCMAKE_RELEASE_TYPE=Release -DWITH_MP4=ON -DWITH_ASF=ON  .
 make -j$CPUS 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-
-rm -f $RPM_BUILD_ROOT/%{_libdir}/lib*a
+rm -rf %buildroot
+make install DESTDIR=%buildroot
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
@@ -76,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Sep 19 2015 - Alex Viskovatoff <herzen@imap.org>
+- bump to 1.9.1; clean up
 * Fri Jan  9 2015 - Thomas Wagner
 - switch off pkgdepend. doesn't to the right thing: find the other taglib package and add false dependencies
 * Fri Jan  2 2015 - Thomas Wagner
