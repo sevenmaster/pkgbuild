@@ -37,7 +37,6 @@ BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 BuildRequires: %{pnm_buildrequires_SUNWgnome_panel_devel}
 BuildRequires: %{pnm_buildrequires_SUNWdbus_glib_devel}
 BuildRequires: %{pnm_buildrequires_SUNWcurl}
-BuildRequires: SFEgcc
 BuildRequires: SFElibevent2
 BuildRequires: SFElibiconv-devel
 BuildRequires: %{pnm_buildrequires_SUNWgnu_gettext}
@@ -46,7 +45,6 @@ Requires: %{pnm_requires_SUNWgnome_panel}
 Requires: %{pnm_requires_SUNWdbus_glib}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: %{pnm_requires_SUNWcurl}
-Requires: SFEgccruntime
 Requires: SFElibevent2
 Requires: SFElibiconv
 Requires: %{pnm_requires_SUNWgnu_gettext}
