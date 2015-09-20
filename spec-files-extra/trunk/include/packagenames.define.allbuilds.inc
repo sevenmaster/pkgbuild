@@ -1316,6 +1316,76 @@
 %endif
 #END solaris11express
 
+# header migrated into main package
+#system/library/mozilla-nss@0.5.11-0.160 on s12_79
+#nspr
+#solaris 11 >= 160 or solaris12
+#system/library/mozilla-nss renamed library/security/nss@4.12.10-0.172.0.0.0.0.0
+#note: openindiana and oihipster 2015.0.1.0 still have system/library/mozilla-nss/header-nss
+%if %( expr %{solaris12} '|' %{solaris11} '>=' 1 '&' %{osbuild} '>=' 160 )
+%define pnm_buildrequires_system_library_mozilla_nss_header_nss	library/security/nss
+%define pnm_requires_system_library_mozilla_nss_header_nss	library/security/nss
+%define pnm_buildrequires_system_library_mozilla_nss		library/security/nss
+%define pnm_requires_system_library_mozilla_nss			library/security/nss
+%define pnm_buildrequires_SUNWtlsd_devel			library/security/nss
+%define pnm_buildrequires_SUNWtlsd				library/security/nss
+%define pnm_requires_SUNWtlsd					library/security/nss
+%define pnm_buildrequires_tlsd					library/security/nss
+%define pnm_requires_tlsd					library/security/nss
+##TODO## nspr
+%endif
+#END solaris 12 | solaris 11 >= 160
+
+#s12 sfe /localhomes/tom/spec-files-extra pkg info -r mozilla-nss                                                                                                                      
+#          Name: system/library/mozilla-nss
+#         State: Not installed (Renamed)
+#    Renamed to: consolidation/sic_team/sic_team-incorporation
+#                library/security/nss@4.12.10-0.172.0.0.0.0.0        XXXXXXXXXXXXXXXXXX
+#     Publisher: solaris
+#       Version: 0.5.11
+#        Branch: 0.172.0.0.0.0.0
+#Packaging Date: Tue Aug 16 07:11:53 2011
+#          Size: 5.45 kB
+#          FMRI: pkg://solaris/system/library/mozilla-nss@0.5.11-0.172.0.0.0.0.0:20110816T071153Z
+#
+#          Name: system/mozilla-nss
+#         State: Not installed (Renamed)
+#    Renamed to: security/nss-utilities@4.12.10-0.172.0.0.0.0.0        XXXXXXXXXXXXXXXXXX
+#                consolidation/sic_team/sic_team-incorporation
+#     Publisher: solaris
+#       Version: 0.5.11
+#        Branch: 0.172.0.0.0.0.0
+#Packaging Date: Tue Aug 16 07:12:00 2011
+#          Size: 5.45 kB
+#          FMRI: pkg://solaris/system/mozilla-nss@0.5.11-0.172.0.0.0.0.0:20110816T071200Z
+#
+#
+#          Name: system/library/mozilla-nss
+#Zusammenfassung: 
+#        Status: Nicht installiert (Umbenannt)
+#  Umbenannt in: consolidation/sic_team/sic_team-incorporation
+#                library/security/nss@4.12.10-0.172.0.0.0.0.0
+#   Herausgeber: solaris
+#       Version: 0.5.11
+# Build-Version: 5.11
+#         Zweig: 0.172.0.0.0.0.0
+#Packaging-Datum: 16. August 2011 07:11:53 Uhr 
+#         Größe: 5.45 KB
+#          FMRI: pkg://solaris/system/library/mozilla-nss@0.5.11,5.11-0.172.0.0.0.0.0:20110816T071153Z
+#
+#          Name: system/library/mozilla-nss/header-nss
+#Zusammenfassung: 
+#        Status: Nicht installiert (Umbenannt)
+#  Umbenannt in: system/library/mozilla-nss@0.5.11-0.160
+#   Herausgeber: solaris
+#       Version: 0.5.11
+# Build-Version: 5.11
+#         Zweig: 0.160
+#Packaging-Datum: 28. Februar 2011 16:47:35 Uhr 
+#         Größe: 0.00 B
+#          FMRI: pkg://solaris/system/library/mozilla-nss/header-nss@0.5.11,5.11-0.160:20110228T164735Z
+
+
 # math headers went from pkg://system/library/math/header-math
 #                     to pkg://system/library/math@0.5.11-0.174.0.0.0.0.0
 # OI stays unchanged for a while
@@ -1445,6 +1515,7 @@
 %define pnm_requires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
 %define pnm_buildrequires_shell_gnugetopt		pkg://solaris/shell/gnu-getopt
 %define pnm_requires_shell_gnugetopt			pkg://solaris/shell/gnu-getopt
+
 
 %endif
 #END solaris12
@@ -1689,6 +1760,8 @@
 
 #END setting python, changes with specific builds and distros  - Part 2 of 2
 
+# note: some python package names may change with the default python version
+#       therefore place those below the main python settings
 #which build number removed SUNWpysqlite and used the python 2.6/2.7 internal pysqlite?
 #if python is version 2.4, then we need SUNWpysqlite
 ##TODO## adjust the osbuild number which introduced Python2.6
@@ -1712,6 +1785,27 @@
 %endif
 #END < 133  (else)
 #END if osbuild >= 133
+
+
+#solaris12 has default python27 and knows library/python/importlib ---- verify this
+#solaris11 has default python26 and knows library/python/importlib ---- verify this
+#
+##TODO## define s11 version first delivering importlib for python27 ---- verify this
+%if %( expr %{solaris12} '|' %{oihipster} '|' %{solaris11} '&' %{osbuild} '>=' 16 )
+#s11 build 16
+#library/python-2/importlib-26                     1.0.2-0.175.3.0.0.16.0     --r
+#s11 > 16
+#library/python/importlib                          1.0.2-0.175.3.0.0.24.0     ---
+%define pnm_buildrequires_library_python_importlib	library/python/importlib
+%define pnm_requires_library_python_importlib		library/python/importlib
+%else
+#fall back to our SFEpython27-importlib.spec
+#(consuming support libs for libreoffic ask for python27)
+#library/python-2/importlib-27
+%define pnm_buildrequires_library_python_importlib	SFEpython27-importlib
+%define pnm_requires_library_python_importlib		SFEpython27-importlib
+%endif
+#END
 
 
 #START setting mysql, defaults  - Part 1 of 3
@@ -2481,6 +2575,7 @@
 %define boost_gpp_major_minor_version 1.55
 ##not defined %define boost_gpp_major_minor_micro_version 1.55.0
 
+#this is osdistro provided, not from SFE!
 %define pnm_buildrequires_boost_gpp_default	system/library/g++/boost
 %define pnm_requires_boost_gpp_default		system/library/g++/boost
 %endif
@@ -2501,16 +2596,17 @@
 %if %( expr %{oihipster} '&' %{oih20150330} )
 #for the moment, we use boost supplied by OIHipster
 #this means, this is subject to change if it is e.g. more stable or better matching SFE versioning needs or compile options or ...
+#please note, this osdistro boost is not compiled with LINK_LIBGCC_SPEC from our SFEgcc compiler
 %define boost_gpp_version 1.58.0
 %define boost_gpp_major_version 1
 %define boost_gpp_major_minor_version 1.55
 ##not defined %define boost_gpp_major_minor_micro_version 1.58.0
 
+#have no separate header package in OIH
 %define pnm_buildrequires_boost_gpp_default	system/library/boost
 %define pnm_requires_boost_gpp_default		system/library/boost
 %endif
 #END oihipster >= 20150330
-
 #END setting boost, changes with specific builds and distros  - Part 2 of 3 END
 
 #START setting boost, all builds, evaluated paths  - Part 3 of 3
@@ -2554,7 +2650,7 @@
 %if %( expr %{oihipster} '&' %{oih20150330} )
 %define boost_gpp_default_prefix	/usr
 %define boost_gpp_default_includedir	/usr/include
-boost_gpp_default_libdir	/usr/lib
+%define boost_gpp_default_libdir	/usr/lib
 %endif
 #END oihipster >= 20150330
 
@@ -2696,6 +2792,11 @@ boost_gpp_default_libdir	/usr/lib
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sun Sep 20 2015 - Thomas Wagner
+- add missing %define to boost_gpp_default_libdir (pjama) (OIH >= oih20150330)
+* Weg Aug 19 2015 - Thomas Wagner
+- system/library/mozilla-nss/header-nss moved into main packages (S11 >= 160, S12)
+- first try to handle pnm_buildrequires_library_python_importlib (S11, S12. TODO/verify: OI, hipster)
 * Sat Aug 15 2015 - Thomas Wagner
 - set directories for boost_gpp_default (/usr/g++ for S11 S12 OI, /usr for OIH) - OIH is subject to change if we decide for SFEboost-gpp as default one day
 * Mon Aug 10 2015 - Thomas Wagner
