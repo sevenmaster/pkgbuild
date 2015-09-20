@@ -38,15 +38,6 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires: SFEnasm
 %endif
 
-%if %use_gcc4
-BuildRequires: SFEgcc
-Requires: SFEgccruntime
-%else
-BuildRequires: SUNWgcc
-Requires: SUNWgccruntime
-%endif
-
-
 %description
 ISO MPEG-4 compliant video codec. You can play OpenDivX and DivX4 videos
 with it, too.

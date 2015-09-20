@@ -31,8 +31,6 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 # No support for the latest mp4v2 API
 #BuildRequires:	SFElibmp4v2-devel
 #Requires:	SFElibmp4v2
-BuildRequires:	SFEgcc
-Requires:	SFEgccruntime
 
 %description
 FAAC is an AAC audio encoder. It currently supports MPEG-4 LTP, MAIN and LOW

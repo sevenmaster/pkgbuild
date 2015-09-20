@@ -21,9 +21,6 @@ SUNW_BaseDir:            %{_basedir}
 buildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-#BuildRequires:           SFEgcc
-#Requires:                SFEgccruntime
-
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
