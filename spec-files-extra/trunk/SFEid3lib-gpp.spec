@@ -22,6 +22,8 @@ Patch4:		id3lib-04-iconv.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+BuildRequires: SFEgcc
+Requires: SFEgccruntime
 Requires: SUNWzlib
 Requires: SUNWlibms
 
