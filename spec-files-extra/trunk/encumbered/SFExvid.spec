@@ -38,6 +38,10 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires: SFEnasm
 %endif
 
+BuildRequires: SFEgcc
+Requires: SFEgccruntime
+
+
 %description
 ISO MPEG-4 compliant video codec. You can play OpenDivX and DivX4 videos
 with it, too.
@@ -89,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Sep 21 2015 - Thomas Wagner
+- always use SFEgcc (remove osdistro gcc-3)
 * Tue Oct 11 2011 - Mila Jurik
 - add IPS package name
 * Sun Jul 10 2011 - Alex Viskovatoff

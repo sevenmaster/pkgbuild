@@ -5,6 +5,7 @@
 #
 %include Solaris.inc
 %define cc_is_gcc 1
+%include base.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -32,6 +33,8 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
 
 %description
 Library of OpenCORE Framework implementation of Adaptive Multi Rate Narrowband and Wideband speech codec.
