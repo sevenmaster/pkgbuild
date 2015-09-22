@@ -767,3 +767,37 @@ revisit AR=CC +- AR=/usr/gnu/bin/ar in case cc_is_gcc is true - use if AR=CC is 
 name            old_ver   target_ver   who   comment
 SFEgmpc.spec              11.8         any   new numbering, please all/most at the same time -> plugin
 SFEgmpc-plugin-*          11.8         any   new numbering, please all/most at the same time -> main package
+
+77)
+pkgtool uses pkgdepend, this leads in case that multiple dependencies are entered.
+See Bug http://sourceforge.net/p/pkgbuild/bugs/59/ #59 error when processing type=require-any depedency 
+
+78)
+build a dependency analyzer based on IPS depend infos.
+forward: this package has those consumers (man times this is a tree)
+backwart: this packages has predecessors, those predecessord have (forward) those consumers (again, maybe multiple trees)
+
+79)
+make one or two github versions of pound
+https://github.com/goochjj/pound/commits/stage_for_upstream/v2.8a
+https://github.com/goochjj/pound/commits/pcidss/v2.6
+
+80)
+create FAQ file, add this:, add this in section typical errors and solutions:
+
+Undefined                       first referenced
+ symbol                             in file
+std::__detail::_Prime_rehash_policy::_M_next_bkt(unsigned int) const bindings.o
+std::__detail::_Prime_rehash_policy::_M_need_rehash(unsigned int, unsigned int, unsigned int) const bindings.o
+ld: fatal: symbol referencing errors. No output written to ncmpcpp
+Analysis: system has gcc runtime 4.6 linked in /usr/gnu/lib/ and compiler is gcc 4.8 which calls new runtime functions
+Possible Solution a): upgrade SFEgcc-runtime to 4.8 which links from /usr/gcc/4.8/lib to /usr/gnu/lib (e.g. libstdc++.so.6)
+Possible Solution b): if a) is not suitable, add to beginning of LDFLAGS="-L/usr/gcc/4.8/lib -R//usr/gcc/4.8/lib" and make sure, the resulting libraries/binaries have this in RUNPATH/RPATH *before* /usr/gnu/lib /usr/lib
+
+81) gcc ideas, RFD! (RequestForDiscussion)
+add mediator for gcc, add an empty placeholder package "gcc" and "gcc runtime"
+a) several GCC from SFE at the same time, one of them provides the runtime (usually the most fresh one), other version might provide the compiler (any installed version)
+b) an empty dummy package providing only SFEgcc and SFEgccruntime (sfe/developer/gcc and sfe/system/library/gcc-runtime) to let the end user put whatever she wants into $PATH and still satisfy general dependency requests for packages (when building, at runtime).
+User is then absolutely on his own when not using SFE runtime and compilers
+c) document for OIHipster: Users install (not SFE supported) build-essentials, that pulls in gcc, uninstall build-essentials, uninstall gcc but keep runtime, install SFEgcc to get a bit closer to SFE supported build environment
+d) document for S11/S12: Users install packages required for building, install *only* runtime for gcc4, install SFEgcc to get a bit closer to SFE supported build environment
