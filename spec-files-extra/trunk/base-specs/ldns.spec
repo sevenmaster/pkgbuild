@@ -11,10 +11,13 @@ Version:	1.6.17
 Group:		System/Libraries
 License:	BSD
 Source:		http://www.nlnetlabs.nl/downloads/%{name}/%{name}-%{version}.tar.gz 
+Patch1:         ldns-01-doxyparse.pl-perl5.22-bug-554982.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %{name}-%{version}
+
+%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -47,6 +50,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Okt 10 2015 - Thomas Wagner
+- add patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff (perl5.22, OIH, ...)
 * Sun May 04 2014 - Milan Jurik
 - bump to 1.6.17, add multiarch support
 * Mon Sep 09 2013 - Milan Jurik
