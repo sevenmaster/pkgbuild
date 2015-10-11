@@ -63,8 +63,17 @@
 # Define some standard directories
 %define gnu_bin         /usr/gnu/bin/%{bld_arch}
 %define gnu_inc         /usr/gnu/include
+##TODO## improve this regarding arch64.inc
+#let the linker decide to pick from %{bld_arch}! 
 %define gnu_lib         /usr/gnu/lib/%{bld_arch}
 %define gnu_lib_path	-L%gnu_lib -L/usr/gnu/lib -R%gnu_lib -R/usr/gnu/lib
+%define gpp_bin         /usr/g++/bin/%{bld_arch}
+%define gpp_inc         /usr/g++/include
+##TODO## improve this regarding to  arch64.inc
+#for now, let the linker decide which files to pick, %{bld_arch}(64-bit) or base_isa(32-bit)! 
+%define gpp_lib         /usr/g++/lib/%{bld_arch}
+#ugly, but mostly works -L/usr/g++/lib/amd64 -L/usr/g++/lib -R /usr/g++/lib/amd64 -R/usr/g++/lib
+%define gpp_lib_path	-L%gpp_lib -L/usr/g++/lib -R%gpp_lib -R/usr/g++/lib
 %define sfw_bin         /usr/sfw/bin/%{bld_arch}
 %define sfw_inc         /usr/sfw/include
 %define sfw_lib         /usr/sfw/lib/%{bld_arch}
@@ -74,7 +83,10 @@
 %define xorg_inc        /usr/X11/include
 %define xorg_lib_path	-L%xorg_lib -L/usr/X11/lib -R%xorg_lib -R/usr/X11/lib
 
-# ChangeLog:
+%changelog
+* Sun Okt 11 2015 - Thomas Wagner
+- add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
+- still try to keep changes to this include files to a minumum please
 # Sat Aug 13 2011 - Thomas Wagner
 # do not set -xarch=sse2 in arch_ldadd for case cc_is_gcc == 1,
 # this avoids gcc errors in configure "gcc: error: language arch=sse2 not recognized"

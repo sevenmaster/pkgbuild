@@ -97,17 +97,24 @@
 %define gnu_bin         /usr/gnu/bin/%{bld_arch}
 %define gnu_inc         /usr/gnu/include
 %define gnu_lib         /usr/gnu/lib/%{bld_arch}
-%define gnu_lib_path    -L%gnu_lib -R%gnu_lib
+%define gnu_lib_path    -L%{gnu_lib} -R%{gnu_lib}
+%define gpp_bin         /usr/g++/bin/%{bld_arch}
+%define gpp_inc         /usr/g++/include
+%define gpp_lib         /usr/g++/lib/%{bld_arch}
+%define gpp_lib_path    -L%{gnu_lib} -R%{gnu_lib}
 %define sfw_bin         /usr/sfw/bin/%{bld_arch}
 %define sfw_inc         /usr/sfw/include
 %define sfw_lib         /usr/sfw/lib/%{bld_arch}
-%define sfw_lib_path    -L%sfw_lib -R%sfw_lib
+%define sfw_lib_path    -L%{sfw_lib} -R%{sfw_lib}
 %define xorg_bin        /usr/X11/bin/%{bld_arch}
 %define xorg_lib        /usr/X11/lib/%{bld_arch}
 %define xorg_inc        /usr/X11/include
-%define xorg_lib_path   -L%xorg_lib -R%xorg_lib
+%define xorg_lib_path   -L%{xorg_lib} -R%{xorg_lib}
 
-# ChangeLog:
+%changelog
+* Sun Okt 11 2015 - Thomas Wagner
+- add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
+- still try to keep changes to this include files to a minumum please
 # 2011-10-23  Milan Jurik
 # - use -m64 instead of -xarch=generic64
 # 2011-03-18  Milan Jurik
