@@ -4,6 +4,7 @@
 # includes module(s): ldns
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -24,8 +25,8 @@ SUNW_Copyright:	ldns.copyright
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:	SUNWopenssl-include
-Requires:	SUNWopenssl-libraries
+BuildRequires:  %{pnm_buildrequires_SUNWopenssl_include}
+Requires:	%{pnm_requires_SUNWopenssl_libraries}
 
 %description
 The goal of ldns is to simplify DNS programming, it supports recent RFCs like the DNSSEC documents, and allows developers to easily create software conforming to current RFCs, and experimental software for current Internet Drafts.
@@ -97,6 +98,8 @@ rm -rf %{buildroot}
 %{_mandir}
 
 %changelog
+* Sat Okt 10 2015 - Thomas Wagner
+- add patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff (perl5.22, OIH, ...)
 * Sun May 04 2014 - Milan Jurik
 - bump to 1.6.17, add multiarch support
 * Mon Sep 09 2013 - Milan Jurik
