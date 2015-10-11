@@ -54,7 +54,7 @@
 %define optflags %gcc_optflags %gcc_picflags
 %define cxx_optflags %gcc_cxx_optflags %gcc_picflags
 %define _gpp_version %(%{?_gpp:%_gpp}%{!?_gpp:g++} --version | head -1 | cut -f3 -d' ')
-%define _cxx_libdir	   %_prefix/lib/g++/%_gpp_version
+%define _cxx_libdir	   %{_prefix}/lib/g++/%{_gpp_version}
 
 %else
 # cc is not gcc
@@ -62,31 +62,38 @@
 %define picflags %suncc_picflags
 %define optflags %suncc_optflags ${EXTRA_CFLAGS}
 %define cxx_optflags %suncc_cxx_optflags ${EXTRA_CXXFLAGS}
-%define _cxx_libdir %_prefix/lib
+%define _cxx_libdir %{_prefix}/lib
 
 %endif
 
-%define _bindir		%_prefix/bin
-%define _libdir		%_prefix/lib
-%define _libexecdir	%_prefix/lib
-%define _pkg_config_path %_libdir/pkgconfig
+%define _bindir		%{_prefix}/bin
+%define _libdir		%{_prefix}/lib
+%define _libexecdir	%{_prefix}/lib
+%define _pkg_config_path %{_libdir}/pkgconfig
 %define _sysconfdir	/etc
 
 # Define some standard directories
 %define gnu_bin		/usr/gnu/bin
 %define gnu_inc		/usr/gnu/include
 %define gnu_lib		/usr/gnu/lib
-%define gnu_lib_path	-L%gnu_lib -R%gnu_lib
+%define gnu_lib_path	-L%{gnu_lib} -R%{gnu_lib}
+%define gpp_bin		/usr/g++/bin
+%define gpp_inc		/usr/g++/include
+%define gpp_lib		/usr/g++/lib
+%define gpp_lib_path	-L%{gpp_lib} -R%{gpp_lib}
 %define sfw_bin		/usr/sfw/bin
 %define sfw_inc		/usr/sfw/include
 %define sfw_lib		/usr/sfw/lib
-%define sfw_lib_path	-L%sfw_lib -R%sfw_lib
+%define sfw_lib_path	-L%{sfw_lib} -R%{sfw_lib}
 %define xorg_bin	/usr/X11/bin
 %define xorg_lib	/usr/X11/lib
 %define xorg_inc	/usr/X11/include
-%define xorg_lib_path	-L%xorg_lib -R%xorg_lib
+%define xorg_lib_path	-L%{xorg_lib} -R%{xorg_lib}
 
-# ChangeLog:
+%changelog
+* Sun Okt 11 2015 - Thomas Wagner
+- add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
+- still try to keep changes to this include files to a minumum please
 # 2013-10-28  Alex Viskovatoff
 # - do not add gcc_picflags to gcc_optflags: in the case of gcc, add them to
 #   optflags instead, so that users can access the standard gcc_optflags
