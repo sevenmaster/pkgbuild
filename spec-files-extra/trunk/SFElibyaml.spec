@@ -43,7 +43,7 @@ cd %{tarball_name}-%{tarball_version}
 
 export CFLAGS="-i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
 
-./configure\ --prefix=%_prefix
+./configure --prefix=%_prefix
 
 make -j$CPUS
 
@@ -89,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Wed Oct 21 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Remove errant backslash in configure line in :46
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 0.1.6
 * Fri Dec 21 2012 - Logan Bruns <logan@gedanken.org>
