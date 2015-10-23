@@ -4,6 +4,8 @@
 # includes module(s): giflib
 #
 %include Solaris.inc
+%include packagenamemacros.inc
+
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use giflib64 = giflib.spec
@@ -23,6 +25,17 @@ Group:		System/Libraries
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
+
+%if %{oihipster}
+# internal pkg generator pkgdepend broken becuase it finds two versions of perl on OIHipster then gets syntax wrong and barfs ie
+#pkgbuild:   dependency discovered: depend fmri=pkg:/runtime/perl-510@5.10.0-2014.0.1.0 fmri=pkg:/runtime/perl-516@5.16.3-2014.0.1.1 type=require-any
+# Define requirements manually
+%define _use_internal_dependency_generator 0
+Requires:        x11/library/libice
+Requires:        x11/library/libsm
+Requires:        x11/library/libx11
+Requires:        %{pnm_buildrequires_perl_default}
+%endif
 
 %package devel
 Summary:         %{summary} - development files
@@ -79,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri May 22 2015 - pjama
+- work around pkgdepend/hipster combo bug when including dependancy packages
 * Sun Oct 16 2011 - Milan Jurik
 - add IPS package name
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
