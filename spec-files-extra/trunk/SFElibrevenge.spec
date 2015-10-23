@@ -9,6 +9,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -22,7 +23,7 @@
 
 Name:			SFElibrevenge
 IPS_Package_Name:	sfe/library/g++/librevenge
-Summary:		Library for reading and converting WordPerfect(tm) documents
+Summary:		Library for reading and converting WordPerfect(tm) documents (/usr/g++)
 Group:			System/Libraries
 URL:			http://sourceforge.net/p/libwpd/wiki/librevenge/
 Version:		%major_version.%minor_version
@@ -34,8 +35,8 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
 
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
@@ -45,6 +46,8 @@ BuildRequires:  %{pnm_buildrequires_SUNWzlib}
 Requires:       %{pnm_requires_SUNWzlib}
 
 BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
+
+BuildRequires:	%{pnm_buildrequires_developer_documentation_tool_doxygen}
 
 # Copied from Wikipedia
 %description
@@ -104,6 +107,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/%src_name-generators-%major_version.pc
 %{_libdir}/pkgconfig/%src_name-stream-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -117,9 +121,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- add (Build)Requires SFEgcc
+- add (Build)Requires doxygen
 * Mon Aug 10 2015 - Thomas Wagner
 - rename IPS_Package_Name to propperly reflect g++ compiler
-##TODO## relocation to /usr/g++ (depends on LO package)
 * Wed Aug  5 2015 - Thomas Wagner
 - initial commit to svn for pjama
 - unpack with xz

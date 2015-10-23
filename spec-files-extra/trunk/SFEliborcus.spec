@@ -7,6 +7,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -24,7 +25,7 @@
 
 Name:			SFEliborcus
 IPS_Package_Name:	sfe/library/g++/liborcus
-Summary:		Standalone file import filter library for spreadsheet documents
+Summary:		Standalone file import filter library for spreadsheet documents (/usr/g++)
 Group:			System/Libraries
 URL:			https://gitlab.com/orcus/orcus
 Version:		%major_version.%minor_version
@@ -37,18 +38,23 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
+
+# BuildRequires aclocal-1.14 (part of automake)
+
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
-BuildRequires:  %{pnm_buildrequires_developer_icu}
-BuildRequires:  %{pnm_requires_developer_icu}
+BuildRequires:	%{pnm_buildrequires_icu_gpp_default}
+Requires:	%{pnm_requires_icu_gpp_default}
 
-##TODO## check this dependency. Is it a hard 2.7 or just a default module needed for 2.6Ã6?
+##TODO## check this dependency. Is it a hard 2.7 or just a default module needed for 2.6?
 # probably a fib but 0.9.2 requires python >= 2.7.1
-BuildRequires:	runtime/python-27 >= 2.7.1
-Requires:	runtime/python-27 >= 2.7.1
+##BuildRequires:	runtime/python-27 >= 2.7.1
+##Requires:	runtime/python-27 >= 2.7.1
+BuildRequires: %{pnm_buildrequires_python_default}
+Requires:      %{pnm_requires_python_default}
 
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
@@ -57,8 +63,8 @@ Requires:	%{pnm_requires_system_library_math_header_math}
 BuildRequires:  %{pnm_buildrequires_SUNWzlib}
 Requires:       %{pnm_requires_SUNWzlib}
 
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
-#S11 S12 need zlib.pc
+%if %( expr %{solaris11} '+' %{solaris12}  '+' %{openindiana} '>=' 1 )
+#S11 S12 openindiana need zlib.pc (should not bother oihipster, which probably already has a propper zlib.pc)
 BuildRequires:  SFEzlib-pkgconfig 
 #for pkgtool's dependency resoultion
 Requires:       SFEzlib-pkgconfig 
@@ -106,6 +112,8 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 ##try #mdds.pc in wrong location!
 ##try export PKG_CONFIG_PATH=/usr/share/pkgconfig:$PKG_CONFIG_PATH
+# pja 20150920 - re-introduce PKG_CONFIG_PATH to suit /usr/g++
+export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
 
 ##TODO## Verified on S11 S12 to not appear, remove the comment of the folowing osdistro are (now) w/o this error
 ##TODO## verify on OIHipster if this appears
@@ -124,6 +132,7 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 # above doesn't like -pthreads
 
 
+##TODO## oh, this might need a review, if it is still needed. Check with visibility fixes for the SFEgcc on OmniOS, might apply for S12 too
 #S12
 %if %{solaris12}
    gsed -i.bak0 -e '/^CXXFLAGS=/ s/-fvisibility=hidden//' \
@@ -200,6 +209,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge in pjama's changes
+* Sun Oct 11 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
+* Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- set (Build)Requires: for SFE gcc
+- icu is not required
+- pnm BuildRequires default python as opposed to fixed version 2.7  because Openindiana only has 2.6
 * Sat Aug 22 2015 - Thomas Wagner
 - move injection of "-pthreads" to CXXFLAGS from Makefile to configure.ac (avoid throwing out the "-fvisibility=hidden" removal from configure configure.ac (S12)
 - leave a bit debug output on, don't set PKG_CONFIG_PATH to /usr/share/pkgconfig and see if mdds.pc is still propperly / configured (tested on S11, S12)

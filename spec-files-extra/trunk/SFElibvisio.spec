@@ -8,6 +8,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -16,11 +17,11 @@
 %define src_url  http://dev-www.libreoffice.org/src/libvisio
 
 %define major_version 0.1
-%define minor_version 1
+%define minor_version 3
 
 Name:			SFElibvisio
 IPS_Package_Name:	sfe/library/g++/libvisio
-Summary:		Libvisio is a library that parses the file format of Microsoft Visio documents of all versions.
+Summary:		Libvisio is a library that parses the file format of Microsoft Visio documents of all versions. (/usr/g++)
 Group:			System/Libraries
 URL:			https://wiki.documentfoundation.org/DLP/Libraries/libvisio
 Version:		%major_version.%minor_version
@@ -33,13 +34,14 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
+
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
-BuildRequires:  %{pnm_buildrequires_developer_icu}
-BuildRequires:  %{pnm_requires_developer_icu}
+BuildRequires:	%{pnm_buildrequires_icu_gpp_default}
+Requires:	%{pnm_requires_icu_gpp_default}
 
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
@@ -76,7 +78,11 @@ Requires: %name
 %setup -q -c -T -n %src_name-%version
 xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
-%patch1 -p0
+#%patch1 -p0
+gsed -i -e 's| pow(2, sectorShift)| std::pow(2, sectorShift)|g'	\
+	src/lib/VSDMetaData.cpp	\
+	;
+
 
 
 %build
@@ -89,16 +95,21 @@ export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
+#let's try this order
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:$PKG_CONFIG_PATH
+
 ./configure	\
 	--prefix=%_prefix	\
+	--enable-shared		\
+	--disable-static	\
 	;
 
 #from studio compiled icu.pc
 #g++: error: unrecognized command line option '-compat=5'
 #./Makefile:ICU_CFLAGS =   -compat=5
 #./Makefile:LIBVISIO_CXXFLAGS = -I/usr/include/librevenge-0.0   -I/usr/include/libxml2      -compat=5
-grep "compat=5" Makefile && \
-  perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
+#this is a sign for trapping over osdistro, studio compiled icu .. grep "compat=5" Makefile && \
+#this is a sign for trapping over osdistro, studio compiled icu ..   perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
 
 make -j$CPUS
 
@@ -125,6 +136,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/%src_name-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -136,6 +148,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge with pjama's changes
+* Sun Oct 11 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
+% Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- bump version from 0.1.1 to 0.1.3
+- add (Build)Requires SFEgcc
+- new version changed patch lines so did with sed instead for resilience.
+- set PKG_CONFIG_PATH to find stuff in /usr/g++ and /usrgnu
+- add --enable-shared and --disable-static
 * Mon Aug 10 2015 - Thomas Wagner
 - rename IPS_Package_Name to propperly reflect g++ compiler
 ##TODO## relocation to /usr/g++ (depends on LO package)

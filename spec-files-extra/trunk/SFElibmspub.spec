@@ -8,6 +8,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -20,7 +21,7 @@
 
 Name:			SFElibmspub
 IPS_Package_Name:	sfe/library/g++/libmspub
-Summary:		Microsoft Publisher file format parser library.
+Summary:		Microsoft Publisher file format parser library. (/usr/g++)
 Group:			System/Libraries
 URL:			https://wiki.documentfoundation.org/DLP/Libraries/libmspub
 Version:		%major_version.%minor_version
@@ -33,14 +34,13 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
 BuildRequires:  %{pnm_buildrequires_developer_icu}
-BuildRequires:  %{pnm_requires_developer_icu}
-
+Requires:	%{pnm_requires_library_icu}
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
 
@@ -81,6 +81,13 @@ export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
+export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
+
+### Should really be if using SFEicu-gpp, which OI does
+##%if %{openindiana}
+export ICU_CONFIG='/usr/g++/bin/icu-config'
+##%endif
+
 ./configure	\
 	--prefix=%_prefix	\
 	;
@@ -116,6 +123,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/%src_name-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -127,6 +135,20 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge in pjama's changes
+- stay with all osdistro default to icu_gpp determined by pnm macro. keeps this spec file simple.
+* Sun Oct 11 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
+* Sun 20 Sep 2015 - pjama
+- %include usr-g++.inc
+- set (Build)Requires: SFEgcc
+- set PKG_CONFIG_PATH to find stuff in /usr/g++ and /usr/gnu
+- set  ICU_CONFIG so OI finds it. Probably need this for others
+- prefix as /usr/g++
+- set (Build)Requires: SFEgcc
+- set PKG_CONFIG_PATH to find stuff in /usr/g++ and /usr/gnu
+- set  ICU_CONFIG so OI finds it. Probably need this for others
 * Fri Aug 14 2015 - Thomas Wagner
 - edit out -compat=5 from all files, comes from studio compiles icu libraries but g++ doesn't know that switch
 * Mon Aug 10 2015 - Thomas Wagner
