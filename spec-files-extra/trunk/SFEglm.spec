@@ -14,10 +14,12 @@
 
 %define src_name glm
 #%define src_url  http://downloads.sourceforge.net/glm
-%define src_url  http://downloads.sourceforge.net/ogl-math
+#%define src_url  http://downloads.sourceforge.net/ogl-math
+# https://github.com/g-truc/glm/releases/download/0.9.7.0/glm-0.9.7.0.zip
+%define src_url https://github.com/g-truc/glm/releases/download
 
-%define major_version 0.9.6
-%define minor_version 3
+%define major_version 0.9.7
+%define minor_version 0
 
 Name:			SFEglm
 IPS_Package_Name:	sfe/library/glm
@@ -28,13 +30,15 @@ Version:		%major_version.%minor_version
 ##TODO## check license SFEmggs.spec MIT/X11 - license tag and file
 License:		MIT and GPL-2.0+`
 #SUNW_Copyright:		%{license}.copyright
-Source:			%{src_url}/%{src_name}-%{version}.zip
+#Source:			%{src_url}/%{version}/%{src_name}-%{version}.zip
+Source:			https://github.com/g-truc/glm/releases/download/0.9.7.0/glm-0.9.7.0.zip
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-
+BuildRequires:  SFEgcc
+Requires:       SFEgccruntime
 
 %description
 OpenGL Mathematics (GLM) is a header only C++ mathematics library for graphics
@@ -92,7 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %attr (0755, root, bin) %_libdir
 #%_libdir/%src_name-%major_version.so*
-%_libdir/cmake/FindGLM.cmake
+#%_libdir/cmake/FindGLM.cmake
+%_libdir/cmake/glm/glmConfig.cmake
+%_libdir/cmake/glm/glmVersion.cmake
 
 #%dir %attr (0755, root, other) %_datadir/doc
 #%_datadir/doc/%src_name
@@ -103,6 +109,12 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/%src_name
 
 %changelog
+* Sun Sep 20 2015 - pjama
+- add (Build)Requires SFEgcc
+* Tues Aug 26 2015 - pjama
+- bump to 0.9.7.0
+- update download source
+- adjust %files
 * Mon Aug 10 2015 - Thomas Wagner
 - initial commit to svn for pjama
 - add (Build)Requires cmake %{pnm_buildrequires_developer_build_cmake}

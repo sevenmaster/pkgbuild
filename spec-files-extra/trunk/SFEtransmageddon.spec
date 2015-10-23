@@ -8,6 +8,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:		SFEtransmageddon
 IPS_Package_Name:	gnome/media/transmageddon
@@ -21,10 +22,11 @@ SUNW_Copyright: transmageddon.copyright
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWPython26
-BuildRequires: SUNWgnome-common-devel
-BuildRequires: library/perl-5/xml-parser
 
+Requires:	%{pnm_requires_python_default}
+##TODO## re-visit dependencies (runtime)
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
+BuildRequires:	%{pnm_buildrequires_perl_xml_parser}
 %if %build_l10n
 %package l10n
 Summary:                 %{summary} - l10n files
@@ -75,6 +77,15 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge with pjama's changes
+* Sat May 22 2015 - pjama
+- pnm changes
+- ## TODO ## update from 0.20 to 0.25
+-	Changes presets
+* Fri Sep  2 2011 - Thomas Wagner
+- make BuildRequires SUNWperl-xml-parser
+- make Requires: %{pnm_buildrequires_python_default}
 * Mon Jul 25 2011 - N.B.Prashanth
 - Add SUNW_Copyright
 * Wed Jun 15 2011 - Alex Viskovatoff
