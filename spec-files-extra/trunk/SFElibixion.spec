@@ -8,6 +8,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -23,7 +24,7 @@
 
 Name:			SFElibixion
 IPS_Package_Name:	sfe/library/g++/libixion
-Summary:		A general purpose formula parser and interpreter that can calculate multiple named targets, or "cells"
+Summary:		A general purpose formula parser and interpreter that can calculate multiple named targets, or "cells" (/usr/g++)
 Group:			System/Libraries
 #URL:			https://gitorious.org/ixion/pages/Home
 URL:			https://gitlab.com/ixion/ixion
@@ -36,8 +37,8 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
 
 # Python interpreter with version >= 2.7.0 required for v0.9.0
 # TODO ##
@@ -47,6 +48,7 @@ BuildRoot:		%_tmppath/%name-%version-build
 # $ ls /usr/lib/pkgconfig/python*
 # /usr/lib/pkgconfig/python-2.7.pc  /usr/lib/pkgconfig/python-3.3.pc  /usr/lib/pkgconfig/python-3.3m.pc  /usr/lib/pkgconfig/python3.pc
 # manually linked python.pc and python2.pc to python-2.7.pc 
+# Update fresh install of OIH circa 20150919 only has python-2.7.pc
 
 #notes/findings
 #pkg-config --print-errors --cflags --libs "python-2.7 >= 0.27.1"
@@ -63,7 +65,10 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 ##TODO## is this better a pnm_macro in the future?
 # probably a fib but 0.9.1 requires python >= 2.7.0
-BuildRequires:  runtime/python-27 >= 2.7.0
+#BuildRequires:  runtime/python-27 >= 2.7.0
+#BuildRequires:  runtime/python-26 >= 2.6.0
+BuildRequires:  runtime/python-26
+##TODO## OI requires python 2.6
 
 ##TODO## check dependency
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
@@ -102,7 +107,8 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
+#export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags -pthreads --std=c++0x -I/usr/g++/include"
 ##TODO## if g++ runtime makes troubles, try entering a runpath which takes g++ runtime from SFEgcc instead of using the osdistro /usr/lib/libstdc++.so.6
 export LDFLAGS="%_ldflags -pthreads -L/usr/g++/lib -R/usr/g++/lib"
 
@@ -124,6 +130,21 @@ export CPPFLAGS="-I/usr/g++/include"
 echo "PKG_CONFIG: ${PKG_CONFIG}"
 export PYTHON_LIBS=`$PKG_CONFIG --libs "python-2.7 >= 0.27.1" 2>/dev/null`
 export PYTHON_CFLAGS=`$PKG_CONFIG --cflags "python-2.7 >= 0.27.1" 2>/dev/null`
+
+export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
+
+
+## TODO ## Fix for 2.6 python on OI
+gsed -i -e 's|checking whether $PYTHON version is >= 2.7.0"|checking whether $PYTHON version is >= 2.6.0"|g'	\
+	-e 's|checking for a Python interpreter with version >= 2.7.0"|checking for a Python interpreter with version >= 2.6.0"|g'	\
+	-e 's|minver = list(map(int, '\''2.7.0'\''|minver = list(map(int, '\''2.6.0'\''|g'	\
+	configure	\
+	;
+
+export PYTHON_LIBS=-lpython2.6
+export PYTHON_CFLAGS=-I/usr/include/python2.6
+PYTHON_CFLAGS=-I/usr/include/python2.6
+
 
 ./configure	\
 	--prefix=%_prefix	\
@@ -167,6 +188,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge in pjama's changes
+##TODO## see if python version can be set with pnm macro
+* Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- add (Build)Requires SFEgcc
+- some python version edits to make Openindiana a9 friendly
+- add --std=c++0x  to CXXFLAGS... can't remember why
+- set PKG_CONFIG_PATH so we can find stuff hiding in /usr/g++ and /usr/gnu
 * Mon Aug 10 2015 - Thomas Wagner
 - add BuildRequires SFEmdds
 - workaround to find python on platform without "python.pc" file, pythong-2.7.pc instead. set PYTHON_LIBS and PYTHON_CFLAGS for configure

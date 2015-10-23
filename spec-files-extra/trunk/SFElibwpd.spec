@@ -8,6 +8,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -20,7 +21,7 @@
 
 Name:			SFElibwpd
 IPS_Package_Name:	sfe/library/g++/libwpd
-Summary:		Library for reading and converting WordPerfect(tm) documents
+Summary:		Library for reading and converting WordPerfect(tm) documents (/usr/g++)
 Group:			System/Libraries
 URL:			http://libwpd.sf.net/
 Version:		%major_version.%minor_version
@@ -32,13 +33,14 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
+
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
-BuildRequires:  %{pnm_buildrequires_developer_icu}
-BuildRequires:  %{pnm_requires_developer_icu}
+BuildRequires:	%{pnm_buildrequires_icu_gpp_default}
+Requires:	%{pnm_requires_icu_gpp_default}
 
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
@@ -79,8 +81,12 @@ export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
+
 ./configure	\
 	--prefix=%_prefix	\
+	--enable-shared		\
+	--disable-static	\
 	;
 
 make -j$CPUS
@@ -107,6 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/%src_name-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -118,6 +125,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge in pjama's changes
+* Sun Oct 11 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
+* Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- set (BUILD)Requires: SFEgcc
+- requires icu
+- set PKG_CONFIG_PATH to find stuff in /usr/g++ and /usr/gnu
+- add --enable-shared --disable-static
 * Mon Aug 10 2015 - Thomas Wagner
 - disable _use_internal_dependency_generator
 - rename IPS_Package_Name to propperly reflect g++ compiler

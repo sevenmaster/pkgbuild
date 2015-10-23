@@ -8,6 +8,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 %define _use_internal_dependency_generator 0
@@ -20,7 +21,7 @@
 
 Name:			SFElibodfgen
 IPS_Package_Name:	sfe/library/g++/libodfgen
-Summary:		libodfgen is an ODF export library for projects using librevenge.
+Summary:		libodfgen is an ODF export library for projects using librevenge. (/usr/g++)
 Group:			System/Libraries
 URL:			http://sourceforge.net/p/libwpd/wiki/libodfgen
 Version:		%major_version.%minor_version
@@ -32,8 +33,9 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
+
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
@@ -103,6 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/%src_name-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -114,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Sep 20 2015 - pjama
+- %include usr-g++.inc
+- set (Build)Requires SFEgcc
 * Sat Aug 11 2015 - Thomas Wagner
 - disable warnings with --disable-weffc (Disable -Weffc++ warnings in configure to avoid "Could not find Boost implementation of shared_ptr")
 * Mon Aug 10 2015 - Thomas Wagner
