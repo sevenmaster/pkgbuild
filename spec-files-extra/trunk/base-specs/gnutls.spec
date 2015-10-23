@@ -1,7 +1,7 @@
 #
 #
 Name:     	gnutls
-Version: 	3.4.4
+Version: 	3.4.5
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
@@ -18,9 +18,9 @@ xz -dc %SOURCE0 | (cd ..; tar xf -)
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CFLAGS="%optflags -I%{gnu_inc}"
-export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%{_ldflags} %{gnu_lib_path}"
+export CFLAGS="%optflags -I/usr/include/idn -I%{gnu_inc}"
+export CXXFLAGS="%cxx_optflags -I/usr/include/idn -I%{gnu_inc}"
+export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path}"
 
 export PKG_CONFIG_PATH=%{_pkg_config_path}
 
@@ -34,6 +34,7 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
     --mandir=%{_mandir} \
     --infodir=%{_datadir}/info \
     --localstatedir=%{_localstatedir} \
+    --without-p11-kit \
     --disable-cxx
 
 make -j $CPUS
@@ -48,9 +49,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 11 2015 - Thomas Wagner
+- add to *FLAGS  -I/usr/include/idn to find idna.h
+- add BuildRequires SFEicu-gpp SFElibtasn1-gnu pnm_buildrequires_library_guile pnm_buildrequires_library_libidn
+* Sat Oct 10 2015 - Thomas Wagner
+- bump to 3.4.5
+- add BuildRequires SFEunbound
+- --without-p11-kit (check later if this makes sense on SunOS)
 * Thu Aug 20 2015 - Thomas Wagner
 - bump to 3.4.4
 * Tue Aug  4 2015 - Thomas Wagner
+- remove %{pnm_buildrequires_SUNWlibgcrypt}
 - fix Requires for -devel to be SFEgnutls
 - bump to 3.3.16
 * Thu Jun 18 2015 - Thomas Wagner

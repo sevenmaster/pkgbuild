@@ -1,12 +1,10 @@
-##TODO## optional dependency: service/network/dns/unbound to get DNSSEC test 
-#  DNSSEC root key file: /etc/unbound/root.key
-#configure: WARNING:
-#***
-#*** The DNSSEC root key file in /etc/unbound/root.key was not found.
-#*** This file is needed for the verification of DNSSEC responses.
-#*** Use the command: unbound-anchor -a "/etc/unbound/root.key"
-#*** to generate or update it.
-#***
+##TODO## optional 
+
+#is this needed/wanted?
+#*** p11-kit >= 0.23.1 was not found. To disable PKCS #11 support
+#*** use --without-p11-kit, otherwise you may get p11-kit from
+#*** http://p11-glue.freedesktop.org/p11-kit.html
+
 
 
 #
@@ -40,6 +38,21 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 
 BuildRequires:	SFEnettle-gnu-devel
 Requires:	SFEnettle-gnu
+
+BuildRequires:  SFEunbound
+Requires:       SFEunbound
+
+BuildRequires:  SFElibtasn1-gnu
+Requires:       SFElibtasn1-gnu
+
+#./gnutls-idna.h:29:19: fatal error: idna.h: No such file or directory
+BuildRequires:  SFEicu-gpp
+Requires:       SFEicu-gpp
+
+BuildRequires:  %{pnm_buildrequires_library_guile}
+Requires:       %{pnm_requires_library_guile}
+BuildRequires:  %{pnm_buildrequires_library_libidn}
+Requires:       %{pnm_requires_library_libidn}
 
 ##TODO## obsolete, we use nettle BuildRequires:           %{pnm_buildrequires_SUNWlibgcrypt_devel}
 ##TODO## obsolete, we use nettle Requires:                %{pnm_buildrequires_SUNWlibgcrypt}
@@ -133,6 +146,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Sun Oct 11 2015 - Thomas Wagner
+- add to *FLAGS  -I/usr/include/idn to find idna.h
+- add BuildRequires SFEicu-gpp SFElibtasn1-gnu pnm_buildrequires_library_guile pnm_buildrequires_library_libidn
+* Sat Oct 10 2015 - Thomas Wagner
+- bump to 3.4.5
+- add BuildRequires SFEunbound
+- --without-p11-kit (check later if this makes sense on SunOS)
 * Thu Aug 20 2015 - Thomas Wagner
 - bump to 3.4.4
 * Tue Aug  4 2015 - Thomas Wagner
