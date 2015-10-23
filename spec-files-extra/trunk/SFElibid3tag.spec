@@ -4,6 +4,7 @@
 # includes module(s): libid3tag
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libid3tag_64 = libid3tag.spec
@@ -23,7 +24,8 @@ URL:		http://www.underbit.com/products/mad/
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires:	SUNWzlib
+BuildRequires:	%{pnm_buildrequires_SUNWzlib}
+Requires:	%{pnm_requires_SUNWzlib}
 
 %description
 ID3 tag manipulation library a wide range of multimedia formats
@@ -87,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sat May 22 2015 - pjama
+- change to (Build)Requires pnm_buildrequires_SUNWzlib, %include packagenamemacros.inc (OIH)
 *     Mar 27  2013 - Thomas Wagner
 - description
 * Wed Jul 20 2011 - Alex Viskovatoff
