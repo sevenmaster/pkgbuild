@@ -21,10 +21,11 @@
 
 %include Solaris.inc
 %include usr-gnu.inc
+%include packagenamemacros.inc
 
 %define src_name lcms2
 
-%define version 2.5
+%define version 2.7
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -39,7 +40,6 @@ IPS_Package_Name:	library/gnu/lcms2
 Group:		System/Libraries
 Summary:	A little color management system (/usr/gnu)
 Version:                 %{lcms2.version}
-Version:                 %{lcms2.version}
 URL:		http://www.littlecms.com/
 Source:		http://www.littlecms.com/%{src_name}-%{version}.tar.gz
 License:	MIT
@@ -48,15 +48,17 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires:	SUNWzlib
-Requires:	SUNWzlib
-BuildRequires:	SUNWlibms
-Requires:	SUNWlibms
-BuildRequires:	SUNWTiff-devel
-Requires:	SUNWTiff
-BuildRequires:	SUNWjpg-devel
-Requires:	SUNWjpg
-BuildRequires:	SUNWzlib
+BuildRequires:	%{pnm_buildrequires_SUNWzlib}
+Requires:	%{pnm_requires_SUNWzlib}
+
+BuildRequires:  %{pnm_buildrequires_SUNWlibms}
+Requires:       %{pnm_requires_SUNWlibms}
+
+BuildRequires:	%{pnm_buildrequires_SUNWTiff_devel}
+Requires:	%{pnm_requires_SUNWTiff}
+
+BuildRequires:	%{pnm_buildrequires_SUNWjpg_devel}
+Requires:	%{pnm_requires_SUNWjpg}
 
 
 %prep
@@ -133,6 +135,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge local with pjama's changes
+* Fri May 22 2015 - pjama
+- bump from 2.5 to 2.7
+- change (Build)Requires pnm_buildrequires_SUNWzlib, SUNWlibms, SUNWTiff, SUNWjpg, #include packagenamemacros.inc
 * Fri Jan 03 2014 - Thomas Wagner
 - add missing base-specs/lcms.spec
 - add 32/64-bit support
