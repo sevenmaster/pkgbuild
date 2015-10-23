@@ -1,0 +1,15 @@
+--- squid-3.5.10/helpers/external_acl/time_quota/ext_time_quota_acl.cc.orig	2015-10-22 19:41:49.509610947 +0200
++++ squid-3.5.10/helpers/external_acl/time_quota/ext_time_quota_acl.cc	2015-10-22 19:47:26.749306072 +0200
+@@ -47,9 +47,9 @@
+    protect from multiple type definition on platform where
+    __BIT_TYPES_DEFINED__ is not defined.
+  */
+-#ifndef        __BIT_TYPES_DEFINED__
+-#define        __BIT_TYPES_DEFINED__
+-#endif
++//wrong on solaris #ifndef        __BIT_TYPES_DEFINED__
++//wrong on solaris #define        __BIT_TYPES_DEFINED__
++//wrong on solaris #endif
+ 
+ #if HAVE_DB_185_H
+ #include <db_185.h>
