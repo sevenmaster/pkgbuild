@@ -39,8 +39,9 @@ BuildRoot:		%_tmppath/%name-%version-build
 # REqs
 # boost-devel, pkg-config, 
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
+
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 #no runtime present Requires:	%{pnm_requires_boost_gpp_default}
 
@@ -103,6 +104,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Sep 20 2015 - pjama
+- add (BUILD)Requires SFEgcc
 * Mon Aug 10 2015 - Thomas Wagner
 * Sat Aug  8 2015 - Thomas Wagner
 - initial commit to svn for pjama

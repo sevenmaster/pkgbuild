@@ -38,7 +38,7 @@ BuildRequires: %{pnm_buildrequires_SUNWlibC}
 Requires: %{pnm_buildrequires_SUNWlibC}
 BuildRequires: SUNWlibms
 Requires: SUNWlibms
-Requires: SUNWdbus
+Requires:      %{pnm_requires_SUNWdbus}
 Requires: SFElibcddb
 BuildRequires: SFElibcddb
 Requires: SFElibiconv
@@ -49,11 +49,11 @@ Requires:      %{pnm_requires_SUNWncurses}
 %if %with_hal
 Requires: SUNWhal
 %endif
-BuildRequires: SUNWlexpt
-BuildRequires: SUNWdbus-devel
-BuildRequires: SUNWgnome-common-devel
-BuildRequires: SFElibcddb-devel
-BuildRequires: SFElibiconv-devel
+BuildRequires:	SUNWlexpt
+BuildRequires:	%{pnm_buildrequires_SUNWdbus_devel}
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
+BuildRequires:	SFElibcddb-devel
+BuildRequires:	SFElibiconv-devel
 
 %package devel
 Summary:                 %{summary} - development files
@@ -114,6 +114,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/cdio
 
 %changelog
+* Fir Oct 23 2015 - Thomas Wagner
+- merge with pjama's changes
+* Sat May 23 2013 - pjama
+- more packagenamemacros to make hipster compatable
 * Sun Oct 28 2013 - Thomas Wagner
 - cleanup target dir in %install
 * Fri Jul  5 2013 - Thomas Wagner

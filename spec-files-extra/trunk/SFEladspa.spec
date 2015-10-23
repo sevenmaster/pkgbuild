@@ -4,6 +4,7 @@
 # includes module(s): ladspa
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	ladspa_sdk
 %define src_url		http://www.ladspa.org/download
@@ -20,10 +21,15 @@ SUNW_BaseDir:           %{_basedir}
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWlibms
-Requires: SUNWlibms
-BuildRequires: SUNWlibC
-Requires: SUNWlibC
+BuildRequires: %{pnm_buildrequires_SUNWlibms}
+Requires: %{pnm_requires_SUNWlibms}
+
+%if %cc_is_gcc
+# don't include suncc libs
+%else
+BuildRequires: %{pnm_buildrequires_SUNWlibC}
+Requires: %{pnm_requires_SUNWlibC}
+%endif
 
 %package devel
 Summary:                 %{summary} - development files
@@ -42,7 +48,11 @@ fi
 
 
 export CFLAGS="%optflags"
+%if %cc_is_gcc
+export CXXFLAGS="%cxx_optflags"
+%else
 export CXXFLAGS="%cxx_optflags -library=Cstd"
+%endif
 export LDFLAGS="%_ldflags"
 export bindir=%{_bindir}
 export libexecdir=%{_libexecdir}
@@ -72,6 +82,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Oct 23 2015 - Thomas Wagner
+- merge in pjama's changes
+* Fri May 22 2015 - pjama
+- change to (Build)Requires pnm_buildrequires_SUNWlibms, SUNWlibC, %include packagenamemacros.inc
+- only include libC stuff if not using gcc
 * Mon Oct 10 2011 - Milan Jurik
 - add IPS package name
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
