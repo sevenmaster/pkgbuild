@@ -85,6 +85,8 @@ export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
+
 ./configure	\
 	--prefix=%_prefix	\
         --disable-weffc         \
@@ -115,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/%src_name-%major_version.pc
 
+%dir %attr (0755, root, sys) %_datadir
 %dir %attr (0755, root, other) %_datadir/doc
 %_datadir/doc/%src_name
 
@@ -126,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 25 2015 - Thomas Wagner
+- find prerequisites by PKG_CONFIG_PATH pointing to /usr/g++/
+- fix %files for /usr/g++
 * Sun Oct 11 2015 - Thomas Wagner
 - change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
 * Sun Sep 20 2015 - pjama
