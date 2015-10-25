@@ -115,7 +115,7 @@
 %define	V_postfinger	1.30
 
 Name:                    SFEpostfix
-%if %{solaris12}
+%if %( expr %{solaris12} '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000220000.0 )
 IPS_Package_Name:	 sfe/service/network/smtp/postfix
 %else
 IPS_Package_Name:	 service/network/smtp/postfix
@@ -123,7 +123,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.0.2
+Version:                 3.0.3
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -940,6 +940,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
 %changelog
+* Wed Oct 14 2015 - Thomas Wagner
+- bump to 3.0.3
 * Fri Aug  7 2015 - Thomas Wagner
 - bump to 3.0.2
 - set _use_internal_dependency_generator 0 to save time
