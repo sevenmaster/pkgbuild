@@ -1,6 +1,6 @@
 #
 Name:     	libtasn1
-Version: 	4.5
+Version: 	4.7
 License:	LGPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Docdir:         %{_datadir}/doc
@@ -61,6 +61,8 @@ rm -rf $RPM_BUILD_ROOT/%{_infodir}
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Okt 11 2015 - Thomas Wagner
+- bump to 4.5
 * Sun Jun  7 2015 - Thomas Wagner
 - bump to 4.5
 - add IPS_Package_Name, relocate to usr-gnu.inc

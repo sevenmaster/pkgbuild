@@ -90,7 +90,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Jun  7 2015 - Thomas Wagner
+* Sun Oct 11 2015 - Thomas Wagner
 - bump to 4.5
 - add IPS_Package_Name, relocate to usr-gnu.inc
 - make it 32/64-bit
