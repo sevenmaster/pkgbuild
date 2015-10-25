@@ -39,8 +39,8 @@ Requires:	SFEgccruntime
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
 Requires:	%{pnm_requires_boost_gpp_default}
 
-BuildRequires:  %{pnm_buildrequires_developer_icu}
-Requires:	%{pnm_requires_library_icu}
+BuildRequires:  %{pnm_buildrequires_icu_gpp_default}
+Requires:	%{pnm_requires_icu_gpp_default}
 BuildRequires:	%{pnm_buildrequires_system_library_math_header_math}
 Requires:	%{pnm_requires_system_library_math_header_math}
 
@@ -135,6 +135,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 25 2015 - Thomas Wagner
+- now really change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
 * Fri Oct 23 2015 - Thomas Wagner
 - merge in pjama's changes
 - stay with all osdistro default to icu_gpp determined by pnm macro. keeps this spec file simple.

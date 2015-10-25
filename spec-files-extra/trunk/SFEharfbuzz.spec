@@ -11,6 +11,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
 %include packagenamemacros.inc
 #until we recorded the dependencies manually
@@ -22,7 +23,7 @@
 
 Name:			SFEharfbuzz
 IPS_Package_Name:	library/g++/harfbuzz
-Summary:		harfbuzz - text shaping engine
+Summary:		harfbuzz - text shaping engine (/usr/g++)
 Group:			System/Libraries
 #available: 0.9.42 and 1.0.1
 Version:		0.9.38
@@ -132,7 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Weg 19 Aug 2015 - Thomas Wagner
+* Sun Oct 25 2015 - Thomas Wagner
+- %include usr-g++.inc
+* Wed 19 Aug 2015 - Thomas Wagner
 - init ENV in %install (else might catch wrong compiler)
 * Mon Aug 10 2015 - Thomas Wagner
 - initial spec 0.9.38, more fresh versions untested. Note: LibreOffice4 uses harfbuzz
