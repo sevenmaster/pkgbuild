@@ -7,13 +7,17 @@ Group:        System/Libraries
 Version:      0.24.3
 Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 %endif
+#use poppler from osdistro for now, so we don't build this spec file base-specs/poppler.spec you are looking at
 #%if %{oihipster}
 #Version:      0.00.0
 #Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 #%endif
 %if %{solaris11}
-Version:      0.14.5
-Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.gz
+#Version:      0.14.5
+#using SFEcairo-gnu in version >= 1.10.x
+Version:      0.32.0
+#Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.gz
+Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 %endif
 %if %{solaris12}
 #Version:      0.35.0
@@ -110,14 +114,40 @@ echo %SOURCE0 | grep "bz$" && gzip -d < %SOURCE0 | (cd ..; tar xf -)
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CFLAGS="%optflags -std=gnu++11"
-export CXXFLAGS="%cxx_optflags -std=gnu++11"
+%if %{solaris11}
+#find SFEcairo-gnu in /usr/gnu path first
+#need to know 64-bit path as well
+export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
+%else
+#need to know 64-bit path as well %if opt_arch -> sed -e 's?/pkgconfig?%{_arch64}/pkgconfig?g'
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
+%endif
+
+export CFLAGS="%optflags -std=gnu++11 `pkg-config --cflags-only-I cairo`"
+export CXXFLAGS="%cxx_optflags -std=gnu++11 `pkg-config --cflags-only-I cairo`"
 export LDFLAGS="%{_ldflags}"
 
 #configure doen't handle the "1" version libopenjpeg1 ...
 export LIBOPENJPEG_CFLAGS=$( pkg-config --cflags "libopenjpeg1" )
 export LIBOPENJPEG_LIBS="-lopenjpeg"
+
+export CAIRO_CFLAGS="`pkg-config --cflags cairo`"
+export CAIRO_LIBS="`pkg-config --libs cairo`"
  
+echo "Debug:
+PKG_CONFIG_PATH    $PKG_CONFIG_PATH
+LIBOPENJPEG_CFLAGS $LIBOPENJPEG_CFLAGS
+LIBOPENJPEG_LIBS   $LIBOPENJPEG_LIBS
+CAIRO_CFLAGS       $CAIRO_CFLAGS
+CAIRO_LIBS         $CAIRO_LIBS
+CFLAGS             $CFLAGS
+CXXFLAGS           $CXXFLAGS
+LDFLAGS            $LDFLAGS
+PATH               $PATH
+_arch64            %_arch64
+bld_arch           %bld_arch
+base_isa           %base_isa
+"
 
 echo "Note: editing out AC_CHECK_FUNCS(strcpy_s, strcat_s) from configure.ac. Else this fails with not switching on defines in std include files."
 gsed -i.bak '/AC_CHECK_FUNCS.*strcpy_s/ s/^dnl //' configure.ac
@@ -134,10 +164,14 @@ autoconf
             --disable-static            \
 	    --mandir=%{_mandir}	        \
             --enable-zlib               \
-	    --disable-gtk-doc
+	    --disable-gtk-doc           \
 #            %{gtk_doc_option}
 
-make -j $CPUS
+#stupid g-ir-scanner doesn't follow ENV variables nor what configure found.
+#push it a but to make it stuble over cairo.h in /usr/gnu/include/cairo
+gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? -I /usr/gnu/include/cairo?' glib/Makefile.am
+
+gmake V=2 -j$CPUS
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
@@ -166,6 +200,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Sun Oct 25 2015 - Thomas Wagner
+- bump version to 0.32.0 (S11 only!)
+- add (Build)Requires SFEpoppler-gpp.spec (S11 only!)
+- add workaround for g-ir-scanner not honouring CFLAGS when searching for cairo.h
 * Mon Aug 24 2015 - Thomas Wagner
 - add (Build)Requires SFEsigcpp-gpp SFEopenjpeg
 - switch possible version depending on osdistro version for "cairo"
