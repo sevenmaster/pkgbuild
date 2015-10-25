@@ -1,0 +1,11 @@
+--- cairo-1.12.2/src/cairo-mutex-impl-private.h.orig	2012-11-05 11:32:47.448182749 +0530
++++ cairo-1.12.2/src/cairo-mutex-impl-private.h	2012-11-05 03:53:23.468262104 +0530
+@@ -40,7 +40,7 @@
+ 
+ #ifndef CAIRO_MUTEX_IMPL_PRIVATE_H
+ #define CAIRO_MUTEX_IMPL_PRIVATE_H
+-
++#define CAIRO_NO_MUTEX 1
+ #include "cairo.h"
+ 
+ #if HAVE_CONFIG_H
