@@ -1333,6 +1333,20 @@
 %define pnm_buildrequires_tlsd					library/security/nss
 %define pnm_requires_tlsd					library/security/nss
 ##TODO## nspr
+%define pnm_buildrequires_library_nspr			library/nspr
+%define pnm_requires_library_nspr			library/nspr
+%define pnm_buildrequires_SUNWpr_devel			library/nspr
+%define pnm_buildrequires_SUNWpr			library/nspr
+%define pnm_requires_SUNWpr				library/nspr
+%define pnm_buildrequires_pr				library/nspr
+%define pnm_requires_pr					library/nspr
+%define pnm_buildrequires_library_nspr_header_nspr	library/nspr
+%define pnm_requires_library_nspr_header_nspr		library/nspr
+%define pnm_buildrequires_SUNWprd_devel			library/nspr
+%define pnm_buildrequires_SUNWprd			library/nspr
+%define pnm_requires_SUNWprd				library/nspr
+%define pnm_buildrequires_prd				library/nspr
+%define pnm_requires_prd				library/nspr
 %endif
 #END solaris 12 | solaris 11 >= 160
 
@@ -1391,7 +1405,7 @@
 # OI stays unchanged for a while
 # Hipster has header-math integrated into math
 #with build 174 library/math/header-math moved into system/library/math, as well on S12 OIH
-%if %( expr %{solaris12} '+' %{oihipster} '>=' 1 '|' %{osbuild} '>=' 174 )
+%if %( expr %{solaris12} '+' %{oihipster} '+' %{omnios} '>=' 1 '|' %{osbuild} '>=' 174 )
 %define pnm_buildrequires_system_library_math_header_math	system/library/math
 %define pnm_requires_system_library_math_header_math		system/library/math
 %define pnm_buildrequires_SUNWlibm_devel			system/library/math
@@ -1450,12 +1464,19 @@
 
 #SUNWautomake-111 SFEautomake-111
 #starting with S11 175.1 we have developer/build/automake-111
+#developer/build/automake-111@1.11.2,5.11-0.175.1.0.0.24.0:20120904T171150Z
 %define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
 %define pnm_buildrequires_developer_build_automake_111	developer/build/automake-111
 %define pnm_buildrequires_SUNWautomake_111		developer/build/automake-111
 %define pnm_requires_SUNWautomake_111			developer/build/automake-111
 %define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
 %define pnm_requires_SFEautomake_111			developer/build/automake-111
+
+#library/libedit@3.0,5.11-0.175.1.0.0.24.0:20120904T172539Z
+%define pnm_buildrequires_library_libedit		library/libedit
+%define pnm_requires_library_libedit			library/libedit
+%define pnm_buildrequires_SFEeditline			library/libedit
+%define pnm_requires_SFEeditline			library/libedit
 
 %endif
 #END osdistrelnumber >= 201101 aka solaris11 11.1 and newer
@@ -1958,10 +1979,33 @@
 %define pnm_buildrequires_java_runtime_default_64	runtime/java/runtime64
 %define pnm_requires_java_runtime_default_64		runtime/java/runtime64
 
+#experimental, subject to change, can be incomplete
+#what about 32-bit and 64-bit? S12 jdk8 is 64-bit only
+%define pnm_buildrequires_jdk_default			developer/java/jdk
+%define pnm_requires_jdk_default			developer/java/jdk
+%define pnm_buildrequires_jdk_7_default			developer/java/jdk-7
+%define pnm_requires_jdk_7_default			developer/java/jdk-7
+%define pnm_buildrequires_jdk_8_default			developer/java/jdk-8
+%define pnm_requires_jdk_8_default			developer/java/jdk-8
+
 %endif
 #END >= 133
 %endif
 #END os2nnn
+
+%if %{oihipster}
+#experimental, subject to change, can be incomplete
+#what about 32-bit and 64-bit? S12 jdk8 is 64-bit only
+#oihipster: not mediated
+%define pnm_buildrequires_jdk_default			developer/java/openjdk7
+%define pnm_requires_jdk_default			developer/java/openjdk7
+#%define pnm_buildrequires_jdk_7_default			developer/java/jdk-7
+#%define pnm_requires_jdk_7_default			developer/java/jdk-7
+#%define pnm_buildrequires_jdk_8_default			developer/java/jdk-8
+#%define pnm_requires_jdk_8_default			developer/java/jdk-8
+%endif
+#END oihipster
+
 #END setting java, changes with specific builds and distros  - Part 2 of 3
 # oihipster going through huge changes with java ATM (circa mid 2015)
 # Defaults will propably suffice
@@ -1972,6 +2016,7 @@
 # if a more fresh java version stores files somewehre else
 # 
 # intentionally left empty. maybe enhanced later with filesystempaths
+##TODO## add content here to fill in JAVA_HOME
 #
 #
 #END setting java, all builds, evaluated paths  - Part 3 of 3
@@ -2544,42 +2589,53 @@
 #END setting postgres, all builds, evaluated paths  - Part 3 of 3
 
 
-##NOTE## we only resolve for boost compiled with GCC/G++ for now, so there is
+##NOTE## we only resolve for boost and icu compiled with GCC/G++ for now, so there is
 #        only a macro with _gpp_ in the name
 
-#START setting boost, defaults  - Part 1 of 3 START
-#define boost defaults, primarily shared settings and default version, paths
+##NOTE## SFEicu-gpp is kind of a piggyback here
+#START setting boost and icu, defaults  - Part 1 of 3 START
+#define boost and icu defaults, primarily shared settings and default version, paths
 #STRONG NOTE: located *below* the osdistro and osbuild sections, there is *another*
 #section evaluating the resulting paths on the disk, those are specific
-#to the boost version in use. We hope, that we do not need to handle special
+#to the boost and icu version in use. We hope, that we do not need to handle special
 #cases there, e.g. this would be an odd distro deciding to relocate to 
 #another path layout on disk....
 
-%define boost_gpp_version 1.55.0
+%define boost_gpp_version 1.58.0
 %define boost_gpp_major_version 1
-%define boost_gpp_major_minor_version 1.55
-##not defined %define boost_gpp_major_minor_micro_version 1.53.0
+%define boost_gpp_major_minor_version 1.58
+##not defined %define boost_gpp_major_minor_micro_version 1.58.0
+
+%define icu_gpp_version 55.1
+%define icu_gpp_major_version 55
+%define icu_gpp_major_minor_version 55.1
+##not defined %define icu_gpp_major_minor_micro_version 55.1
 
 #on SVR4 SFEboost-gpp-devel ?
 %define pnm_buildrequires_boost_gpp_default	SFEboost-gpp
 %define pnm_requires_boost_gpp_default		SFEboost-gpp
 
-#END setting boost, defaults  - Part 1 of 3 END
+%define pnm_buildrequires_icu_gpp_default	SFEicu-gpp
+%define pnm_requires_icu_gpp_default		SFEicu-gpp
 
-#START setting boost, changes with specific builds and distros  - Part 2 of 3 START
-%if %{oihipster}
-#note, this section will be overwritten again in case ophipster is newer, see below
-#for the moment, we use boost supplied by OIHipster
-%define boost_gpp_version 1.55.0
-%define boost_gpp_major_version 1
-%define boost_gpp_major_minor_version 1.55
-##not defined %define boost_gpp_major_minor_micro_version 1.55.0
+#END setting boost, and icu defaults  - Part 1 of 3 END
 
-#this is osdistro provided, not from SFE!
-%define pnm_buildrequires_boost_gpp_default	system/library/g++/boost
-%define pnm_requires_boost_gpp_default		system/library/g++/boost
-%endif
-#END oihipster
+#START setting boost and icu, changes with specific builds and distros  - Part 2 of 3 START
+#use our own SFEboost-gpp %if %{oihipster}
+#use our own SFEboost-gpp #note, this section will be overwritten again in case ophipster is newer, see below
+#for the moment, we use boost and icu supplied by OIHipster
+#use our own SFEboost-gpp %define boost_gpp_version 1.55.0
+#use our own SFEboost-gpp %define boost_gpp_major_version 1
+#use our own SFEboost-gpp %define boost_gpp_major_minor_version 1.55
+#use our own SFEboost-gpp ##not defined %define boost_gpp_major_minor_micro_version 1.55.0
+
+#use our own SFEboost-gpp #this is osdistro provided, not from SFE!
+#use our own SFEboost-gpp %define pnm_buildrequires_boost_gpp_default	system/library/g++/boost
+#use our own SFEboost-gpp %define pnm_requires_boost_gpp_default		system/library/g++/boost
+#use our own SFEboost-gpp %define pnm_buildrequires_boost_gpp_default	SFEboost-gpp
+#use our own SFEboost-gpp %define pnm_requires_boost_gpp_default		SFEboost-gpp
+#use our own SFEboost-gpp %endif
+#use our own SFEboost-gpp #END oihipster
 
 #http://pkg.openindiana.org/hipster-2015 as of 20150808
 #system/library/boost@1.55.0,5.11-2014.1.3.1:20141212T044927Z 	Install 	Manifest
@@ -2594,32 +2650,35 @@
 
 ##TODO## make the release detection more precise. e.g with osdistro_entire_padded_number4 >= 2015000000010003 aka 2015.0.1.3
 %if %( expr %{oihipster} '&' %{oih20150330} )
-#for the moment, we use boost supplied by OIHipster
+#for the moment, we use boost and icu supplied by OIHipster
 #this means, this is subject to change if it is e.g. more stable or better matching SFE versioning needs or compile options or ...
-#please note, this osdistro boost is not compiled with LINK_LIBGCC_SPEC from our SFEgcc compiler
-%define boost_gpp_version 1.58.0
-%define boost_gpp_major_version 1
-%define boost_gpp_major_minor_version 1.55
+#please note, this osdistro boost and icu is not compiled with LINK_LIBGCC_SPEC from our SFEgcc compiler
+#use our own SFEboost-gpp %define boost_gpp_version 1.58.0
+#use our own SFEboost-gpp %define boost_gpp_major_version 1
+#use our own SFEboost-gpp %define boost_gpp_major_minor_version 1.55
 ##not defined %define boost_gpp_major_minor_micro_version 1.58.0
 
 #have no separate header package in OIH
-%define pnm_buildrequires_boost_gpp_default	system/library/boost
-%define pnm_requires_boost_gpp_default		system/library/boost
+#use our own SFEboost-gpp %define pnm_buildrequires_boost_gpp_default	system/library/boost
+#use our own SFEboost-gpp %define pnm_requires_boost_gpp_default		system/library/boost
+#use our own SFEboost-gpp %define pnm_buildrequires_boost_gpp_default	SFEboost-gpp
+#use our own SFEboost-gpp %define pnm_requires_boost_gpp_default		SFEboost-gpp
 %endif
 #END oihipster >= 20150330
-#END setting boost, changes with specific builds and distros  - Part 2 of 3 END
+#END setting boost and icu, changes with specific builds and distros  - Part 2 of 3 END
 
-#START setting boost, all builds, evaluated paths  - Part 3 of 3
+#START setting boost and icu, all builds, evaluated paths  - Part 3 of 3
 # this is the section noted above which evaluates the resulting paths on the
-# disk for the defaults for boost or the distro specific changed values e.g.
-# if a more fresh boost version stores files somewehre else
+# disk for the defaults for boost and icu or the distro specific changed values e.g.
+# if a more fresh boost and icu version stores files somewehre else
 
-#set handy partial paths to default locations where important boost files
+#set handy partial paths to default locations where important boost and icu files
 #are stored
 #note: simplyfication: %{_prefix} must be prepended by the spec file itself
 
-#default install directory of boost
+#default install directory of boost and icu
 %define boost_gpp_default_prefix	/usr/g++
+%define icu_gpp_default_prefix	/usr/g++
 
 #example:
 #the libpq/libpg.h or libpq-fe.h file would be found with 
@@ -2627,18 +2686,20 @@
 #more information: #include "libpq-fe.h" -->> /usr/boost/8.4/include/libpq-fe.h 
 #more information: #include "server/libpq.h" -->> /usr/boost/8.4/include/server/libpq.h 
 %define boost_gpp_default_includedir	/usr/g++/include
+%define icu_gpp_default_includedir	/usr/g++/include
 
 ##TODO##
 ##NOTE## below: subject to change. want a more clever way to auto-set the variables
 #        for distinguishing 32-bit or 64-bit builds. so the spec files can always use
 #        the same variable to define the right library search path for current %_arch*...
 
-#the boost libs would be found with 
+#the boost and icu libs would be found with 
 #LDFLAGS and/or CFLAGS="-L%{_prefix}/%{boost_gpp_default_libdir} -R%{_prefix}/%{boost_gpp_default_libdir}"
 #you might need to keep an eye on 32-/64-bit locations of boost libs
 #NOTE: to get the 64-bit libs use  CFLAGS="-L%{_prefix}/%{boost_gpp_default_libdir}/%{_arch64}"
 #more information: /usr/boost/8.4/lib /usr/boost/8.4/lib/amd64 /usr/boost/8.4/lib/sparcv9
 %define boost_gpp_default_libdir	/usr/g++/lib
+%define icu_gpp_default_libdir	/usr/g++/lib
 
 #pg_config to tell consuming programs how that boost version is configured
 ##TODO## want more clever 32-bit / 64-bit handling!
@@ -2648,9 +2709,12 @@
 
 #overwrite paths for special osdistro
 %if %( expr %{oihipster} '&' %{oih20150330} )
-%define boost_gpp_default_prefix	/usr
-%define boost_gpp_default_includedir	/usr/include
-%define boost_gpp_default_libdir	/usr/lib
+#use our own SFEboost-gpp %define boost_gpp_default_prefix	/usr
+#use our own SFEboost-gpp %define boost_gpp_default_includedir	/usr/include
+#use our own SFEboost-gpp %define boost_gpp_default_libdir	/usr/lib
+#use our own SFEicu-gpp %define icu_gpp_default_prefix	/usr
+#use our own SFEicu-gpp %define icu_gpp_default_includedir	/usr/include
+#use our own SFEicu-gpp %define icu_gpp_default_libdir	/usr/lib
 %endif
 #END oihipster >= 20150330
 
@@ -2792,6 +2856,15 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Wed Oct 21 2015 - Thomas Wagner
+- add variables to find icu_gpp and boost_gpp <prefix|lib|include> similarly (S11 S12 OIH OM)
+- update boost_gpp_version to 1.58, icu_gpp_version 55.1, use SFEboost-gpp SFEicu-gpp for all osdistro for now (S11 S12 OIH OM)
+- add more pnm_buildrequires_jdk_default / jdk_7 / jdk_8 (S11 OM)
+- handle SFEeditline / library/libedit (S11)
+- handle SUNWlibm math/header-math (add OM)
+- handle more named for library/nspr SUNWprd
+* Sat Okt 17 2015 - Thomas Wagner
+- handle pnm_buildrequires_library_libedit SFEeditline
 * Sun Sep 20 2015 - Thomas Wagner
 - add missing %define to boost_gpp_default_libdir (pjama) (OIH >= oih20150330)
 * Weg Aug 19 2015 - Thomas Wagner

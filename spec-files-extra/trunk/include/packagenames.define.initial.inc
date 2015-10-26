@@ -19,9 +19,18 @@
 %define pnm_buildrequires_developer_build_jam	SFEjam
 %define pnm_requires_developer_build_jam	SFEjam
 
+#library/libedit@3.0,5.11-0.175.1.0.0.24.0:20120904T172539Z
+%define pnm_buildrequires_library_libedit	SFEeditline
+%define pnm_requires_library_libedit		SFEeditline
+%define pnm_buildrequires_SFEeditline		SFEeditline
+%define pnm_requires_SFEeditline		SFEeditline
+
+
 
 
 %changelog
+* Sat Okt 17 2015 - Thomas Wagner
+- handle pnm_buildrequires_library_libedit SFEeditline
 * Fri Aug  1 2014 - Thomas Wagner
 - handle pnm_buildrequires_SUNWbzip
 * Thu May 15 2014 - Thomas Wagner
