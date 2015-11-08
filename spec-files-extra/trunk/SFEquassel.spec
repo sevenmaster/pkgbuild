@@ -41,8 +41,8 @@ to as "Quassel Mono".
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 # gcc 4.6 produces "unrecognized command line option '-std=c++11'" error
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
+export CC=gcc
+export CXX=g++
 export PATH=/usr/g++/bin:$PATH
 export CFLAGS="%gcc_optflags"
 export CXXFLAGS="%gcc_cxx_optflags"
@@ -81,6 +81,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Nov  7 2015 - Thomas Wagner
+- compile works, quasselcore + quasselclient both okay when compiled with SFEgcc.spec (rev 6024), so use this on S11 and other osdistro
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.12.2; build with system gcc (SFEgcc can't compile this)
 - use SFEcmake (Solaris 11.2's cmake is too ald)
