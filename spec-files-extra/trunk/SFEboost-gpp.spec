@@ -8,11 +8,13 @@
 %include Solaris.inc
 %include usr-g++.inc
 %include packagenamemacros.inc
+%include buildparameter.inc
 %define cc_is_gcc 1
 %include base.inc
 # Build multithreaded libs: no need for non-multithreaded libs
 %define boost_with_mt 1
 
+##REMEMBER## to update this version number in include/packagenamemacros.inc accordingly
 %define        major      1
 %define        minor      58
 %define        patchlevel 0
@@ -42,14 +44,15 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: %{pnm_buildrequires_python_default}
 
+#currently suspended, *may* be tested later if osdistro fits *and* changes in version can be managed good enough
 #need icu compiled with GXX/gpp/g++ and only oihipster has it in osdistro
-%if %{oihipster}
-BuildRequires:  developer/icu
-Requires:       library/icu
-%else
+#%if %{oihipster}
+#BuildRequires:  developer/icu
+#Requires:       library/icu
+#%else
 BuildRequires:	SFEicu-gpp-devel
 Requires:	SFEicu-gpp
-%endif
+#%endif
 
 %package -n %name-devel
 IPS_package_name:	system/library/g++/boost/header-boost
@@ -85,6 +88,8 @@ PKG_CONFIG_PATH_ORIG=$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH=/usr/g++/lib/%_arch64/pkgconfig:$PKG_CONFIG_PATH_ORIG
 %endif
 %define BITS 64
+%define additional_bjam_cxxflags
+export GPP_LIB="-L/usr/g++/lib/%{_arch64} -R/usr/g++/lib/%{_arch64}"
 %boost_64.build -d %name-%version/%_arch64
 %endif
 
@@ -92,7 +97,17 @@ export PKG_CONFIG_PATH=/usr/g++/lib/%_arch64/pkgconfig:$PKG_CONFIG_PATH_ORIG
 %if %( expr %{solaris11} '+' %{solaris12} )
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:$PKG_CONFIG_PATH_ORIG
 %endif
-%define BITS 32
+
+
+#%define BITS 32
+#%if %{omnios}
+##%define additional_bjam_cxxflags %( echo 'cxxflags="-fvisibility=hidden"' )
+##alternative would be to patch-in LD_ALTEXEC=/usr/bin/gld
+#%define additional_bjam_cxxflags %( echo 'cxxflags="-fvisibility=default"' )
+#%endif
+%define additional_bjam_cxxflags
+
+export GPP_LIB="-L/usr/g++/lib -R/usr/g++/lib"
 %boost.build -d %name-%version/%{base_arch}
 
 %install
@@ -161,6 +176,11 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+- Wed Oct 28 2015 - Thomas Wagner
+- make build work on low memory machines %include buildparameter.inc, use CPUS=%{_cpus_memory}
+- for now, use SFEicu-gpp on all osdistro (OIH)
+- for 32 / 64-bit by adding GPP_LIB point to /usr/g++/lib or /usr/g++/lib/%{_arch64}
+- make install work in parallel as well
 * Sat Sep 19 2015 - Thomas Wagner
 - make it 32/64-bit
 - fix finding correct icu libs in /usr/g++/lib (ICU_LINK)
