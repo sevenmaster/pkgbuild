@@ -81,7 +81,7 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 #variable BITS=<32|64> comes from calling spec file, e.g SFEboost-gpp.spec
 ##TODO## add BITS to other spec files then SFEboost-gpp.spec
 
-CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+CPUS=%{_cpus_memory}
 
 BOOST_ROOT=`pwd`
 
@@ -91,13 +91,21 @@ export CXXFLAGS="%cxx_optflags -D_XPG6"
 %if %cc_is_gcc
 export CC=gcc
 export CXX=g++
-export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
-%else
-export LDFLAGS="%_ldflags"
 %endif
 
+export LDFLAGS="%_ldflags ${GPP_LIB}"
+
+#we have a problem on OmniOS, the Solaris linker there fails with
+#ld: fatal: relocation error: R_386_GOTOFF: file bin.v2/libs/log/build/gcc-4.8.5/release/log-api-unix/threading-multi/text_file_backend.o: symbol construction vtable for std::basic_ofstream<char, std::char_traits<char> >-in-boost::filesystem::basic_ofstream<char, std::char_traits<char> >: a GOT relative relocation must reference a local symbol
+#so we use the Gnu linker until the link error with the Solaris linker is fixed
+#%if %(expr %{BITS} '=' 32 '&' %{omnios} )
+##PAUSED##%if %( expr %{omnios} '&' %{BITS} '=' 32 )
+##PAUSED##echo "OmniOS fix in place. BITS=%{BITS} and we set LD_ALTEXEC to the gnu linker /usr/bin/gld"
+##PAUSED##export LD_ALTEXEC=/usr/bin/gld
+##PAUSED##%endif
+
 #prepare a user config
-echo 'using mpi ;' > ./user-config.jam
+echo 'using mpi ;' > `pwd`/user-config.jam
 
 %if %cc_is_gcc
 ./bootstrap.sh --prefix=%{_prefix} --libdir=%{_libdir} --with-toolset=gcc --with-icu=/usr/g++
@@ -121,6 +129,11 @@ echo "debug: BITS     is %{BITS}"
 echo "debug: _libdir  is %{_libdir}"
 echo "debug: ICU_LINK is %{ICU_LINK}"
 echo "debug: CPUS     is ${CPUS}"
+echo "debug: CXXFLAGS is ${CXXFLAGS}"
+echo "debug: additional_bjam_cxxflags is %{additional_bjam_cxxflags}"
+echo "debug: LD_FLAGS is is ${LD_FLAGS}"
+echo "may be empty:"
+echo "debug: LD_ALTEXEC is ${LD_ALTEXEC}"
 
 ./bjam --v2 -d+2 -q address-model=%{BITS}   \
   -j$CPUS \
@@ -131,24 +144,35 @@ echo "debug: CPUS     is ${CPUS}"
   --prefix=%{_prefix} \
   --libdir=%{_libdir} \
   --includedir=/usr/g++/include \
-  --user-config=./user-config.jam \
+  --user-config=`pwd`/user-config.jam \
+  %{additional_bjam_cxxflags}
 
 
 
 %install
 
+#looks like install can use more cpus as well. cc1plus running...even with "bjam install"
+#CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+CPUS=%{_cpus_memory}
+
 ./bjam --v2 -d+2 -q address-model=%{BITS}   \
+  -j$CPUS \
   -sBUILD="release <threading>single/multi" \
   -sICU_ROOT=%{ICU_ROOT} \
   -sICU_PATH=%{ICU_PATH} \
   -sICU_LINK=%{ICU_LINK} \
   --prefix=$RPM_BUILD_ROOT%{_prefix} \
   --libdir=$RPM_BUILD_ROOT%{_libdir} \
-  --user-config=./user-config.jam \
+  --user-config=`pwd`/user-config.jam \
   install
 
 
 %changelog
+- Wed Oct 28 2015 - Thomas Wagner
+- make build work on low memory machines %include buildparameter.inc, use CPUS=%{_cpus_memory}
+- for now, use SFEicu-gpp on all osdistro (OIH)
+- for 32 / 64-bit by adding GPP_LIB point to /usr/g++/lib or /usr/g++/lib/%{_arch64}
+- make install work in parallel as well
 * Sat Sep 19 2015 - Thomas Wagner
 - make it 32/64-bit
 - fix finding correct icu libs in /usr/g++/lib (ICU_LINK)
