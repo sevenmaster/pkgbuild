@@ -42,7 +42,7 @@
 
 Name:                    SFEpoppler-gpp
 IPS_Package_Name:	 library/g++/poppler
-Summary:                 PDF rendering library (g++-built)
+Summary:                 PDF rendering library (/usr/g++)
 URL:                     http://poppler.freedesktop.org
 License:                 GPLv2
 SUNW_Copyright:          poppler.copyright
@@ -54,8 +54,6 @@ BuildRequires: SUNWgnome-base-libs-devel
 Requires:      SUNWgnome-base-libs
 BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
 Requires:      %{pnm_requires_SUNWgtk2}
-BuildRequires: %{pnm_buildrequires_SUNWcairo_devel}
-Requires:      %{pnm_requires_SUNWcairo}
 BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 
 BuildRequires: SFEsigcpp-gpp
@@ -64,11 +62,14 @@ Requires:      SFEsigcpp-gpp
 BuildRequires: SFEopenjpeg
 Requires:      SFEopenjpeg
 
+BuildRequires: SFEpoppler-data-gpp
+Requires:      SFEpoppler-data-gpp
+
 #note: Solaris 11 cairo is too old to build more fresh poppler
 %if %{solaris11}
 #can be built with studio or gcc (on gcc_only distros like OIHipster)
-BuildRequires: SFEcairo-gnu
-Requires:      SFEcairo-gnu
+BuildRequires: SFEcairo-gpp
+Requires:      SFEcairo-gpp
 %endif
 
 %package devel
@@ -134,10 +135,19 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
+* Fri Nov 13 2015 - Thomas Wagner
+- find cairo cflags/includes by pkg-config --cflags 
+- add to PKG_CONFIG_PATH /usr/g++/share/pkgconfig
+- add to CXXFLAGS -D_STDC_C11
+- add to CXXFLAGS -D_STDC_C11_BCI (else strcpy_s is not enabled on S12)
+- fix unpacking gz / gzip
+- change BuildRequires to SFEcairo-gpp in all cases, cairo is now in /usr/g++, remove pnm_macro for SUNWcairo
+- add BuildRequires SFEpoppler-data-gpp
 * Sun Oct 25 2015 - Thomas Wagner
 - bump version to 0.32.0 (S11 only!)
 - add (Build)Requires SFEpoppler-gpp.spec (S11 only!)
 - add workaround for g-ir-scanner not honouring CFLAGS when searching for cairo.h
+- to get GfxState.h --enable-xpdf-headers
 * Mon Aug 24 2015 - Thomas Wagner
 - add (Build)Requires SFEsigcpp-gpp SFEopenjpeg
 - switch possible version depending on osdistro version for "cairo"
