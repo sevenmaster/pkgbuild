@@ -107,24 +107,22 @@ rendering.
 #don't unpack please
 %setup -q -c -T
 echo %SOURCE0 | grep "xz$" && xz -dc %SOURCE0 | (cd ..; tar xf -)
-echo %SOURCE0 | grep "bz$" && gzip -d < %SOURCE0 | (cd ..; tar xf -)
+echo %SOURCE0 | grep "gz$" && gzip -d < %SOURCE0 | (cd ..; tar xf -)
 
 #%patch1 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-%if %{solaris11}
-#find SFEcairo-gnu in /usr/gnu path first
-#need to know 64-bit path as well
-export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
-%else
-#need to know 64-bit path as well %if opt_arch -> sed -e 's?/pkgconfig?%{_arch64}/pkgconfig?g'
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
-%endif
+#paused #need to know 64-bit path as well %if opt_arch -> sed -e 's?/pkgconfig?%{_arch64}/pkgconfig?g'
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/g++/share/pkgconfig
 
-export CFLAGS="%optflags -std=gnu++11 `pkg-config --cflags-only-I cairo`"
-export CXXFLAGS="%cxx_optflags -std=gnu++11 `pkg-config --cflags-only-I cairo`"
+export CFLAGS="%optflags `pkg-config --cflags-only-I cairo`"
+export CXXFLAGS="%cxx_optflags -D_STDC_C11 `pkg-config --cflags-only-I cairo`"
+%if %{solaris12}
+#perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
+export CXXFLAGS="$CXXFLAGS -D_STDC_C11_BCI"
+%endif
 export LDFLAGS="%{_ldflags}"
 
 #configure doen't handle the "1" version libopenjpeg1 ...
@@ -165,11 +163,13 @@ autoconf
 	    --mandir=%{_mandir}	        \
             --enable-zlib               \
 	    --disable-gtk-doc           \
+            --enable-xpdf-headers       \
 #            %{gtk_doc_option}
 
 #stupid g-ir-scanner doesn't follow ENV variables nor what configure found.
 #push it a but to make it stuble over cairo.h in /usr/gnu/include/cairo
-gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? -I /usr/gnu/include/cairo?' glib/Makefile.am
+#gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? -I /usr/gnu/include/cairo?' glib/Makefile.am
+gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? `pkg-config --cflags cairo` ?' glib/Makefile.am
 
 gmake V=2 -j$CPUS
 
@@ -200,10 +200,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Fri Nov 13 2015 - Thomas Wagner
+- find cairo cflags/includes by pkg-config --cflags 
+- add to PKG_CONFIG_PATH /usr/g++/share/pkgconfig
+- add to CXXFLAGS -D_STDC_C11
+- add to CXXFLAGS -D_STDC_C11_BCI (else strcpy_s is not enabled on S12)
+- fix unpacking gz / gzip
+- change BuildRequires to SFEcairo-gpp in all cases, cairo is now in /usr/g++, remove pnm_macro for SUNWcairo
+- add BuildRequires SFEpoppler-data-gpp
 * Sun Oct 25 2015 - Thomas Wagner
 - bump version to 0.32.0 (S11 only!)
 - add (Build)Requires SFEpoppler-gpp.spec (S11 only!)
 - add workaround for g-ir-scanner not honouring CFLAGS when searching for cairo.h
+- to get GfxState.h --enable-xpdf-headers
 * Mon Aug 24 2015 - Thomas Wagner
 - add (Build)Requires SFEsigcpp-gpp SFEopenjpeg
 - switch possible version depending on osdistro version for "cairo"
