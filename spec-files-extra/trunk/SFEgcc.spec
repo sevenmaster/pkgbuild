@@ -11,7 +11,8 @@
 
 %include Solaris.inc
 %include osdistro.inc
-%if %( expr %{solaris12} '|' %{oihipster} )
+%include buildparameter.inc
+%if %( expr %{solaris12} '|' %{oihipster} '|' %{omnios} )
 %define cc_is_gcc 1
 %endif
 %include base.inc
@@ -93,8 +94,9 @@
 #overwrite the default for specific OS
 #name on omnios would be developer/gnu-binutils (check if that can be used, then deal with package names)
 %if %{omnios}
-%define SUNWbinutils 1
+%define SUNWbinutils 0
 %define SFEbinutils_gpp  0
+#using /usr/bin/gld from developer/gnu-binutils@2.24
 %endif
 
 #see below, older builds then 126 have too old gmp / mpfr to gcc version around 4.4.4
@@ -144,7 +146,10 @@
 %endif
 
 #set default gcc version
-%define default_version 4.6.4
+%define default_version 4.8.5
+
+#set more defaults
+%define build_gcc_with_gnu_ld 0
 
 #temporary setting, 4.8.5 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
 %if %{solaris12}
@@ -158,8 +163,16 @@
 #temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{omnios}
 %define default_version 4.8.5
-%define build_gcc_with_gnu_ld 0
+#test %define build_gcc_with_gnu_ld 0
+%define build_gcc_with_gnu_ld 1
 #END OmniOS
+%endif
+
+#temporary setting, 4.8.5 testing on OI151a8 OI151a9
+%if %( expr %{openindiana} '&' %{oihipster} '=' 0 )
+%define default_version 4.8.5
+%define build_gcc_with_gnu_ld 1
+#END openindiana
 %endif
 
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
@@ -197,7 +210,7 @@
 %define _prefix /usr/gcc/%major_minor
 %define _infodir %{_prefix}/info
 
-# force using SFEbinutils_gpp
+# force using SFEbinutils_gpp from the pkgtool/pkgbuild command line - for testing purpose
 #if SFEbinutils_gpp is not present, force it by the commandline switch --with_SFEbinutils_gpp
 %define with_SFEbinutils_gpp %{?_with_SFEbinutils_gpp:1}%{?!_with_SFEbinutils_gpp:0}
 %if %with_SFEbinutils_gpp
@@ -265,6 +278,23 @@ Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
 # if clause to apply only on specific gcc versions, see %prep
 Patch10:	gcc-10-spawn.diff
 
+##TODO## enhance: use padded numbers eventually - same in %prep
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+#Patch100: 000-userlandgate-gcc-Makefile.in.patch
+Patch101: 001-userlandgate-fixinc.in.patch
+Patch102: 002-userlandgate-inclhack.def.patch
+Patch103: 003-userlandgate-libgomp-omp_h-multilib.patch
+Patch104: 004-userlandgate-libitm-configure.patch
+Patch105: 005-userlandgate-libitm-rwlock.patch
+Patch106: 006-userlandgate-fixincludes-check.tpl.patch
+#careful please when updating patch, we've removed the runpath part! (this is in our own gcc-05-LINK_LIBGCC_SPEC-**)
+Patch107: 007-userlandgate-gcc-sol2.h.patch.modified.diff
+Patch108: 008-userlandgate-c99_classification_macros.patch
+##TODO## already applied? verify! Patch109: 009-userlandgate-CVE-2014-5044.patch
+Patch110: 010-userlandgate-studio-as-comdat.patch
+%endif
+
+
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -290,11 +320,18 @@ Requires:      SFElibiconv
 BuildRequires:  SUNWbash
 %endif
 
+#need something to start compiling with
+%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} '|' %{openindiana} )   
+BuildRequires: developer/gcc-3
+##TODO## check if required: Requires: developer/gcc-3-runtime
+%endif
+
 #OmniOS R151012 has no gcc-3 any more, request OmniOS's gcc-48
 #as a replacement and in %build, point the CC and CXX variable to this compiler
 %if %{omnios}
 #mind the modification of the CC and CXX variables in %build
 BuildRequires: developer/gcc48
+BuildRequires: developer/gnu-binutils
 %endif
 
 %if %SFEgmp
@@ -332,12 +369,16 @@ BuildRequires: SFEbinutils-gpp
 Requires: SFEbinutils-gpp
 %endif
 
-%if %( expr %SUNWbinutils '&' %{os2nnn} )
-BuildRequires: developer/gnu-binutils
-Requires: developer/gnu-binutils
-%else
+%if %( expr %SUNWbinutils '&' %{os2nnn} '=' 0 '&' %{SFEbinutils_gpp} '=' 0 )
+#old non IPS systems:
 BuildRequires: SUNWbinutils
 Requires: SUNWbinutils
+%endif
+
+%if %( expr %SUNWbinutils '&' %{os2nnn} '=' 1 '&' %{SFEbinutils_gpp} '=' 0 )
+#on an IPS based system
+BuildRequires: developer/gnu-binutils
+Requires: developer/gnu-binutils
 %endif
 
 %if %{os2nnn}
@@ -395,11 +436,6 @@ Requires: SFElibmpc
 #Requires: SUNWthis-package-not-availbale
 %endif
 
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} )   
-BuildRequires: developer/gcc-3
-##TODO## check if required: Requires: developer/gcc-3-runtime
-%endif
-
 %if %build_l10n
 %package -n SFEgcc-l10n
 IPS_package_name: sfe/developer/gcc-%{majorminornumber}/locale
@@ -455,8 +491,8 @@ cd ../../..
 cd gcc-%{version}
 %if %with_handle_pragma_pack_push_pop
 %patch2 -p1
-%else
 %endif
+
 %patch3 -p1
 
 %if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.9 )
@@ -472,11 +508,27 @@ cd gcc-%{version}
 ##get rid of these options to (Solaris) LD
 #gsed -i.bak -e 's/-fno-exceptions//g' -e 's/-fno-rtti//g' -e 's/-fasynchronous-unwind-tables//g' configure.ac configure
 
+##TODO## enhance: use padded numbers eventually - same in %prep
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+#apply patches imported from userland gate, as S11.2 and S12 need them
+#%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch107 -p1
+%patch108 -p1
+##TODO## see above %patch109 -p1
+%patch110 -p1
+%endif
+
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=%{_cpus_memory}
+
+echo "debug _totalmemory: %{_totalmemory}"
+echo "debug CPUS: $CPUS"
 
 #perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash -x," `find . -type f -name configure -exec grep -q "^#\!.*/bin/sh" {} \; -print`
 #perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash -x," `find . -type f -name configure -exec grep -q "^#\!.*/bin/sh" {} \; -print`
@@ -493,16 +545,21 @@ nlsopt=-disable-nls
 #saw problems. 134 did compile, OI147 stopped with probably linker errors
 ##TODO## research which osbuild started to fail, adjust the number below
 #%if %(expr %{osbuild} '>=' 1517)
-%define build_gcc_with_gnu_ld 0
+#paused#, use individual setting %define build_gcc_with_gnu_ld 0
 
 ##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
 #options like this:  exec /usr/bin/ld -z ignore -Bdirect -z combreloc "${@}"
 #build with gnu ld if requested or on OI hipster
 %if %build_gcc_with_gnu_ld
-%define _ldflags
-export LD="/usr/gnu/bin/ld"
+echo "build_gcc_with_gnu_ld: %build_gcc_with_gnu_ld"
+export LD=/usr/bin/ld
+export LD_FOR_BUILD=/usr/bin/gld
+export LD_FOR_TARGET=/usr/bin/ld
+#%define _ldflags
 %else
-export LD=`which ld-wrapper`
+export LD=/usr/bin/ld
+%endif
+
 #around 4.8, configure ignores disabling -fno-exception
 #create a filter script to remove -fno-exceptions from linker calls
 ##cat - > ld_filtered << EOF--
@@ -511,13 +568,17 @@ export LD=`which ld-wrapper`
 ##EOF--
 ##chmod a+rx ld_filtered
 ##export LD=`pwd`/ld_filtered
+
+%if %SUNWbinutils 
+export LD="/usr/bin/ld"
 %endif
+
+%define configure_binutils --with-build-time-tools=/usr/sfw --with-as=/usr/sfw/bin/gas --with-gnu-as
 
 %if %SFEbinutils_gpp
+#using only at compile time the GNU linker from our binutils
 export LD="/usr/g++/bin/ld"
-export PATH=/usr/g++/bin:$PATH
 %endif
-
 
 #defaults:
 export CC=cc
@@ -526,19 +587,20 @@ export CXX=CC
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
 
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} )
-#%if %( expr %{solaris12} '|' %{omnios} )
-#running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
+%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} '|' %{openindiana} )
+#using gcc-3 because running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
 export CC=/usr/sfw/bin/gcc
 export CXX=/usr/sfw/bin/g++
 unset CPP
-%endif #solaris12
+#solaris11 solaris12 oihipster openindiana
+%endif
 
 #R151012 is missing the gcc-3 package, use gcc48 instead
 %if %{omnios}
 export CC=$( ls -1 /opt/gcc-4.8.*/bin/gcc | tail -1 )
 export CXX=$( ls -1 /opt/gcc-4.8.*/bin/g++ | tail -1 )
 unset CPP
+#OmniOS
 %endif
 
 #set the bootstrap compiler optionally on the command line
@@ -560,32 +622,46 @@ export CXX=%{gcc_boot_cxx}
 export CFLAGS="-O"
 export CONFIG_SHELL=/usr/bin/ksh
 
+
 export BOOT_CFLAGS="-Os %gcc_picflags %gnu_lib_path"
+
 %if %build_gcc_with_gnu_ld
+export BOOT_CFLAGS="$BOOT_CFLAGS"
 %else
 export BOOT_CFLAGS="$BOOT_CFLAGS -Xlinker -i"
 %endif
 
+
 #related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59788
-#Bug 59788 - Mixing libc and libgcc_s unwinders on 64-bit Solaris 10+/x86 breaks EH 
+#Bug 59788 - Mixing libc and libgcc_s unwinders on 64-bit Solaris 10+/x86 breaks EH (exception handling)
 export BOOT_LDFLAGS="-zinterpose %_ldflags -R%{_prefix}/lib %gnu_lib_path"
+
 
 # for target libraries (built with bootstrapped GCC)
 export CFLAGS_FOR_TARGET="-zinterpose -O2 %gcc_picflags"
 #export CXXFLAGS_FOR_TARGET=""
+
 %if %build_gcc_with_gnu_ld
 %else
 export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 %endif
+
 export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
 export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
-%if %build_gcc_with_gnu_ld
+
+#Set this always
 export LD_FOR_TARGET=/usr/bin/ld
-%endif
 
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
+
+##%if %{omnios}
+###disable checks for -fvisibility, as they may fail on KVMed OmniOS guest
+##echo "disabling on OmniOS check for -fvisibility attribute. It may fail on KVMed OmniOS guest."
+##gsed -i.bak.disable.visibibilty.check.on.omnios -e '/CFLAGS="$CFLAGS -Werror"/ s/CFLAGS/#dont fail on KVMed OmniOS CFLAGS/' ../gcc-%{version}/libstdc++-v3/configure
+##gsed -i.bak.disable.visibibilty.check.on.omnios -e '/ -Werror -S conftest.c -o conftest.s/ s/-Werror//' ../gcc-%{version}/libgcc/configure
+##%endif
 
 echo "current settings in SFE spec file: (1=yes, 0=no)
 
@@ -614,33 +690,17 @@ LD:            ${LD}
 LD_FOR_TARGET: ${LD_FOR_TARGET}
 " | tee -a SFEgcc.spec.compileinfo
 
+#OmniOS gcc 4.8.1:    ../gcc-4.8.5/configure --prefix=/usr/gcc/4.8 --host i386-pc-solaris2.11 --build i386-pc-solaris2.11 --target i386-pc-solaris2.11 --with-boot-ldflags=-R/usr/gnu/lib --with-gmp=/usr/gnu --with-mpfr=/usr/gnu --with-mpc=/usr/gnu --enable-languages=c,c++ --without-gnu-ld --with-ld=/bin/ld --with-as=/usr/bin/gas --with-gnu-as --with-build-time-tools=/usr/gnu/i386-pc-solaris2.11/bin
+
 ../gcc-%{version}/configure			\
 	--prefix=%{_prefix}			\
         --libdir=%{_libdir}			\
         --libexecdir=%{_libexecdir}		\
         --mandir=%{_mandir}			\
 	--infodir=%{_infodir}			\
-%if %SFEbinutils_gpp
-	--with-build-time-tools=/usr/g++	\
-	--with-as=/usr/g++/bin/as		\
-	--with-gnu-as				\
-%else
-%if %SUNWbinutils
-	--with-build-time-tools=/usr/sfw	\
-	--with-as=/usr/sfw/bin/gas		\
-	--with-gnu-as				\
-%else
-	--with-as=/usr/gnu/bin/as		\
-	--with-gnu-as				\
-%endif
-%endif
-%if %build_gcc_with_gnu_ld
-	--with-ld=$LD                           \
-	--with-gnu-ld				\
-%else
-	--with-ld=$LD                           \
+        %{configure_binutils}                   \
+	--with-ld=$LD_FOR_TARGET                \
 	--without-gnu-ld			\
-%endif
 	--enable-languages=c,c++,fortran,objc	\
 	--enable-shared				\
 	--disable-static			\
@@ -660,15 +720,56 @@ LD_FOR_TARGET: ${LD_FOR_TARGET}
 %else
         --with-mpc_include=%{_basedir}/include	\
 %endif
-        --disable-no-exceptions                  \
+%if %omnios
+        --target=i386-pc-solaris2.11              \
+        --host i386-pc-solaris2.11                \
+        --build i386-pc-solaris2.11               \
+        --target i386-pc-solaris2.11              \
+        --with-boot-ldflags=-R/usr/gnu/lib        \
+        --with-build-time-tools=/usr/gnu/i386-pc-solaris2.11/bin \
+        --disable-bootstrap                       \
+%endif
 	$nlsopt
 
-gmake -j$CPUS bootstrap-lean \
+        #--enable-libstdcxx-visibility            \
+        #--target=x86_64-pc-solaris2.1x           \
+#g++     -dM -E -x c++ /dev/null 
+
+echo "gmake bootstrap..."
+echo "variables:"
+echo "		
              BOOT_CFLAGS="$BOOT_CFLAGS"                  \
              BOOT_LDFLAGS="$BOOT_LDFLAGS"                \
              CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET"      \
              CXXFLAGS_FOR_TARGET="$CXXFLAGS_FOR_TARGET"  \
              LDFLAGS_FOR_TARGET="$LDFLAGS_FOR_TARGET"    \
+             LD_FOR_BUILD="$LD_FOR_BUILD"                \
+             LD_FOR_TARGET="$LD_FOR_TARGET"              \
+             LD="$LD"                                    \
+
+"
+
+
+%if %{omnios}
+gmake -j$CPUS           \
+%else
+gmake -j$CPUS bootstrap \
+%endif
+             BOOT_CFLAGS="$BOOT_CFLAGS"                  \
+             BOOT_LDFLAGS="$BOOT_LDFLAGS"                \
+             CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET"      \
+             CXXFLAGS_FOR_TARGET="$CXXFLAGS_FOR_TARGET"  \
+             LDFLAGS_FOR_TARGET="$LDFLAGS_FOR_TARGET"    \
+             LD_FOR_BUILD="$LD_FOR_BUILD"                \
+             LD_FOR_TARGET="$LD_FOR_TARGET"              \
+             LD="$LD"                                    \
+
+#sanity check
+%if %{omnios}
+grep "0" *solaris2*/libstdc++-v3/include/stamp-visibility \
+   *solaris2*/amd64/libstdc++-v3/include/stamp-visibility \
+   && echo "-fvisibility not enabled. Please investigate" && exit 1
+%endif
 
 
 %install
@@ -851,10 +952,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Wed Aug 12 2015 - Thomas Wagner
+* Mon Nov 16 2015 - Thomas Wagner
+- import patches from userland gate, as they are needed for S11.2 and S12 with enhanced c++ system headers
+  and only apply them on Solaris 11.2 and S12! Patch100 to Patch110, rework patch for sol2.h
+- include buildparameter.inc and use CPUS=%{_cpus_memory}
 - build with /usr/sfw/bin/gcc on S11 (studio w/ need __STDC__ or get arg-count error getopt_long )
-- BuildRequires: developer/gcc-3 (S11)
+- BuildRequires: developer/gcc-3 (S11 S12 OIH OI)
+- BuildRequires: developer/gcc48 developer/gnu-binutils (OM)
 - add testing switches to set bootstrap compiler on command line --define 'gcc_boot_cc /usr/usethis/bin/gcc' --define 'gcc_boot_cxx /usr/usethis/bin/g++' 
+- lots of switches to compile in OmniOS fine and including visibility-features propperly
+- set the distro independent default_version to 4.8.5
 * Wed Aug  5 2015 - Thomas Wagner
 - add symlink to cpp
 * Tue Aug  4 2015 - Thomas Wagner
