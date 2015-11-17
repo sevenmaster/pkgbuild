@@ -30,6 +30,8 @@ Patch4:       boost-stdcxx-02-wchar.diff
 #NOTE# patches start counting with "1"
 #use new patches boost >= 1.58.0 (imported thankfully from openindiana source repo)
 #https://github.com/OpenIndiana/oi-userland/tree/oi/hipster/components/boost/patches
+#note: patch4 will no longer be applied, only to be applied to minor = 58
+#note: patch5 will no longer be applied, only to be applied if minor = 58
 %if %(expr %cc_is_gcc '&' %{minor} '>=' 58)
 Patch1: boost-gpp-01-cstdint.patch
 Patch2: boost-gpp-02-usr-include.patch
@@ -48,11 +50,17 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 %patch1 -p1 
 %patch2 -p1 
 %patch3 -p1 
-%patch4 -p1 
-%patch5 -p1 
+#only for = 58 %patch4 -p1 
+#only for = 58 %patch5 -p1 
 %endif
 #cc_is_gcc AND minor >= 58
 
+#
+%if %(expr %cc_is_gcc '&' %{minor} '=' 58)
+%patch4 -p1 
+%patch5 -p1 
+%endif
+#cc_is_gcc AND minor = 58
 
 ##below older patch stuff, might be removed once 0.55 is eliminated in every SFEboost-<somehting>.spec
 
@@ -85,8 +93,17 @@ CPUS=%{_cpus_memory}
 
 BOOST_ROOT=`pwd`
 
+##TODO## check if Solaris 11.2 need this as well
+#on Solaris 12 with patched SFEgcc.spec (userland Sol gcc 4.8 patches for new C++ standards present in system headers)
+#else: /usr/include/sys/feature_tests.h:392:2: error: #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications       require the use of c99"
+# #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications \
+%if %{solaris12}
+export CFLAGS="%optflags -D_XPG6"
+export CXXFLAGS="%cxx_optflags -D_XPG6 --std=c++11"
+%else
 export CFLAGS="%optflags -D_XPG6"
 export CXXFLAGS="%cxx_optflags -D_XPG6"
+%endif
 
 %if %cc_is_gcc
 export CC=gcc
@@ -145,6 +162,7 @@ echo "debug: LD_ALTEXEC is ${LD_ALTEXEC}"
   --libdir=%{_libdir} \
   --includedir=/usr/g++/include \
   --user-config=`pwd`/user-config.jam \
+  cxxflags="$CXXFLAGS" cflags="$CFLAGS" \
   %{additional_bjam_cxxflags}
 
 
@@ -168,7 +186,11 @@ CPUS=%{_cpus_memory}
 
 
 %changelog
-- Wed Oct 28 2015 - Thomas Wagner
+* Tue Nov 17 2015 - Thomas Wagner
+- fix the 32-bit BUILD be really 32-bit
+- bump version to 0.59.0 or get c++ redefinition with updates system headers (S11 S12)
+- really use cxxflags and cflags with bjam
+* Wed Oct 28 2015 - Thomas Wagner
 - make build work on low memory machines %include buildparameter.inc, use CPUS=%{_cpus_memory}
 - for now, use SFEicu-gpp on all osdistro (OIH)
 - for 32 / 64-bit by adding GPP_LIB point to /usr/g++/lib or /usr/g++/lib/%{_arch64}

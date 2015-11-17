@@ -18,15 +18,24 @@
 %define        major      1
 %define        minor      58
 %define        patchlevel 0
+
+#simplified, even on older builds use 59
+%if %( expr %{solaris12} '+' %{solaris11} '>=' 1 )
+%define        minor      59
+%endif
+
 %define        ver_boost  %{major}_%{minor}_%{patchlevel}
+
 
 %ifarch amd64 sparcv9
 %include arch64.inc
+%define BITS 64
 %use boost_64 = boost.spec
 %endif
 
 %include usr-g++.inc
 %include base.inc
+%define BITS 32
 %use boost = boost.spec
 
 Name:		SFEboost-gpp
@@ -113,11 +122,9 @@ export GPP_LIB="-L/usr/g++/lib -R/usr/g++/lib"
 %install
 rm -rf $RPM_BUILD_ROOT
 %ifarch amd64 sparcv9
-%define BITS 64
 %boost_64.install -d %name-%version/%_arch64
 %endif
 
-%define BITS 32
 %boost.install -d %name-%version/%base_arch
 
 find $RPM_BUILD_ROOT \( -name \*.la -o -name \*.a \) -exec rm {} \;
@@ -176,7 +183,12 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
-- Wed Oct 28 2015 - Thomas Wagner
+* Tue Nov 17 2015 - Thomas Wagner
+- fix the 32-bit BUILD be really 32-bit
+- fix build on systems with updates system headers for c++ by --std=c++11
+- bump version to 0.59.0 or get c++ redefinition with updated system headers (S11 S12)
+- really use cxxflags and cflags with bjam
+* Wed Oct 28 2015 - Thomas Wagner
 - make build work on low memory machines %include buildparameter.inc, use CPUS=%{_cpus_memory}
 - for now, use SFEicu-gpp on all osdistro (OIH)
 - for 32 / 64-bit by adding GPP_LIB point to /usr/g++/lib or /usr/g++/lib/%{_arch64}
