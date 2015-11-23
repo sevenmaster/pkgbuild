@@ -841,10 +841,11 @@ do
   done #for file
 done #for SYMLINKTARGET
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
+#for a test, keep static files like /usr/gcc/4.8/lib/libssp_nonshared.a libssp.a libitm.a libgomp.a libatomic.a 
+#rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
 %ifarch amd64 sparcv9
-rm -f $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/lib*.a
+#rm -f $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/lib*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/lib*.la
 %endif
 
@@ -952,6 +953,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Nov 23 2015 - Thomas Wagner
+- for a test, keep static files like /usr/gcc/4.8/lib/libssp_nonshared.a libssp.a libitm.a libgomp.a libatomic.a 
 * Mon Nov 16 2015 - Thomas Wagner
 - import patches from userland gate, as they are needed for S11.2 and S12 with enhanced c++ system headers
   and only apply them on Solaris 11.2 and S12! Patch100 to Patch110, rework patch for sol2.h
