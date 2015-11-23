@@ -910,10 +910,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %{_libdir}/lib*.spec
+%{_libdir}/lib*.a
 %ifarch amd64 sparcv9 i386
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
 %{_libdir}/%{_arch64}/lib*.spec
+%{_libdir}/%{_arch64}/lib*.a
 %endif
 
 %if %symlinktarget1enabled
