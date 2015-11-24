@@ -10,7 +10,7 @@
 Name:                    SFEreadline
 IPS_Package_Name:	 library/gnu/readline
 Summary:                 GNU readline - library for editing typed command lines (/usr/gnu)
-Version:                 6.2
+Version:                 6.3
 Source:			 http://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -104,36 +104,16 @@ rmdir $RPM_BUILD_ROOT%{_bindir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'readline.info history.info rluserman.info' ;
-  echo '"';
-  echo 'retval=0';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} %{_infodir}/$info || retval=1';
-  echo 'done';
-  echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
-
-%preun
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'readline.info history.info rluserman.info' ;
-  echo '"';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} --delete %{_infodir}/$info';
-  echo 'done';
-  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
 
 %files
 %defattr (-, root, bin)
-#%dir %attr (0755, root, bin) %{_bindir}
-#%{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
 %dir %attr(0755, root, sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_datadir}/info
 %{_datadir}/info/*
+%dir %attr(0755, root, other) %_docdir
+%_docdir/readline
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
@@ -151,6 +131,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 19 2015 - Alex Viskovatoff
+- update to 6.3; remove %post and %preun sections "discouraged" by the documentation
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Wed Aug 14 2013 - Thomas Wagner
