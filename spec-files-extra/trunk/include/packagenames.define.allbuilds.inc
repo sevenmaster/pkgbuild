@@ -1187,10 +1187,10 @@
 #-----------------------------------------------------------------
 # all distro
 #cppunit
-%define pnm_buildrequires_SFEcppunit		SFEcppunit
-%define pnm_requires_SFEcppunit			SFEcppunit
-%define pnm_buildrequires_developer_cppunit	SFEcppunit
-%define pnm_requires_developer_cppunit		SFEcppunit
+%define pnm_buildrequires_SFEcppunit		SFEcppunit-gpp
+%define pnm_requires_SFEcppunit			SFEcppunit-gpp
+%define pnm_buildrequires_developer_cppunit	SFEcppunit-gpp
+%define pnm_requires_developer_cppunit		SFEcppunit-gpp
 
 # but OIHipster brings its own packages, then use those (for those, osdistro delivered pkg is good enough)
 %if %{oihipster}
@@ -1618,6 +1618,7 @@
 ##TODO## monitor closely when OpenIndiana starts shipping complete module sets with e.g. perl-512
 %if %( expr %{osbuild} '>=' 151 )
 #set perl5 for OpenIndiana 
+#/usr/perl5/vendor_perl/5.10.0/i86pc-solaris-64int/ so we need perl_version to read 5.10.0
 %define perl_version 5.10.0
 %define perl_major_minor_version 5.10
 ##TODO## determine correct version %define perl_major_minor_micro_version 5.10.x
@@ -1633,10 +1634,12 @@
 #END os2nnn
 
 #set perl5 for OIHipster
-%if %{oihipster}
+#runtime/perl-516@5.16.3,5.11-2014.0.1.1:20140528T081041Z
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 2014000000010001000000000000.0 )
 ##TODO## monitor closely when OIHipster changes chipped perl-versions or adds perl-modules
 #set perl5 for OIHipster
-%define perl_version 5.16.3
+#looks like paths changed to: /usr/perl5/vendor_perl/5.16
+%define perl_version 5.16
 %define perl_major_minor_version 5.16
 ##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
 %define perl_major_minor_micro_version 5.16.3
@@ -1644,13 +1647,36 @@
 %define pnm_buildrequires_perl_default runtime/perl-516
 %define pnm_requires_perl_default	runtime/perl-516
 %endif
+#END oihipster >= 2014.0.1.1
+
+
+#set perl5 for OIHipster >= 2015.0.1.0    (was 2015.0.2.1)
+#runtime/perl-522@5.22.0,5.11-2015.0.1.0:20150727T054604Z
+#runtime/perl-522@5.22.0,5.11-2015.0.1.0:20150727T062342Z
+#runtime/perl-522@5.22.0,5.11-2015.0.1.0:20151027T072513Z
+#runtime/perl-522@5.22.0,5.11-2015.0.2.1:20151102T181230Z
+
+##TODO## monitor closely when OIHipster changes chipped perl-versions or adds perl-modules
+#ignore older perl-516@5.16.3,5.11-2014.1.2.3:20151027T072451Z
+#use runtime/perl-522@5.22.0,5.11-2015.0.1.0:20150727T054604Z
+#set perl5 for OIHipster
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 2015000000010001000000000000.0 )
+#paths changed to
+%define perl_version 5.22
+%define perl_major_minor_version 5.22
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.22.0
+#runtime/perl-522
+%define pnm_buildrequires_perl_default runtime/perl-522
+%define pnm_requires_perl_default	runtime/perl-522
+%endif
 #END oihipster
 
 #set perl5 for OmniOS
 %if %{omnios}
 ##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
 #set perl5 for OmniOS
-%define perl_version 5.16.1
+%define perl_version 5.16
 %define perl_major_minor_version 5.16
 ##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
 %define perl_major_minor_micro_version 5.16.1
@@ -1758,6 +1784,7 @@
 #START setting python, changes with specific builds and distros  - Part 2 of 2
 # on S12 we don't have legacy package name SUNWPython26, so we need to
 # use runtime/python-26 instead ##TODO## testing for OI151a8 as well
+#before Solaris 12.0.0.0.86.0
 %if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
 #note: the name is subject to change if we find a better one
 #_default string is not meant to be a part of the package name...
@@ -1765,6 +1792,20 @@
 %define pnm_requires_python_default		runtime/python-26
 %endif
 #END %{osbulild} => 133 or %{solaris12}
+
+#Solaris >= 12.0.0.0.86.0
+%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000860000.0 )
+#note: the name is subject to change if we find a better one
+#_default string is not meant to be a part of the package name...
+%define python_version 2.7
+%define python_major_version 2
+%define python_major_minor_version 2.7
+%define python_major_minor_micro_version 2.7.10
+%define python_version_package_string 27
+%define pnm_buildrequires_python_default	runtime/python-27
+%define pnm_requires_python_default		runtime/python-27
+%endif
+#END %{solaris12} >= build 86
 
 # additionaly, in OmniOS we have a different python micro version number:
 %if %{omnios}
@@ -1808,11 +1849,11 @@
 #END if osbuild >= 133
 
 
-#solaris12 has default python27 and knows library/python/importlib ---- verify this
+#solaris12 has default python27 and knows library/python/importlib ---- verify this - NO >= build 86, python-26 removed/obsoleted
 #solaris11 has default python26 and knows library/python/importlib ---- verify this
 #
 ##TODO## define s11 version first delivering importlib for python27 ---- verify this
-%if %( expr %{solaris12} '|' %{oihipster} '|' %{solaris11} '&' %{osbuild} '>=' 16 )
+%if %( echo %{pnm_buildrequires_python_default} | egrep -- "runtime/python-24|runtime/python-26" >/dev/null && echo 1 || echo 0 )
 #s11 build 16
 #library/python-2/importlib-26                     1.0.2-0.175.3.0.0.16.0     --r
 #s11 > 16
@@ -1820,11 +1861,13 @@
 %define pnm_buildrequires_library_python_importlib	library/python/importlib
 %define pnm_requires_library_python_importlib		library/python/importlib
 %else
-#fall back to our SFEpython27-importlib.spec
-#(consuming support libs for libreoffic ask for python27)
+#%{solaris12} and others which have python_default > 2.6 - importlib is included
+#I believe there is with python-27 no extra importlib
 #library/python-2/importlib-27
-%define pnm_buildrequires_library_python_importlib	SFEpython27-importlib
-%define pnm_requires_library_python_importlib		SFEpython27-importlib
+#%define pnm_buildrequires_library_python_importlib	SFEpython27-importlib
+#%define pnm_requires_library_python_importlib		SFEpython27-importlib
+%define pnm_buildrequires_library_python_importlib	%{pnm_buildrequires_python_default}
+%define pnm_requires_library_python_importlib		%{pnm_requires_python_default}
 %endif
 #END
 
@@ -2856,6 +2899,12 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Nov 28 2015 - Thomas Wagner
+- rename SFEcppunit to SFEcppunit-gpp
+##TODO## needs refinement: perl version variables (OI, S12)
+- add first set of updated perl version variables (OI, S12)
+- update python default to python_version 2.7 (minimum) (S12 >=86)
+- adjust pnm_buildrequires_library_python_importlib accordingly (all)
 * Wed Oct 21 2015 - Thomas Wagner
 - add variables to find icu_gpp and boost_gpp <prefix|lib|include> similarly (S11 S12 OIH OM)
 - update boost_gpp_version to 1.58, icu_gpp_version 55.1, use SFEboost-gpp SFEicu-gpp for all osdistro for now (S11 S12 OIH OM)
