@@ -143,9 +143,11 @@
 
 #OI/Hipster
 #has most C++ stuff compiled with GCC
-%define oih20150330 0
-%define oih20141010 0
-%define oih20140701 0
+#:r!grep oih20 %
+%define oih20140701    0
+%define oih20141010    0
+%define oih20150330    0
+%define oih20151128    0
 
 #OpenIndiana
 # could be oi201009 and oi201100 or something, the first development release and following
@@ -295,6 +297,11 @@
 %if %( expr %{osbuilddate} '>=' 20150330 )
 %define oih20150330    1
 %define osdistrelnumber 20150330
+%endif
+# Post 20151128
+%if %( expr %{osbuilddate} '>=' 20151128 )
+%define oih20151128    1
+%define osdistrelnumber 20151128
 %endif
 #                                below: subject to change!
 %define osdistrelname   "OIHipster"
@@ -531,8 +538,19 @@
 #    FMRI: pkg://solaris/release/name@5.12-5.12.0.0.0.63.1:20141215T141436Z
 # could use as well: system/core-os or system/kernel
 %if %{os2nnn}
-#%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+#entire might be uninstalled, so use release/name instead. You don't uninstall it! If you do, then don't blame us if pnm_macros get confused.
 %define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
+%endif
+
+#older hipster doesn't match entire and release/name version packages. People! Don't uninstall entire on a OIHipster machine please!
+#release/name 0.151.1.8 
+#entire 2015.0.1.1
+##TODO## make version detection more robust, entire package might have been uninstalled, which packages to use for version detection in that case?
+%if %{oihipster}
+%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+%endif
+
+%if %{os2nnn}
 #echo 5.12.0.0.0.63.0 | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}'
 #0005001200000000000000630000
 #%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%.4d%.4d%.4d%.4d%.4d%.4d%.4d", $1, $2, $3, $4, $5, $6, $7}' )
@@ -553,6 +571,9 @@
 
 
 %changelog
+* Sat Nov 28 2015 - Thomas Wagner
+- add more OIHipster switches
+- fix osdistro_entire_padded_number4 by using entire@version (OIH)
 * Wed Aug  5 2015 - Thomas Wagner
 - typo $->% in %define osdistrelnumber (OOS/OM)
 * Mon Jul 27 2015 - Thomas Wagner

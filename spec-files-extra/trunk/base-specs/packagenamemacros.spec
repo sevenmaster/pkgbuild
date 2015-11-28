@@ -26,6 +26,7 @@
 %endif
 
 %include pkgbuild-features.inc
+%include buildparameter.inc
 
 # help the demo: pkgtool --interactive prep base-specs/packagenamemacros.spec
 Name: packagenamemacros
@@ -97,6 +98,10 @@ _target_cpu            %{_host_cpu}
 _target_vendor         %{_host_vendor}
 _target_os             %{_host_os}
 
+_totalmemory		%{_totalmemory}
+_cpus			%{_cpus}
+_cpus_memory		%{_cpus_memory}  = _totalmemory / 1024  or _cpus (the smaller number!)
+
 pnm: osbuild 		%{osbuild}
 pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
@@ -127,6 +132,7 @@ pnm: osdistrelnumber 	%{osdistrelnumber}
 pnm: osdistrelname   	%{osdistrelname}
 pnm: osdet299999 		%{osdet299999}
 
+pnm: pkgbuild_ver		%{pkgbuild_ver}
 pnm: _pkgbuild_version	        %{_pkgbuild_version}
 pnm: pkgbuild_ver_numeric	%{pkgbuild_ver_numeric}  (version encoded in a large number, usefull for comparisons)
 pnm: pkgbuild_ips_legacy	%{pkgbuild_ips_legacy}   (is supporting IPS system)
@@ -182,6 +188,7 @@ pnm: sfe_ruby_major_version number is:       		%{sfe_ruby_major_version}
 pnm: sfe_ruby_major_minor_version number is: 		%{sfe_ruby_major_minor_version}
 pnm: sfe_ruby_major_minor_micro_version number is: 		%{sfe_ruby_major_minor_micro_version}
 
+pnm: ruby_default_prefix		%{ruby_default_prefix}
 pnm: sfe_ruby_default_libdir		        %{sfe_ruby_default_libdir}
 pnm: ruby_default_prefix			%{ruby_default_prefix}
 pnm: ruby_default_includedir			%{ruby_default_includedir}
@@ -307,17 +314,27 @@ requesting package  SFExz resolves on %{osdistrelname} %{osdistrelnumber} build 
 compact display for resolve package names:
 pnm_buildrequires_SUNWzlib_devel pnm_requires_SUNWzlib           -> %{pnm_buildrequires_SUNWzlib_devel} %{pnm_requires_SUNWzlib}
 pnm_buildrequires_SUNWfreetype2_devel pnm_requires_SUNWfreetype2 -> %{pnm_buildrequires_SUNWfreetype2_devel} %{pnm_requires_SUNWfreetype2}
-#not defined pnm_buildrequires_boost_default                                  -> %{pnm_buildrequires_boost_default}
-pnm_buildrequires_boost_gpp_default                              -> %{pnm_buildrequires_boost_gpp_default}
-pnm_buildrequires_developer_cppunit                              -> %{pnm_buildrequires_developer_cppunit}
 
+pnm_buildrequires_boost_gpp_default                              -> %{pnm_buildrequires_boost_gpp_default}
+pnm_buildrequires_icu_gpp_default                                -> %{pnm_buildrequires_icu_gpp_default}
+
+pnm_buildrequires_developer_cppunit                              -> %{pnm_buildrequires_developer_cppunit}
+pnm_requires_developer_cppunit                                   -> %{pnm_requires_developer_cppunit}
+pnm_buildrequires_system_library_mozilla_nss                     -> %{pnm_buildrequires_system_library_mozilla_nss}
+pnm_requires_system_library_mozilla_nss                          -> %{pnm_requires_system_library_mozilla_nss}
+pnm_buildrequires_library_nspr_header_nspr                       -> %{pnm_buildrequires_library_nspr_header_nspr}
+pnm_requires_library_nspr                                        -> %{pnm_requires_library_nspr}
 
 
 " >/dev/null
 
+#not defined pnm_buildrequires_boost_default                                  -> %{pnm_buildrequires_boost_default}
 
 
 %changelog
+* Sat Nov 28 2015 - Thomas Wagner
+- %include buildparameter.inc to print calculated CPUS by memory / cpu ratio
+- print values for developer_cppunit, system_library_mozilla_nss, library_nspr, icu_gpp_default
 * Mon Jul 27 2015 - Thomas Wagner
 - merge with hipster changes (thanks pjama)
 * Sun May 24 2015 - pjama
