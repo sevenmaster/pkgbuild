@@ -41,7 +41,6 @@ Group:		System/Libraries
 Summary:	A little color management system (/usr/gnu)
 Version:                 %{lcms2.version}
 URL:		http://www.littlecms.com/
-Source:		http://www.littlecms.com/%{src_name}-%{version}.tar.gz
 License:	MIT
 SUNW_Copyright:	lcms2.copyright
 SUNW_BaseDir:	%{_basedir}
@@ -135,6 +134,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- new source url on sourceforge
 * Fri Oct 23 2015 - Thomas Wagner
 - merge local with pjama's changes
 * Fri May 22 2015 - pjama
