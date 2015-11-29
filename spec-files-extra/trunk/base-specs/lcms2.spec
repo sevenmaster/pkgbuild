@@ -4,7 +4,7 @@
 
 Summary:	A little color management system (/usr/gnu)
 Version:	%{version}
-Source:		http://www.littlecms.com/%{src_name}-%{version}.tar.gz
+Source:         %{sf_download}/lcms/lcms/%{version}/%{src_name}-%{version}.tar.gz
 
 
 
