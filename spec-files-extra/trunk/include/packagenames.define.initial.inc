@@ -25,10 +25,30 @@
 %define pnm_buildrequires_SFEeditline		SFEeditline
 %define pnm_requires_SFEeditline		SFEeditline
 
+#only oihipster has openjeg, see packagenames.define.oihipster-specialcases.inc
+%define pnm_buildrequires_SFE_openjpeg		SFEopenjpeg
+%define pnm_requires_SFE_openjpeg		SFEopenjpeg
 
+#only oihipster has orc, see packagenames.define.oihipster-specialcases.inc
+%define pnm_buildrequires_SFEorc_devel  	SFEorc
+%define pnm_requires_SFEorc             	SFEorc
+
+#only oihipster has libschroedinger, try this
+%define pnm_buildrequires_SFElibschroedinger    SFElibschroedinger
+%define pnm_requires_SFElibschroedinger         SFElibschroedinger
+
+
+#oihipster lost SUNWxwinc, try a replacement. Set the default for all other osdistro here
+%define pnm_buildrequires_SUNWxwinc_devel	SUNWxwinc
+%define pnm_buildrequires_SUNWxwinc		SUNWxwinc
+%define pnm_requires_SUNWxwinc			SUNWxwinc
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- handle openjeg, default to SFEopenjpeg for all, except (OIH)
+- handle orc / libschroedinger, default to SFEorc / SFElibschroedinger for all, except (OIH) where we use the osdistro package for the moment
+- handle lost SUNWxwinc for (OIH)
 * Sat Okt 17 2015 - Thomas Wagner
 - handle pnm_buildrequires_library_libedit SFEeditline
 * Fri Aug  1 2014 - Thomas Wagner

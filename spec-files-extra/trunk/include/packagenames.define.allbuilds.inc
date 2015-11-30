@@ -812,6 +812,7 @@
 # SFEgnupg2 SUNWgnupg SUNWlibgpg-error SUNWlibgpg-error-devel SUNWlibgcrypt SUNWlibgcrypt-devel
 
 #pre/including 130: SFEgnupg2 -> past 130 replacement is SUNWgnupg
+#note: oihipster see sections below, needs to set IPS name (knows no legacy name any more)
 %if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
 #sunw
 %define pnm_buildrequires_SUNWgnupg_devel	SUNWgnupg
@@ -841,7 +842,7 @@
 #sunw
 %define pnm_buildrequires_SUNWlibgpg_error_devel	SUNWlibgpg-error-devel
 %define pnm_buildrequires_SUNWlibgpg_error		SUNWlibgpg-error-devel
-%define pnm_requires_SUNWlibgpg_error			SUNWlibggpg-error
+%define pnm_requires_SUNWlibgpg_error			SUNWlibgpg-error
 %define pnm_buildrequires_library_security_libgpg_error	SUNWlibgpg-error-devel
 %define pnm_requires_library_security_libgpg_error	SUNWlibgpg-error
 #sfe
@@ -884,7 +885,7 @@
 #sunw
 %define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-devel
 %define pnm_buildrequires_SUNWlibgpg_error		SFElibgpg-error-devel
-%define pnm_requires_SUNWlibgpg_error			SUNWlibggpg-error
+%define pnm_requires_SUNWlibgpg_error			SUNWlibgpg-error
 %define pnm_buildrequires_library_security_libgpg_error	SFElibgpg-error-devel
 %define pnm_requires_library_security_libgpg_error	SFElibgpg-error
 #sfe
@@ -896,8 +897,49 @@
 %endif
 #END <130
 
+%if %{oihipster}
+#sunw
+%define pnm_buildrequires_SUNWgnupg_devel	crypto/gnupg
+%define pnm_buildrequires_SUNWgnupg		crypto/gnupg
+%define pnm_requires_SUNWgnupg			crypto/gnupg
+%define pnm_buildrequires_crypto_gnupg	    	crypto/gnupg
+%define pnm_requires_crypto_gnupg		crypto/gnupg
+#sfe
+%define pnm_buildrequires_SFEgnupg2_devel	crypto/gnupg
+%define pnm_buildrequires_SFEgnupg2		crypto/gnupg
+%define pnm_requires_SFEgnupg2			crypto/gnupg
+%define pnm_buildrequires_sfe_crypto_gnupg	crypto/gnupg
+%define pnm_requires_sfe_crypto_gnupg		crypto/gnupg
+#sunw
+%define pnm_buildrequires_SUNWlibgcrypt_devel	system/library/security/libgcrypt
+%define pnm_buildrequires_SUNWlibgcrypt		system/library/security/libgcrypt
+%define pnm_requires_SUNWlibgcrypt		system/library/security/libgcrypt
+%define pnm_buildrequires_system_library_security_libgcrypt	system/library/security/libgcrypt
+%define pnm_requires_system_library_security_libgcrypt		system/library/security/libgcrypt
+#sfe
+#note: SUNWlibgcrypt(-devel) is in Solaris since a while (which osbuild number?)
+#not set %define pnm_buildrequires_SUNWlibgcrypt_devel	SUNWlibgcrypt-devel
+#not set %define pnm_buildrequires_SUNWlibgcrypt		SUNWlibgcrypt-devel
+#not set %define pnm_requires_SUNWlibgcrypt		SUNWlibgcrypt
+#not set %define pnm_buildrequires_system_library_security_libgcrypt	SUNWlibgcrypt-devel
+#not set %define pnm_requires_system_library_security_libgcrypt		SUNWlibgcrypt
+#sunw
+%define pnm_buildrequires_SUNWlibgpg_error_devel	library/security/libgpg-error
+%define pnm_buildrequires_SUNWlibgpg_error		library/security/libgpg-error
+%define pnm_requires_SUNWlibgpg_error			library/security/libgpg-error
+%define pnm_buildrequires_library_security_libgpg_error	library/security/libgpg-error
+%define pnm_requires_library_security_libgpg_error	library/security/libgpg-error
+#sfe
+%define pnm_buildrequires_SFElibgpg_error_devel		library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error		library/security/libgpg-error
+%define pnm_requires_SFElibgpg_error			library/security/libgpg-error
+%define pnm_buildrequires_sfe_library_security_libgpg_error	library/security/libgpg-error
+%define pnm_requires_sfe_library_security_libgpg_error	library/security/libgpg-error
+%endif
+#END oihipster
 
-#SPECIAL CASE: SFE package was replacved with a SUNW package - one day this will
+
+#SPECIAL CASE: SFE package was replaced with a SUNW package - one day this will
 #be migrated to translation table in an exteral file
 #with one build number the SUNWsane-backend was added, so SFEsane-backends was deleted (oh!)
 #just replace the SFEsane-backends starting with that build-number with the SUNWsane-backend
@@ -1818,6 +1860,19 @@
 %define python_major_minor_micro_version 2.6.9
 %endif
 #END %{oihipster}
+
+# lets start (randomly) with python-27 as default in OIHpster >= 2015.0.1.1
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 2015000000010001000000000000.0 )
+#python-27@2.7.10-2015.0.1.0:20150603T172529Z
+%define python_version 2.7
+%define python_major_version 2
+%define python_major_minor_version 2.7
+%define python_major_minor_micro_version 2.7.10
+%define python_version_package_string 27
+%define pnm_buildrequires_python_default	runtime/python-27
+%define pnm_requires_python_default		runtime/python-27
+%endif
+#END %{oihipster} >= 2015.0.1.1
 
 
 #END setting python, changes with specific builds and distros  - Part 2 of 2
@@ -2905,6 +2960,8 @@
 - add first set of updated perl version variables (OI, S12)
 - update python default to python_version 2.7 (minimum) (S12 >=86)
 - adjust pnm_buildrequires_library_python_importlib accordingly (all)
+- fix typo SUNWlibggpg-error -> SUNWlibgpg-error
+- "No legacy name" for SUNWgnupg crypto/gnupg and SUNWlibgpg_error library/security/libgpg-error on (OIH)
 * Wed Oct 21 2015 - Thomas Wagner
 - add variables to find icu_gpp and boost_gpp <prefix|lib|include> similarly (S11 S12 OIH OM)
 - update boost_gpp_version to 1.58, icu_gpp_version 55.1, use SFEboost-gpp SFEicu-gpp for all osdistro for now (S11 S12 OIH OM)
