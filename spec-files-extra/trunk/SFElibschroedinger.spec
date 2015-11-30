@@ -38,11 +38,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-build
 
 %include default-depend.inc
 
-BuildRequires:  SFEorc-devel
-Requires:       SFEorc
+BuildRequires:  %{pnm_buildrequires_SFEorc_devel}
+Requires:       %{pnm_requires_SFEorc}
 BuildRequires:  %{pnm_buildrequires_SUNWgtk_doc}
-BuildRequires:  SUNWliboil
-BuildRequires:  SUNWgnome-media-devel
+BuildRequires:  %{pnm_buildrequires_SUNWliboil}
+BuildRequires:  %{pnm_buildrequires_SUNWgnome_media_devel}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -141,6 +141,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc/html/schroedinger
 
 %changelog
+* Nov 29 2015 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SFEorc_devel}
 * Sat Apr 28 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgtk_doc}
 * Mon Oct 17 2011 - Milan Jurik

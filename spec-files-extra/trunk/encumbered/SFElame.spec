@@ -49,7 +49,8 @@ BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
 Requires:      %{pnm_requires_SUNWncurses}
 
 # we don't build the GTK frontend but autotools needs the macros
-BuildRequires: SUNWgnome-common-devel
+BuildRequires:  %{pnm_buildrequires_SUNWgnome_common_devel}
+
 
 %package devel
 Summary:                 %{summary} - development files
@@ -136,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgnome_common_devel}
 * Tue Okt  1 2013 - Thomas Wagner
 - use CC=gcc
 * Fri Jul  5 2013 - Thomas Wagner

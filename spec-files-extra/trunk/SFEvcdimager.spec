@@ -33,8 +33,8 @@ BuildRequires: %{pnm_buildrequires_SUNWlibpopt_devel}
 Requires:      %{pnm_requires_SUNWlibpopt}
 BuildRequires: %{pnm_buildrequires_SUNWlxml_devel}
 Requires:      %{pnm_requires_SUNWlxml}
-BuildRequires: SUNWzlib
-Requires:      SUNWzlib
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
 
 
 %prep
@@ -118,6 +118,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner 
+- change (Build)Requires to %{pnm_buildrequires_SUNWzlib} (OIH)
 * Thu Jul 11 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibpopt_devel} %{pnm_buildrequires_SUNWlxml_devel}, %include packagenamemacros.inc
 * Sat Aug 18 2012 - Milan Jurik

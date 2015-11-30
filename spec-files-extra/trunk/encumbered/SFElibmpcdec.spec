@@ -10,7 +10,7 @@
 Name:                    SFElibmpcdec
 IPS_Package_Name:	library/audio/libmpcdec 
 Summary:                 Portable Musepack decoder library
-License:                 LGPLv2
+License:                 BSD
 SUNW_Copyright:	         libmpcdec.copyright
 URL:                     http://musepack.net/
 Version:                 1.2.6
@@ -42,6 +42,11 @@ fi
 export CPPFLAGS="-D__inline=inline"
 export CFLAGS="%optflags"
 
+%if %cc_is_gcc
+#or get: configure: error: No signed 16 bit type found on this platform.
+gsed -i.bak_remove_KPIC_cc_is_gcc -e '/^CFLAGS.*CFLAGS.*KPIC/ s?-KPIC??' configure.ac configure
+%endif
+
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
             --libexecdir=%{_libexecdir}      \
@@ -69,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- remove -KPIC if cc_is_gcc or get configure: error: No signed 16 bit type found on this platform.
 * Fri Jul  5 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFElibsndfile_devel}, %include packagenamemacros.inc
 ##TODO## include and link against correct libsndfile

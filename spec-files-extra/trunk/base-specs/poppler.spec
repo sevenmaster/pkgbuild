@@ -118,10 +118,11 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/g++/share/pkgconfig
 
 export CFLAGS="%optflags `pkg-config --cflags-only-I cairo`"
-export CXXFLAGS="%cxx_optflags -D_STDC_C11 `pkg-config --cflags-only-I cairo`"
+export CXXFLAGS="%cxx_optflags `pkg-config --cflags-only-I cairo`"
+#export CXXFLAGS="%cxx_optflags -D_STDC_C11 `pkg-config --cflags-only-I cairo`"
 %if %{solaris12}
-#perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
-export CXXFLAGS="$CXXFLAGS -D_STDC_C11_BCI"
+#-D_STDC_C11_BCI solves perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
+export CXXFLAGS="$CXXFLAGS -std=c++11 -D_STDC_C11_BCI"
 %endif
 export LDFLAGS="%{_ldflags}"
 

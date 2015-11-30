@@ -10,9 +10,9 @@
 # Owner: trisk
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define with_hal %(pkginfo -q SUNWhal && echo 1 || echo 0)
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
 %define with_amrnb %(pkginfo -q SFEamrnb && echo 1 || echo 0)
 %define with_amrwb %(pkginfo -q SFEamrwb && echo 1 || echo 0)
 %define NVDAgraphics %(/usr/bin/pkginfo -q NVDAgraphics && echo 1 || echo 0)
@@ -36,11 +36,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Requires: SUNWlibms
 Requires: SUNWlxml
 Requires: SUNWzlib
-Requires: SUNWfreetype2
+BuildRequires: %{pnm_buildrequires_SUNWfreetype_devel}
+Requires:      %{pnm_buildrequires_SUNWfreetype}
 BuildRequires: SUNWbison
-BuildRequires: SUNWPython26
-BuildRequires: SUNWPython26-extra
-BuildRequires: SUNWgtk-doc
+BuildRequires: %{pnm_buildrequires_python_default}
+Requires:      %{pnm_requires_python_default}
+BuildRequires: %{pnm_buildrequires_python_default}-extra 
+Requires:      %{pnm_requires_python_default}-extra 
+
+BuildRequires: %{pnm_buildrequires_SUNWgtk_doc}
 BuildRequires: SUNWgnome-xml-share 
 Requires: SUNWgnome-libs
 BuildRequires: SUNWgnome-libs-devel
@@ -92,13 +96,8 @@ BuildRequires: SFEtwolame-devel
 ##### for gst-plugins-bad #####
 BuildRequires: SFElibvpx-devel
 Requires: SFElibvpx
-%if %SFElibsndfile
-BuildRequires: SFElibsndfile-devel
-Requires: SFElibsndfile
-%else
-BuildRequires:	SUNWlibsndfile
-Requires:	SUNWlibsndfile
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
+Requires:      %{pnm_requires_SFElibsndfile}
 # Notes: metadata plugin which uses libexif may be unstable
 #Requires: SUNWlibexif
 #BuildRequires: SUNWlibexif-devel
@@ -134,8 +133,8 @@ Requires: SFEladspa
 BuildRequires: SFEladspa-devel
 Requires: SFEsoundtouch
 BuildRequires: SFEsoundtouch-devel
-Requires: SFElibschroedinger
-BuildRequires: SFElibschroedinger-devel
+BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
+Requires:      %{pnm_requires_SFElibschroedinger}
 Requires: SFEfaac
 BuildRequires: SFEfaac-devel
 Requires: SFEtimidity
@@ -282,6 +281,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFElibschroedinger, SFElibsndfile to use (OIH) libschroedinger, libsndfile, %include packagenamacros.inc
 * Thu Sep 01 2011 - Milan Jurik
 - python 2.6
 * Sat Mar 19 2011 - Milan Jurik

@@ -17,7 +17,7 @@ Summary:	Extensible Binary Meta Language
 Group:		System Environment/Libraries
 URL:		http://ebml.sourceforge.net
 Vendor:		Moritz Bunkus <moritz@bunkus.org>
-Version:	1.3.1
+Version:	1.3.3
 Source:		http://dl.matroska.org/downloads/%srcname/%srcname-%version.tar.bz2
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
@@ -71,6 +71,8 @@ rm -rf %buildroot
 %_pkg_config_path/%srcname.pc
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- bump to 1.3.3
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 1.3.1 (the build system is more conventional now)
 * Fri Aug 14 2015 - Thomas Wagner

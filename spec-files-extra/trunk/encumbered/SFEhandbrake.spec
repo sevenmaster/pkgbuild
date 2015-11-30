@@ -34,7 +34,8 @@ Requires: SFEffmpeg
 Requires: SFElibmp4v2
 Requires: SFElibdvdnav
 Requires: SFElibiconv
-Requires: SFElibschroedinger
+BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
+Requires:      %{pnm_requires_SFElibschroedinger}
 BuildRequires: SFEgcc
 BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibx264-devel
@@ -82,6 +83,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFElibschroedinger to use (OIH) libschroedinger
+* Thu Aug 20 2015 - Thomas Wagner
+- bump to 0.10.2
+* Sat Jul 20 2013 - Thomas Wagner
+- bump to 0.9.9
 * Mon Jul 30 2012 - Thomas Wagner
 - change Requires to SFEgcc-runtime
 * Thu Feb 25 2011 - jchoi42@pha.jhu.edu

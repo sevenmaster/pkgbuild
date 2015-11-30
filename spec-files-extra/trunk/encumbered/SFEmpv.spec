@@ -17,7 +17,6 @@
 %define cc_is_gcc 1
 %include base.inc
 %define srcname mpv
-%define _pkg_docdir %_docdir/%srcname
 
 # NVDAgraphics is the driver supplied directly by Nvidia
 %define with_system_nvidia %(pkginfo -q NVDAgraphics && echo 0 || echo 1)
@@ -38,13 +37,14 @@ BuildRequires: SFEffmpeg-devel
 #BuildRequires: SFElibcdio-devel
 BuildRequires: SFElibdvdnav-devel
 BuildRequires: SFEpython26-docutils
-BuildRequires: SUNWgroff
+BuildRequires: %{pnm_buildrequires_SUNWgroff}
 %if %with_system_nvidia
 BuildRequires: driver/graphics/nvidia
 %endif
 BuildRequires: library/fribidi
 BuildRequires: SFEliba52-devel
-BuildRequires: SFEopenjpeg-devel
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 BuildRequires: SFElibass-devel
 BuildRequires: SFElibquvi
 
@@ -159,6 +159,10 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
+* Sat Apr 13 2014 - Thomas Wagner
+- change (Build)Requires: pnm_buildrequires_SUNWgroff
 * Thu Feb 06 2014 - Alex Viskovatoff <herzen@imapmail.org>
 - bump to 0.3.4; build with waf; delete %changelog entries from before fork
   from SFEmplayer2.spec - they are not very relevant

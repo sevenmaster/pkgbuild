@@ -155,8 +155,6 @@
  
 %include base.inc
 
-##TODO## use pnm_macros to determine which osdistro/osbuild needs SFE or SUNW libsdl
-%define SFEsdl      %(/usr/bin/pkginfo -q SFEsdl && echo 1 || echo 0)
 
 #new with 2.x.x source comes compressed in xz
 BuildRequires:	%{pnm_buildrequires_SFExz_gnu}
@@ -241,20 +239,12 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 
 #BuildRequires:  %{pnm_buildrequires_SUNWautomake_111}
 BuildRequires:  SFEautomake-114
-##TODO## check for a pnm_macro to fetch SFEsdl (depends on the addon SFEsdl-image below)
-%if %SFEsdl
-BuildRequires:  SFEsdl-devel
-Requires:       SFEsdl
-BuildRequires:  SFEsdl-image-devel
-Requires:       SFEsdl-image
-%else
-BuildRequires:  SUNWlibsdl-devel
-Requires:       SUNWlibsdl
-##TODO## check if sdl-image is integrated or still needed separatly
-%endif
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
+
 Requires:       SUNWhal
-BuildRequires:  SUNWdbus-devel
-Requires:       SUNWdbus
+BuildRequires: %{pnm_buildrequires_SUNWdbus_devel}
+Requires:      %{pnm_requires_SUNWdbus}
 Requires:       SUNWxorg-clientlibs
 %if %{enable_samba}
 BuildRequires:  %{pnm_buildrequires_SUNWsmba}
@@ -300,25 +290,25 @@ BuildRequires:  SFElibtar-devel
 Requires:       SFElibtar
 BuildRequires:	%{pnm_buildrequires_SUNWlua}
 Requires:	%{pnm_buildrequires_SUNWlua}
-BuildRequires: SUNWlibgcrypt
+BuildRequires: %{pnm_buildrequires_SUNWlibgcrypt}
 BuildRequires: SUNWlibproxy
 BuildRequires: SUNWgnome-vfs
-BuildRequires: SUNWlibrsvg
+BuildRequires: %{pnm_buildrequires_SUNWlibrsvg}
 BuildRequires: SFEtwolame
 #BuildRequires: SFEgcc
 BuildRequires: SFEgcc
-BuildRequires: SUNWavahi-bridge-dsd
-BuildRequires: SUNWlibgpg-error
-Requires: SUNWlibgcrypt
+BuildRequires: %{pnm_buildrequires_SUNWavahi_bridge_dsd_devel}
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error_devel}
+Requires: %{pnm_requires_SUNWlibgcrypt}
 Requires: SUNWlibproxy
 Requires: SUNWgnome-vfs
-Requires: SUNWlibrsvg
+Requires: %{pnm_requires_SUNWlibrsvg}
 Requires: SFEtwolame
 Requires: SFEgccruntime
 #Requires: SFEgccruntime-46
 #Requires: SFEgccruntime-48
-Requires: SUNWavahi-bridge-dsd
-Requires: SUNWlibgpg-error
+Requires: %{pnm_requires_SUNWavahi_bridge_dsd}
+Requires: %{pnm_requires_SUNWlibgpg_error}
 BuildRequires: SFEtwolame-devel
 Requires: SFEtwolame
 %if %{enable_taglib}
@@ -733,6 +723,9 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel} SUNWdbus_devel, SUNWavahi_bridge_dsd_devel, SUNWlibgpg_error_devel, SUNWlibrsvg, SUNWlibgcrypt
+  , %include packagenamacros.inc
 * Mon Aug 10 2015 - Thomas Wagner
 - relax Requires: SFEgccruntime (w/o version)
 * Sat Aug  9 2014 - Thomas Wagner

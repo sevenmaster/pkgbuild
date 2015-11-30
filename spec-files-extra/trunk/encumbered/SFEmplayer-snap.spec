@@ -45,9 +45,7 @@
 %define with_mpcdec %(pkginfo -q SFElibmpcdec && echo 1 || echo 0)
 %define with_xvid %(pkginfo -q SFExvid && echo 1 || echo 0)
 %define with_x264 %(pkginfo -q SFElibx264 && echo 1 || echo 0)
-%define with_openjpeg %(pkginfo -q SFEopenjpeg && echo 1 || echo 0)
 %define with_giflib %(pkginfo -q SFEgiflib && echo 1 || echo 0)
-%define with_schroedinger %(pkginfo -q SFElibschroedinger && echo 1 || echo 0)
 %define with_alsa %(pkginfo -q SFEalsa-lib && echo 1 || echo 0)
 
 %if %with_constant_tarball
@@ -108,7 +106,7 @@ BuildRequires: SFElibvpx-devel
 BuildRequires: SFEyasm
 %endif
 BuildRequires: SFElibcdio-devel
-BuildRequires: SUNWgroff
+BuildRequires: %{pnm_buildrequires_SUNWgroff}
 BuildRequires: SUNWesu
 BuildRequires: %{pnm_buildrequires_SUNWlibmng_devel}
 BuildRequires: SFElzo-devel
@@ -157,18 +155,14 @@ BuildRequires: SFExvid-devel
 Requires: SFElibx264
 BuildRequires: SFElibx264-devel
 %endif
-%if %with_openjpeg
-Requires: SFEopenjpeg
-BuildRequires: SFEopenjpeg-devel
-%endif
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 %if %with_giflib
 Requires: SFEgiflib
 BuildRequires: SFEgiflib-devel
 %endif
-%if %with_schroedinger
-BuildRequires: SFElibschroedinger
-Requires: SFElibschroedinger
-%endif
+BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
+Requires:      %{pnm_requires_SFElibschroedinger}
 %if %with_alsa
 BuildRequires: SFEalsa-lib
 Requires: SFEalsa-lib
@@ -292,6 +286,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg, SFElibschroedinger to use (OIH) openjpeg, libschroedinger
+* Sat Apr 13 2014 - Thomas Wagner
+- change (Build)Requires: pnm_buildrequires_SUNWgroff
 * Sat Jan 12 2013 - Thomas Wagner
 - change (Build)Requires from liveMedia to livemedia
 * Sat Jan 12 2013 - Thomas Wagner

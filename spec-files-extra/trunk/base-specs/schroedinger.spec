@@ -18,12 +18,6 @@ perl -i.orig -lpe 'if ($. == 1){s/^.*$/#!\/bin\/bash/}' configure
 %build
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lm"
-if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
-        export LDFLAGS="$LDFLAGS -m64"
-fi
-
-# found ORC if install in /opt/SFE
-export PKG_CONFIG_PATH="%{_prefix}/lib/pkgconfig"
 
 ./configure --prefix=%{_prefix}                 \
             --libdir=%{_libdir}                 \
