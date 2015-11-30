@@ -4,6 +4,7 @@
 # includes module(s): libquicktime
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libquicktime64 = libquicktime.spec
@@ -24,19 +25,19 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: SFEffmpeg-devel
 Requires: SFEffmpeg
-BuildRequires: SUNWgnome-base-libs-devel
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_base_libs_devel}
 %ifarch amd64 sparcv9
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis-devel
+BuildRequires:	%{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:	%{pnm_buildrequires_SUNWogg_vorbis_devel}
 %endif
-Requires: SFElibschroedinger
-BuildRequires: SFElibschroedinger-devel
+BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
+Requires:      %{pnm_requires_SFElibschroedinger}
 Requires: SFEfaad2
 BuildRequires: SFEfaad2-devel
 Requires: SFElibx264
 BuildRequires: SFElibx264-devel
-BuildRequires: SUNWdoxygen
-BuildRequires: SUNWgsed
+BuildRequires:	%{pnm_buildrequires_SUNWdoxygen}
+BuildRequires:	%{pnm_buildrequires_SUNWgsed}
 BuildRequires: SUNWscpu
 
 %package devel
@@ -134,6 +135,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFElibschroedinger to use (OIH) libschroedinger
+* Mon May 25 2015 - pjama
+- pnm'd SUNWogg_vorbis, doxygen and gnu-sed
 * Sun Nov 20 2011 - Milan Jurik
 - add IPS package name
 * Tue Jan 25 2011 - Milan Jurik

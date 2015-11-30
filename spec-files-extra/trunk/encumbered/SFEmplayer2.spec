@@ -1,3 +1,6 @@
+
+https://www.illumos.org/issues/3092
+
 #
 # spec file for package SFEmplayer2
 #
@@ -35,7 +38,6 @@
 %define with_openal %(pkginfo -q SFEopenal && echo 1 || echo 0)
 #%define with_liba52 %(pkginfo -q SFEliba52 && echo 1 || echo 0)
 #%define with_mpcdec %(pkginfo -q SFElibmpcdec && echo 1 || echo 0)
-%define with_openjpeg %(pkginfo -q SFEopenjpeg && echo 1 || echo 0)
 %define with_giflib %(pkginfo -q SFEgiflib && echo 1 || echo 0)
 %define with_alsa %(pkginfo -q SFEalsa-lib && echo 1 || echo 0)
 %define SFElibsndfile %(pkginfo -q SFElibsndfile && echo 1 || echo 0)
@@ -81,7 +83,7 @@ BuildRequires: SFEyasm
 %endif
 BuildRequires: SFElibcdio-devel
 BuildRequires: SFElibdvdnav-devel
-BuildRequires: SUNWgroff
+BuildRequires: %{pnm_buildrequires_SUNWgroff}
 BuildRequires: SUNWesu
 Requires: driver/graphics/nvidia
 BuildRequires: driver/graphics/nvidia
@@ -110,10 +112,8 @@ BuildRequires: SFEliba52-devel
 Requires: SFEopenal
 BuildRequires: SFEopenal-devel
 %endif
-%if %with_openjpeg
-Requires: SFEopenjpeg
-BuildRequires: SFEopenjpeg-devel
-%endif
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 %if %with_giflib
 Requires: SFEgiflib
 BuildRequires: SFEgiflib-devel
@@ -229,6 +229,10 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
+* Sat Apr 13 2014 - Thomas Wagner
+- change (Build)Requires: pnm_buildrequires_SUNWgroff
 * Mon Sep 30 2013 - Alex Viskovatoff
 - make %snap date of latest commit to the git repository, to ease maintenance
 * Mon Sep 30 2013 - Milan Jurik

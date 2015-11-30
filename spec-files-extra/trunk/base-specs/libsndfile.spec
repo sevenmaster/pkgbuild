@@ -28,10 +28,11 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
-export CXXFLAGS="%cxx_optflags -features=extensions"
 %if %cc_is_gcc
+export CXXFLAGS="%cxx_optflags"
 %else
 export CXX="${CXX} -norunpath"
+export CXXFLAGS="%cxx_optflags -features=extensions"
 %endif
 
 ./configure --prefix=%{_prefix}		\
@@ -55,6 +56,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWflac_devel} SUNWaudh (OIH), %include packagenamemacros.inc
+- don't set -features=extensions if cc_is_gcc / g++
 * Sun Feb 05 2012 - Brian Cameron
 - Bump to 1.0.25.
 * Wed Mar 23 2011 - Thomas Wagner

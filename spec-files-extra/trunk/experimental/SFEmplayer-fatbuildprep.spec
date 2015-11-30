@@ -11,7 +11,7 @@
 #place packages to be build before mplayer. mplayer
 #does find them and use them if they are present before, else skip.
 
-%define requiresforfatbuild experimental/SFEmplayer-fatbuildprep.spec SUNWlibsndfile SFEfaad2 SFElibfribidi SFEladspa SFEopenal SFEliba52 SFElame SFEtwolame SFElibmad SFElibmpcdec SFExvid SFElibx264 SFEopenjpeg SFEgiflib SFEliveMedia SFElibcdio SFElibcdio-devel
+%define requiresforfatbuild experimental/SFEmplayer-fatbuildprep.spec SUNWlibsndfile SFEfaad2 SFElibfribidi SFEladspa SFEopenal SFEliba52 SFElame SFEtwolame SFElibmad SFElibmpcdec SFExvid SFElibx264 SFEgiflib SFEliveMedia SFElibcdio SFElibcdio-devel
 
 #supplement (do not list those, who are already listed in SFEmplayer iteself
 %define requiresforfatbuildsupplement %{pnm_buildrequires_SUNWsmba} SUNWgnome-audio SUNWgscr
@@ -109,7 +109,8 @@ BuildRequires: SFElibmad
 BuildRequires: SFElibmpcdec
 BuildRequires: SFExvid
 BuildRequires: SFElibx264
-BuildRequires: SFEopenjpeg
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 BuildRequires: SFEgiflib
 BuildRequires: SFElivemedia
 BuildRequires: SFElibcdio
@@ -131,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
 * Sun Apr 13 2014 - Thomas Wagner
 - change from SFEmplayer-snap to SFEmplayer (e.g. Version 1.1.1)
 * Sun Jun 24 2012 - Thomas Wagner

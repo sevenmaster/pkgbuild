@@ -60,8 +60,8 @@ BuildRequires: SFEwxwidgets-gpp
 Requires: SFEwxwidgets-gpp
 BuildRequires: SFExvid-devel
 Requires: SFExvid
-BuildRequires: SFEopenjpeg-devel
-Requires:      SFEopenjpeg
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -143,6 +143,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
 * Mon Jan  6 2014 - Thomas Wagner
 - bump to 0.5.0
 - propper make install, layout and hard-links to isaexec for 32-bit/64-bit commandline tools,

@@ -163,6 +163,7 @@ pnm: python_major_version number is: 		%{python_major_version}
 pnm: python_major_minor_version number is: 	%{python_major_minor_version}
 pnm: python_major_minor_micro_version number is: 	%{python_major_minor_micro_version}
 pnm: python_package_string: 			%{python_version_package_string}
+pnm: pnm_buildrequires_library_python_importlib %{pnm_buildrequires_library_python_importlib}
 
 pnm: pnm_buildrequires_mysql_default		%{pnm_buildrequires_mysql_default}
 pnm: pnm_requires_mysql_default			%{pnm_requires_mysql_default}
@@ -325,6 +326,9 @@ pnm_requires_system_library_mozilla_nss                          -> %{pnm_requir
 pnm_buildrequires_library_nspr_header_nspr                       -> %{pnm_buildrequires_library_nspr_header_nspr}
 pnm_requires_library_nspr                                        -> %{pnm_requires_library_nspr}
 
+pnm_buildrequires_SUNWlibgcrypt                                  -> %{pnm_buildrequires_SUNWlibgcrypt}
+pnm_buildrequires_SFElibgpg_error                                -> %{pnm_buildrequires_SFElibgpg_error}
+ 
 
 " >/dev/null
 
@@ -332,6 +336,8 @@ pnm_requires_library_nspr                                        -> %{pnm_requir
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- add pnm_buildrequires_library_python_importlib, SUNWlibgcrypt, SFElibgpg_error
 * Sat Nov 28 2015 - Thomas Wagner
 - %include buildparameter.inc to print calculated CPUS by memory / cpu ratio
 - print values for developer_cppunit, system_library_mozilla_nss, library_nspr, icu_gpp_default

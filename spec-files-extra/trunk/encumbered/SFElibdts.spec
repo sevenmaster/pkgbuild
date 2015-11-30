@@ -4,6 +4,7 @@
 # includes module(s): libdts
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define src_name	 libdca 
 
@@ -46,9 +47,9 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 export CPPPFLAGS="-I/usr/include/a52dec"
 %if %cc_is_gcc
-export CFLAGS="%optflags -KPIC"
-%else
 export CFLAGS="%optflags"
+%else
+export CFLAGS="%optflags -KPIC"
 %endif
 
 aclocal $ACLOCAL_FLAGS
@@ -93,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- %include packagenamemacros.inc to resolve %{pnm_buildrequires_SUNWlibms}
 * Fri Aug 14 2015 - Thomas Wagner
 - only add -KPIC if cc_is_gcc is not true
 * Mon Dec 31 2007 - markwright@internode.on.net

@@ -5,6 +5,9 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include packagenamemacros.inc
+%include pkgbuild-features.inc
+
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use libsndfile64 = libsndfile.spec
@@ -16,7 +19,7 @@
 %define SFEogg_vorbis    %(/usr/bin/pkginfo -q SFEogg-vorbis && echo 1 || echo 0)
 
 Name:                    SFElibsndfile
-IPS_package_name:	 library/gnu/libsndfile
+IPS_Package_Name:	 library/gnu/libsndfile
 Summary:                 %{libsndfile.summary} (/usr/gnu)
 Version:                 %{libsndfile.version}
 SUNW_BaseDir:            %{_basedir}
@@ -29,15 +32,55 @@ BuildRequires: SFEogg-vorbis-devel
 %endif
 BuildRequires: SUNWogg-vorbis-devel
 Requires: SUNWogg-vorbis
-Requires: SUNWflac
+BuildRequires: %{pnm_buildrequires_SUNWflac_devel}
+Requires:      %{pnm_requires_SUNWflac}
 Requires: SUNWlibms
-BuildRequires: SUNWaudh
+BuildRequires: %{pnm_buildrequires_SUNWaudh}
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %name
+
+#remember to %include pkgbuild-features.inc
+%if %{pkgbuild_ips_legacy}
+%package -n %{name}-renamed-noinst
+Summary:                 %{summary} - was renamed to library/gnu/libsndfile
+#STRONG NOTE: put the old name which is going away into IPS_Package_Name !!!
+#this might be SFElibsndfile -> library/gnu/libsndfile then use pkg:/"SFElibsndfile"
+IPS_package_name:	 SFElibsndfile
+#aus programmcode: /opt/dtbld/lib/pkgbuild-1.3.104/pkgbuild.pl
+#%_use_internal_dependency_generator
+%define _use_internal_dependency_generator 0
+IPS_legacy: false
+SUNW_Pkg: SFElibsndfile
+#NOTE: need a version rule, or get ignored. >= 1.1.1 or = * 
+#renamed_to: library/gnu/libsndfile >= %{version}
+Meta(pkg.renamed): true
+Meta(pkg.waldfeebasis): true
+#not allowed to place a depend into a obsoleted package! #Meta(pkg.obsolete): true
+Meta(variant.opensolaris.zone): global, nonglobal
+PkgBuild_Make_Empty_Package: true
+Renamed_To: library/gnu/libsndfile = *
+#%endif
+#END os2nnn
+#%endif
+#END pkgbuild_ver_numeric >= 001003104 
+#%package -n              SUNWgnome-l10ndocument-noinst
+#IPS_package_name:        gnome/documentation/locale/noinst
+#SUNW_Pkg: SUNWgnome-l10nmessages
+#IPS_component_version: %{default_pkg_version}
+#IPS_build_version: 5.11
+#IPS_vendor_version: 0.175.0.0.0.0.0
+#IPS_legacy: false
+#Meta(pkg.obsolete): true
+#Meta(org.opensolaris.consolidation): desktop
+#Meta(variant.opensolaris.zone): global, nonglobal
+#PkgBuild_Make_Empty_Package: true
+%endif
+#END pkgbuild_ips_legacy
+
 
 %prep
 rm -rf %name-%version
@@ -67,6 +110,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+#to prevent old name SFElibsndfile, library/libsndfile and new name library/gnu/libsndfile
+#be installed at the same time
+#list *all* old package names here which could be installed on
+#user's systems
+%actions
+depend fmri=SFElibsndfile type=optional
+##TODO## check if the same name Solaris library library/libsndfile
+#is matched as well, if we don't want this, needs a pkgmogrify rule then!
+#we need to put the publisher here: fmri=pkg:/localhost<name>/library/libsndfile 
+# depend fmri=sfe_publisher_name_keep_current/library/libsndfile type=optional
+depend fmri=library/libsndfile type=optional
+
 
 %files
 %defattr (-, root, bin)
@@ -122,9 +178,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{_arch64}/pkgconfig/*
 %endif
 
+
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWflac_devel} SUNWaudh (OIH), %include packagenamemacros.inc
+- don't set -features=extensions if cc_is_gcc / g++
 * Fri Jul  5 2013 - Thomas Wagner
-- add IPS_package_name and inlude hint to "gnu" location
+- add IPS_package_name and include hint to "gnu" location
 * Sun Nov  4 2012 - Thomas Wagner
 - relocate to /usr/gnu (pulseaudio needs >= 1.0.20 and dist has 1.0.17)
   (version is now 1.0.25 see base-specs/libsndfile.spec)
