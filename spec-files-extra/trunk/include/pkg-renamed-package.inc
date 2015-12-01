@@ -14,7 +14,9 @@ IPS_package_name:	 %{renamed_from_oldname}
 
 IPS_legacy: false
 #example: SUNW_Pkg: SFEurxvt
+%if %( echo %{renamed_from_oldname} | grep "/" >/dev/null && echo 0 || echo 1 )
 SUNW_Pkg: %{renamed_from_oldname}
+%endif
 
 Meta(pkg.renamed): true
 
@@ -32,5 +34,7 @@ IPS_Vendor_Version: %{ips_branch_renamed_package}
 
 
 %changelog
+* Fri Nov  6 2015 - Thomas Wagner
+- don't use SUNW_Pkg: if it is an IPS package name with a "/" in it
 * Thu Nov 14 2013 - Thomas Wager
 - split out from pkg-renamed.inc to be included for every single oldname package
