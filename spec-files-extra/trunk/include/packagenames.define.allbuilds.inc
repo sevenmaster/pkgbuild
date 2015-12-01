@@ -1116,6 +1116,11 @@
 %define pnm_buildrequires_x11_optional_clients		compatibility/packages/SUNWxwopt
 %define pnm_requires_x11_optional_clients		compatibility/packages/SUNWxwopt
 
+#SUNWxwinc is now a compatibility package which can be checked for being installed (against a consolidation which can't)
+#   Name: x11/header Renamed to: pkg:/consolidation/X/X-incorporation pkg:/compatibility/packages/SUNWxwinc@0.5.11,5.11-0.144
+%define pnm_buildrequires_SUNWxwinc_devel 	compatibility/packages/SUNWxwinc
+%define pnm_buildrequires_SUNWxwinc 		compatibility/packages/SUNWxwinc
+%define pnm_requires_SUNWxwinc 			compatibility/packages/SUNWxwinc
 %endif
 #END >= 144
 
@@ -2954,6 +2959,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Mon Nov 30 2015 - Thomas Wagner
+- handle pnm_buildrequires_SUNWxwinc_devel (S11 >=144, S12)
 * Sat Nov 28 2015 - Thomas Wagner
 - rename SFEcppunit to SFEcppunit-gpp
 ##TODO## needs refinement: perl version variables (OI, S12)

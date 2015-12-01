@@ -26,8 +26,8 @@
 %define pnm_requires_SFEeditline		SFEeditline
 
 #only oihipster has openjeg, see packagenames.define.oihipster-specialcases.inc
-%define pnm_buildrequires_SFE_openjpeg		SFEopenjpeg
-%define pnm_requires_SFE_openjpeg		SFEopenjpeg
+%define pnm_buildrequires_SFEopenjpeg		SFEopenjpeg
+%define pnm_requires_SFEopenjpeg		SFEopenjpeg
 
 #only oihipster has orc, see packagenames.define.oihipster-specialcases.inc
 %define pnm_buildrequires_SFEorc_devel  	SFEorc
@@ -45,6 +45,8 @@
 
 
 %changelog
+* Mon Nov 30 2015 - Thomas Wagner
+- fix typo SFE_openjpeg -> SFEopenjpeg
 * Sun Nov 29 2015 - Thomas Wagner
 - handle openjeg, default to SFEopenjpeg for all, except (OIH)
 - handle orc / libschroedinger, default to SFEorc / SFElibschroedinger for all, except (OIH) where we use the osdistro package for the moment
