@@ -14,7 +14,7 @@ Name:		SFEpcre-gpp
 IPS_Package_Name:	library/g++/pcre
 Summary:	Perl Compatible Regular Expressions (g++ built)
 URL:		http://www.pcre.org/
-Version:	8.30
+Version:	8.38
 Group:		Development/Perl
 #License:	LGPLv2+
 #SUNW_Copyright:	pcre.copyright
@@ -85,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec  2 2015 - Thomas Wagner
+- bump to 8.38
 * Sun Feb 05 2012 - Milan Jurik
 - bump to 8.30, enable 16bit and JIT
 * Sun Aug 14 2011 - Alex Viskovatoff
