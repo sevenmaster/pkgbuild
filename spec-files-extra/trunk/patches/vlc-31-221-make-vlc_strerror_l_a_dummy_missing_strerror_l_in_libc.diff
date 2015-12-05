@@ -1,0 +1,16 @@
+--- vlc-2.2.1/src/posix/error.c.orig	2014-08-14 09:20:04.000000000 +0200
++++ vlc-2.2.1/src/posix/error.c	2015-12-02 23:58:05.877341875 +0100
+@@ -48,10 +48,11 @@
+         errno = saved_errno;
+     }
+ 
+-    const char *buf = strerror_l(errnum, loc);
++    /* const char *buf = strerror_l(errnum, loc); */
+ 
+     freelocale(loc);
+-    return buf;
++    /* return buf; */
++            return "DUMMY SFE Error message unavailable";
+ }
+ 
+ /**
