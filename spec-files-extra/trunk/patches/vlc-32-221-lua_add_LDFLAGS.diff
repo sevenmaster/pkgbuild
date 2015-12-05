@@ -1,0 +1,26 @@
+From: Sean McGovern <gseanmcg@gmail.com>
+Date: Fri, 25 Jul 2014 23:07:13 +0000 (-0400)
+Subject: lua: add LDFLAGS to Solaris build
+X-Git-Url: https://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=c433918ec056f0b6a1b6ecbce01e03f62bc68ebf
+
+lua: add LDFLAGS to Solaris build
+
+Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+---
+
+diff --git a/contrib/src/lua/rules.mak b/contrib/src/lua/rules.mak
+index 64c7ad1..8be4af2 100644
+--- a/contrib/src/lua/rules.mak
++++ b/contrib/src/lua/rules.mak
+@@ -51,6 +51,11 @@ ifdef HAVE_DARWIN_OS
+ 		-e 's%LDFLAGS=%LDFLAGS=$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' \
+ 		-i.orig src/Makefile)
+ endif
++ifdef HAVE_SOLARIS
++	(cd $(UNPACK_DIR) && \
++	sed -e 's%LIBS="-ldl"$$%LIBS="-ldl" MYLDFLAGS="$(EXTRA_LDFLAGS)"%' \
++		-i.orig src/Makefile)
++endif
+ ifdef HAVE_WIN32
+ 	cd $(UNPACK_DIR) && sed -i.orig -e 's/lua luac/lua.exe luac.exe/' Makefile
+ endif

@@ -1,0 +1,23 @@
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Sat, 13 Jun 2015 16:15:06 +0000 (+0200)
+Subject: Lua.cli: improve lua 5.3 compatibility
+X-Git-Url: https://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=ebe6e7de1bbdf7181cdbeca61b5591f9b31ac711
+
+Lua.cli: improve lua 5.3 compatibility
+
+Close #14803
+---
+
+diff --git a/share/lua/intf/cli.lua b/share/lua/intf/cli.lua
+index e2fa856..d6d3001 100644
+--- a/share/lua/intf/cli.lua
++++ b/share/lua/intf/cli.lua
+@@ -343,7 +343,7 @@ function help(name,client,arg)
+                 end
+                 if val.args then str = str .. " " .. val.args end
+                 if #str%2 == 1 then str = str .. " " end
+-                str = str .. string.rep(" .",(width-(#str+#val.help)-1)/2)
++                str = str .. string.rep(" .",math.floor((width-(#str+#val.help)-1)/2))
+                 str = str .. string.rep(" ",width-#str-#val.help) .. val.help
+             end
+             client:append(str)

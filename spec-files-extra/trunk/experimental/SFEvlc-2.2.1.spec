@@ -142,6 +142,12 @@
 %define enable_matroska 1
 %define enable_libumem 1
 
+%define enable_vdpau 1
+#have no nvidia driver on the system, don't want vdpau, then set pkgtool --without-vdpau
+%if 0%{?_without_vdpau:1}
+%define enable_vdpau 0
+%endif
+
 ##NOTE## If you run into compile problems and "vlc-cache-gen" core dumps,
 #        then you *first* uninstall the old copy of vlc and re-try. 
 
@@ -399,11 +405,8 @@ Requires:      %{pnm_requires_pulseaudio}
 BuildRequires: %{pnm_buildrequires_SUNWltdl}
 Requires: %{pnm_requires_SUNWltdl}
 
-##TODO## make this a pnm macro
-%if %{os2nnn}
-BuildRequires: driver/graphics/nvidia
-%else
-BuildRequires: NVDAgraphics
+%if %{enable_vdpau}
+BuildRequires: %{pnm_buildrequires_driver_graphics_nvidia}
 %endif
 
 ##TODO## eventually can be omitted, or patched out of Makefile
@@ -577,8 +580,10 @@ fi
 # vdpau.pc is missing from driver/graphics/nvidia
 # C compiler flags for VDPAU, overriding pkg-config
 # linker flags for VDPAU, overriding pkg-config
+%if %{enable_vdpau}
 export VDPAU_CFLAGS="-I %{_includedir}"
 export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
+%endif
 
 %if %{oihipster}
 #try find symbol luaL_openlib
@@ -823,6 +828,7 @@ test -x $BASEDIR/lib/postrun || exit 0
 - change (Build)Requires to automake-115 or get aclocal-1.15 missing at "gmake all"
 - add dummy patch for strerror_l which is not in S11 OI151a8/a9
 - problem: lua5.x in OIH is too neew, vlc still wants (deprecated, then removed) symbol luaL_openlib
+- add switch to disable (Build)Requires on vdpau via NVIDIA driver and includes/libs
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel} SUNWdbus_devel, SUNWavahi_bridge_dsd_devel, SUNWlibgpg_error_devel, SUNWlibrsvg, SUNWlibgcrypt
   , %include packagenamacros.inc

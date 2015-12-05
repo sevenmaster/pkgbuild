@@ -1,0 +1,70 @@
+From: Shlomi Fish <shlomif@shlomifish.org>
+Date: Wed, 28 Oct 2015 21:36:38 +0000 (+0100)
+Subject: lua: fix HTTP loadstring in lua 5.2+
+X-Git-Url: https://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=58ad6be8c45f8c9586861c6d622097e1bc945df6
+
+lua: fix HTTP loadstring in lua 5.2+
+
+Close #14988
+
+Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+---
+
+diff --git a/share/lua/intf/http.lua b/share/lua/intf/http.lua
+index bc9c6e1..1cf8946 100644
+--- a/share/lua/intf/http.lua
++++ b/share/lua/intf/http.lua
+@@ -55,6 +55,14 @@ function escape(s)
+     return (string.gsub(s,"([%^%$%%%.%[%]%*%+%-%?])","%%%1"))
+ end
+ 
++function my_vlc_load(code, filename)
++    if _VERSION == "Lua 5.1" then
++        return loadstring(code, filename)
++    else
++        return load(code, filename)
++    end
++end
++
+ function process_raw(filename)
+     local input = io.open(filename):read("*a")
+     -- find the longest [===[ or ]=====] type sequence and make sure that
+@@ -77,7 +85,7 @@ function process_raw(filename)
+     io.write("\n")
+     end
+     --]]
+-    return assert(loadstring(code,filename))
++    return assert(my_vlc_load(code,filename))
+ end
+ 
+ function process(filename)
+diff --git a/share/lua/modules/sandbox.lua b/share/lua/modules/sandbox.lua
+index c85e483..8aba61f 100644
+--- a/share/lua/modules/sandbox.lua
++++ b/share/lua/modules/sandbox.lua
+@@ -34,7 +34,6 @@ local sandbox_blacklist = {
+     getmetatable = true,
+     load = true, -- Can be protected I guess
+     loadfile = true, -- Can be protected I guess
+-    loadstring = true, -- Can be protected I guess
+     rawequal = true,
+     rawget = true,
+     rawset = true,
+@@ -46,6 +45,10 @@ local sandbox_blacklist = {
+     debug = true,
+ }
+ 
++if _VERSION == "Lua 5.1" then
++    sandbox_blacklist["loadstring"] = true
++end
++
+ function readonly_table_proxy(name,src,blacklist)
+     if type(src)=="nil" then return end
+     if type(src)~="table" then error("2nd argument must be a table (or nil)") end
+@@ -117,4 +120,4 @@ function sandbox(func,override)
+         setfenv(func,_G)
+         return unpack(ret)
+     end
+-end
+\ No newline at end of file
++end
