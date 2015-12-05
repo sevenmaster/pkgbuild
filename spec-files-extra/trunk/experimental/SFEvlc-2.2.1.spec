@@ -285,6 +285,11 @@ Patch21:               vlc-21-211-filesystem.c-NAME_MAX.diff
 #Patch29:               vlc-29-215-allow-for-avcodec-56.diff
 #!%solaris12 !%oihipster
 Patch31:                vlc-31-221-make-vlc_strerror_l_a_dummy_missing_strerror_l_in_libc.diff
+#remove Patch32:		vlc-32-221-lua_add_LDFLAGS.diff
+Patch33:		vlc-33-221-lua5.3_luaL_checkint_deprecated.diff
+Patch34:		vlc-34-221-lua5.3_improve_compatibility_cli.lua.diff
+Patch35:		vlc-35-221-lua5.2+_fix_HTTP_localstring.diff
+Patch36:		vlc-36-221-vdpau_fix_func_pointer_array_size.diff
 
 #note: ts.c:2455:21: error: implicit declaration of function 'dvbpsi_SDTServiceAddDescriptor'
 #needs libdvbpsi >=0.1.6
@@ -443,6 +448,12 @@ xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 %if %( expr %{solaris12} '+' %{oihipster} '=' 0)
 %patch31 -p1
 %endif
+
+#remove %patch32 -p1
+%patch33 -p1
+%patch34 -p1
+%patch35 -p1
+%patch36 -p1
 
 perl -w -pi.bak -e "s,#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "#\!.*/bin/sh" {} \; -print | egrep -v "/libtool"`
 
@@ -821,6 +832,11 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Dec  5 2015 - Thomas Wagner
+- add selected patches from vlc-git repo: vlc-31-221-make-vlc_strerror_l_a_dummy_missing_strerror_l_in_libc.diff vlc-32-221-lua_add_LDFLAGS.diff vlc-33-221-lua5.3_luaL_checkint_deprecated.diff vlc-34-221-lua5.3_improve_compatibility_cli.lua.diff vlc-35-221-lua5.2+_fix_HTTP_localstring.diff
+- really do patch32 to patch35 in %prep
+- add patch vlc-36-221-vdpau_fix_func_pointer_array_size.diff
+- remove patch32 vlc-32-221-lua_add_LDFLAGS.diff again
 * Wed  2 Dec 2015 - Thomas Wagner
 - bump to 2.2.1
 - rework patch3 vlc-03-221-oss.diff
