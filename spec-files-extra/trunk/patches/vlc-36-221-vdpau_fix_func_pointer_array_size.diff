@@ -1,0 +1,21 @@
+From: Rémi Denis-Courmont <remi@remlab.net>
+Date: Mon, 16 Nov 2015 19:57:41 +0000 (+0200)
+Subject: vdpau: fix function pointers array size
+X-Git-Url: https://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=16c14ccedc8fe1f729517624784e38854bbf0eb7
+
+vdpau: fix function pointers array size
+---
+
+diff --git a/modules/hw/vdpau/vlc_vdpau.c b/modules/hw/vdpau/vlc_vdpau.c
+index 8d926be..3cc62f1 100644
+--- a/modules/hw/vdpau/vlc_vdpau.c
++++ b/modules/hw/vdpau/vlc_vdpau.c
+@@ -104,7 +104,7 @@ struct vdp_s
+     union
+     {
+         vdp_vtable_t vt;
+-        void *funcs[1];
++        void *funcs[sizeof (vdp_vtable_t) / sizeof (void *)];
+     }; /**< VDPAU function pointers table */
+     void *handle; /**< Shared library handle */
+ };
