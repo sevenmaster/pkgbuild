@@ -19,7 +19,7 @@
 Name:                    %{prefix_name}-client
 IPS_package_name:        database/postgres-92
 Summary:	         PostgreSQL client tools
-Version:                 9.2.2
+Version:                 %tarball_version
 License:		 PostgreSQL
 Group:		System/Databases
 Url:                     http://www.postgresql.org/
@@ -34,7 +34,6 @@ Distribution:            OpenSolaris
 Vendor:		         OpenSolaris Community
 SUNW_Basedir:            /usr
 SUNW_Copyright:          %{prefix_name}.copyright
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: %{pnm_buildrequires_SUNWlxsl}
 BuildRequires: %{pnm_buildrequires_SUNWlxml}
@@ -45,7 +44,7 @@ BuildRequires: %{pnm_buildrequires_SUNWcsl}
 BuildRequires: %{pnm_buildrequires_SUNWlibms}
 BuildRequires: %{pnm_buildrequires_SUNWgss}
 BuildRequires: %{pnm_buildrequires_SUNWTcl}
-BuildRequires: SFEeditline
+BuildRequires: library/libedit
 
 Requires: %{pnm_requires_SUNWlxsl}
 Requires: %{pnm_requires_SUNWlxml}
@@ -54,18 +53,27 @@ Requires: %{pnm_requires_SUNWcsl}
 Requires: %{pnm_requires_SUNWopenssl}
 Requires: %{pnm_requires_SUNWlibms}
 Requires: %{pnm_requires_SUNWgss}
-Requires: SFEeditline
+Requires: library/libedit
 
 Requires: %{prefix_name}-libs
 
 # OpenSolaris IPS Package Manifest Fields
 Meta(info.upstream):	 	PostgreSQL Global Development Group
 Meta(info.maintainer):	 	pkglabo.justplayer.com <pkgadmin@justplayer.com>
-# Meta(info.repository_url):	[open source code repository]
 Meta(info.classification):	System Database
 
 %description
-PostgreSQL is a powerful, open source object-relational database system. It has more than 15 years of active development and a proven architecture that has earned it a strong reputation for reliability, data integrity, and correctness. It runs on all major operating systems, including Linux, UNIX (AIX, BSD, HP-UX, SGI IRIX, Mac OS X, Solaris, Tru64), and Windows. It is fully ACID compliant, has full support for foreign keys, joins, views, triggers, and stored procedures (in multiple languages). It includes most SQL:2008 data types, including INTEGER, NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and TIMESTAMP. It also supports storage of binary large objects, including pictures, sounds, or video. It has native programming interfaces for C/C++, Java, .Net, Perl, Python, Ruby, Tcl, ODBC, among others, and exceptional documentation. 
+PostgreSQL is a powerful, open source object-relational database system. It has
+more than 15 years of active development and a proven architecture that has
+earned it a strong reputation for reliability, data integrity, and
+correctness. It runs on all major operating systems, including Linux, UNIX (AIX,
+BSD, HP-UX, SGI IRIX, Mac OS X, Solaris, Tru64), and Windows. It is fully ACID
+compliant, has full support for foreign keys, joins, views, triggers, and stored
+procedures (in multiple languages). It includes most SQL:2008 data types,
+including INTEGER, NUMERIC, BOOLEAN, CHAR, VARCHAR, DATE, INTERVAL, and
+TIMESTAMP. It also supports storage of binary large objects, including pictures,
+sounds, or video. It has native programming interfaces for C/C++, Java, .Net,
+Perl, Python, Ruby, Tcl, ODBC, among others, and exceptional documentation.
 
 %package -n %{prefix_name}-libs
 
@@ -147,10 +155,7 @@ cp -rp %{tarball_name}-%{tarball_version} %{tarball_name}-%{tarball_version}-64
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 cd %{tarball_name}-%{tarball_version}
 %ifarch sparc
@@ -159,13 +164,12 @@ cd %{tarball_name}-%{tarball_version}
 %define target i386-sun-solaris
 %endif
 
-export CCAS=/usr/bin/cc
+export CCAS=cc
 export CCASFLAGS=
 export CC=cc
-# export CFLAGS="%optflags"
 export CFLAGS="-i -xO4 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -lncurses"
-export LD_OPTIONS="-R/usr/sfw/lib:/usr/gnu/lib -L/usr/sfw/lib:/usr/gnu/lib"
+export LD_OPTIONS="-R/usr/gnu/lib -L/usr/gnu/lib"
 
 ./configure --prefix=%{_prefix}/%{major_version} \
             --exec-prefix=%{_prefix}/%{major_version} \
@@ -194,9 +198,9 @@ export LD_OPTIONS="-R/usr/sfw/lib:/usr/gnu/lib -L/usr/sfw/lib:/usr/gnu/lib"
             --with-gssapi \
             --enable-thread-safety \
             --enable-dtrace \
-            --with-includes=/usr/include:/usr/sfw/include:/usr/sfw/include:/usr/gnu/include \
+            --with-includes=/usr/include:/usr/gnu/include \
             --with-tclconfig=/usr/lib \
-            --with-libs=/usr/lib:/usr/sfw/lib:/usr/gnu/lib
+            --with-libs=/usr/lib:/usr/gnu/lib
 
 gmake -j$CPUS world
 
@@ -721,7 +725,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{prefix_name}-server
 %defattr (-, root, bin)
 
-%dir %attr (0755, root, sys) /usr
 %dir %attr (0755, root, sys) /usr/share
 %dir %attr (0755, root, bin) %{_prefix}
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}
