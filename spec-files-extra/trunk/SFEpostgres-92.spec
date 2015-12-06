@@ -11,19 +11,19 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.2.3
+%define tarball_version  9.2.14
 %define major_version	 9.2
 %define prefix_name      SFEpostgres-92
 %define _basedir         %{_prefix}/%{major_version}
 
-Name:                    %{prefix_name}-client
+Name:                    %prefix_name-client
 IPS_package_name:        database/postgres-92
 Summary:	         PostgreSQL client tools
 Version:                 %tarball_version
 License:		 PostgreSQL
-Group:		System/Databases
+Group:			 System/Databases
 Url:                     http://www.postgresql.org/
-Source:                  http://ftp.postgresql.org/pub/source/v%{tarball_version}/%{tarball_name}-%{tarball_version}.tar.bz2
+Source:                  http://ftp.postgresql.org/pub/source/v%tarball_version/%tarball_name-%tarball_version.tar.bz2
 Source1:		 postgres-92-postgres_92
 Source2:		 postgres-92-postgresql_92.xml
 Source3:		 postgres-92-auth_attr
@@ -33,7 +33,7 @@ Source6:		 postgres-92-user_attr
 Distribution:            OpenSolaris
 Vendor:		         OpenSolaris Community
 SUNW_Basedir:            /usr
-SUNW_Copyright:          %{prefix_name}.copyright
+SUNW_Copyright:          %prefix_name.copyright
 
 BuildRequires: %{pnm_buildrequires_SUNWlxsl}
 BuildRequires: %{pnm_buildrequires_SUNWlxml}
@@ -1021,6 +1021,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/chkpass--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/chkpass.control
 %{_prefix}/%{major_version}/share/extension/citext--1.0.sql
+%{_prefix}/%{major_version}/share/extension/citext--1.0--1.1.sql
+%{_prefix}/%{major_version}/share/extension/citext--1.1--1.0.sql
+%{_prefix}/%{major_version}/share/extension/citext--1.1.sql
 %{_prefix}/%{major_version}/share/extension/citext--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/citext.control
 %{_prefix}/%{major_version}/share/extension/cube--1.0.sql
@@ -1151,6 +1154,8 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumlo
 
 %changelog
+* Fri Nov 27 EST 2015 Alex Viskovatoff <herzen@imap.cc>
+- update to 9.2.14
 * Thu Feb  7 JST 2013 TAKI, Yasushi <taki@justplayer.com>
 - bump to 9.2.3
 * Thu Jan 17 PST 2013 TAKI, Yasushi <taki@justplayer.com>
