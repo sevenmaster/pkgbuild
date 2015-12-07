@@ -136,13 +136,16 @@
 #
 
 %define debug_build 1
+%define vlc_debug_flags -gdwarf-2
 
 ##TODO## re-enable and test taglib later
 %define enable_taglib 0
 %define enable_matroska 1
 %define enable_libumem 1
+%define enable_0at0_so_1 0
 
 %define enable_vdpau 1
+#default is enable_vdpau 1, but can be disabled:
 #have no nvidia driver on the system, don't want vdpau, then set pkgtool --without-vdpau
 %if 0%{?_without_vdpau:1}
 %define enable_vdpau 0
@@ -289,7 +292,9 @@ Patch31:                vlc-31-221-make-vlc_strerror_l_a_dummy_missing_strerror_
 Patch33:		vlc-33-221-lua5.3_luaL_checkint_deprecated.diff
 Patch34:		vlc-34-221-lua5.3_improve_compatibility_cli.lua.diff
 Patch35:		vlc-35-221-lua5.2+_fix_HTTP_localstring.diff
-Patch36:		vlc-36-221-vdpau_fix_func_pointer_array_size.diff
+##raus##Patch36:		vlc-36-221-vdpau_fix_func_pointer_array_size.diff
+#try this
+Patch37:                vlc-37-221-vdpau.c-git-20151206.diff
 
 #note: ts.c:2455:21: error: implicit declaration of function 'dvbpsi_SDTServiceAddDescriptor'
 #needs libdvbpsi >=0.1.6
@@ -453,7 +458,9 @@ xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 %patch33 -p1
 %patch34 -p1
 %patch35 -p1
-%patch36 -p1
+#%patch36 -p1
+#try this
+%patch37 -p1
 
 perl -w -pi.bak -e "s,#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "#\!.*/bin/sh" {} \; -print | egrep -v "/libtool"`
 
@@ -525,7 +532,7 @@ export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
 export CFLAGS="${CFLAGS} ${EXTRA_CFLAGS}"
 
 export CFLAGS="${CFLAGS} -mmmx"
-export CPPFLAGS="${CPPFLAGS} -mmmx"
+export CXXFLAGS="${CXXFLAGS} -mmmx"
 
 #on S11 errors in modules/video_output/opencl.c
 #discovered with vlc-2.1.1
@@ -536,9 +543,13 @@ export CFLAGS="${CFLAGS} -DGL_GLEXT_PROTOTYPES"
 
 %if %{debug_build}
 ##TODO## might need to filter out "-O<n>" flags to switch off optimization and help switch on debuging
-export CFLAGS="$CFLAGS -g"
+export CFLAGS="$CFLAGS %{vlc_debug_flags}"
+export CXXLAGS="$CXXFLAGS %{vlc_debug_flags}"
+export CFLAGS_plugin="-gdwarf-2"
+export CXXLAGS_plugin="-gdwarf-2"
 %else
 export CFLAGS="$CFLAGS -O4"
+export CXXLAGS="$CXXLAGS -O4"
 %endif
 
 export LD=/opt/dtbld/bin/ld-wrapper
@@ -552,7 +563,9 @@ export PATH=`pwd`/localbin:$PATH
 [ -s localbin/grep ] || ln -s /usr/gnu/bin/grep localbin/grep
 [ -s localbin/ar ] || ln -s /usr/bin/ar localbin/ar
 
+%if %{enable_0at0_so_1}
 export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags"
+%endif
 
 ##TODO## clean this up once we are at vlc 2.1.x (can use newer libavcodec, ...)
 #we can't use ffmpeg too new in older vlc versions (before 2.1.x)
@@ -592,7 +605,7 @@ fi
 # C compiler flags for VDPAU, overriding pkg-config
 # linker flags for VDPAU, overriding pkg-config
 %if %{enable_vdpau}
-export VDPAU_CFLAGS="-I %{_includedir}"
+export VDPAU_CFLAGS="-I %{_includedir} %{vlc_debug_flags}"
 export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
 %endif
 
@@ -600,14 +613,9 @@ export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
 #try find symbol luaL_openlib
 #export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA -L/usr/lib -R/usr/lib"
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
-export CFLAGS="$CFLAGS"
-export CXXFLAGS="$CXXFLAGS"
 #export LD="/opt/dtbld/bin/ld-wrapper"
 #export LD_ALTEXEC="/bin/ld"
-#export LDFLAGS_plugin="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
 #export LDFLAGS_vlc="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
-#export LDFLAGS_plugin="--Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect"
-export LDFLAGS_plugin="-z ignore -z combreloc -Bdirect -z rescan"
 export LUA_LIBS="-z ignore -z combreloc -Bdirect -z rescan -llua"
 export LD=/bin/ld
 export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
@@ -661,6 +669,10 @@ echo "CPPFLAGS $CPPFLAGS"
 echo "LDFLAGS $LDFLAGS"
 echo "LD      $LD"
 echo "LD_ALTEXEC $LD_ALTEXEC"
+echo "debugbuild $LD_ALTEXEC"
+echo "debug_build %{debug_build}    (on=1 off=0)"
+echo "vlc_debug_flags %{vlc_debug_flags}"
+
 
 autoconf
 ##TODO## fix jpeg!
@@ -832,6 +844,12 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Dec  7 2015 - Thomas Wagner
+- add Patch37 vlc-37-221-vdpau.c-git-20151206.diff - try the git version to see if calls to vdpau stop core dumping
+- enable -gdwarf-2 to see where vdpau calls core dump, add debug flags as well to VDPAU_CFLAGS
+- add -mmmx to CXXFLAGS instead of CPPFLAGS
+- disable linking against enable_0at0_so_1, to be impoved: disable only for osdistro which don't core dump on sprintf null pointer
+- remove LDFLAGS_plugin as it is not used at all
 * Sat Dec  5 2015 - Thomas Wagner
 - add selected patches from vlc-git repo: vlc-31-221-make-vlc_strerror_l_a_dummy_missing_strerror_l_in_libc.diff vlc-32-221-lua_add_LDFLAGS.diff vlc-33-221-lua5.3_luaL_checkint_deprecated.diff vlc-34-221-lua5.3_improve_compatibility_cli.lua.diff vlc-35-221-lua5.2+_fix_HTTP_localstring.diff
 - really do patch32 to patch35 in %prep
