@@ -14,6 +14,10 @@ Group:		System/Databases
 URL:		http://www.pgadmin.org
 Version:	1.20.0
 Source:		http://ftp.postgresql.org/pub/%srcname/release/v%version/src/%srcname-%version.tar.gz
+# The following three files were obtained from oi-userland
+Source1:	%srcname.desktop
+Source2:	pgadmin.svg
+Source3:	%srcname.1
 License:	PostgreSQL
 SUNW_Copyright: %srcname.copyright
 
@@ -40,12 +44,21 @@ make -j$CPUS
 %install
 rm -rf %buildroot
 make install DESTDIR=%buildroot
+mkdir -p %buildroot%_datadir/applications
+mkdir %buildroot%_datadir/pixmaps
+mkdir -p %buildroot%_datadir/man/man1
+cp %SOURCE1 %buildroot%_datadir/applications
+cp %SOURCE2 %buildroot%_datadir/pixmaps
+cp %SOURCE3 %buildroot%_datadir/man/man1
 
 %files
 %defattr (-, root, bin)
 %_bindir/%srcname
 %dir %attr (0755, root, sys) %_datadir
+%_mandir
 %defattr (-, root, other)
+%_datadir/applications/%srcname.desktop
+%_datadir/pixmaps/pgadmin.svg
 %_datadir/%srcname
 
 %changelog
