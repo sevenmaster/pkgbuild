@@ -11,49 +11,35 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.2.14
-%define major_version	 9.2
-%define prefix_name      SFEpostgres-92
+%define tarball_version  9.4.5
+%define major_version	 9.4
+%define prefix_name      SFEpostgres-94
 %define _basedir         %{_prefix}/%{major_version}
 
 Name:                    %prefix_name-client
-IPS_package_name:        database/postgres-92
+IPS_package_name:        database/postgres-94
 Summary:	         PostgreSQL client tools
 Version:                 %tarball_version
 License:		 PostgreSQL
 Group:			 System/Databases
 Url:                     http://www.postgresql.org/
 Source:                  http://ftp.postgresql.org/pub/source/v%tarball_version/%tarball_name-%tarball_version.tar.bz2
-Source1:		 postgres-92-postgres_92
-Source2:		 postgres-92-postgresql_92.xml
+Source1:		 postgres-94-postgres_94
+Source2:		 postgres-94-postgresql_94.xml
 Source3:		 postgres-92-auth_attr
 Source4:		 postgres-92-prof_attr
-Source5:		 postgres-92-exec_attr
+Source5:		 postgres-94-exec_attr
 Source6:		 postgres-92-user_attr
 Distribution:            OpenSolaris
 Vendor:		         OpenSolaris Community
 SUNW_Basedir:            /usr
-SUNW_Copyright:          %prefix_name.copyright
+SUNW_Copyright:          SFEpostgres-92.copyright
 
-BuildRequires: %{pnm_buildrequires_SUNWlxsl}
-BuildRequires: %{pnm_buildrequires_SUNWlxml}
-BuildRequires: %{pnm_buildrequires_SUNWgss}
-BuildRequires: %{pnm_buildrequires_SUNWopenssl}
-BuildRequires: %{pnm_buildrequires_SUNWzlib}
-BuildRequires: %{pnm_buildrequires_SUNWcsl}
-BuildRequires: %{pnm_buildrequires_SUNWlibms}
-BuildRequires: %{pnm_buildrequires_SUNWgss}
-BuildRequires: %{pnm_buildrequires_SUNWTcl}
 BuildRequires: library/libedit
-
-Requires: %{pnm_requires_SUNWlxsl}
-Requires: %{pnm_requires_SUNWlxml}
-Requires: %{pnm_requires_SUNWzlib}
-Requires: %{pnm_requires_SUNWcsl}
-Requires: %{pnm_requires_SUNWopenssl}
-Requires: %{pnm_requires_SUNWlibms}
-Requires: %{pnm_requires_SUNWgss}
-Requires: library/libedit
+#BuildRequires: consolidation/sfw/sfw-incorporation
+#BuildRequires: consolidation/osnet/osnet-incorporation
+BuildRequires: library/security/openssl
+BuildRequires: runtime/tcl-8
 
 Requires: %{prefix_name}-libs
 
@@ -77,70 +63,42 @@ Perl, Python, Ruby, Tcl, ODBC, among others, and exceptional documentation.
 
 %package -n %{prefix_name}-libs
 
-IPS_package_name: database/postgres-92/library
+IPS_package_name: database/postgres-94/library
 Summary: PostgreSQL client libraries
-Requires: %{pnm_requires_SUNWlibms}
-Requires: %{pnm_requires_SUNWcsl}
 
 %package -n %{prefix_name}-pl
-IPS_package_name: database/postgres-92/language-bindings
+IPS_package_name: database/postgres-94/language-bindings
 Summary: PostgreSQL additional Perl, Python & TCL server procedural languages
 
-Requires: %pnm_requires_perl_default
-Requires: runtime/python-26
-Requires: %{pnm_requires_SUNWlibms}
-Requires: %{pnm_requires_SUNWcsl}
-Requires: %{pnm_requires_SUNWTcl}
 Requires: %{name}
 Requires: %{prefix_name}-libs
 
 %package -n %{prefix_name}-devel
-IPS_package_name: database/postgres-92/developer
+IPS_package_name: database/postgres-94/developer
 Summary: PostgreSQL development tools and header files
 
-Requires: %{pnm_requires_SUNWlxsl}
-Requires: %{pnm_requires_SUNWlxml}
-Requires: %{pnm_requires_SUNWgss}
-Requires: %{pnm_requires_SUNWopenssl}
-Requires: %{pnm_requires_SUNWcsl}
-Requires: %{pnm_requires_SUNWzlib}
-Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
 Requires: %{prefix_name}-libs
 
 %package -n %{prefix_name}-docs
-IPS_package_name: database/postgres-92/documentation
+IPS_package_name: database/postgres-94/documentation
 Summary: PostgreSQL documentation and man pages
 
 %package -n %{prefix_name}-server
-IPS_package_name: service/database/postgres-92
+IPS_package_name: service/database/postgres-94
 Summary: PostgreSQL database server
 
 %define _basedir         /
 SUNW_Basedir:            %{_basedir}
 
-Requires: %{pnm_requires_SUNWlxsl}
-Requires: %{pnm_requires_SUNWlxml}
-Requires: %{pnm_requires_SUNWgss}
-Requires: %{pnm_requires_SUNWopenssl}
-Requires: %{pnm_requires_SUNWcsl}
-Requires: %{pnm_requires_SUNWzlib}
-Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
 Requires: %{prefix_name}-libs
 Requires: SFEpostgres-common
 
 %package -n %{prefix_name}-contrib
-IPS_package_name: database/postgres-92/contrib
+IPS_package_name: database/postgres-94/contrib
 Summary: PostgreSQL community contributed tools not part of core product
 
-Requires: %{pnm_requires_SUNWlxsl}
-Requires: %{pnm_requires_SUNWlxml}
-Requires: %{pnm_requires_SUNWgss}
-Requires: %{pnm_requires_SUNWopenssl}
-Requires: %{pnm_requires_SUNWcsl}
-Requires: %{pnm_requires_SUNWzlib}
-Requires: %{pnm_requires_SUNWlibms}
 Requires: %{name}
 Requires: %{prefix_name}-libs
 
@@ -276,38 +234,30 @@ mkdir -p $RPM_BUILD_ROOT%{_var_prefix}/%{major_version}/data
 mkdir -p $RPM_BUILD_ROOT%{_var_prefix}/%{major_version}/data_64
 
 mkdir -p $RPM_BUILD_ROOT/lib/svc/method/
-cp %{SOURCE1} $RPM_BUILD_ROOT/lib/svc/method/postgres_92
-chmod +x $RPM_BUILD_ROOT/lib/svc/method/postgres_92
+cp %{SOURCE1} $RPM_BUILD_ROOT/lib/svc/method/postgres_94
+chmod +x $RPM_BUILD_ROOT/lib/svc/method/postgres_94
 mkdir -p $RPM_BUILD_ROOT/var/svc/manifest/application/database/
-cp %{SOURCE2} $RPM_BUILD_ROOT/var/svc/manifest/application/database/postgresql_92.xml
+cp %{SOURCE2} $RPM_BUILD_ROOT/var/svc/manifest/application/database/postgresql_94.xml
 
 # attribute
 mkdir -p $RPM_BUILD_ROOT/etc/security/auth_attr.d/
-cp %{SOURCE3} $RPM_BUILD_ROOT/etc/security/auth_attr.d/service\%2Fdatabase\%2Fpostgres-92
+cp %{SOURCE3} $RPM_BUILD_ROOT/etc/security/auth_attr.d/service\%2Fdatabase\%2Fpostgres-94
 mkdir -p $RPM_BUILD_ROOT/etc/security/exec_attr.d/
-cp %{SOURCE4} $RPM_BUILD_ROOT/etc/security/exec_attr.d/service\%2Fdatabase\%2Fpostgres-92
+cp %{SOURCE4} $RPM_BUILD_ROOT/etc/security/exec_attr.d/service\%2Fdatabase\%2Fpostgres-94
 mkdir -p $RPM_BUILD_ROOT/etc/security/prof_attr.d/
-cp %{SOURCE5} $RPM_BUILD_ROOT/etc/security/prof_attr.d/service\%2Fdatabase\%2Fpostgres-92
+cp %{SOURCE5} $RPM_BUILD_ROOT/etc/security/prof_attr.d/service\%2Fdatabase\%2Fpostgres-94
 mkdir -p $RPM_BUILD_ROOT/etc/user_attr.d/
-cp %{SOURCE5} $RPM_BUILD_ROOT/etc/user_attr.d/service\%2Fdatabase\%2Fpostgres-92
+cp %{SOURCE5} $RPM_BUILD_ROOT/etc/user_attr.d/service\%2Fdatabase\%2Fpostgres-94
 
 
 mkdir -p $RPM_BUILD_ROOT/usr/share
 
 # delete amd64
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libecpg.a
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libpq.a
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libpgtypes.a
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/amd64
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libpgport.a
-rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/libecpg_compat.a
+rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/lib/amd64/*.a
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
 # make symbolic link
-
-cd $RPM_BUILD_ROOT/%{_prefix}/%{major_version}/bin/
-[ -r 64 ] || ln -fs amd64 64
 
 mkdir -p $RPM_BUILD_ROOT/usr/bin/amd64
 cd $RPM_BUILD_ROOT/usr/bin/
@@ -345,6 +295,10 @@ ln -fs ../postgres/%{major_version}/bin/psql .
 ln -fs ../postgres/%{major_version}/bin/reindexdb .
 ln -fs ../postgres/%{major_version}/bin/vacuumdb .
 ln -fs ../postgres/%{major_version}/bin/vacuumlo .
+ln -fs ../postgres/%{major_version}/bin/pg_xlogdump
+ln -fs ../postgres/%{major_version}/bin/pg_isready
+ln -fs ../postgres/%{major_version}/bin/pg_recvlogical
+
 
 cd $RPM_BUILD_ROOT/usr/bin/amd64
 ln -fs ../postgres/%{major_version}/bin/amd64/clusterdb .
@@ -381,6 +335,9 @@ ln -fs ../postgres/%{major_version}/bin/amd64/psql .
 ln -fs ../postgres/%{major_version}/bin/amd64/reindexdb .
 ln -fs ../postgres/%{major_version}/bin/amd64/vacuumdb .
 ln -fs ../postgres/%{major_version}/bin/amd64/vacuumlo .
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_xlogdump
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_isready
+ln -fs ../postgres/%{major_version}/bin/amd64/pg_recvlogical
 
 # plpython is out in postgresql 9.2
 rm -f $RPM_BUILD_ROOT%{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/plpython-%{major_version}.mo
@@ -401,7 +358,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share/locale
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share/locale/*
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES
-# %{_prefix}/%{major_version}/bin/64
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/clusterdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/createdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/createlang
@@ -418,6 +374,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/vacuumdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/reindexdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/psql
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_xlogdump
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_isready
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_recvlogical
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/psql
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/clusterdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/createdb
@@ -434,6 +393,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_test_timing
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/reindexdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/vacuumdb
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_xlogdump
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_isready
+%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/pg_recvlogical
+#%attr (0555, root, bin) %{_prefix}/%{major_version}/bin/64
 
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/clusterdb
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/createdb
@@ -450,6 +413,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_test_timing
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumdb
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/reindexdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_xlogdump
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_isready
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/pg_recvlogical
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/psql
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/psql
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/clusterdb
@@ -467,6 +433,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_test_timing
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/reindexdb
 %attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/vacuumdb
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_xlogdump
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_isready
+%attr (0555, root, bin) %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/pg_recvlogical
 
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/psqlrc.sample
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/initdb-%{major_version}.mo
@@ -483,11 +452,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{prefix_name}-libs
 %defattr (-, root, bin)
 
-%dir %attr (0755, root, bin) %{_prefix}/%{major_version}/bin
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/lib
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64
-%attr (0755, root, bin) %{_prefix}/%{major_version}/bin/64
-#%dir %attr (0755, root, sys) /usr/share
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share/locale
 %dir %attr (0755, root, other) %{_prefix}/%{major_version}/share/locale/*
@@ -499,39 +465,34 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/libecpg.a
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/libpgtypes.a
 %attr (0555, root, bin) %{_prefix}/%{major_version}/lib/libecpg_compat.a
+%attr (0555, root, bin) %{_prefix}/%{major_version}/lib/libpgcommon.a
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/ecpg-%{major_version}.mo
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/ecpglib6-%{major_version}.mo
 %attr (0644, root, other) %{_prefix}/%{major_version}/share/locale/*/LC_MESSAGES/libpq5-%{major_version}.mo
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/auth_delay.so
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/dummy_seclabel.so
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/file_fdw.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg.so.6
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg.so.6.4
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpq.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpq.so.5.5
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpgtypes.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg_compat.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg_compat.so.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg_compat.so.3.4
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpgtypes.so.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpgtypes.so.3.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpq.so.5
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpq.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libpgtypes.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/libecpg_compat.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/pg_prewarm.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/postgres_fdw.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/test_decoding.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/test_shm_mq.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/worker_spi.so
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/auth_delay.so
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/dummy_seclabel.so
 %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/file_fdw.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg.so.6
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg.so.6.4
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg_compat.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg_compat.so.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg_compat.so.3.4
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpgtypes.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpgtypes.so.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpgtypes.so.3.3
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so.5
-%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so.5.5
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libecpg_compat.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpgtypes.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/libpq.so*
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/pg_prewarm.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/postgres_fdw.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/test_decoding.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/test_shm_mq.so
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/worker_spi.so
  
 %files -n %{prefix_name}-pl
 %defattr (-, root, bin)
@@ -631,6 +592,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/server/snowball/libstemmer
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/server/rewrite
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/server/datatype
+%dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/server/common
+%dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/server/common/*
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/include/libpq
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/lib
 %dir %attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64
@@ -714,6 +677,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0644, root, bin) %{_prefix}/%{major_version}/include/server/datatype/timestamp.h
 %attr (0644, root, bin) %{_prefix}/%{major_version}/include/libpq/*.h
 
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/amd64/pkgconfig
+%attr (0755, root, bin) %{_prefix}/%{major_version}/lib/pkgconfig
+
 %files -n %{prefix_name}-docs
 %defattr (-, root, bin)
 
@@ -774,12 +740,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/tsearch_data/synonym_sample.syn
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/tsearch_data/thesaurus_sample.ths
 %attr (0444, root, bin) %{_prefix}/%{major_version}/share/tsearch_data/turkish.stop
-%attr (0555, root, bin) /lib/svc/method/postgres_92
-%attr (0644, root, sys) /etc/security/auth_attr.d/service\%2Fdatabase\%2Fpostgres-92
-%attr (0644, root, sys) /etc/security/exec_attr.d/service\%2Fdatabase\%2Fpostgres-92
-%attr (0644, root, sys) /etc/security/prof_attr.d/service\%2Fdatabase\%2Fpostgres-92
-%attr (0644, root, sys) /etc/user_attr.d/service\%2Fdatabase\%2Fpostgres-92
-%class(manifest) %attr (0444, root, sys) /var/svc/manifest/application/database/postgresql_92.xml
+%attr (0555, root, bin) /lib/svc/method/postgres_94
+%attr (0644, root, sys) /etc/security/auth_attr.d/service\%2Fdatabase\%2Fpostgres-94
+%attr (0644, root, sys) /etc/security/exec_attr.d/service\%2Fdatabase\%2Fpostgres-94
+%attr (0644, root, sys) /etc/security/prof_attr.d/service\%2Fdatabase\%2Fpostgres-94
+%attr (0644, root, sys) /etc/user_attr.d/service\%2Fdatabase\%2Fpostgres-94
+%class(manifest) %attr (0444, root, sys) /var/svc/manifest/application/database/postgresql_94.xml
 
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/initdb
 %attr (0555, root, bin) %{_prefix}/%{major_version}/bin/amd64/pg_controldata
@@ -1032,8 +998,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/cube--1.0.sql
 %{_prefix}/%{major_version}/share/extension/cube--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/cube.control
-%{_prefix}/%{major_version}/share/extension/dblink--1.0.sql
-%{_prefix}/%{major_version}/share/extension/dblink--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/dblink--*.sql
 %{_prefix}/%{major_version}/share/extension/dblink.control
 %{_prefix}/%{major_version}/share/extension/dict_int--1.0.sql
 %{_prefix}/%{major_version}/share/extension/dict_int--unpackaged--1.0.sql
@@ -1049,9 +1014,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/fuzzystrmatch--1.0.sql
 %{_prefix}/%{major_version}/share/extension/fuzzystrmatch--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/fuzzystrmatch.control
-%{_prefix}/%{major_version}/share/extension/hstore--1.1.sql
-%{_prefix}/%{major_version}/share/extension/hstore--1.0--1.1.sql
-%{_prefix}/%{major_version}/share/extension/hstore--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/hstore--*.sql
 %{_prefix}/%{major_version}/share/extension/hstore.control
 %{_prefix}/%{major_version}/share/extension/insert_username--1.0.sql
 %{_prefix}/%{major_version}/share/extension/insert_username--unpackaged--1.0.sql
@@ -1074,8 +1037,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/moddatetime--1.0.sql
 %{_prefix}/%{major_version}/share/extension/moddatetime--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/moddatetime.control
-%{_prefix}/%{major_version}/share/extension/pageinspect--1.0.sql
-%{_prefix}/%{major_version}/share/extension/pageinspect--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pageinspect--*.sql
 %{_prefix}/%{major_version}/share/extension/pageinspect.control
 %{_prefix}/%{major_version}/share/extension/pg_buffercache--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pg_buffercache--unpackaged--1.0.sql
@@ -1083,21 +1045,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/pg_freespacemap--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pg_freespacemap--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pg_freespacemap.control
-%{_prefix}/%{major_version}/share/extension/pg_stat_statements--1.1.sql
-%{_prefix}/%{major_version}/share/extension/pg_stat_statements--1.0--1.1.sql
-%{_prefix}/%{major_version}/share/extension/pg_stat_statements--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pg_stat_statements--*.sql
 %{_prefix}/%{major_version}/share/extension/pg_stat_statements.control
-%{_prefix}/%{major_version}/share/extension/pg_trgm--1.0.sql
-%{_prefix}/%{major_version}/share/extension/pg_trgm--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pg_trgm--*.sql
 %{_prefix}/%{major_version}/share/extension/pg_trgm.control
-%{_prefix}/%{major_version}/share/extension/pgcrypto--1.0.sql
-%{_prefix}/%{major_version}/share/extension/pgcrypto--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pgcrypto--*.sql
 %{_prefix}/%{major_version}/share/extension/pgcrypto.control
-%{_prefix}/%{major_version}/share/extension/pgrowlocks--1.0.sql
-%{_prefix}/%{major_version}/share/extension/pgrowlocks--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pgrowlocks--*.sql
 %{_prefix}/%{major_version}/share/extension/pgrowlocks.control
-%{_prefix}/%{major_version}/share/extension/pgstattuple--1.0.sql
-%{_prefix}/%{major_version}/share/extension/pgstattuple--unpackaged--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pgstattuple--*.sql
 %{_prefix}/%{major_version}/share/extension/pgstattuple.control
 %{_prefix}/%{major_version}/share/extension/refint--1.0.sql
 %{_prefix}/%{major_version}/share/extension/refint--unpackaged--1.0.sql
@@ -1128,6 +1084,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/xml2.control
 %{_prefix}/%{major_version}/share/extension/tcn--1.0.sql
 %{_prefix}/%{major_version}/share/extension/tcn.control
+%{_prefix}/%{major_version}/share/extension/worker_spi--1.0.sql
+%{_prefix}/%{major_version}/share/extension/test_shm_mq--1.0.sql
+%{_prefix}/%{major_version}/share/extension/postgres_fdw.control
+%{_prefix}/%{major_version}/share/extension/test_shm_mq.control
+%{_prefix}/%{major_version}/share/extension/postgres_fdw--1.0.sql
+%{_prefix}/%{major_version}/share/extension/pg_prewarm.control
+%{_prefix}/%{major_version}/share/extension/pg_prewarm--1.0.sql
+%{_prefix}/%{major_version}/share/extension/worker_spi.control
 %{_prefix}/%{major_version}/share/tsearch_data/xsyn_sample.rules
 %{_prefix}/%{major_version}/share/tsearch_data/unaccent.rules
 %{_prefix}/%{major_version}/bin/oid2name
@@ -1157,6 +1121,8 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumlo
 
 %changelog
+* Sun Dec  7 2015 - Alex Viskovatoff <viskov@imap.cc>
+- Initial spec, adapted from SFEpostgres-92.spec
 * Fri Nov 27 EST 2015 Alex Viskovatoff <herzen@imap.cc>
 - update to 9.2.14
 * Thu Feb  7 JST 2013 TAKI, Yasushi <taki@justplayer.com>
