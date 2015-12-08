@@ -84,7 +84,7 @@ export CXX=g++
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 %ifarch amd64 sparcv9
 %wxwidgets_64.install -d %name-%version/%_arch64
 %endif
@@ -93,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %clean
-rm -rf %{name}-%{version}
+rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
