@@ -1,0 +1,12 @@
+--- lib/saslutil.c.orig	2013-01-09 10:29:41.709260390 +0900
++++ lib/saslutil.c	2013-01-09 10:39:31.612293674 +0900
+@@ -80,7 +80,8 @@
+  * sasl_erasebuffer
+  */
+ 
+-#ifdef sun
++//#ifdef sun
++#ifndef HAVE_GETHOSTNAME
+ /* gotta define gethostname ourselves on suns */
+ extern int gethostname(char *, int);
+ #endif
