@@ -63,5 +63,5 @@ rm -rf %buildroot
 %_datadir/pixmaps/%srcname.png
 
 %changelog
-* Fri Dec  5 2015 - Alex Viskovatoff <viskov@imap.cc>
+* Fri Dec  5 2015 - Alex Viskovatoff <herzen@imap.cc>
 - Initial spec

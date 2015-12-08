@@ -1121,7 +1121,7 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/amd64/vacuumlo
 
 %changelog
-* Sun Dec  7 2015 - Alex Viskovatoff <viskov@imap.cc>
+* Sun Dec  7 2015 - Alex Viskovatoff <herzen@imap.cc>
 - Initial spec, adapted from SFEpostgres-92.spec
 * Fri Nov 27 EST 2015 Alex Viskovatoff <herzen@imap.cc>
 - update to 9.2.14
