@@ -1,8 +1,6 @@
 #
 # spec file for package SFEkchmviewer
 #
-# includes module: kchmviewer
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -10,10 +8,12 @@
 %define srcname kchmviewer
 
 Name:		SFEkchmviewer
+IPS_package_name: desktop/kchmviewer
 Summary:	CHM help file viewer based on Qt
-URL:		http://www.kchmviewer.net
+URL:		http://www.ulduzsoft.com/linux/kchmviewer/
+Group:		Applications/Office
 Vendor:		George Yunaev
-Version:	5.2
+Version:	7.5
 License:	GPLv3+
 SUNW_Copyright:	kchmviewer.copyright
 Source:		http://downloads.sourceforge.net/%srcname/%srcname-%version.tar.gz
@@ -23,6 +23,7 @@ BuildRoot:	%_tmppath/%name-%version-build
 
 BuildRequires: SFEqt-gpp-devel
 BuildRequires: SFEchmlib
+BuildRequires: SFElibzip
 
 Requires: SFEqt-gpp
 Requires: SFEchmlib
@@ -30,39 +31,45 @@ Requires: SUNWzlib
 
 
 %prep
-gtar -xzf %SOURCE0
-rm -fr %srcname-%version
-mv build-%version %srcname-%version
+%setup -q -n %srcname-%version
 
 %build
-cd %srcname-%version
-
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+echo "INCLUDEPATH += /usr/lib/libzip/include" >> lib/libebook/libebook.pro
+gsed -i 's/linux-g++\*:/solaris-g++\*:/' src/src.pro
 export PATH=/usr/g++/bin:$PATH
 export QMAKESPEC=solaris-g++
 export QTDIR=/usr/g++
-
 qmake
 # Parallelism breaks with 16 cpus, so don't use more than 4
 gmake -j$(test $CPUS -ge 4 && echo 4 || echo $CPUS) PREFIX=%_basedir
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
-ginstall -d $RPM_BUILD_ROOT/%_bindir
-ginstall -t $RPM_BUILD_ROOT/%_bindir %srcname-%version/bin/kchmviewer
+ginstall -d %buildroot%_bindir \
+	    %buildroot%_datadir/applications %buildroot%_datadir/pixmaps
+ginstall -t %buildroot%_bindir bin/%srcname
+ginstall -t %buildroot%_datadir/applications packages/%srcname.desktop
+ginstall -t %buildroot%_datadir/pixmaps packages/%srcname.png
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files
 %defattr (-, root, bin)
 %_bindir/%srcname
+%dir %attr (0755, root, sys) %_datadir
+%defattr (-, root, other)
+%_datadir/applications/%srcname.desktop
+%_datadir/pixmaps/%srcname.png
 
 
 %changelog
+* Fri Dec 11 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 7.5 (now reads epubs)
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>
 - added License and SUNW_Copyright tags
 * Wed Apr 13 2011 - Alex Viskovatoff

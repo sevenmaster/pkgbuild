@@ -10,10 +10,10 @@
 
 Name:		SFElibzip
 License:	BSD
-Version:	0.10.1
+Version:	1.0.1
 Summary:        C library for reading, creating, and modifying zip archives
 URL:            http://www.nih.at/libzip/index.html
-Source:         http://www.nih.at/libzip/libzip-%{version}.tar.bz2
+Source:         http://www.nih.at/libzip/libzip-%{version}.tar.xz
 
 
 %description
