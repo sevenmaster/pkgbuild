@@ -23,7 +23,7 @@ Summary:        C library for reading, creating, and modifying zip archives
 Group:		Applications/System Utilities
 Version:	%{libzip.version}
 URL:            http://www.nih.at/libzip/index.html
-Source:         http://www.nih.at/libzip/libzip-%{version}.tar.bz2
+Source:         http://www.nih.at/libzip/libzip-%{version}.tar.xz
 License:        BSD
 SUNW_Copyright:	BSDlicense.copyright
 SUNW_BaseDir:	%{_basedir}
@@ -84,7 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch amd64 sparcv9
 %{_bindir}/%{base_isa}/*
 %{_bindir}/%{_arch64}/*
-%hard %{_bindir}/ziptorrent
 %hard %{_bindir}/zipmerge
 %hard %{_bindir}/zipcmp
 #those are symlinks to the binaries above
@@ -118,5 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Dec 11 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 1.0.1
 * Sun Feb 10 2013 - Thomas Wagner
 - initial spec
