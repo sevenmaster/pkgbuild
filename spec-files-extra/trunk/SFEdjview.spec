@@ -1,12 +1,9 @@
 #
 # spec file for package SFEdjview
 #
-# includes module: djview
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
-%define _gpp /usr/gnu/bin/g++
 %include base.inc
 %define  _cxx_libdir /usr/g++/lib
 %define srcname djview
@@ -19,10 +16,9 @@ Group:		Applications/Office
 Vendor:		Léon Bottou
 License:	GPLv2+
 SUNW_Copyright:	djview.copyright
-Version:	4.9
+Version:	4.10
 Source:		%sf_download/project/djvu/DjView/%version/%srcname-%version.tar.gz
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
 BuildRequires:	SFEgcc
@@ -35,24 +31,24 @@ Requires:	SFEdjvulibre
 
 
 %prep
-%setup -q -n %{srcname}4-%version
+%setup -q -n %srcname-%version
+gsed -i -e 's/DjView4/DjView/' -e 's/djview4 %f/djview %f/' \
+     desktopfiles/djvulibre-djview4.desktop
 
 %build
-
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags"
 export CXXFLAGS="%cxx_optflags -pthreads -L%_cxx_libdir"
-export LDFLAGS="%_ldflags -pthreads -L%_cxx_libdir -L/usr/gnu/lib -R%_cxx_libdir:/usr/gnu/lib"
+export LDFLAGS="%_ldflags -pthreads -L%_cxx_libdir -R%_cxx_libdir"
 export QMAKE=/usr/g++/bin/qmake
 export QMAKESPEC=solaris-g++
 export QTDIR=/usr/g++
 export PKG_CONFIG_PATH="%_cxx_libdir/pkgconfig"
 
 ./configure --prefix=%_prefix
-#  --with-qt4-dir=/usr/stdcxx --with-qt4-libraries=%_cxx_libdir
 
 make -j$CPUS
 
@@ -61,8 +57,6 @@ make -j$CPUS
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
-cd $RPM_BUILD_ROOT%_libdir
-mv netscape firefox
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -71,14 +65,17 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %_bindir/djview
-%_bindir/djview4
 %dir %attr (-, root, sys) %_datadir
-%_datadir/djvu
 %_mandir
-%_libdir/firefox/plugins
-
+%_datadir/applications/djvulibre-djview4.desktop
+%_libdir/mozilla/plugins
+%defattr (-, root, other)
+%_datadir/djvu
+%_datadir/icons/hicolor
 
 %changelog
+* Thu Dec 10 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 4.10
 * Mon Aug 27 2012 - Milan Jurik
 - bump to 4.9
 * Sat Jul 23 2011 - Guido Berhoerster <gber@openindiana.org>
