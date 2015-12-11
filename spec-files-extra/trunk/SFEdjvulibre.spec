@@ -1,13 +1,9 @@
 #
 # spec file for package SFEdjvulibre
 #
-# includes module: djvulibre
-#
 
-%define _basedir /usr/g++
 %include Solaris.inc
 %define cc_is_gcc 1
-%define _gpp /usr/gnu/bin/g++
 %include base.inc
 %define _cxx_libdir /usr/g++/lib
 %define srcname djvulibre
@@ -20,14 +16,12 @@ Vendor:		The original inventors of DjVu
 License:	GPLv2+
 Group:		Desktop (GNOME)/Libraries
 SUNW_Copyright:	djvulibre.copyright
-Version:	3.5.25
-Source:		%sf_download/project/djvu/DjVuLibre/%version/%srcname-%version.3.tar.gz
+Version:	3.5.27
+Source:		%sf_download/project/djvu/DjVuLibre/%version/%srcname-%version.tar.gz
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
 BuildRequires:	SFEgcc
-
 Requires:	SFEgccruntime
 
 %package devel
@@ -36,30 +30,19 @@ SUNW_BaseDir:   %_basedir
 %include default-depend.inc
 Requires: %name
 
-%if %build_l10n
-%package l10n
-Summary:        %summary - l10n files
-SUNW_BaseDir:   %_basedir
-%include default-depend.inc
-Requires:       %name
-%endif
-
 
 %prep
 %setup -q -n %srcname-%version
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 # The developers of djvulibre recommend using gcc, so don't even try CC
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags -L/usr/gnu/lib -R/usr/gnu/lib"
+export CXXFLAGS="%cxx_optflags"
 export LDFLAGS="%_ldflags"
 
 ./configure --prefix=%_prefix --libdir=%_cxx_libdir
@@ -72,12 +55,6 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT%_cxx_libdir/*.la
 
-%if %build_l10n
-%else
-cd $RPM_BUILD_ROOT%_mandir
-#rm -r cs de fr ja
-%endif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -85,11 +62,18 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %_bindir/*
-%dir %attr (0755, root, bin) %_libdir
+%dir /usr/g++
+%dir %attr (0755, root, bin) %_cxx_libdir
 %_cxx_libdir/lib*.so*
 %dir %attr (-, root, sys) %_datadir
-%_datadir/djvu
+%dir %attr (-, root, bin) %_datadir/man
 %_mandir/man1
+%defattr (-, root, other)
+%_datadir/djvu
+%_datadir/icons/hicolor
+%dir %attr (-, root, root) %_datadir/mime
+%dir %attr (-, root, root) %_datadir/mime/packages
+%_datadir/mime/packages/djvulibre-mime.xml
 
 %files devel
 %defattr (-, root, bin)
@@ -99,18 +83,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %_cxx_libdir/pkgconfig
 %_cxx_libdir/pkgconfig/ddjvuapi.pc
 
-%if %build_l10n
-%files l10n
-%defattr (-, root, bin)
-%dir %attr (0755, root, sys) %_datadir
-#%_mandir/cs
-#%_mandir/de
-#%_mandir/fr
-#%_mandir/ja
-%endif
-
 
 %changelog
+* Thu Dec 10 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 3.5.27
 * Mon Aug 27 2012 - Milan Jurik
 - bump to 3.5.25
 * Sat Feb 04 2012 - Milan Jurik
