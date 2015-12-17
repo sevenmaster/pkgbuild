@@ -5,13 +5,13 @@
 
 %include Solaris.inc
 
-%define src_version	3.03
+%define src_version	3.04
 
 Name:		SFExpdf
 IPS_Package_Name:	desktop/pdf-viewer/xpdf
 Summary:	X PDF document viewer
 Group:		X11/Applications
-Version:	3.3
+Version:	3.4
 Source:		ftp://ftp.foolabs.com/pub/xpdf/xpdf-%{src_version}.tar.gz
 URL:		http://foolabs.com/xpdf/
 License:	GPLv2+
@@ -19,6 +19,7 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: %{name}-root
+BuildRequires: library/motif
 
 %package root
 Summary:	%{summary} - / filesystem
@@ -50,6 +51,9 @@ make -j$CPUS
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
+cd %buildroot%_bindir
+# These files are delivered by desktop/pdf-viewer/evince
+rm pdffonts  pdfimages  pdfinfo  pdftoppm  pdftops  pdftotext
 
 %clean
 rm -rf %{buildroot}
@@ -66,5 +70,7 @@ rm -rf %{buildroot}
 %attr (-, root, bin) %{_sysconfdir}/xpdfrc
 
 %changelog
+* Wed Dec 16 2015 - Alex Viskovatoff
+- bump to 3.4; do not deliver executables supplied by desktop/pdf-viewer/evince
 * Sat Oct 29 2011 - Milan Jurik
 - Initial spec
