@@ -11,8 +11,6 @@
 #     driver	"sun"
 # }
 
-%define with_icu 0
-
 %define build_encumbered %{?_without_encumbered:0}%{?!_without_encumbered:1}
 
 %include Solaris.inc
@@ -28,13 +26,12 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.19.10
+Version:             0.19.12
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
-URL:		     http://http://www.musicpd.org/
+URL:		     http://www.musicpd.org/
 
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires: %{pnm_buildrequires_system_header_header_audio}
@@ -93,10 +90,8 @@ Requires: SFEmpg123
 Requires: SFElibid3tag
 %endif
 BuildRequires: %pnm_buildrequires_boost_gpp_default
-%if %with_icu
 BuildRequires: SFEicu-gpp
 Requires: SFEicu-gpp
-%endif
 
 %description
 Music Daemon to play common audio fileformats to audio devices or 
@@ -121,19 +116,14 @@ export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
 export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -Wl,-znodeferred"
-%if %with_icu
+# Without -R, icu libs are not found (RPATH does not get added to SOs)
+export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -Wl,-znodeferred"
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
-%endif
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
 ./configure --prefix=%{_prefix}  \
             --with-boost=/usr/g++ \
-%if %with_icu
-%else
-	    --disable-icu	 \
-%endif
     	    --enable-ao          \
 	    --enable-iso9660     \
 	    --enable-shout       \
@@ -184,7 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_datadir}/doc
 %{_datadir}/doc/*
 
-%changelog 
+%changelog
+* Fri Dec 18 2015 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 0.19.12; reenable icu
 * Tue Sep 01 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.19.10; disable icu for now (link fails)
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
