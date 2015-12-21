@@ -1,24 +1,8 @@
 #
 # spec file for package SFElyx
 #
-# includes module: lyx
-#
-
-# To be able to typeset LyX documents, you need to have TeX installed.
-# Since SFEtexlive.spec is not currently maintained, it is probably best
-# to install TeX Live using its own native installer.  See
-#   http://www.tug.org/texlive/acquire-netinstall.html.
-# You need to make sure that the various TeX executables are in your PATH.
-# The TeX Live installer gives you the option of creating symbolic links
-# to them automatically; creating symbolic links of TeX executables to
-# a directory in your PATH is probably the best way of making LyX find them.
-
-# Since the libraries of SFEqt47-gpp are now in a non-standard location,
-# you will need to do, for example:
-# pfexec elfedit -e 'dyn:runpath /usr/gnu/lib' pdftex
 
 %include Solaris.inc
-#%include packagenamemacros.inc
 
 %define cc_is_gcc 1
 %include base.inc
@@ -32,13 +16,13 @@ URL:		http://www.lyx.org
 License:	GPLv2
 Group:		Applications/Office
 SUNW_Copyright:	lyx.copyright
-Version:	2.0.7.1
-Source:		ftp://ftp.lyx.org/pub/lyx/stable/2.0.x/%srcname-%version.tar.xz
+Version:	2.1.4
+Source:		ftp://ftp.lyx.org/pub/lyx/stable/2.1.x/%srcname-%version.tar.xz
 Source1:	%srcname.desktop
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
-BuildRequires:	SFEqt-gpp-devel
+BuildRequires:	SFEqt-gpp
 BuildRequires:	SFEboost-gpp-devel
 BuildRequires:	SUNWgnome-spell
 BuildRequires:	python-26
@@ -93,8 +77,6 @@ make -j$CPUS
 rm -rf %buildroot
 
 make install DESTDIR=%buildroot
-mkdir %buildroot%_datadir/applications
-cp %SOURCE1 %buildroot%_datadir/applications
 
 %if %build_l10n
 %else
@@ -107,15 +89,16 @@ rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
-%doc ABOUT-NLS ANNOUNCE NEWS README RELEASE-NOTES UPGRADING
+%doc ANNOUNCE NEWS README RELEASE-NOTES UPGRADING
 %_bindir/lyx
 %_bindir/lyxclient
 %_bindir/tex2lyx
 %dir %attr (-, root, sys) %_datadir
 %_datadir/%srcname
 %_mandir
-%dir %attr(0755, root, other) %_datadir/applications
+%defattr (-, root, other)
 %_datadir/applications/%srcname.desktop
+%_datadir/icons
 
 %if %build_l10n
 %files l10n
@@ -126,6 +109,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Dec 19 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 2.1.4
 * Sat Feb 15 2013 - Alex Viskovatoff
 - bump to 2.0.7.1
 * Wed Dec  5 2012 - Logan Bruns <logan@gedanken.org>
