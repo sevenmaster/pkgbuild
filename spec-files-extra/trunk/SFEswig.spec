@@ -8,15 +8,15 @@
 # includes module(s): swig
 #
 %include Solaris.inc
+%include usr-gnu.inc
 
 Name:                    SFEswig
 IPS_Package_Name:	 sfe/developer/swig
 Summary:                 SWIG Interface compiler
-Version:                 2.0.6
+Version:                 2.0.12
 Source:                  %{sf_download}/swig/swig-%{version}.tar.gz
 URL:                     http://www.swig.org/
 SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: SUNWlibC
 Requires: SUNWlibms

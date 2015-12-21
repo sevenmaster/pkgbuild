@@ -7,9 +7,6 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-#developer/build/scons                             2.3.4-5.12.0.0.0.79.0      ---
-
-
 Name:                    SFEscons
 %if %( expr %{solaris12} '&' %{osbuild} '>=' 79 )
 IPS_Package_Name:	sfe/developer/build/scons
@@ -18,7 +15,7 @@ IPS_Package_Name:	developer/build/scons
 %endif
 Summary:                 SCons - a software construction tool (make replacement)
 Group:		Development/Distribution Tools
-Version:                 2.3.4
+Version:                 2.4.1
 URL:                     http://www.scons.org/
 License:                 MIT
 SUNW_copyright:          scons.copyright
