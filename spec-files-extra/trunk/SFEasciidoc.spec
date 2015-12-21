@@ -12,12 +12,11 @@ IPS_Package_Name:	developer/documentation-tool/asciidoc
 Summary:                 AsciiDoc - Text based document generation
 Group:                   Development/Distribution Tools
 License:                 GPLv2
-Version:                 8.6.8
+Version:                 8.6.9
 URL:                     http://www.methods.co.nz/asciidoc/
 Source:                  %{sf_download}/asciidoc/asciidoc-%{version}.tar.gz
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: 	         %{pnm_requires_python_default}
 BuildRequires: 	         %{pnm_buildrequires_python_default}
@@ -37,9 +36,8 @@ rm -rf %name-%version
 	--sysconfdir=%{_sysconfdir}
 
 make
-# Disabled because of docbook problem
-#python a2x.py -f manpage doc/asciidoc.1.txt
-#python a2x.py -f manpage doc/a2x.1.txt
+python a2x.py -f manpage doc/asciidoc.1.txt
+python a2x.py -f manpage doc/a2x.1.txt
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -63,6 +61,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/asciidoc
 
 %changelog
+* Sat Dec 19 2015 - Alex Viskovatoff
+- bump to 8.6.9
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 8.6.8
 * Fri Apr 20 2011 - Thomas Wagner
