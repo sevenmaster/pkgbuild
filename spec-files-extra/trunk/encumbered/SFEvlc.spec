@@ -1,3 +1,28 @@
+#https://docs.oracle.com/cd/E26502_01/html/E26507/chapter3-7.html
+#-zdefs
+#-znolazyload
+
+# 
+#     -z keyword
+# 
+#     now - When generating an executable or shared library, mark it to tell the dynamic linker to resolve all symbols when the program is started, or when the shared library is linked to using dlopen, instead of deferring function call resolution to the point when the function is first called
+# 
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##
 #
 ##check features!
@@ -218,6 +243,7 @@ Patch21:               vlc-21-211-filesystem.c-NAME_MAX.diff
 #Patch29:               vlc-29-207-allow-for-avcodec-55.diff
 #Patch29:               vlc-29-208-allow-for-avcodec-55.diff
 #Patch29:               vlc-29-2xx-allow-sout-for-avcodec-55.diff
+Patch29:               vlc-29-215-allow-for-avcodec-56.diff
 
 #note: ts.c:2455:21: error: implicit declaration of function 'dvbpsi_SDTServiceAddDescriptor'
 #needs libdvbpsi >=0.1.6
@@ -337,11 +363,11 @@ BuildRequires: %{pnm_buildrequires_SUNWltdl}
 Requires: %{pnm_requires_SUNWltdl}
 
 ##TODO## make this a pnm macro
-%if %{os2nnn}
-BuildRequires: driver/graphics/nvidia
-%else
-BuildRequires: NVDAgraphics
-%endif
+#%if %{os2nnn}
+#BuildRequires: driver/graphics/nvidia
+#%else
+#BuildRequires: NVDAgraphics
+#%endif
 
 ##TODO## eventually can be omitted, or patched out of Makefile
 ##BuildRequires: SUNWgit
@@ -370,6 +396,7 @@ xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %patch3 -p1
 %patch21 -p1
+%patch29 -p1
 
 perl -w -pi.bak -e "s,#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "#\!.*/bin/sh" {} \; -print | egrep -v "/libtool"`
 
@@ -510,6 +537,23 @@ fi
 export VDPAU_CFLAGS="-I %{_includedir}"
 export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
 
+%if %{oihipster}
+#try find symbol luaL_openlib
+#export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA -L/usr/lib -R/usr/lib"
+export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
+export CFLAGS="$CFLAGS"
+export CXXFLAGS="$CXXFLAGS"
+#export LD="/opt/dtbld/bin/ld-wrapper"
+#export LD_ALTEXEC="/bin/ld"
+#export LDFLAGS_plugin="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
+#export LDFLAGS_vlc="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
+#export LDFLAGS_plugin="--Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect"
+export LDFLAGS_plugin="-z ignore -z combreloc -Bdirect -z rescan"
+export LUA_LIBS="-z ignore -z combreloc -Bdirect -z rescan -llua"
+export LD=/bin/ld
+export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
+%endif
+
 export LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"
 
 export CONFIG_SHELL=/usr/bin/bash
@@ -553,10 +597,13 @@ echo "CFLAGS $CFLAGS"
 echo "CXXLAGS $CXXFLAGS"
 echo "CPPFLAGS $CPPFLAGS"
 echo "LDFLAGS $LDFLAGS"
+echo "LD      $LD"
+echo "LD_ALTEXEC $LD_ALTEXEC"
 
 #for patch29 autoconf.ac libavcodec
 #needs autoconf >2.65
 #paused#autoconf
+autoconf
 ./configure --prefix=%{_prefix}			\
 	    --bindir=%{_bindir}			\
 	    --mandir=%{_mandir}			\
