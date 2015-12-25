@@ -148,6 +148,15 @@
 %define pnm_buildrequires_SUNWlibsndfile			SFElibsndfile
 %define pnm_requires_SUNWlibsndfile				SFElibsndfile
 
+#Nvidia driver names
+#for the moment, just make a file require, as this matches driver/graphics/nvidia and NVDAgraphics
+#/usr/X11/include/NVIDIA/vdpau/vdpau.h
+#users might have installed the SVR4 package directly from nvidia
+#%define pnm_buildrequires_driver_graphics_nvidia		driver/graphics/nvidiadriver/graphics/nvidia
+#%define pnm_requires_driver_graphics_nvidia			driver/graphics/nvidia
+%define pnm_buildrequires_driver_graphics_nvidia		/usr/X11/include/NVIDIA/vdpau/vdpau.h
+%define pnm_requires_driver_graphics_nvidia			/usr/X11/include/NVIDIA/vdpau/vdpau.h
+
 ##TODO## Add your packages here in case you specify an old
 
 %endif
@@ -749,6 +758,14 @@
 %define pnm_buildrequires_SUNWgnu_idn				SUNWgnu-idn
 %define pnm_requires_SUNWgnu_idn				SUNWgnu-idn
 
+#Nvidia driver names
+#for the moment, just make a file require, as this matches driver/graphics/nvidia and NVDAgraphics
+#/usr/X11/include/NVIDIA/vdpau/vdpau.h
+#users might have installed the SVR4 package directly from nvidia
+#%define pnm_buildrequires_driver_graphics_nvidia		NVDAgraphics
+#%define pnm_requires_driver_graphics_nvidia			NVDAgraphics
+%define pnm_buildrequires_driver_graphics_nvidia		/usr/X11/include/NVIDIA/vdpau/vdpau.h
+%define pnm_requires_driver_graphics_nvidia			/usr/X11/include/NVIDIA/vdpau/vdpau.h
 
 ##TODO## Add your packages here in case you specify an old
 # package name now with the pnm_buildrequires_SUNWoldname makro
@@ -1497,6 +1514,27 @@
 
 
 #NOTE# now overlay the above definitions if needed:
+
+#START Solaris 11 without update, S11.0
+%if %{solaris11}
+%if %( expr  %{osdistrelnumber} '>=' 201100 )
+#  service/hal was renamed to system/hal around S11.0    0.5.11-0.173.0.0.0.1.0     --r
+#new
+%define pnm_buildrequires_system_hal		system/hal
+%define pnm_requires_system_hal			system/hal
+#old
+%define pnm_buildrequires_service_hal		system/hal
+%define pnm_requires_service_hal		system/hal
+%define pnm_buildrequires_SUNWhal_devel		system/hal
+%define pnm_buildrequires_SUNWhal		system/hal
+%define pnm_requires_SUNWhal			system/hal
+%define pnm_buildrequires_hal			system/hal
+%define pnm_requires_hal			system/hal
+
+%endif
+#END osdistrelnumber >= 201100 aka solaris11 11.0 and newer
+%endif
+#END solaris11
 
 
 #START Solaris 11 Update 1
@@ -2959,6 +2997,10 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sun Dec 20 2015 - Thomas Wagner
+- handle pnm_buildrequires_system_hal: service/hal renamed to system/hal (S11)
+* Sat Dec  5 2015 - Thomas Wagner
+- add nvidia as file requires to match IPS and SVR4 package name
 * Mon Nov 30 2015 - Thomas Wagner
 - handle pnm_buildrequires_SUNWxwinc_devel (S11 >=144, S12)
 * Sat Nov 28 2015 - Thomas Wagner
