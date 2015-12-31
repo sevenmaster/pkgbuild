@@ -9,8 +9,8 @@
 
 Name:		sbcl
 Version:	1.0.49
-Source0:	http://voxel.dl.sourceforge.net/sourceforge/sbcl/%{name}-%{version}-source.tar.bz2
-Source1:	http://voxel.dl.sourceforge.net/sourceforge/sbcl/%{bindist}-binary.tar.bz2
+Source0:	%sf_download/sourceforge/sbcl/%name-%version-source.tar.bz2
+Source1:	%sf_download/sourceforge/sbcl/%bindist-binary.tar.bz2
 
 %prep
 %setup -q

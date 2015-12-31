@@ -4,8 +4,12 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-# includes module(s):
-#
+
+# NOTE: To get this to build, it was necessary to change PATH from
+#		/opt/dtbld/bin:/usr/gnu/bin:/usr/bin:/usr/sbin
+#	to
+#		/opt/dtbld/bin:/usr/bin:/usr/sbin:/usr/gnu/bin
+#	in order to prevent gnu nm being picked up instead of Solaris' nm.
 
 %include Solaris.inc
 
@@ -37,9 +41,7 @@ SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright:	%{name}.copyright
 
 %include default-depend.inc
-BuildRequires:	SFEgcc
 
-Meta(info.maintainer):		James Lee <jlee@thestaticvoid.com>
 Meta(info.upstream):		SBCL <sbcl-devel@lists.sourceforge.net>
 Meta(info.upstream_url):	http://www.sbcl.org/
 Meta(info.classification):	org.opensolaris.category.2008:Development/Other Languages
@@ -117,6 +119,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/sbcl.1
 
 %changelog
+* Thu Dec 31 2015 - Alex Viskovatoff
+- Update urls (does not build: a test fails)
 * Fri Jul 01 2011 - James Lee <jlee@thestaticvoid.com>
 - Bump to version 1.0.49.
 - Prepare for SFE inclusion.
