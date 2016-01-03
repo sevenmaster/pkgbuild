@@ -83,8 +83,8 @@ Requires:		SFEgccruntime-46
 %endif
 
 # Guarantee X/freetype environment concisely (hopefully):
-BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
-Requires:      %{pnm_requires_SUNWgtk2}
+BuildRequires: SFEgtk2-gpp-devel
+Requires:      SFEgtk2-gpp
 BuildRequires: %{pnm_buildrequires_SUNWxwplt}
 Requires:      %{pnm_requires_SUNWxwplt}
 # The above bring in many things, including SUNWxwice and SUNWzlib
@@ -94,6 +94,8 @@ Requires:      %{pnm_requires_SUNWxwxft}
 # This package only provides libraries
 BuildRequires: %{pnm_buildrequires_mysql_default}
 Requires:      %{pnm_requires_mysql_default}
+BuildRequires: database/sqlite-3
+Requires:      database/sqlite-3
 BuildRequires: %{pnm_buildrequires_SUNWdbus_devel}
 Requires:      %{pnm_requires_SUNWdbus}
 
@@ -124,7 +126,7 @@ tar xzf %{SOURCE1}
 %define _patch_options --unified
 %patch1 -p1
 %patch3
-%patch6 -p1
+#%patch6 -p1
 %patch9
 %patch10 -p1
 %patch11 -p1
@@ -149,7 +151,7 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 %define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}
 %define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir} -R%{standard_prefix}/%{mysql_default_libdir}
 %else
-%define extra_includes -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
+%define extra_includes -I/usr/g++/include/glib-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/libpng14 -I%{standard_prefix}/%{mysql_default_includedir}/mysql
 %define extra_libs  -L%{standard_prefix}/%{mysql_default_libdir}/mysql -R%{standard_prefix}/%{mysql_default_libdir}/mysql
 %endif
 
@@ -166,6 +168,8 @@ export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthre
 
 # Assume i386 CPU is not higher than Pentium 4
 # This can be changed locally if your CPU is newer
+# No phonon for now, since it depends on libpulse, which we cannot use unless we
+# build our own, since it uses glib2, which we now build ourselves
 ./configure -prefix %{_prefix} \
            -confirm-license \
            -opensource \
@@ -183,14 +187,14 @@ export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthre
            -nomake demos \
            -sysconfdir %{_sysconfdir} \
 	   -webkit \
-           -L /usr/gnu/lib \
-           -R /usr/gnu/lib \
 	   -optimized-qmake \
            -reduce-relocations \
            -opengl desktop \
            -shared \
+	   -system-sqlite \
            -plugin-sql-mysql \
            -no-3dnow \
+	   -no-phonon \
            -no-ssse3 -no-sse4.1 -no-sse4.2 -no-avx \
            %extra_includes \
            %extra_libs
@@ -282,6 +286,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Jan  1 2016 - Alex Viskovatoff <herzen@imap.cc>
+- make build find our glib2's header files; disable phonon; use system sqlite
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 4.8.7
 * Thu Aug 13 2015 - Thomas Wagner
