@@ -1,9 +1,6 @@
 #
-# spec file for package SFEharfbuzz
+# spec file for package SFEharfbuzz-gpp
 #
-# includes module: harfbuzz
-#
-
 
 ##info for osdistro:
 ##currently not used on oihipster, we use odistro (harfbuzz 0.9.39 in userland)
@@ -21,7 +18,7 @@
 
 #imported from OI userland, thanks much!
 
-Name:			SFEharfbuzz
+Name:			SFEharfbuzz-gpp
 IPS_Package_Name:	library/g++/harfbuzz
 Summary:		harfbuzz - text shaping engine (/usr/g++)
 Group:			System/Libraries
@@ -33,15 +30,11 @@ SUNW_Copyright:		%{src_name}.copyright
 Source:			http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-%{version}.tar.bz2
 
 SUNW_BaseDir:		%_basedir
-BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
-
-BuildRequires:	SFEgraphite2
-Requires:	SFEgraphite2
+BuildRequires:	SFEgraphite2-gpp-devel
+Requires:	SFEgraphite2-gpp
 
 BuildRequires:  %{pnm_buildrequires_SUNWfreetype2}
 Requires:       %{pnm_buildrequires_SUNWfreetype2}
@@ -61,7 +54,6 @@ SUNW_BaseDir:   %_basedir
 Requires: %name
 
 
-
 %prep
 %setup -q -n %{src_name}-%{version}
 
@@ -76,9 +68,12 @@ export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+# The following line was suggested by graphite2-02-examples-libstdc++.patch,
+# the purpose of which is to remove the same error that is produced by the
+# harfbuzz build if glib is not disabled
+export GRAPHITE2_LIBS="-lgraphite2 -lstdc++"
 
 #same options as in OI userland
-
 
 ./configure     \
         --prefix=%{_prefix}     \
@@ -86,22 +81,15 @@ export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
         --disable-static        \
         --with-graphite2=yes    \
         --with-freetype=yes     \
-        --with-glib=no          \
+        --with-glib=yes         \
         ;
 
+gmake
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-export CC=gcc
-export CXX=g++
-#export CFLAGS="%optflags -I/usr/g++/include"
-#export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
-#export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
-
 gmake install DESTDIR=$RPM_BUILD_ROOT
-
-rmdir $RPM_BUILD_ROOT/%{_bindir}
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
 
@@ -113,8 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 
-#%dir %attr (0755, root, bin) %_bindir
-#%_bindir/*
+%dir %attr (0755, root, bin) %_bindir
+%_bindir/hb-*
 
 %dir %attr (0755, root, bin) %_libdir
 %_libdir/*.so*
@@ -133,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 29 2015 - Alex Viskovatoff <herzen@imap.cc>
+- enable glib; change SVr4 name to maintain consistency with IPS name
 * Sun Oct 25 2015 - Thomas Wagner
 - %include usr-g++.inc
 * Wed 19 Aug 2015 - Thomas Wagner
