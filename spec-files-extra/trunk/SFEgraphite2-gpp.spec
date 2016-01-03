@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include usr-g++.inc
 %define cc_is_gcc 1
 %include base.inc
 %include packagenamemacros.inc
@@ -35,9 +36,6 @@ BuildRoot:		%_tmppath/%name-%version-build
 
 %include default-depend.inc
 
-##TODO## BuildRequires:	SFEgcc
-##TODO## Requires:	SFEgccruntime
-
 %description
 Graphite is a project within SIL's scripts and software dev groups to provide cross-platform rendering for complex writing systems.
 
@@ -67,9 +65,6 @@ export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
-#export CFLAGS="%optflags -I/usr/g++/include"
-#export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
-#export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 mkdir build
 cd build
@@ -87,7 +82,8 @@ cmake .. \
     -DGRAPHITE2_NSEGCACHE=OFF \
     -DGRAPHITE2_NTRACING=ON \
     -DGRAPHITE2_TELEMETRY=OFF \
-    -DGRAPHITE2_VM_TYPE=auto
+    -DGRAPHITE2_VM_TYPE=auto \
+    -DLATEX=/usr/bin/latex
 
 gmake -j$CPUS
 gmake test
@@ -126,6 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Change SVr4 name to maintain consistency with IPS name
 * Mon Aug 10 2015 - Thomas Wagner
 - initial spec, obsoletes older SFEsilgraphite.spec
 ##TODO## make a 32/64 bit package
