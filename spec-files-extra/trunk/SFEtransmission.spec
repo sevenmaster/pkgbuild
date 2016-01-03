@@ -2,17 +2,6 @@
 # spec file for package SFEtransmission
 #
 
-################################################################################
-#				  Note on GTK+                                 #
-#                                                                              #
-#  Version 2.60 is the last Transmission version that uses GTK+ 2 and not      #
-#  GTK+ 3.  This means that there is no point in "bumping" this package to a   #
-#  newer version until GTK+ 3 is built on Solaris.                             #
-#                                                                              #
-# EDIT: Unless someone wants to hack the GTK2 interface onto newer versions... #
-#                                                                              #
-################################################################################
-
 %include Solaris.inc
 %define cc_is_gcc 1
 %include usr-gnu.inc
@@ -23,30 +12,26 @@
 Name:			SFEtransmission
 IPS_package_name:	sfe/desktop/torrent/transmission
 Summary:		GTK and console BitTorrent client
-Version:		2.60
-Source:			http://download.m0k.org/transmission/files/transmission-%version.tar.bz2
-Patch0:			transmission-2.60-gtkversion.patch
+Version:		2.84
+Source:			http://download.m0k.org/transmission/files/transmission-%version.tar.xz
 License:		MIT
 URL:			http://transmission.m0k.org/
 SUNW_Copyright:		transmission.copyright
 SUNW_BaseDir:		%_basedir
-BuildRoot:		%_tmppath/%source_name-%version-build
 %include default-depend.inc
-BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
+BuildRequires: SFEgtk3-gpp-devel
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 BuildRequires: %{pnm_buildrequires_SUNWgnome_panel_devel}
 BuildRequires: %{pnm_buildrequires_SUNWdbus_glib_devel}
 BuildRequires: %{pnm_buildrequires_SUNWcurl}
-BuildRequires: SFEgcc
 BuildRequires: SFElibevent2
 BuildRequires: SFElibiconv-devel
 BuildRequires: %{pnm_buildrequires_SUNWgnu_gettext}
-Requires: %{pnm_requires_SUNWgtk2}
+Requires: SFEgtk3-gpp
 Requires: %{pnm_requires_SUNWgnome_panel}
 Requires: %{pnm_requires_SUNWdbus_glib}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: %{pnm_requires_SUNWcurl}
-Requires: SFEgccruntime
 Requires: SFElibevent2
 Requires: SFElibiconv
 Requires: %{pnm_requires_SUNWgnu_gettext}
@@ -62,23 +47,21 @@ Requires:        %{name}
 
 %prep
 %setup -q -n %{source_name}-%{version}
-%patch -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-#export CFLAGS="%optflags -mt -D__inline=inline -xc99"
 export CFLAGS="%optflags -I/usr/gnu/include"
 export CXXFLAGS="%cxx_optflags -I/usr/gnu/include"
-export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -liconv"
-export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig
+export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/g++/lib:/usr/gnu/lib -liconv"
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 
 ./configure --prefix=%{_prefix}   \
             --datadir=%{_datadir} \
 	    --mandir=%{_mandir}   \
-	    --with-gtk=2	  \
+	    --with-gtk		  \
             --program-prefix=""
 
 make -j$CPUS
@@ -144,6 +127,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Update to 2.8.4
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Fri Sep 20 2013 - Ian Johnson
