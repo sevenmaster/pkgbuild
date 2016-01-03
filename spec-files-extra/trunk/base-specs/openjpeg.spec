@@ -4,7 +4,7 @@
 
 Summary:	Open Source multimedia framework
 Version:	%{version}
-Source:		%{sf_download}/openjpeg.mirror/openjpeg-%{version}.tar.gz
+Source:         http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
 
 
 
@@ -64,6 +64,8 @@ mkdir -p ${RPM_BUILD_ROOT}%{_pkg_config_path}
 
 
 %changelog
+* Sun Jan 03 2016 - reneelg
+- align Source definition with SFEopenjpeg.spec to prevent build error of SFEopenjpeg
 * Sat May 22 2015 - pjama
 - update download URL
 * Sat Mar 22 2014 - Thomas Wagner
