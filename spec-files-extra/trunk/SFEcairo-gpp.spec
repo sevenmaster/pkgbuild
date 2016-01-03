@@ -6,6 +6,8 @@
 
 %include Solaris.inc
 %include usr-g++.inc
+# g++ packages are built with gcc
+%define cc_is_gcc 1
 %include packagenamemacros.inc
 %include base.inc
 %include pkgbuild-features.inc
@@ -35,8 +37,8 @@ SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-BuildRequires: library/glib2
-BuildRequires: library/graphics/pixman
+BuildRequires: SFEglib2-gpp-devel
+BuildRequires: SFEpixman-gpp-devel
 BuildRequires: library/zlib
 BuildRequires: system/library/freetype-2
 BuildRequires: system/library/fontconfig
@@ -46,7 +48,7 @@ BuildRequires: x11/server/xorg
 #relax dependency
 #BuildRequires: developer/build/automake-111
 #need minimum 1.11
-BuildRequires: SFEautomake-114
+BuildRequires: SFEautomake-115
 ##TODO## runtime requires, go read from pkgdepend's results and put it into "Requires:"
 
 %package devel		
@@ -143,13 +145,20 @@ chmod a+x freetype-config
 %endif
 
 %build
+export CC=gcc
+export CXX=g++
+
 PKG_CONFIG_DISABLE_UNINSTALLED=
 unset PKG_CONFIG_DISABLE_UNINSTALLED
 
 %ifarch amd64 sparcv9
+export LDFLAGS="%_ldflags -L/usr/g++/lib/amd64 -R/usr/g++/lib/amd64"
+export PKG_CONFIG_PATH="%_pkg_config_path64"
 %cairo_64.build -d %name-%version/%_arch64
 %endif
 
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+export PKG_CONFIG_PATH="%_pkg_config_path"
 %cairo.build -d %name-%version/%{base_arch}
 
 %install
@@ -187,12 +196,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc(bzip2) -d %{base_arch} cairo-%{cairo.version}/NEWS
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
-%defattr (-, root, bin)
+%_bindir/cairo-trace
+%_bindir/%_arch64/cairo-trace
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%_libdir/cairo/libcairo-trace.so*
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
+%_libdir/%_arch64/cairo/libcairo-trace.so*
 %endif
 ##TODO## no manpages at the moment # %dir %attr (0755, root, sys) %{_datadir}
 ##TODO## no manpages at the moment # %dir %attr(0755, root, bin) %{_mandir}
@@ -214,6 +226,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Fri Dec 28 - Alex Viskovatoff <herzen@imap.cc>
+- Use newer glib2 in /usr/g++; build with gcc to maintain consistency
 - create automatic renamed-to package
 * Fri Nov  6 2015 - Thomas Wagner
 - relocate usr-gpp.inc to stop gnome-terminal crash cia libvte.so loading our new libcairo.so

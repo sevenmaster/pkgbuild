@@ -10,7 +10,7 @@
 Name:         cairo
 License:      LGPL v2.1
 Group:        System/Libraries
-Version:      1.12.2
+Version:      1.14.2
 Release:      1
 Distribution: Java Desktop System
 Vendor:	      freedesktop.org
@@ -92,12 +92,10 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export PATH=`pwd`:$PATH
 
-#aclocal-1.11 $ACLOCAL_FLAGS -I build
-aclocal-1.14 $ACLOCAL_FLAGS -I build
+aclocal $ACLOCAL_FLAGS -I build
 gtkdocize
 autoheader
-#automake-1.11 -a -c -f
-automake-1.14 -a -c -f
+automake -a -c -f
 autoconf
 %if %option_with_debug
  export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS"
@@ -105,11 +103,14 @@ autoconf
   export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -DNDEBUG"
 %endif
 
-export LDFLAGS="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect "
+#export LDFLAGS="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect "
 ./configure \
     --prefix=%{_prefix} \
     --libdir=%{_libdir} \
     --bindir=%{_bindir} \
+    --enable-gl \
+    --enable-xlib-xcb \
+    --enable-test-surfaces \
     %{gtk_doc_option}
 
 make -j $CPUS
@@ -139,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Dec 28 2015 - Alex Viskovatoff <herzen@imap.cc>
+- update to 1.14.2
 * Sat Oct 24 2015 - Thomas Wagner
 - adopted from solaris userland
 * Mon Oct 29 2012 - rohini.s@oracle.com
