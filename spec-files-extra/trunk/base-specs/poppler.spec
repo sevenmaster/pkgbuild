@@ -120,7 +120,7 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/g++/share/pkgconfig
 export CFLAGS="%optflags `pkg-config --cflags-only-I cairo`"
 export CXXFLAGS="%cxx_optflags `pkg-config --cflags-only-I cairo`"
 #export CXXFLAGS="%cxx_optflags -D_STDC_C11 `pkg-config --cflags-only-I cairo`"
-%if %{solaris12}
+%if %( expr %{solaris11} '|' %{solaris12} )
 #-D_STDC_C11_BCI solves perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
 export CXXFLAGS="$CXXFLAGS -std=c++11 -D_STDC_C11_BCI"
 %endif
@@ -201,6 +201,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Mon Jan  4 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg
+- add -D_STDC_C11_BCI -std=c++11 as well (S11.3)
 * Fri Nov 13 2015 - Thomas Wagner
 - find cairo cflags/includes by pkg-config --cflags 
 - add to PKG_CONFIG_PATH /usr/g++/share/pkgconfig

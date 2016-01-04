@@ -59,8 +59,8 @@ BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFEsigcpp-gpp
 Requires:      SFEsigcpp-gpp
 
-BuildRequires: SFEopenjpeg
-Requires:      SFEopenjpeg
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
 
 BuildRequires: SFEpoppler-data-gpp
 Requires:      SFEpoppler-data-gpp
@@ -135,6 +135,11 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg
+* Mon Jan  4 2015 - Thomas Wagner
+- add -D_STDC_C11_BCI -std=c++11 as well (S11.3)
+* Sun Nov 29 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
 * Fri Nov 13 2015 - Thomas Wagner
 - find cairo cflags/includes by pkg-config --cflags 
 - add to PKG_CONFIG_PATH /usr/g++/share/pkgconfig
