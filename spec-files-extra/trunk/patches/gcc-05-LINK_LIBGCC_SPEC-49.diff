@@ -1,0 +1,22 @@
+--- gcc-4.9.3/gcc/config/sol2.h.orig	2016-01-03 22:26:20.788647330 +0100
++++ gcc-4.9.3/gcc/config/sol2.h	2016-01-03 22:30:52.914042712 +0100
+@@ -194,12 +194,17 @@
+ 
+ #ifndef CROSS_DIRECTORY_STRUCTURE
+ #undef MD_EXEC_PREFIX
+-#define MD_EXEC_PREFIX "/usr/ccs/bin/"
++#define MD_EXEC_PREFIX "/usr/bin/"
+ 
+ #undef MD_STARTFILE_PREFIX
+-#define MD_STARTFILE_PREFIX "/usr/ccs/lib/"
++#define MD_STARTFILE_PREFIX "/usr/lib/"
+ #endif
+ 
++/* #undef LINK_LIBGCC_SPECIAL_1 */
++/* #define LINK_LIBGCC_SPECIAL_1=1 */
++#undef LINK_LIBGCC_SPEC
++#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc/4.8/lib/"ARCH64_SUBDIR":/usr/gcc/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R /usr/gcc/4.8/lib:/usr/gcc/lib %D" "}"
++
+ #undef STARTFILE_ARCH32_SPEC
+ #define STARTFILE_ARCH32_SPEC "%{std=c++0x:values-Xc.o%s} \
+   %{std=c++0x:values-xpg6.o%s} \

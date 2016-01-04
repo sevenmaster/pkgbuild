@@ -1,3 +1,6 @@
+# updating? e.g. with pfexec pkg update  -v "pkg://localhostoih/*gcc*"
+
+
 #
 # spec file for package SFEgcc
 #
@@ -254,32 +257,32 @@ Patch2:              gcc-02-handle_pragma_pack_push_pop.diff
 %else
 %endif
 
-%if %( expr %{major_minor} '>=' 4.7 )
+##TODO## temporarily paused for >=4.9
+%if %( expr %{major_minor} '>=' 4.7 '&' '<=' 4.8 )
 Patch3:              gcc-03-gnulib-47.diff
 %else
 Patch3:              gcc-03-gnulib.diff
 %endif
 
-#it can't #see if 4.8 can propperly do C++ exceptions by loading libgcc_s.so / libstdc++.so.6 propperly
 #changes in version -> see %prep as well
-%if  %( expr %{major_minor} '<' 4.9 )
+%if  %( expr %{major_minor} '<=' 4.9 )
 #LINK_LIBGCC_SPEC
 #gcc-05 could be reworked to know both, amd64 and sparcv9
 %ifarch i386 amd64
-Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
+##PAUSE## Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
 %endif
 %ifarch sparcv9
-Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
+##PAUSE## Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
 %endif
 %endif
-#END %{major_minor} < 4.8
+#END %{major_minor} <= 4.9
 
 # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49347
 # if clause to apply only on specific gcc versions, see %prep
 Patch10:	gcc-10-spawn.diff
 
 ##TODO## enhance: use padded numbers eventually - same in %prep
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8 )
 #Patch100: 000-userlandgate-gcc-Makefile.in.patch
 Patch101: 001-userlandgate-fixinc.in.patch
 Patch102: 002-userlandgate-inclhack.def.patch
@@ -292,7 +295,45 @@ Patch107: 007-userlandgate-gcc-sol2.h.patch.modified.diff
 Patch108: 008-userlandgate-c99_classification_macros.patch
 ##TODO## already applied? verify! Patch109: 009-userlandgate-CVE-2014-5044.patch
 Patch110: 010-userlandgate-studio-as-comdat.patch
+#END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
 %endif
+
+
+#patches thanks to solaris userland gate
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9 )
+#Careful please when updating patch, we've removed the runpath part in gcc49-000-sol2.h.patch! (this is in our own gcc-05-LINK_LIBGCC_SPEC-**)
+#This time we apply patch5 for gcc 4.9 *after* using the userland gate patch. This should make maintenance a bit easier as gcc49-000-sol2.h.patch stays unmodified.
+Patch200: gcc49-000-sol2.h.patch
+Patch201: gcc49-001-Makefile.in.patch
+Patch202: gcc49-002-omp-lock.h.patch
+Patch203: gcc49-003-ptrlock.h.patch
+Patch204: gcc49-004-sem.h.patch
+#got you, there is no 005
+Patch206: gcc49-006-omp.h.in.patch
+Patch207: gcc49-007-libgomp.exp.patch
+Patch208: gcc49-008-fixincludes-check.tpl.patch
+Patch209: gcc49-009-configure.patch
+Patch210: gcc49-010-c99_classification_macros_c++0x.cc.patch
+Patch211: gcc49-011-libstdc++.configure.patch
+Patch212: gcc49-012-fixinc.in.patch
+Patch213: gcc49-013-libcpp-Makefile.in.patch
+Patch214: gcc49-014-libiberty-Makefile.in.patch
+Patch215: gcc49-015-configure-largefile.patch
+Patch216: gcc49-016-022-gthr-posix.h.patch
+Patch217: gcc49-017-libstdc++-src-Makefile.in.patch
+Patch218: gcc49-018-libcilkrts-Makefile.in.patch
+Patch219: gcc49-019-libcilkrts-sysdep-unix.c.patch
+Patch220: gcc49-020-libcilkrts-configure.tgt.patch
+Patch221: gcc49-021-libcilkrts-cilk-abi-vla.c.patch
+Patch222: gcc49-022-libcilkrts-os-unix-sysdep.c.patch
+Patch223: gcc49-023-libcilkrts-tests.patch
+Patch224: gcc49-024-configure.patch
+Patch225: gcc49-025-libgcc-Makefile.in.patch
+Patch226: gcc49-026-basic_string.patch
+Patch227: gcc49-027-cmath_c99.patch
+#END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
+%endif
+
 
 
 SUNW_BaseDir:	%{_basedir}
@@ -493,10 +534,13 @@ cd gcc-%{version}
 %patch2 -p1
 %endif
 
+%if %( expr %{major_minor} '>=' 4.7 '&' '<=' 4.8 )
 %patch3 -p1
+%endif
 
+#note: up to gcc 4.8 we apply patch5 here, with gcc 4.9 we apply patch5 *after* the large batch of solaris userland patches (see below!)
 %if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.9 )
-%patch5 -p1
+##temporarily paused## %patch5 -p1
 %endif
 
 ##TODO## check versions which apply. bug says 4.3.3 is not, but 4.6.0 is
@@ -509,7 +553,7 @@ cd gcc-%{version}
 #gsed -i.bak -e 's/-fno-exceptions//g' -e 's/-fno-rtti//g' -e 's/-fasynchronous-unwind-tables//g' configure.ac configure
 
 ##TODO## enhance: use padded numbers eventually - same in %prep
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8 )
 #apply patches imported from userland gate, as S11.2 and S12 need them
 #%patch100 -p1
 %patch101 -p1
@@ -522,7 +566,47 @@ cd gcc-%{version}
 %patch108 -p1
 ##TODO## see above %patch109 -p1
 %patch110 -p1
+#%{solaris11} '+' %{solaris12} '&' %{major_minor} '=' 4.8
 %endif
+
+
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9 )
+%patch200 -p0
+%patch201 -p0
+%patch202 -p0
+%patch203 -p0
+%patch204 -p0
+#there is no 205
+%patch206 -p0
+%patch207 -p0
+%patch208 -p0
+%patch209 -p0
+%patch210 -p0
+%patch211 -p0
+%patch212 -p0
+%patch213 -p0
+%patch214 -p0
+%patch215 -p0
+%patch216 -p0
+%patch217 -p0
+%patch218 -p0
+%patch219 -p0
+%patch220 -p0
+%patch221 -p0
+%patch222 -p0
+%patch223 -p0
+%patch224 -p0
+%patch225 -p0
+%patch226 -p0
+%patch227 -p0
+#%{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9
+%endif
+
+#note: up to gcc 4.8 we apply patch5 above the large userland batch, with gcc 4.9 we apply patch5 *after* the large batch of solaris userland patches (which is *here*)
+%if %( expr %{major_minor} '>=' 4.9 )
+##PAUSE## %patch5 -p1
+%endif
+
 
 %build
 CPUS=%{_cpus_memory}
@@ -911,6 +995,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/lib*.so*
 %{_libdir}/lib*.spec
 %{_libdir}/lib*.a
+%if %( expr %{major_minor} '>=' 4.9 )
+%{_libdir}/clearcap.map
+%{_libdir}/libgcc-unwind.map
+%endif
+
 %ifarch amd64 sparcv9 i386
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
@@ -955,6 +1044,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jan  3 2015 - Thomas Wagner
+- add support for gcc 4.9.3 
+  use: pkgtool --IPS --download  --define 'gcc_version 4.9.3' build-only SFEgcc && pfexec pkg install -v gcc-49 gcc-49-runtime
+  ... then export PATH=/usr/gcc/4.9/bin:$PATH to get the new gcc first in the row
+- use patch3 only for gcc 4.7 + 4.8 (re-visit later if needed)
+- import patches from solaris userland (used for S11 and S12)
+- created patch5 for gcc 4.9 (to be applied *after* userland patches)
+##TODO## does patch5 work on OI (all) and OmniOS w/ the userland patches not applied?
+- changed order for gcc 4.9: patch5 is used *after* the unmodified userland patches (simpler maintenance)
+- fix %fies for new linker map files: %{_libdir}/clearcap.map %{_libdir}/libgcc-unwind.map
 * Mon Nov 23 2015 - Thomas Wagner
 - for a test, keep static files like /usr/gcc/4.8/lib/libssp_nonshared.a libssp.a libitm.a libgomp.a libatomic.a 
 * Mon Nov 16 2015 - Thomas Wagner
