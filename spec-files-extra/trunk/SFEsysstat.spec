@@ -38,9 +38,9 @@ make -j$CPUS
 rm -rf $RPM_BUILD_ROOT
 
 %ifarch sparc
-make install PROC=sparcv7 PREFIX=$RPM_BUILD_ROOT%{_prefix}
+make install PROC=sparcv7 PREFIX=$RPM_BUILD_ROOT%{_prefix} LN="ln -s"
 %else
-make install PROC=i86 PREFIX=$RPM_BUILD_ROOT%{_prefix}
+make install PROC=i86 PREFIX=$RPM_BUILD_ROOT%{_prefix} LN="ln -s"
 %endif
 
 %clean
@@ -52,10 +52,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_mandir}
-%dir %attr (0755, root, bin) %{_mandir}/man1m
-%{_mandir}/man1m/sysstat.1m
+#%dir %attr (0755, root, bin) %{_mandir}/man1m
+#%{_mandir}/man1m/sysstat.1m
 
 %changelog
+* Tue Jan  5 2016 - Thomas Wagner
+- use LN="ln -s" or get error about hardlink to isaexec on other FS-mountpoint fails
 * Wed Dec 28 2011 - Milan Jurik
 - bump version to 20111025
 * Wed Jun 30 2010 - Milan Jurik
