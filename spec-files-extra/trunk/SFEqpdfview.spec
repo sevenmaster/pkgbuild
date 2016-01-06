@@ -15,7 +15,7 @@ URL:		https://launchpad.net/qpdfview
 License:	GPLv2
 SUNW_Copyright:	GPLv2.copyright
 Group:		Applications/Office
-Version:	0.4.7
+Version:	0.4.16
 Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%version.tar.gz
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
@@ -28,7 +28,7 @@ BuildRequires:	SFEdjvulibre-devel
 Requires:	SFEdjvulibre
 BuildRequires:	SFEfile
 Requires:	SFEfile
-# desktop/pdf-viewer/evince delivers libspectre
+# desktop/pdf-viewer/evince delivers libspectre, used for rendering PostScript
 BuildRequires:	evince
 Requires:	evince
 
@@ -50,8 +50,8 @@ Current features include:
 %setup -q -n %srcname-%version
 
 # Not clear why qmake doesn't use QMAKE_LIBS_NETWORK from qmake.conf
-echo '\nINCLUDEPATH += /usr/gnu/include\nLIBS += -lsocket' \
-  >> qpdfview-application.pro
+echo '\nINCLUDEPATH += /usr/gnu/include\nLIBS += -L/usr/gnu/lib -R/usr/gnu/lib -lsocket' \
+  >> application.pro
 
 /usr/g++/bin/qmake qpdfview.pro
 
@@ -70,10 +70,6 @@ rm -rf %buildroot
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
 make INSTALL_ROOT=%buildroot install
 
-# Add /usr/gnu/lib to RUNPATH, for libmagick: qmake is uncooperative
-cd %buildroot/%_bindir
-/usr/bin/elfedit -e 'dyn:runpath /usr/g++/lib:/usr/gnu/lib' qpdfview
-
 
 %clean
 rm -rf %buildroot
@@ -85,14 +81,18 @@ rm -rf %buildroot
 %_bindir/%srcname
 %_libdir/%srcname/libqpdfview_*.so
 %dir %attr (-, root, sys) %_datadir
-%dir %attr (-, root, other) %_datadir/applications
-%_datadir/applications/%srcname.desktop
 %_mandir
+%defattr (-, root, other)
+%_datadir/applications/%srcname.desktop
+%_datadir/icons
 %_datadir/%srcname
+%_datadir/appdata/qpdfview.appdata.xml
 
 
 %changelog
-* Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
+* Tue Jan  5 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.4.16
+* Tue Jan 14 2014 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 0.4.7
-* Thu Oct 31 2013 - Alex Viskovatoff <herzen@imapmail.org>
+* Thu Oct 31 2013 - Alex Viskovatoff <herzen@imap.cc>
 - initial spec
