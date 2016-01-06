@@ -18,6 +18,8 @@
 %include base.inc
 %define srcname mpv
 
+%include packagenamemacros.inc
+
 # NVDAgraphics is the driver supplied directly by Nvidia
 %define with_system_nvidia %(pkginfo -q NVDAgraphics && echo 0 || echo 1)
 
@@ -159,6 +161,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Wed Jan 06 2016 - Rene Elgaard
+- Include packagenamemacros to resolve pnm macros
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
 * Sat Apr 13 2014 - Thomas Wagner
