@@ -11,14 +11,13 @@
 Name:		SFEfile
 IPS_Package_Name:	file/file
 Summary:	determine file type (/usr/gnu)
-Version:	5.21
+Version:	5.25
 Group:		Applications/System Utilities
 License:	BSD3c
 SUNW_Copyright:	file.copyright
 Source:		ftp://ftp.astron.com/pub/file/file-%version.tar.gz
 
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires: %{pnm_buildrequires_library_zlib}
@@ -29,10 +28,7 @@ Requires:      %{pnm_requires_library_zlib}
 
 %build
 
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
@@ -74,6 +70,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/*.4
 
 %changelog
+* Tue Jan  5 2016 - Alex Viskovatoff
+- bump to 5.25
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Fri Jan  2 2015 - Thomas Wagner
