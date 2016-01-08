@@ -32,6 +32,7 @@ Summary:       GNU transport layer security library (/usr/gnu)
 Version:       %{gnutls.version}
 %define        major_minor_version %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 Source:        ftp://ftp.gnutls.org/gcrypt/gnutls/v%{major_minor_version}/gnutls-%{version}.tar.xz
+Patch1:        gnutls-01-ENABLE_PKCS11.diff
 SUNW_BaseDir:  %{_basedir}
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -113,6 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/certtool
+%{_bindir}/danetool
 %{_bindir}/srptool
 %{_bindir}/gnutls-serv
 %{_bindir}/ocsptool
@@ -146,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- add patch1 gnutls-01-ENABLE_PKCS11.diff or get unresolved symbol pkcs11_common  tpmtool.o (S11 S12)
 * Sun Oct 11 2015 - Thomas Wagner
 - add to *FLAGS  -I/usr/include/idn to find idna.h
 - add BuildRequires SFEicu-gpp SFElibtasn1-gnu pnm_buildrequires_library_guile pnm_buildrequires_library_libidn
