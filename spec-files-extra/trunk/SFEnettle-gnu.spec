@@ -104,6 +104,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Okt 10 2015 - Thomas Wagner
+- bump to 3.1.1 for new gnutls 3.4.4
 * Tue Aug  4 2015 - Thomas Wagner
 - fix %files and remove share/info 
 * Mon Jun 15 2015 - Thomas Wagner

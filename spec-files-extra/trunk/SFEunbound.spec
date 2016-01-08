@@ -4,11 +4,12 @@
 # includes module(s): unbound
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Summary:	Validating, recursive, and caching DNS resolver
 IPS_Package_Name:	service/network/dns/unbound
 Name:		SFEunbound
-Version:	1.4.18
+Version:	1.5.5
 License:	BSD
 URL:		http://www.nlnetlabs.nl/unbound/
 Source:		http://www.unbound.net/downloads/unbound-%{version}.tar.gz
@@ -17,13 +18,14 @@ Group:		System/Services
 BuildRoot:	%{_tmppath}/unbound-%{version}-build
 SUNW_Copyright:	unbound.copyright
 SUNW_BaseDir:	/
-BuildRequires: SUNWflexlex
-BuildRequires: SUNWopenssl-include
-Requires: SUNWopenssl-libraries
-BuildRequires: SUNWlexpt
-Requires: SUNWlexpt
-BuildRequires: SFEldns-devel
-Requires: SFEldns
+
+BuildRequires:  %{pnm_buildrequires_SUNWflexlex_devel}
+BuildRequires:  %{pnm_buildrequires_SUNWopenssl}
+Requires:       %{pnm_requires_SUNWopenssl}
+BuildRequires:  %{pnm_buildrequires_SUNWlexpt_devel}
+Requires:       %{pnm_buildrequires_SUNWlexpt_devel}
+BuildRequires:  SFEldns-devel
+Requires:       SFEldns
 
 %description
 Unbound is a validating, recursive, and caching DNS resolver.
@@ -132,6 +134,9 @@ user ftpuser=false gcos-field="Unbound Reserved UID" username="unbound" password
 %{_libdir}/libunbound*
 
 %changelog
+* Sat Oct 10 2015 - Thomas Wagner
+- bump to 1.5.5
+- add (Build)Requires %{pnm_buildrequires_SUNWopenssl_devel}, SUNWflexlex, SUNWlexpt, %include packagenamemacros.inc
 * Mon Oct 01 2012 - Milan Jurik
 - bump to 1.4.18
 * Sun Jul 29 2012 - Milan Jurik
