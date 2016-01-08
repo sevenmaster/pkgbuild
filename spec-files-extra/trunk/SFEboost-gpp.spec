@@ -20,7 +20,7 @@
 %define        patchlevel 0
 
 #simplified, even on older builds use 59
-%if %( expr %{solaris12} '+' %{solaris11} '>=' 1 )
+%if %( expr %{solaris12} '|' %{solaris11} '|' %{oihipster} )
 %define        minor      59
 %endif
 
@@ -183,6 +183,16 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- bump version to 0.59.0 on (OIH)
+* Mon Jan  4 2016 - Thomas Wagner
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
+- fix typo --stdc=c++11 -> -stdc=c++11
+* Fri Jan  8 2016 - Thomas Wagner
+- bump to version 0.59.0 for (OIH) (same as S11 S12, others remain at 0.58.0 for now)
+* Sun Jan  3 2016 - Thomas Wagner
+- need --std=c++11 as well (S11)
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
 * Tue Nov 17 2015 - Thomas Wagner
 - fix the 32-bit BUILD be really 32-bit
 - fix build on systems with updates system headers for c++ by --std=c++11

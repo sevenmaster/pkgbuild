@@ -97,9 +97,10 @@ BOOST_ROOT=`pwd`
 #on Solaris 12 with patched SFEgcc.spec (userland Sol gcc 4.8 patches for new C++ standards present in system headers)
 #else: /usr/include/sys/feature_tests.h:392:2: error: #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications       require the use of c99"
 # #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications \
-%if %{solaris12}
+#-D_GLIBCXX_USE_C99_MATH or get on S11.3+SFEgcc 4.8.5 this: ./boost/math/special_functions/fpclassify.hpp:525:17: error: 'isnan' is not a member of 'std'
+%if %( expr %{solaris11} '|' %{solaris12} )
 export CFLAGS="%optflags -D_XPG6"
-export CXXFLAGS="%cxx_optflags -D_XPG6 --std=c++11"
+export CXXFLAGS="%cxx_optflags -D_XPG6 -std=c++11 -D_GLIBCXX_USE_C99_MATH"
 %else
 export CFLAGS="%optflags -D_XPG6"
 export CXXFLAGS="%cxx_optflags -D_XPG6"
@@ -186,6 +187,13 @@ CPUS=%{_cpus_memory}
 
 
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- bump version to 0.59.0 on (OIH)
+* Mon Jan  4 2016 - Thomas Wagner
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
+- fix typo --stdc=c++11 -> -stdc=c++11
+* Sun Jan  3 2016 - Thomas Wagner
+- need -std=c++11 as well (S11)
 * Tue Nov 17 2015 - Thomas Wagner
 - fix the 32-bit BUILD be really 32-bit
 - bump version to 0.59.0 or get c++ redefinition with updates system headers (S11 S12)

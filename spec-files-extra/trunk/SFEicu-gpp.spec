@@ -1,11 +1,3 @@
-#functions get version numbers starting with ICU 49
-#read: http://userguide.icu-project.org/design paragraph ICU Binary Compatibility: Using ICU as an Operating System Level Library
-#if set --disable-renaming then you *need* every consumter be rebuilt to match features / functions of the icu version used at compile time
-#pkgtool --with-disable_renaming
-%define with_disable_renaming %{?_with_disable_renaming:1}%{?!_with_disable_renaming:0}
-
-
-
 # beware! If you recompile this spec file while another, older lib of the same is still 
 
 #         installed on your system, you most likely run into "symbol not found"
@@ -34,6 +26,7 @@
 # is /usr/g++.
 
 %include Solaris.inc
+%include buildparameter.inc
 %include usr-g++.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -42,6 +35,7 @@
 %use icu_64 = icu.spec
 %endif
 
+%include usr-g++.inc
 %include base.inc
 %use icu = icu.spec
 
@@ -82,6 +76,9 @@ mkdir %name-%version/%{base_arch}
 %icu.prep -d %name-%version/%{base_arch}
 
 %build
+
+export MAKE_CPUS=%{_cpus_memory}
+
 %ifarch amd64 sparcv9
 %icu_64.build -d %name-%version/%_arch64
 %endif
@@ -97,6 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %icu.install -d %name-%version/%base_arch
 
+##TODO## link isaexec
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -158,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 11 2015 - Thomas Wagner
+- add missing include usr-g++.inc
+- add parallel build
 * Sun Aug 23 2015 - Thomas Wagner
 - remove wrong --disable-renamings, as it causes unkown symbol errors in consuming libaries (e.g. libvisio, libmspub)
 - remove unrecognized configure opts: --disable-warnings, --disable-dependency-tracking, --enable-threads
