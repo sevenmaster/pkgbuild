@@ -10,6 +10,7 @@
 
 Name:                   icu
 Summary:                International Components for Unicode
+##REMEMBER## to update this version number in include/packagenamemacros.inc accordingly
 Version:                55.1
 %define tarball_version %( echo %{version} | sed -e 's/\./_/g' )
 Source:			http://download.icu-project.org/files/%tarball_name/%version/%tarball_name-%tarball_version-src.tgz
@@ -184,6 +185,9 @@ ${MAKE} install DESTDIR=${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sun Oct 11 2015 - Thomas Wagner
+- add missing include usr-g++.inc
+- add parallel build
 * Sun Aug 23 2015 - Thomas Wagner
 - remove wrong --disable-renamings, as it causes unkown symbol errors in consuming libaries (e.g. libvisio, libmspub)
 - remove unrecognized configure opts: --disable-warnings, --disable-dependency-tracking, --enable-threads
