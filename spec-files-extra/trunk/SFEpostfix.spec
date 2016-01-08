@@ -56,6 +56,14 @@
 %define rundropgroupid	182
 # see much more special variables below
 
+#mediator settings
+%define mediator		sendmail
+%define mediator_implementation postfix-sfe
+#unused %define mediator_priority	vendor
+%if %( expr %{oihipster} '|' %{omnios} )
+%define mediator		mta
+%endif
+
 %define src_name	postfix
 %define gnu_sysconfdir	/etc/gnu
 %define gnu_dir		%{_basedir}/gnu
@@ -192,7 +200,6 @@ SUNW_PkgType:		root
 #pause for testing dependency order # Requires: %name
 
 #variables altered from postfix.spec
-%define rmail_patch %(which rmail)
 %define docdir %{_docdir}/%{name}
 #probably not used directly, SMF is the way we should go
 %define initdir /etc/init.d
@@ -202,21 +209,51 @@ SUNW_PkgType:		root
 %define html_dir     %{docdir}/html
 %define examples_dir %{docdir}/examples
 
-%define newaliases_path %{_bindir}/newaliases.postfix
-%define mailq_path %{_bindir}/mailq.postfix
-%define rmail_path %{_bindir}/rmail.postfix
-%define sendmail_path %{_sbindir}/sendmail.postfix
-#that below is a linuxism... hey we are on Solaris and we can!
-# Don't use %{_libdir} as it gives the wrong directory on x86_64 servers
-%define usrlib_sendmail /usr/lib/sendmail.postfix
+#real files
+%define newaliases_path	%{_sbindir}/newaliases.postfix
+%define mailq_path 	%{_bindir}/mailq.postfix
+%define rmail_path	%{_bindir}/rmail.postfix
+%define sendmail_path	%{_libdir}/sendmail.postfix
+
+#mediated symlinks
+%define symlink_usrsbin_newaliases	%{_sbindir}/newaliases
+%define symlink_usrbin_mailq		%{_bindir}/mailq
+%define symlink_usrlib_sendmail		%{_libdir}/sendmail
+%define symlink_usrsbin_sendmail	%{_sbindir}/sendmail
+
+#real files
+%define mailq_1_postfix_path		%{_mandir}/man1/mailq.postfix.1
+%define newaliases_1_postfix_path	%{_mandir}/man1/newaliases.postfix.1
+%define sendmail_1_postfix_path		%{_mandir}/man1/sendmail.postfix.1
+%define aliases_5_postfix_path		%{_mandir}/man5/aliases.postfix.5
+
+#mediated symlinks
+%define symlink_man_mailq_1		%{_mandir}/man1/mailq.1
+%define symlink_man_newaliases_1	%{_mandir}/man1/newaliases.1
+%define symlink_man_sendmail_1		%{_mandir}/man1/sendmail.1
+%define symlink_man_aliases_5		%{_mandir}/man1/aliases.5
 
 
 
 %description
-Email MTA
+Email MTA - Mail Transfer Agent
 See the wiki page for SFEpostfix.spec for installation guidance:
   http://pkgbuild.wiki.sourceforge.net/SFEpostfix.spec
 
+STRONG NOTE: See the list of available MTAs on your system. You need to
+select the MTA which gets the filenames like /usr/lib/sendmail propperly
+symlinked to the binaries. See for available mediators: "pkg mediator -a"
+
+ See the currently active MTA:
+ pkg mediator %{mediator}
+
+To enable this package as MTA, you need to issue the command:
+
+ pfexec pkg set-mediator -I postfix-sfe %{mediator}
+
+Then configure postfix in /etc/postfix/ and remember, the by
+default active "aliases"-file is the file "/etc/aliases" and
+the file /etc/postfix/aliases ist not used by default.
 
 %prep
 %setup -q -n postfix-%version
@@ -466,12 +503,47 @@ sh postfix-install -non-interactive \
 # The alternatives then point /usr/lib/sendmail to /usr/lib/sendmail.postfix.
 # This *is* all a bit silly ...
 
+pushd ${RPM_BUILD_ROOT}/%{_datadir}
+# rename man pages which may conflict with sendmail's
+# ..../var/tmp/pkgbuild-user/SFEpostfix.../usr/share/man
+#    RPM_BUILD_ROOT                       %{_mandir}    = %{_datadir}/man
+[ -r man/man1/mailq.1 ]      && mv man/man1/mailq.1      man/man1/mailq.postfix.1
+[ -r man/man1/newaliases.1 ] && mv man/man1/newaliases.1 man/man1/newaliases.postfix.1
+[ -r man/man1/sendmail.1 ]   && mv man/man1/sendmail.1   man/man1/sendmail.postfix.1
+[ -r man/man5/aliases.5 ]    && mv man/man5/aliases.5    man/man5/aliases.postfix.5
+popd
+
+#prepare symlinks for later medaition in the IPS package
+
 install -d -m755 $RPM_BUILD_ROOT/usr/lib
-ln -sf ../sbin/sendmail.postfix $RPM_BUILD_ROOT%{usrlib_sendmail}
+ln -sf sendmail.postfix $RPM_BUILD_ROOT%{symlink_usrlib_sendmail}
+
+#this is mediated in IPS packages!
+ln -sf ../lib/sendmail.postfix $RPM_BUILD_ROOT%{symlink_usrsbin_sendmail}
+
+#this is mediated
+#e.g. /usr/sbin/newaliases.postfix  /usr/sbin/newaliases
+ln -sf ../..%{newaliases_path} $RPM_BUILD_ROOT%{symlink_usrsbin_newaliases}
+
+#%{_bindir}/mailq.postfix  /usr/bin/mailq
+ln -sf ../..%{mailq_path}	$RPM_BUILD_ROOT%{symlink_usrbin_mailq}
+
+#link manpages for later mediation
+%if %( expr %{oihipster} '|' %{omnios} )
+#sorry, delivers man1/mailq.1 unmediated, we skip this symlink - please read mailq.postfix.1 instead
+##TODO## re-visit and check if the target distro fixed mailq.1 to be mediated!
+%else
+ln -sf ../../../..%{mailq_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_mailq_1}
+%endif
+ln -sf ../../../..%{newaliases_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_newaliases_1}
+ln -sf ../../../..%{sendmail_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_sendmailmailq_1}
+ln -sf ../../../..%{aliases_5_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_aliases_5}
+
 
 # RPM compresses man pages automatically.  Edit postfix-files to avoid
 # confusing post-install.
 #ed ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/postfix-files <<EOF || exit 1
+cp -p conf/postfix-files conf/postfix-files.orig
 ed conf/postfix-files <<EOF || exit 1
 H
 ,s/\(\/man[158]\/.*\.[158]\):/\1%{mps}:/
@@ -540,7 +612,8 @@ for i in active bounce corrupt defer deferred flush incoming private saved \
 done
 
 # install qmqp-source, smtp-sink & smtp-source by hand
-for i in qmqp-source smtp-sink smtp-source; do
+for i in qmqp-source smtp-sink smtp-source qmqp-source
+  do
   install -c -m 755 bin/$i ${RPM_BUILD_ROOT}%{_sbindir}/$i
 done
 
@@ -713,15 +786,6 @@ cp -p tmp/filter.sh ${RPM_BUILD_ROOT}/%{_libexecdir}/postfix/filter.sh
 
 %{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
-cd ${RPM_BUILD_ROOT}/%{_datadir}
-# rename man pages which may conflict with sendmail's
-# ..../var/tmp/pkgbuild-user/SFEpostfix.../usr/share/man
-#    RPM_BUILD_ROOT                       %{_mandir}    = %{_datadir}/man
-[ -r man/man1/mailq.1 ]      && mv man/man1/mailq.1      man/man1/mailq.postfix.1
-[ -r man/man1/newaliases.1 ] && mv man/man1/newaliases.1 man/man1/newaliases.postfix.1
-[ -r man/man1/sendmail.1 ]   && mv man/man1/sendmail.1   man/man1/sendmail.postfix.1
-[ -r man/man5/aliases.5 ]    && mv man/man5/aliases.5    man/man5/aliases.postfix.5
-
 
 
 
@@ -822,8 +886,12 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %files
 %defattr(-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
+#mediators below!
+#%{_bindir}/*
+%{_bindir}/postfinger
+%{mailq_path}
 %dir %attr (0755, root, bin) %{_sbindir}
+%{_sbindir}/newaliases.postfix
 %{_sbindir}/postalias
 %{_sbindir}/postcat
 %{_sbindir}/postconf
@@ -836,11 +904,20 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %{_sbindir}/postmap
 %{_sbindir}/postmulti
 %{_sbindir}/postsuper
+%{rmail_path}
 %{_sbindir}/smtp-sink
 %{_sbindir}/smtp-source
 %{_sbindir}/qmqp-source
 %{_sbindir}/qshape
-%{_sbindir}/sendmail.postfix
+
+#make the symlink mediated:  /usr/lib/sendmail -> /usr/lib/sendmail.postfix
+#%ips_tag(mediator=sendmail mediator-implementation=postfix-sfe mediator-priority=vendor) %{_sbindir}/sendmail 
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_libdir}/sendmail 
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_sbindir}/sendmail 
+
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{symlink_usrbin_mailq}
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_sbindir}/newaliases
+
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/sendmail.postfix
 %dir %attr (0711, root, bin) %{_libdir}/%{src_name}
@@ -849,8 +926,20 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/%{name}/*
 %dir %attr(0755, root, bin) %{_mandir}
-%dir %attr(0755, root, bin) %{_mandir}/*
-%{_mandir}/*/*
+%if %( expr %{oihipster} '|' %{omnios} )
+#sorry, delivers man1/mailq.1 unmediated, we skip this symlink - please read mailq.postfix.1 instead
+##TODO## re-visit and check if the target distro fixed mailq.1 to be mediated!
+%else
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{symlink_man_mailq_1}
+%endif
+%{mailq_1_postfix_path}
+%{_mandir}/man1/[b-ln-z]*
+%{aliases_5_postfix_path}
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{symlink_man_aliases_5}
+%{_mandir}/man5/access.5
+%{_mandir}/man5/[b-z]*
+%{_mandir}/man8/*
+
 
 
 %files root
@@ -939,7 +1028,10 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 #For setups if sendmail is disabled and postfix enabled
 # pfexec rm /usr/lib/sendmail && pfexec  ln -s /usr/sbin/sendmail.postfix  /usr/lib/sendmail
 
+
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- add mediators to common / public mail programs
 * Wed Oct 14 2015 - Thomas Wagner
 - bump to 3.0.3
 * Fri Aug  7 2015 - Thomas Wagner
