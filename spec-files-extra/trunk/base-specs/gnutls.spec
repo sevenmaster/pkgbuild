@@ -1,19 +1,25 @@
 #
 #
 Name:     	gnutls
-Version: 	3.4.5
+Version: 	3.4.8
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
 URL:		http://www.gnutls.org
 %define        major_minor_version %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 Source:        ftp://ftp.gnutls.org/gcrypt/gnutls/v%{major_minor_version}/gnutls-%{version}.tar.xz
+Patch1:        gnutls-01-ENABLE_PKCS11.diff
 
 
 %prep
 #don't unpack please
 %setup -q -c -T -n %{name}-%{version}
 xz -dc %SOURCE0 | (cd ..; tar xf -)
+
+%if %( expr %{solaris11} '|' %{solaris12} )
+#pkcs11_common
+%patch1 -p1 
+%endif
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -49,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- add patch1 gnutls-01-ENABLE_PKCS11.diff or get unresolved symbol pkcs11_common  tpmtool.o (S11 S12)
+- bump to 3.4.8
 * Sun Oct 11 2015 - Thomas Wagner
 - add to *FLAGS  -I/usr/include/idn to find idna.h
 - add BuildRequires SFEicu-gpp SFElibtasn1-gnu pnm_buildrequires_library_guile pnm_buildrequires_library_libidn

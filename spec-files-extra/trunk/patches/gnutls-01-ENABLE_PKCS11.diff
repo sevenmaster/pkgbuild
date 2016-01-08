@@ -1,0 +1,33 @@
+[gnutls-devel] pkcs11_common(NULL) issue in 3.4.6
+
+Jenny Yung jenny.yung at oracle.com
+Mon Nov 30 23:47:16 CET 2015
+
+Hi,
+
+This issue is found in 3.4.6.
+
+Currently in src/tpmtool.c, pkcs11_common(NULL) is being called when 
+PKCS11 is not enabled. We have p11 disabled in our configure options, so 
+it was unable to build.
+
+I have the suggested patch here:
+
+Thanks,
+Jenny Yung
+Oracle Solaris Security
+
+
+
+--- gnutls-3.4.6/src/tpmtool.c.orig2	2015-07-21 11:42:08.000000000 +0200
++++ gnutls-3.4.6/src/tpmtool.c	2016-01-08 17:01:28.292125096 +0100
+@@ -184,7 +184,9 @@
+ 	gnutls_datum_t data, sig = {NULL, 0};
+ 	int pk;
+ 
++#ifdef ENABLE_PKCS11
+ 	pkcs11_common(NULL);
++#endif
+ 
+ 	data.data = (void*)TEST_DATA;
+ 	data.size = sizeof(TEST_DATA)-1;
