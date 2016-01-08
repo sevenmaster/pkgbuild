@@ -1,7 +1,7 @@
 
 #
 Name:     	nettle
-Version: 	2.7.1
+Version: 	3.1.1
 ##TODO##License:	LGPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Source:         http://ftp.gnu.org/gnu/nettle/nettle-%{version}.tar.gz
@@ -60,6 +60,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Okt 10 2015 - Thomas Wagner
+- bump to 3.1.1 for new gnutls 3.4.4
 * Mon Jun 15 2015 - Thomas Wagner
 - downgrade to 2.7.1 (to suit gnutls)
 - fix _arch64 build
