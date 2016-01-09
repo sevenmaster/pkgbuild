@@ -1,3 +1,11 @@
+#functions get version numbers starting with ICU 49
+#read: http://userguide.icu-project.org/design paragraph ICU Binary Compatibility: Using ICU as an Operating System Level Library
+#if set --disable-renaming then you *need* every consumter be rebuilt to match features / functions of the icu version used at compile time
+#pkgtool --with-disable_renaming
+%define with_disable_renaming %{?_with_disable_renaming:1}%{?!_with_disable_renaming:0}
+
+
+
 # beware! If you recompile this spec file while another, older lib of the same is still 
 
 #         installed on your system, you most likely run into "symbol not found"
@@ -156,6 +164,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  8 2016 - Thomas Wagner
+- add back accidentially deleted compile time switch and the explanation
 * Sun Oct 11 2015 - Thomas Wagner
 - add missing include usr-g++.inc
 - add parallel build
