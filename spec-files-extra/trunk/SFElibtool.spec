@@ -12,11 +12,10 @@ Name:                SFElibtool
 IPS_package_name:    sfe/developer/build/libtool
 Summary:             GNU libtool - library support utility
 Group:		     Development/GNU
-Version:             2.4.2
-Source:              http://ftp.gnu.org/gnu/libtool/libtool-%{version}.tar.gz
+Version:             2.4.6
+Source:              http://ftp.gnu.org/gnu/libtool/libtool-%{version}.tar.xz
 SUNW_BaseDir:        %{_basedir}
 SUNW_Copyright:      SFExdialog.copyright
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 Requires: SUNWbash
@@ -74,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/libtool/*
 
 %changelog
+* Sat Jan  9 2015 - Alex Viskovatoff
+- Bump to 2.4.6
 * Fri Sep 13 2013 - Alex Viskovatoff
 - Update to 2.4.2
 - Install in /usr/gnu so as not to coflict with system libtool
