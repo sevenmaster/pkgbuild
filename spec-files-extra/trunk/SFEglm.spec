@@ -60,7 +60,7 @@ Requires:      %{pnm_requires_developer_build_cmake}
 
 
 %prep
-%setup -q 
+%setup -q -n glm-%{version}
 
 
 %build
