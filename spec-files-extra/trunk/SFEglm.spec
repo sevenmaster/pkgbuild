@@ -31,7 +31,7 @@ Version:		%major_version.%minor_version
 License:		MIT and GPL-2.0+`
 #SUNW_Copyright:		%{license}.copyright
 #Source:			%{src_url}/%{version}/%{src_name}-%{version}.zip
-Source:			https://github.com/g-truc/glm/releases/download/0.9.7.0/glm-0.9.7.0.zip
+Source:			http://github.com/g-truc/glm/archive/%{version}.zip
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
 
@@ -60,7 +60,7 @@ Requires:      %{pnm_requires_developer_build_cmake}
 
 
 %prep
-%setup -q -n %src_name
+%setup -q 
 
 
 %build
@@ -109,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/%src_name
 
 %changelog
+* Wed Jan 13 2016 - Rene Elgaard
+- Update download source and setup call
 * Sun Sep 20 2015 - pjama
 - add (Build)Requires SFEgcc
 * Tues Aug 26 2015 - pjama
