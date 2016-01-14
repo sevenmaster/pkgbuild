@@ -6,21 +6,30 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %( expr %{omnios} '=' 0 )
+echo "Only to be used on OmniOS, other OS-distro use distro provided guile"
+exit 1
+%endif
+
 Name:                SFEguile
+IPS_Package_Name:	library/guile
 URL:                 http://www.gnu.org/software/guile/
 Summary:             Embeddable Scheme implementation written in C
-Version:             1.8.5
+Version:             1.8.8
 Source:              http://ftp.gnu.org/pub/gnu/guile/guile-%{version}.tar.gz
 Patch1:              guile-01-autoconf.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-Requires: SUNWgnu-mp
-Requires: SUNWlibtool
-Requires: SUNWltdl
+BuildRequires: SFEgmp
+Requires: SFEgmp
+BuildRequires: %{pnm_buildrequires_SUNWlibtool_devel}
+Requires:      %{pnm_requires_SUNWlibtool}
+BuildRequires: %{pnm_buildrequires_SUNWltdl_devel}
+Requires:      %{pnm_requires_SUNWltdl}
 BuildRequires: %{pnm_buildrequires_SUNWlibm}
-Requires:      %{pnm_buildrequires_SUNWlibm}
+Requires:      %{pnm_requires_SUNWlibm}
 
 %package devel
 Summary:       %{summary} - development files
@@ -38,8 +47,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export CFLAGS="%optflags -I/usr/include/gmp"
-export LDFLAGS="%_ldflags"
+export CFLAGS="%optflags -I%{gnu_inc}"
+export LDFLAGS="%_ldflags %{gnu_lib_path}"
 export ACLOCAL_FLAGS="-I . -I m4"
 
 #libtoolize --copy --force
@@ -60,7 +69,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
-rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+[ -d ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
 
 #create site folder
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/guile/site
@@ -100,9 +109,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/*
 %{_datadir}/guile/*
 %{_datadir}/info/*
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*
+%if %( expr %{omnios} '=' 0 )
+#not on OmniOS
 %dir %attr (0755, root, bin) %{_datadir}/emacs
 %dir %attr (0755, root, bin) %{_datadir}/emacs/site-lisp
 %{_datadir}/emacs/site-lisp/*
+%endif
 
 %files devel
 %defattr (-, root, bin)
@@ -113,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Jan 13 2016 - Thomas Wagner
+- Bump to 1.8.8
+- change back to SFEgmp (OM)
 * Sat Oct 11 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNWlibm}, %include packagenamacros.inc
 * Sun Jan 18 2009 - halton.huo@sun.com
