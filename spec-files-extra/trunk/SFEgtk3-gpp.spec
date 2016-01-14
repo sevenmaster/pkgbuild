@@ -270,8 +270,11 @@ rm -rf $RPM_BUILD_ROOT
 #%dir %attr(0755, root, bin) %{_mandir}/man3
 #%{_mandir}/man3/*
 %dir %attr(0755, root, bin) %{_mandir}/man1
-%attr(0755, root, other) %_datadir/applications/*.desktop
-%attr(0755, root, other) %_datadir/icons/hicolor
+%defattr (-, root, other)
+%dir %attr (-, root, other) %_datadir/applications
+%_datadir/applications/*.desktop
+%dir %attr (-, root, other) %_datadir/icons
+%_datadir/icons/hicolor
 
 #%files root
 %defattr (-, root, sys)
