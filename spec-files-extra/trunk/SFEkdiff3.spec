@@ -4,18 +4,21 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 
 Name:                SFEkdiff3
-Summary:             Qt based diff -- compares or merges 2 or 3 files or directories
-Version:             0.9.91
+IPS_package_name:    text/kdiff3
+Group:		     Applications/System Utilities
+URL:		     http://kdiff3.sourceforge.net/
+Summary:             Qt based diff - compares or merges 2 or 3 files or directories
+Version:             0.9.98
 Source:              %{sf_download}/kdiff3/kdiff3-%{version}.tar.gz
-
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-Requires: SFEqt
-BuildRequires: SFEqt-devel
+Requires: SFEqt-gpp
+BuildRequires: SFEqt-gpp-devel
 
 %prep
 %setup -q -n kdiff3-%version
@@ -26,16 +29,16 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
-export CC=/usr/sfw/bin/gcc
-export CXX=/usr/sfw/bin/g++
+export CC=gcc
+export CXX=g++
 export CFLAGS="-O4 -fPIC -DPIC -Xlinker -i -fno-omit-frame-pointer"
 export LDFLAGS="%_ldflags"
 
 cd src-QT4
 
-perl -i.orig -lpe 's/local\/// if $. == 51 || $. == 56' kdiff3.pro
+gsed -i -e 's|/usr/local/|/usr/|g' kdiff3.pro
 
-qmake kdiff3.pro -o Makefile.qt
+/usr/g++/bin/qmake kdiff3.pro -o Makefile.qt
 make -f Makefile.qt
 
 %install
@@ -56,6 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Fri Jan 15 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Update to 0.9.98; use new directory layout
 * Mon Mar 19 2007 - dougs@truemail.co.th
 - Fixed -fno-omit-frame-pointer flag
 * Fri Dec 07 2006 - Eric Boutilier
