@@ -10,7 +10,8 @@
 %include packagenamemacros.inc
 
 #change version number only here.
-%define ffmpeg_version 2.2
+#%define ffmpeg_version 2.2
+%define ffmpeg_version 2.8.5
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -55,10 +56,11 @@ BuildRequires: SFEgcc
 Requires:      SFEgccruntime
 BuildRequires: SFEyasm
 BuildRequires: SUNWtexi
-BuildRequires: %pnm_buildrequires_perl_default
-BuildRequires: SUNWxwinc
+BuildRequires: %{pnm_buildrequires_perl_default}
+BuildRequires: %{pnm_buildrequires_SUNWxwinc}
 Requires: SUNWxwrtl
-Requires: SUNWzlib
+BuildRequires:  %{pnm_buildrequires_SUNWzlib}
+Requires:       %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_SUNWbzip}
 Requires:      %{pnm_requires_SUNWbzip}
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
@@ -81,15 +83,15 @@ BuildRequires: SUNWogg-vorbis-devel
 Requires: SUNWogg-vorbis
 BuildRequires: SUNWlibtheora-devel
 Requires: SUNWlibtheora
-BuildRequires: SUNWspeex-devel
-Requires: SUNWspeex
+BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
+Requires:      %{pnm_requires_SUNWspeex}
 BuildRequires: SFEopencore-amr-devel
 Requires: SFEopencore-amr
 BuildRequires: %{pnm_buildrequires_SUNWgsed}
-BuildRequires: SFEopenjpeg-devel
-Requires: SFEopenjpeg
-BuildRequires: SFElibschroedinger-devel
-Requires: SFElibschroedinger
+BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
+Requires:      %{pnm_requires_SFEopenjpeg}
+BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
+Requires:      %{pnm_requires_SFElibschroedinger}
 BuildRequires: SFErtmpdump-devel
 Requires: SFErtmpdump
 BuildRequires: SFElibass-devel
@@ -189,6 +191,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- bump to 2.8.5
+* Sun Nov 29 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_SUNWzlib}, SUNWspeex
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg SFElibschroedinger to use (OIH) openjpeg and libschroedinger
+- bump to 2.8.3 (try getting openjpeg 2 in)
+- add patche ffmpeg-51-openjpeg2.diff - imported from OI userland/encumbered to get openjpeg2
 * Fri Mar 28 2014 - Thomas Wagner
 - bump to 2.2
 - add (Build)Requires to %{pnm_buildrequires_SUNWopenssl}, %{pnm_buildrequires_SUNWbzip}
