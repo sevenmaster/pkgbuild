@@ -1,3 +1,6 @@
+##TODO## needs premisison or kernel structures update on at least OmniOS !!
+
+
 #
 # spec file for package SFElsof
 #
@@ -12,13 +15,16 @@
 Name:                SFElsof
 IPS_Package_Name:    developer/lsof
 Summary:             List open files
-Version:             4.83
-Source:              http://ftp.cerias.purdue.edu/pub/tools/unix/sysutils/lsof/lsof_%{version}.tar.bz2
-Patch1:              lsof-01-machine.diff
-Patch2:              lsof-02-dlsof.diff
-Patch3:              lsof-03-dnode.diff
-Patch4:              lsof-04-dsock.diff
-Patch5:              lsof-05-print.diff
+Version:             4.89
+#Source:              http://ftp.cerias.purdue.edu/pub/tools/unix/sysutils/lsof/lsof_%{version}.tar.bz2
+Source:              http://launchpad.net/lsof/main/%{version}/+download/lsof_%{version}.tar.gz
+#Patch1:              lsof-01-machine.diff
+#Patch2:              lsof-02-dlsof.diff
+#Patch3:              lsof-03-dnode.diff
+#Patch4:              lsof-04-dsock.diff
+#Patch5:              lsof-05-print.diff
+#imported from friendly OpenCSW:
+Patch6:              lsof-0002-Disable-VxFS-autodetect.patch.opencsw.diff
 SUNW_Copyright:          %{name}.copyright
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -28,11 +34,12 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %setup -q -n lsof_%version
 tar xf lsof_%{version}_src.tar
 cd lsof_%{version}_src
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+#%patch1 -p1
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p1
+#%patch5 -p1
+%patch6 -p2
 
 %build 
 cd lsof_%{version}_src
@@ -68,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lsof.8
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- bump to 4.89
+- new source URL
+- import patch6 from OpenCSW
 * Sun Mar 11 2012 - Logan Bruns <logan@gedanken.org>
 - fixed zfs kernel struct binding and tcp use but not icmp and
   udp. so, for example, lsof -p works but not lsof -i.
