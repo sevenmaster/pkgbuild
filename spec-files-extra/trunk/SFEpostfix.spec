@@ -605,6 +605,13 @@ install -c auxiliary/qshape/qshape.pl ${RPM_BUILD_ROOT}/%{_sbindir}/qshape
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases.unused
 
 #disabled touch ${RPM_BUILD_ROOT}/%{_sysconfdir}/postfix/aliases.db
+ 
+%if %{omnios}
+#link created in %install - mediator in %files
+ln -s mail/aliases ${RPM_BUILD_ROOT}%{_sysconfdir}/aliases
+#use the postfix provided default aliases. in %files existing aliases protected by renamenew
+mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases.unused ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/aliases
+%endif
 
 for i in active bounce corrupt defer deferred flush incoming private saved \
          hold maildrop public pid; do
@@ -942,9 +949,18 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 
+
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
+#Solaris sendmail: link path=etc/aliases target=./mail/aliases
+#Omnios sendmail:  link mediator=mta mediator-implementation=sendmail path=etc/aliases target=./mail/aliases
+%if %{omnios}
+#link created in %install
+%ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_sysconfdir}/aliases
+%class(renamenew) %{_sysconfdir}/mail/aliases
+%endif
+
 %attr (0755, root, sys) %dir %{_sysconfdir}/%{src_name}
 #%{_sysconfdir}/%{src_name}/*
 %config %{_sysconfdir}/%{src_name}/master.cf
@@ -1030,6 +1046,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- add mediated symlink /etc/aliases -> /etc/mail/aliases only on OmniOS and OpenIndiana Hipster (OM, OIH)
+- mv postfix template aliases file to /etc/mail/aliases (with renamenew)
 * Fri Jan  8 2016 - Thomas Wagner
 - add mediators to common / public mail programs
 * Wed Oct 14 2015 - Thomas Wagner
