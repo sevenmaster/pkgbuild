@@ -7,6 +7,7 @@
 #
 
 %include Solaris.inc
+##hold## %define cc_is_gcc 1
 %include usr-gnu.inc
 %include base.inc
 
@@ -21,11 +22,12 @@ Summary:        Terminal multiplexer (/usr/gnu)
 #git IPS_Component_Version: 1.9.0.2
 #git %define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #git Version:        1.9a.git.df6488
+#Version:        2.1 # needs patching header files (Linuxisms)
 Version:        2.0
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
-Source:		https://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
+Source:		http://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
 #Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
@@ -56,7 +58,8 @@ moved between sessions and otherwise manipulated. Each session may be attached
 to (display and accept keyboard input from) multiple clients.
 
 %prep
-%setup -q -n %{srcname}-%{srcname}-code-%{git_snapshot}
+#%setup -q -n %{srcname}-%{srcname}-code-%{git_snapshot}
+%setup -q -n %{srcname}-%{version}
 #tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #cd %{srcname}-%{srcname}-code-%{git_snapshot}
 #%patch5 -p1
@@ -65,12 +68,15 @@ to (display and accept keyboard input from) multiple clients.
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+##hold## CC=gcc
+##hold## CXX=g++
+
 export CFLAGS="%optflags -I/usr/gnu/include"
 # Need to supply -lcurses, because otherwise, it tries to link against ncurses,
 # leading to "Undefined Symbol: delterm" error
 # try avoiding core dumps by linking to 0@0.so.1
 export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -lcurses -L/usr/gnu/lib -R/usr/gnu/lib"
-bash autogen.sh
+[ -x autogen.sh ] && bash autogen.sh
 ./configure
 gmake -j$CPUS
 
@@ -97,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+##hold## * Fri Jan 15 2016 - Thomas Wagner
+##hold## - bump to 2.1
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Mon Aug 10 2015 - Thomas Wagner
