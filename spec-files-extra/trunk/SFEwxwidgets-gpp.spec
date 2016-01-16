@@ -32,13 +32,13 @@ Version:		 %{wxwidgets.version}
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires:      SUNWgnome-libs
 Requires:      SUNWgnome-vfs
 Requires:      %{pnm_requires_SUNWlibsdl}
-BuildRequires: SUNWgnome-libs-devel
+BuildRequires: %{pnm_buildrequires_SUNWgnome_libs_devel}
+Requires:      %{pnm_requires_SUNWgnome_libs}
 BuildRequires: SUNWgnome-vfs-devel
 %ifarch i386 amd64
-BuildRequires: SUNWxorg-mesa
+BuildRequires:  %{pnm_buildrequires_SUNWxorg_mesa_devel}
 %endif
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
 BuildRequires: SFEgcc
@@ -129,6 +129,8 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Fri Dec 25 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWgnome_libs_devel, pnm_buildrequires_SUNWxorg_mesa_devel
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Fri Nov  1 2013 - Thomas Wagner
