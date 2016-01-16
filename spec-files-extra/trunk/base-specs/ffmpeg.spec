@@ -11,6 +11,8 @@ Source:                  http://www.ffmpeg.org/releases/ffmpeg-%{ffmpeg_version}
 URL:                     http://www.ffmpeg.org/index.html
 Patch11:		 ffmpeg-11-add-sys_videodev2_h.diff
 Patch13:		 ffmpeg-13-rpath-link.diff
+Patch51:                 ffmpeg-51-openjpeg2.diff
+
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 Autoreqprov:             on
@@ -23,6 +25,8 @@ Autoreqprov:             on
 %patch13 -p1
 %endif
 perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
+
+%patch51 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -39,6 +43,10 @@ export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib %{xorg_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export LDFLAGS="$LDFLAGS -m64"
 fi
+
+export CFLAGS="$CFLAGS -DHAVE_OPENJPEG_2_0_OPENJPEG_H"
+
+##TODO## check if also to be set: CFLAGS += $(CPP_LARGEFILES)
 
 #older ffmpeg versions do not know every option
 %if %( echo %{version} | grep "^0\.8\." > /dev/null && echo 1 || echo 0 )
@@ -109,21 +117,34 @@ prefix=%{_prefix}
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
-Description: FFmpeg codec library
+Description: FFmpeg codec library - version displayed is a dummy - see sub-libraries for real version numbers
 Version: 51.40.4
 Requires:  libavcodec libpostproc libavutil libavformat libswscale x264 ogg theora vorbisenc vorbis dts
 Conflicts:
 EOM
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- bump to 2.8.5
+* Sun Nov 29 2015 - Thomas Wagner
+- change to (Build)Requires %{pnm_buildrequires_SUNWzlib}, SUNWspeex
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg SFElibschroedinger to use (OIH) openjpeg and libschroedinger
+- bump to 2.8.3 (try getting openjpeg 2 in)
+- add patche ffmpeg-51-openjpeg2.diff - imported from OI userland/encumbered to get openjpeg2
+* Fri Mar 28 2014 - Thomas Wagner
+- bump to 2.2
+- add (Build)Requires to %{pnm_buildrequires_SUNWopenssl}, %{pnm_buildrequires_SUNWbzip}
 * Tue Dec 24 2013 - Thomas Wagner
 - change (Build)Requires to SFEfaac-gpp(-devel)
 - follow /usr/g++ directory layout, add to CFLAGS / LDFLAGS include /usr/g++/include and -R|-L/usr/g++/lib/%{arch}
 * Thu Nov 28 2013 - Thomas Wagner
 - make version controllable from calling spec, else keep default version
+* Thu Jul 11 2013 - Thomas Wagner
+- change BuildRequires to %{pnm_buildrequires_SUNWgsed} (S12)
 * Tue Dec 24 2013 - Ken Mays
 - bump to 2.1.1
 * Fri Nov  1 2013 - Alex Viskovatoff
