@@ -17,7 +17,7 @@
 %define src_url  http://downloads.sourceforge.net/libwpd
 
 %define major_version 0.1
-%define minor_version 4
+%define minor_version 6
 
 Name:			SFElibodfgen
 IPS_Package_Name:	sfe/library/g++/libodfgen
@@ -117,6 +117,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Thomas Wagner
+- bump to version 0.1.6
 * Sun Sep 20 2015 - pjama
 - %include usr-g++.inc
 - set (Build)Requires SFEgcc
