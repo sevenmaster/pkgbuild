@@ -1,0 +1,18 @@
+in LibreOffice you may get:
+/usr/include/glm/detail/func_trigonometric.inl:166:14: error: 'std::asinh' has not been declared
+   using std::asinh;
+              ^
+
+Suggestion here (different case) is to set GLM_HAS_CXX11_STL 0
+
+--- glm/detail/setup.hpp.orig	2015-08-02 10:22:08.000000000 +0200
++++ glm/detail/setup.hpp	2016-01-04 16:18:56.283598191 +0100
+@@ -554,6 +554,8 @@
+ 		((GLM_COMPILER & GLM_COMPILER_VC) && (GLM_COMPILER >= GLM_COMPILER_VC2013)) || \
+ 		((GLM_COMPILER & GLM_COMPILER_INTEL) && (GLM_COMPILER >= GLM_COMPILER_INTEL15)))
+ #endif
++#undef GLM_HAS_CXX11_STL
++#define GLM_HAS_CXX11_STL 0
+ 
+ // N1720
+ #if GLM_COMPILER & (GLM_COMPILER_LLVM | GLM_COMPILER_APPLE_CLANG)

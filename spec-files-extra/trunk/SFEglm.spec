@@ -32,6 +32,7 @@ License:		MIT and GPL-2.0+`
 #SUNW_Copyright:		%{license}.copyright
 #Source:			%{src_url}/%{version}/%{src_name}-%{version}.zip
 Source:			http://github.com/g-truc/glm/archive/%{version}.zip
+Patch1:                 glm-01-force_GLM_HAS_CXX11_STL_0.diff
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
 
@@ -62,6 +63,8 @@ Requires:      %{pnm_requires_developer_build_cmake}
 %prep
 %setup -q -n glm-%{version}
 
+#for libreoffice, force GLM_HAS_CXX11_STL 0
+%patch1 -p0
 
 %build
 
@@ -70,7 +73,7 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags -I/usr/g++/include -std=c++11"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 #./configure	\
@@ -111,6 +114,10 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Jan 13 2016 - Rene Elgaard
 - Update download source and setup call
+* Mon Jan  4 2016 - Thomas Wagner (merged with Jan 13 2016)
+- bump to 0.9.7.2
+- add to CXXFLAGS -std=c++11
+- add patch1 glm-01-force_GLM_HAS_CXX11_STL_0.diff
 * Sun Sep 20 2015 - pjama
 - add (Build)Requires SFEgcc
 * Tues Aug 26 2015 - pjama
