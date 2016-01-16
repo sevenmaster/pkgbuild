@@ -16,7 +16,7 @@ Patch1:        gnutls-01-ENABLE_PKCS11.diff
 %setup -q -c -T -n %{name}-%{version}
 xz -dc %SOURCE0 | (cd ..; tar xf -)
 
-%if %( expr %{solaris11} '|' %{solaris12} )
+%if %( expr %{solaris11} '|' %{solaris12} '|' %{omnios} )
 #pkcs11_common
 %patch1 -p1 
 %endif
@@ -55,6 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- enable patch1 for disable pkcs11 on (OM)
+- fix %files guile for (OM), see if necessary on other OS as well, ##TODO## revisit once SFEguile.spec is 32/64-bit
 * Fri Jan  8 2016 - Thomas Wagner
 - add patch1 gnutls-01-ENABLE_PKCS11.diff or get unresolved symbol pkcs11_common  tpmtool.o (S11 S12)
 - bump to 3.4.8
