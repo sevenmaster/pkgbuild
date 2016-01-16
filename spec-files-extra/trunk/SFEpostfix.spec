@@ -606,7 +606,7 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases ${RPM_BUILD_ROOT}%{_sysconfdi
 
 #disabled touch ${RPM_BUILD_ROOT}/%{_sysconfdir}/postfix/aliases.db
  
-%if %{omnios}
+%if %( expr %{oihipster} '|' %{omnios} )
 #link created in %install - mediator in %files
 ln -s mail/aliases ${RPM_BUILD_ROOT}%{_sysconfdir}/aliases
 #use the postfix provided default aliases. in %files existing aliases protected by renamenew
@@ -955,7 +955,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %attr (0755, root, sys) %dir %{_sysconfdir}
 #Solaris sendmail: link path=etc/aliases target=./mail/aliases
 #Omnios sendmail:  link mediator=mta mediator-implementation=sendmail path=etc/aliases target=./mail/aliases
-%if %{omnios}
+%if %( expr %{oihipster} '|' %{omnios} )
 #link created in %install
 %ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_sysconfdir}/aliases
 %class(renamenew) %{_sysconfdir}/mail/aliases
