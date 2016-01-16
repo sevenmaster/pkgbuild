@@ -6,6 +6,8 @@
 #*** http://p11-glue.freedesktop.org/p11-kit.html
 
 
+##TODO## OmniOS OM: SFEguile.spec in dual 32/64-bit, then enable interfacing libs in %files section
+
 
 #
 # gnutls
@@ -126,8 +128,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%{_libdir}/guile/*
 %ifarch amd64 sparcv9
 %{_libdir}/%{_arch64}/lib*.so*
+##TODO## guile 32/64-bit, then enable: %{_libdir}/%{_arch64}/guile/*
 %endif
 
 %files devel
@@ -146,8 +150,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_datadir}/locale
 %{_datadir}/locale/*
+%{_datadir}/guile/site/*
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- enable patch1 for disable pkcs11 on (OM)
+- fix %files guile for (OM), see if necessary on other OS as well, ##TODO## revisit once SFEguile.spec is 32/64-bit
 * Fri Jan  8 2016 - Thomas Wagner
 - add patch1 gnutls-01-ENABLE_PKCS11.diff or get unresolved symbol pkcs11_common  tpmtool.o (S11 S12)
 * Sun Oct 11 2015 - Thomas Wagner
