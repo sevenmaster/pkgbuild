@@ -22,8 +22,7 @@ Summary:        Terminal multiplexer (/usr/gnu)
 #git IPS_Component_Version: 1.9.0.2
 #git %define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #git Version:        1.9a.git.df6488
-#Version:        2.1 # needs patching header files (Linuxisms)
-Version:        2.0
+Version:        2.1
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
@@ -65,13 +64,24 @@ to (display and accept keyboard input from) multiple clients.
 #%patch5 -p1
 #%patch6 -p1
 
+
+#"compat/vis.h", line 76: cannot find include file: <sys/cdefs.h>
+#"compat/vis.h", line 78: warning: old-style declaration or incorrect type for: __BEGIN_DECLS
+#"compat/vis.h", line 88: warning: old-style declaration or incorrect type for: __END_DECLS
+gsed -i.bak \
+   -e '/^#include.*sys\/cdefs.h/ d'  \
+   -e '/__BEGIN_DECLS/ d'  \
+   -e '/__END_DECLS/ d'  \
+   compat/vis.h  \
+
+
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 ##hold## CC=gcc
 ##hold## CXX=g++
 
-export CFLAGS="%optflags -I/usr/gnu/include"
+export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6 -xc99"
 # Need to supply -lcurses, because otherwise, it tries to link against ncurses,
 # leading to "Undefined Symbol: delterm" error
 # try avoiding core dumps by linking to 0@0.so.1
@@ -103,8 +113,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-##hold## * Fri Jan 15 2016 - Thomas Wagner
-##hold## - bump to 2.1
+* Fri Jan 15 2016 - Thomas Wagner
+- bump to 2.1
+- upgrade to settings -D_XPG6 -xc99
+- keep the commented git checkout instructions in case we need them again
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Mon Aug 10 2015 - Thomas Wagner
