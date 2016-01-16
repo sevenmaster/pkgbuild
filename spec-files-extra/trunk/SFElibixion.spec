@@ -67,8 +67,11 @@ Requires:	SFEgccruntime
 # probably a fib but 0.9.1 requires python >= 2.7.0
 #BuildRequires:  runtime/python-27 >= 2.7.0
 #BuildRequires:  runtime/python-26 >= 2.6.0
-BuildRequires:  runtime/python-26
+#try pnm macro BuildRequires:  runtime/python-26
 ##TODO## OI requires python 2.6
+BuildRequires: %{pnm_buildrequires_python_default}
+Requires:      %{pnm_requires_python_default}
+
 
 ##TODO## check dependency
 BuildRequires:	%{pnm_buildrequires_boost_gpp_default}
@@ -108,7 +111,11 @@ export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 #export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags -pthreads --std=c++0x -I/usr/g++/include"
+##paused##%if %{solaris12}
+##paused##export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
+##paused##%else
+export CXXFLAGS="%cxx_optflags -D_GLIBCXX_USE_C99_MATH -pthreads --std=c++0x -I/usr/g++/include"
+##paused##%endif
 ##TODO## if g++ runtime makes troubles, try entering a runpath which takes g++ runtime from SFEgcc instead of using the osdistro /usr/lib/libstdc++.so.6
 export LDFLAGS="%_ldflags -pthreads -L/usr/g++/lib -R/usr/g++/lib"
 
@@ -134,6 +141,7 @@ export PYTHON_CFLAGS=`$PKG_CONFIG --cflags "python-2.7 >= 0.27.1" 2>/dev/null`
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
 
 
+%if %{openindiana}
 ## TODO ## Fix for 2.6 python on OI
 gsed -i -e 's|checking whether $PYTHON version is >= 2.7.0"|checking whether $PYTHON version is >= 2.6.0"|g'	\
 	-e 's|checking for a Python interpreter with version >= 2.7.0"|checking for a Python interpreter with version >= 2.6.0"|g'	\
@@ -144,6 +152,7 @@ gsed -i -e 's|checking whether $PYTHON version is >= 2.7.0"|checking whether $PY
 export PYTHON_LIBS=-lpython2.6
 export PYTHON_CFLAGS=-I/usr/include/python2.6
 PYTHON_CFLAGS=-I/usr/include/python2.6
+%endif
 
 
 ./configure	\
@@ -188,6 +197,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan  4 2016 - Thomas Wagner
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (all, needed S11 S12)
 * Fri Oct 23 2015 - Thomas Wagner
 - merge in pjama's changes
 ##TODO## see if python version can be set with pnm macro

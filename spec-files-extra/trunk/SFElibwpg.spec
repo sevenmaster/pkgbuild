@@ -16,7 +16,7 @@
 %define src_url  http://downloads.sourceforge.net/libwpg
 
 %define major_version 0.3
-%define minor_version 0
+%define minor_version 1
 
 Name:			SFElibwpg
 IPS_Package_Name:	sfe/library/g++/libwpg
@@ -126,6 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Thomas Wagner
+- bump to version 0.3.1
 * Fri Oct 23 2015 - Thomas Wagner
 - merge with pjama's changes
 * Sun Oct 11 2015 - Thomas Wagner

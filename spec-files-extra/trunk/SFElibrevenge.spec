@@ -19,7 +19,7 @@
 %define src_url  http://downloads.sourceforge.net/libwpd
 
 %define major_version 0.0
-%define minor_version 2
+%define minor_version 3
 
 Name:			SFElibrevenge
 IPS_Package_Name:	sfe/library/g++/librevenge
@@ -75,8 +75,10 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/lib/pkgconfig
 
 ./configure	\
 	--prefix=%_prefix	\
@@ -121,6 +123,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Thomas Wagner
+- bump to version 0.0.3
+- add -pthreads (or get configure on boost classic.hpp fail the test)
+- find cppunit by PKG_CONFIG_PATH point to /usr/g++ first
 * Sun Sep 20 2015 - pjama
 - %include usr-g++.inc
 - add (Build)Requires SFEgcc

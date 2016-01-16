@@ -92,8 +92,13 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
-export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -lboost_system"
+%if %(expr %{solaris12} '|' %{solaris11} )
+#test for boot presence
+export CFLAGS="$CFLAGS"
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99_MATH --std=c++11"
+%endif
 
 #let's try this order
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -111,7 +116,12 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:$PKG_CONFIG
 #this is a sign for trapping over osdistro, studio compiled icu .. grep "compat=5" Makefile && \
 #this is a sign for trapping over osdistro, studio compiled icu ..   perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
 
-make -j$CPUS
+##paused## #LIBVISIO_CXXFLAGS
+##paused## grep -- "--std=c" src/lib/Makefile && \
+  ##paused## perl -w -pi.bak.icu_cflags -e "s,--std=c\+\+0x,, if /ICU_CFLAGS|LIBVISIO_CXXFLAGS/" \
+    ##paused## `find . -name Makefile`
+
+gmake V=2 -j$CPUS
 
 
 %install
@@ -148,6 +158,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Thomas Wagner
+##PAUSED## compile error "trait" - bump version to 0.1.4
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
+- add to LDFLAGS -lboost_system
 * Fri Oct 23 2015 - Thomas Wagner
 - merge with pjama's changes
 * Sun Oct 11 2015 - Thomas Wagner
