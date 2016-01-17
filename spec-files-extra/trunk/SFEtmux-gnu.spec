@@ -36,8 +36,14 @@ SUNW_Copyright:	tmux.copyright
 SUNW_Basedir:   %{_basedir}
 %include default-depend.inc
 
+##TODO## needs a pnm macro!
+%if %{oihipster}
+Requires:       library/libevent2
+BuildRequires:  library/libevent2
+%else
 Requires:       SFElibevent2
 BuildRequires:  SFElibevent2
+%endif
 
 # OpenSolaris IPS Package Manifest Fields
 Meta(info.upstream):            Nicholas Marriott <nicm@users.sf.net>
@@ -81,7 +87,13 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 ##hold## CC=gcc
 ##hold## CXX=g++
 
-export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6 -xc99"
+export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6"
+%if %{cc_is_gcc}
+%else
+#studio
+export CFLAGS="$CFLAGS -xc99"
+%endif 
+
 # Need to supply -lcurses, because otherwise, it tries to link against ncurses,
 # leading to "Undefined Symbol: delterm" error
 # try avoiding core dumps by linking to 0@0.so.1
@@ -113,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 17 2016 - Thomas Wagner
+- conditional (Build)Requires on SFElibevent2 or library/libevent2 (OIH) duplicate packages!
+  workaround until pnm_macro for for libevent2 package is available
 * Fri Jan 15 2016 - Thomas Wagner
 - bump to 2.1
 - upgrade to settings -D_XPG6 -xc99
