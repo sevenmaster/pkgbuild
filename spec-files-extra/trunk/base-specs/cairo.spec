@@ -5,7 +5,6 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-#
 
 Name:         cairo
 License:      LGPL v2.1
@@ -26,7 +25,6 @@ Patch3:       cairo-03-pthread-solaris.diff
 Patch4:       cairo-04-mutex-sparcv9.diff
 
 URL:          http://www.cairographics.org
-BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 Docdir:       %{_defaultdocdir}
 
 Requires:     freetype2
@@ -103,14 +101,16 @@ autoconf
   export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -DNDEBUG"
 %endif
 
-#export LDFLAGS="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect "
 ./configure \
     --prefix=%{_prefix} \
     --libdir=%{_libdir} \
     --bindir=%{_bindir} \
+    --disable-static	\
     --enable-gl \
     --enable-xlib-xcb \
     --enable-test-surfaces \
+    --enable-xml	\
+    --disable-xcb-shm	\
     %{gtk_doc_option}
 
 make -j $CPUS
