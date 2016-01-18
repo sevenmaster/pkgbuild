@@ -43,7 +43,6 @@ export LIBS="-lgmodule-2.0"
 make -j $CPUS
 
 %install
-#export RPM_BUILD_ROOT=%_tmppath/SFEpixman-gpp-%version-build
 make DESTDIR=$RPM_BUILD_ROOT install
 
 rm $RPM_BUILD_ROOT%_libdir/*.*a

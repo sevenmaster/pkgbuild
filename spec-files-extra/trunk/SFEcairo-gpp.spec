@@ -34,7 +34,6 @@ License:                 %{cairo.license}
 #Source:                  %{name}-manpages-0.1.tar.gz
 SUNW_BaseDir:            %{_basedir}
 ##TODO## SUNW_Copyright:          %{name}.copyright
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 BuildRequires: SFEglib2-gpp-devel
@@ -45,9 +44,6 @@ BuildRequires: system/library/fontconfig
 BuildRequires: image/library/libpng
 BuildRequires: x11/compatibility/links-svid
 BuildRequires: x11/server/xorg
-#relax dependency
-#BuildRequires: developer/build/automake-111
-#need minimum 1.11
 BuildRequires: SFEautomake-115
 ##TODO## runtime requires, go read from pkgdepend's results and put it into "Requires:"
 
