@@ -15,7 +15,7 @@ Name:			SFEsubversion
 IPS_package_name:	developer/versioning/gnu/subversion
 License:		Apache,LGPL,BSD
 Group:			Development/Source Code Management
-Version:		1.8.11
+Version:		1.8.15
 Summary:		The Subversion Source Control Management System (/usr/gnu)
 Source:			http://mirror.serversupportforum.de/apache/subversion/subversion-%{version}.tar.bz2
 
@@ -209,6 +209,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jan 19 2016 - Thomas Wagner
+- Update to 1.8.15
 * Sun Jan 18 2015 - Thomas Wagner
 - add (Build)Requires SFEserf-gnu (fetch from URLs)
 - --remove --with-gssapi (has been removed upstream r1449023)
