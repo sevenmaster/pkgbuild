@@ -52,7 +52,12 @@ fi
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
+%if %{cc_is_gcc}
+CC=gcc
+(echo y y y y y n y n y) | ./Configure solaris
+%else
 (echo y y y y y n y n y) | ./Configure solariscc
+%endif
 
 make -j$CPUS
 
@@ -75,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/lsof.8
 
 %changelog
+* Tue Jan 19 2016 - Thomas Wagner
+- use gcc on OIH
 * Sat Jan 16 2016 - Thomas Wagner
 - bump to 4.89
 - new source URL
