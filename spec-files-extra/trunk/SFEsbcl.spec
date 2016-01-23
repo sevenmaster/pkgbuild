@@ -5,26 +5,28 @@
 # package are under the same license as the package itself.
 #
 
-# NOTE: To get this to build, it was necessary to change PATH from
-#		/opt/dtbld/bin:/usr/gnu/bin:/usr/bin:/usr/sbin
-#	to
-#		/opt/dtbld/bin:/usr/bin:/usr/sbin:/usr/gnu/bin
-#	in order to prevent gnu nm being picked up instead of Solaris' nm.
+# Do not bother building both x86 and amd64 binaries
+# A possibility would be to give a choice of which one to build
+# For now, settle for building x86, since that requires fewer
+# modifications to the spec
+
+%define build_64 0
+%define src_version 1.3.1
+%define bindist sbcl-1.2.7-x86-solaris
 
 %include Solaris.inc
 
-%ifarch amd64 
+%if %build_64
 %include arch64.inc
-%define bindist sbcl-1.0.49-x86-solaris
 %define sbclarch x86-64
 %use sbcl_64 = sbcl.spec
 %endif
 %include base.inc
 %ifarch i386
-%define bindist sbcl-1.0.49-x86-solaris
 %define sbclarch x86
 %endif
 %ifarch sparc sparcv9
+%define src_version 1.0.23
 %define bindist sbcl-1.0.23-sparc-solaris
 %define sbclarch sparc
 %endif
@@ -32,15 +34,17 @@
 
 Name:		SFEsbcl
 IPS_Package_Name:	 runtime/sbcl 
-Version:	%{sbcl.version}
+Version:	%src_version
 Summary:	Steel Bank Common Lisp
 Group:		Development/Other Languages
 License:	Public Domain/BSD
 Url:		http://www.sbcl.org/
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright:	%{name}.copyright
+Source1:	%sf_download/sourceforge/sbcl/%bindist-binary.tar.bz2
 
 %include default-depend.inc
+BuildRequires: text/texinfo
 
 Meta(info.upstream):		SBCL <sbcl-devel@lists.sourceforge.net>
 Meta(info.upstream_url):	http://www.sbcl.org/
@@ -54,30 +58,36 @@ including an integrated native compiler, a debugger, and many extensions.
 %prep
 rm -rf %{name}-%{version}
 mkdir %{name}-%{version}
-%ifarch amd64
+%if %build_64
 mkdir %{name}-%{version}/%{_arch64}
 %sbcl_64.prep -d %{name}-%{version}/%{_arch64}
 %endif
 mkdir %{name}-%{version}/%{base_arch}
 %sbcl.prep -d %{name}-%{version}/%{base_arch}
+cd %name-%version
+bzip2 -dc %SOURCE1 | tar -xf -
 
 %build
-%ifarch amd64
+# Place /usr/bin in front of /usr/gnu/bin, because gnu nm produces an error
+export PATH=/opt/dtbld/bin:/usr/bin:/usr/gnu/bin:/usr/sbin
+%if %build_64
 %sbcl_64.build -d %{name}-%{version}/%{_arch64}
 %endif
 %sbcl.build -d %{name}-%{version}/%{base_arch}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%ifarch amd64
+%if %build_64
 %sbcl_64.install -d %{name}-%{version}/%{_arch64}
 mkdir $RPM_BUILD_ROOT%{_bindir}/%{_arch64}
 mv $RPM_BUILD_ROOT%{_bindir}/sbcl $RPM_BUILD_ROOT%{_bindir}/%{_arch64}
 mkdir $RPM_BUILD_ROOT%{_libdir}/%{_arch64}
 mv $RPM_BUILD_ROOT%{_libdir}/sbcl $RPM_BUILD_ROOT%{_libdir}/%{_arch64}
 %endif
+
 %sbcl.install -d %{name}-%{version}/%{base_arch}
 
+%if %build_64
 %ifarch i386
 %if %can_isaexec
 mkdir $RPM_BUILD_ROOT%{_bindir}/%{base_isa}
@@ -86,14 +96,17 @@ cd $RPM_BUILD_ROOT%{_bindir}
 ln -s ../lib/isaexec sbcl
 %endif
 %endif
+%endif
 
-rm -rf $RPM_BUILD_ROOT%{_datadir}/info
+rm %buildroot%_infodir/dir
+rmdir %buildroot%_docdir/sbcl/html
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,bin)
+%if %build_64
 %ifarch amd64
 %{_bindir}/%{_arch64}/sbcl
 %{_libdir}/%{_arch64}/sbcl
@@ -108,6 +121,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/sbcl
 %endif
 %endif
+%else
+%_bindir/sbcl
+%endif
 %ifarch sparc sparcv9
 # sparc
 %{_bindir}/sbcl
@@ -117,10 +133,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,other) %dir %{_datadir}/doc
 %{_datadir}/doc/sbcl
 %{_mandir}/man1/sbcl.1
+%_infodir
 
 %changelog
-* Thu Dec 31 2015 - Alex Viskovatoff
-- Update urls (does not build: a test fails)
+* Sat Jan 23 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Update to 1.3.1; build documentation
+- Eliminate multi-arch, which serves no useful purpose in this case
 * Fri Jul 01 2011 - James Lee <jlee@thestaticvoid.com>
 - Bump to version 1.0.49.
 - Prepare for SFE inclusion.
@@ -130,3 +148,21 @@ rm -rf $RPM_BUILD_ROOT
 - Add header and correct copyright
 * Sat May 30 2009 - jlee@thestaticvoid.com
 - Initial version
+
+
+Tests run for version 1.3.1 on i386:
+
+Finished running tests.
+Status:
+ Skipped (broken):   debug.impure.lisp / (TRACE ENCAPSULATE NIL)
+ Expected failure:   debug.impure.lisp / (TRACE-RECURSIVE ENCAPSULATE NIL)
+ Skipped (broken):   exhaust.impure.lisp / (EXHAUST BASIC)
+ Skipped (broken):   exhaust.impure.lisp / (EXHAUST NON-LOCAL-CONTROL)
+ Skipped (broken):   exhaust.impure.lisp / (EXHAUST RESTARTS)
+ Invalid exit status: gc.impure.lisp
+ Expected failure:   packages.impure.lisp / USE-PACKAGE-CONFLICT-SET
+ Expected failure:   packages.impure.lisp / IMPORT-SINGLE-CONFLICT
+ Failure:            swap-lispobjs.impure.lisp / SWAP-LISPOBJS/PREPARE
+ Failure:            swap-lispobjs.impure.lisp / SWAP-LISPOBJS
+ (53 tests skipped for this combination of platform and features)
+test failed, expected 104 return code, got 1
