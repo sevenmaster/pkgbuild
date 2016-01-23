@@ -8,19 +8,23 @@
 #
 
 Name:		sbcl
-Version:	1.0.49
+Version:	%src_version
 Source0:	%sf_download/sourceforge/sbcl/%name-%version-source.tar.bz2
-Source1:	%sf_download/sourceforge/sbcl/%bindist-binary.tar.bz2
 
 %prep
 %setup -q
-bzip2 -dc %{SOURCE1} | tar -xf -
+
+# texi2dvi does not work with sh
+cd doc/manual
+gsed -i 's/texi2dvi /bash texi2dvi /' Makefile
 
 %build
-%define unquoted_libdir %(echo %{_libdir})
-sed 's@SBCL_PREFIX"/lib/sbcl/"@"%{unquoted_libdir}/sbcl/"@' src/runtime/runtime.c > src/runtime/runtime.c.new
-mv -f src/runtime/runtime.c.new src/runtime/runtime.c
-SBCL_ARCH=%{sbclarch} sh make.sh --prefix=%{_prefix} --xc-host="%{bindist}/src/runtime/sbcl --core %{bindist}/output/sbcl.core --disable-debugger --no-sysinit --no-userinit"
+#export SBCL_ARCH=%sbclarch
+
+sh make.sh --prefix=%_prefix --xc-host="%_builddir/SFE%name-%version/%bindist/src/runtime/sbcl --core %_builddir/SFE%name-%version/%bindist/output/sbcl.core --disable-debugger --no-sysinit --no-userinit"
+
+cd doc/manual
+make
 
 %install
 INSTALL_ROOT=$RPM_BUILD_ROOT%{_prefix} sh install.sh
