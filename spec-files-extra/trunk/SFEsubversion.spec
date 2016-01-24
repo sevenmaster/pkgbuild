@@ -5,6 +5,7 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include base.inc
 
 %include packagenamemacros.inc
 
@@ -16,6 +17,7 @@ IPS_package_name:	developer/versioning/gnu/subversion
 License:		Apache,LGPL,BSD
 Group:			Development/Source Code Management
 Version:		1.8.15
+#note: older S11 has sqlite3.h too old, then use svn version 1.7.19
 Summary:		The Subversion Source Control Management System (/usr/gnu)
 Source:			http://mirror.serversupportforum.de/apache/subversion/subversion-%{version}.tar.bz2
 
@@ -111,7 +113,7 @@ export CXXFLAGS="${CXXFLAGS} -template=geninlinefuncs"
 export CXXFLAGS="${CXXFLAGS} -verbose=template"
 export CXXFLAGS="${CXXFLAGS} -xustr=ascii_utf16_ushort"
 export CXXFLAGS="${CXXFLAGS} -mt -D_REENTRANT -DNDEBUG -DSOLARIS"
-export LDFLAGS="%{_ldflags} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_libdir}/svn"
+export LDFLAGS="%{_ldflags} %{gnu_lib_path} -L%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_basedir}/%{apr_default_libdir}:%{_basedir}/%{apr_util_default_libdir} -R%{_libdir}/svn"
 
 
 #from userland-gate components/subversion/Makefile
@@ -211,6 +213,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Jan 19 2016 - Thomas Wagner
 - Update to 1.8.15
+* Sun Jan 25 2015 - Thomas Wagner
+- add  %{gnu_lib_path} so libsvn_ra_serf-1.so.0 can find libserf-1.so
 * Sun Jan 18 2015 - Thomas Wagner
 - add (Build)Requires SFEserf-gnu (fetch from URLs)
 - --remove --with-gssapi (has been removed upstream r1449023)
