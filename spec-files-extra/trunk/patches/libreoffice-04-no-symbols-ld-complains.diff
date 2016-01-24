@@ -1,0 +1,13 @@
+--- libreoffice-4.4.5.2/tools/source/misc/pathutils.cxx.orig        2015-10-29 17:40:32.884154701 +0100
++++ libreoffice-4.4.5.2/tools/source/misc/pathutils.cxx     2015-10-29 17:35:35.086688053 +0100
+@@ -19,6 +19,8 @@
+ 
+ #include <sal/config.h>
+ 
++int poor_Solaris_ld_wants_a_symbol_here_else_get_for_libooopathutils_a_elf_error_elf_getarsym;
++
+ #if defined WNT
+ 
+ #include <cstddef>
+
+
