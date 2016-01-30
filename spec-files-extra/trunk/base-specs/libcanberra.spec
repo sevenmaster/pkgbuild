@@ -19,7 +19,6 @@ Source:                  http://0pointer.de/lennart/projects/libcanberra/libcanb
 Patch1:                  libcanberra/01-solaris.patch
 #owner:yippi date:2010-09-24 type:bug doo:16974 
 Patch2:                  libcanberra/02-device.patch
-#Patch3:                  libcanberra/03-gtk3.patch
 URL:                     http://0pointer.de/blog/projects/sixfold-announcement.html
 %include default-depend.inc
 
@@ -40,7 +39,6 @@ Requires: %name
 #%define _patch_options --unified
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`

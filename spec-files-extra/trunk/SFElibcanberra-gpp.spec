@@ -161,6 +161,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Jan 29 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Import spec from Solaris desktop repository
+- Build v. 0.28 instead of v0.26, which OI hipster builds, so do not use
+  03-gtk3.patch, which did not apply
 * Wed Apr 23 2014 - swaroop.sadare@oracle.com
 - Added TPNO and modified the copyright file.
 ...
