@@ -19,9 +19,14 @@ SUNW_BaseDir:        %{_basedir}
 
 Requires: SFEqt-gpp
 BuildRequires: SFEqt-gpp-devel
+BuildRequires: developer/documentation-tool/xmlto
 
 %prep
 %setup -q -n kdiff3-%version
+
+cd src-QT4
+gsed -i -e 's|/usr/local/|/usr/|g' kdiff3.pro
+gsed -i -e 's|/usr/local/share/doc|/usr/share/doc|' kreplacements/kreplacements.cpp
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -36,16 +41,20 @@ export LDFLAGS="%_ldflags"
 
 cd src-QT4
 
-gsed -i -e 's|/usr/local/|/usr/|g' kdiff3.pro
-
 /usr/g++/bin/qmake kdiff3.pro -o Makefile.qt
 make -f Makefile.qt
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cd src-QT4
-make -f Makefile.qt install INSTALL_ROOT=$RPM_BUILD_ROOT
+pushd src-QT4
+make -f Makefile.qt install_target INSTALL_ROOT=%buildroot
+popd
+cd doc/en
+xmlto --skip-validation html-nochunks index.docbook
+cd ..
+mkdir -p %buildroot%_docdir/kdiff3
+cp -r README en %buildroot%_docdir/kdiff3
 
 %clean
 rm -rf $RPM_BUILD_ROOT
