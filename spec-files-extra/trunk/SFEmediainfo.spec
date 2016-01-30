@@ -13,9 +13,9 @@
 %include base.inc
 %define download_loc	http://mediaarea.net/download/source/
 %define srcname		mediainfo
-%define mediainfo_version           0.7.67
-%define libmediainfo_version        0.7.67
-%define libzen_version              0.4.29
+%define mediainfo_version           0.7.80
+%define libmediainfo_version        0.7.80
+%define libzen_version              0.4.32
 
 Name:           SFEmediainfo
 IPS_package_name: media/mediainfo
@@ -27,19 +27,8 @@ URL:            http://MediaArea.net/MediaInfo
 Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source0:	%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 
-# BuildRequires:  gcc-c++
-# BuildRequires:  pkgconfig
-# BuildRequires:  libmediainfo-devel >= %{libmediainfo_version}
 BuildRequires:	SFElibmediainfo-devel
-# BuildRequires:  libzen-devel >= %{libzen_version}
-# BuildRequires:  pkgconfig
-# BuildRequires:  wxGTK-devel
-# BuildRequires:  zlib-devel
-# BuildRequires:  libtool
-# BuildRequires:  automake
-# BuildRequires:  autoconf
-
-#BuildRequires: SFEwxwidgets-gpp-devel
+BuildRequires:	SFEwxwidgets-gpp-devel
 
 %description
 MediaInfo is a convenient unified display of the most relevant technical
@@ -82,9 +71,6 @@ export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags"
 export CXXFLAGS="%optflags"
-# # The /usr/g++ paths are for wxWidgets
-# export CXXFLAGS="%optflags -I/usr/g++/include"
-# export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
 
 # build CLI
 pushd Project/GNU/CLI
@@ -92,11 +78,32 @@ pushd Project/GNU/CLI
     make
 popd
 
+# now build GUI
+pushd Project/GNU/GUI
+    ./autogen.sh
+    %configure --with-wx-config=/usr/g++/bin/wx-config
+    make
+popd
+
 
 %install
+rm -rf %buildroot
+
 pushd Project/GNU/CLI
     make install DESTDIR=%{buildroot}
 popd
+mkdir -p %buildroot%_datadir/applications
+mkdir %buildroot%_datadir/pixmaps
+pushd Project/GNU/GUI
+    make install DESTDIR=%buildroot
+    sed -e 's/Icon=mediainfo/Icon=MediaInfo.png/' mediainfo-gui.desktop > \
+      %buildroot%_datadir/applications/mediainfo-gui.desktop
+popd
+
+#cd %buildroot/%_datadir
+#mv appdata mediainfo
+rm -r %buildroot%_datadir/appdata
+cp Source/Resource/Image/MediaInfo.png %buildroot%_datadir/pixmaps
 
 %clean
 rm -rf %buildroot
@@ -105,10 +112,15 @@ rm -rf %buildroot
 %files
 %defattr(-,root,bin,-)
 %doc Release/ReadMe_CLI_Linux.txt License.html History_CLI.txt
-%{_bindir}/mediainfo
-
+%_bindir/mediainfo
+%_bindir/mediainfo-gui
+%dir %attr(0755, root, sys) %{_datadir}
+%_datadir/applications/mediainfo-gui.desktop
+%_datadir/pixmaps/MediaInfo.png
 
 %changelog
+* Wed Dec 23 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 0.7.80; build GUI
 * Mon Feb 10 2014 - Alex Viskovatoff
 - import spec into SFE
 * Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - 0.7.67

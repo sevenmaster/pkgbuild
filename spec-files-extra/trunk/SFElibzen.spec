@@ -8,7 +8,7 @@
 %define download_loc	http://mediaarea.net/download/source/
 %define srcname		libzen
 %define _pkg_docdir	%_docdir/%srcname
-%define libzen_version	0.4.29
+%define libzen_version	0.4.32
 
 Name:           SFElibzen
 IPS_package_name: system/library/libzen
@@ -20,13 +20,7 @@ URL:            http://sourceforge.net/projects/zenlib
 Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source:		%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 
-# BuildRequires:  gcc-c++
-# BuildRequires:  pkgconfig
-# BuildRequires:  glibc-devel
 BuildRequires:  doxygen
-# BuildRequires:  libtool
-# BuildRequires:  automake
-# BuildRequires:  autoconf
 %include	default-depend.inc
 
 %description
@@ -51,7 +45,6 @@ This package contains the documentation
 Summary:        C++ utility library -- development
 Group:          Development/Libraries
 Requires:    	%{name}
-#Requires:    	glibc-devel
 
 %description    devel
 ZenLib is a C++ utility library. It includes classes for handling strings,
@@ -96,6 +89,8 @@ pushd Project/GNU/Library
 popd
 
 %install
+rm -rf %buildroot
+
 pushd Project/GNU/Library
     make install DESTDIR=%{buildroot}
 popd

@@ -8,8 +8,8 @@
 %define download_loc	http://mediaarea.net/download/source/
 %define srcname		libmediainfo
 %define _pkg_docdir	%_docdir/%srcname
-%define libmediainfo_version      0.7.67
-%define libzen_version            0.4.29
+%define libmediainfo_version      0.7.80
+%define libzen_version            0.4.32
 
 Name:           SFElibmediainfo
 IPS_package_name: library/video/libmediainfo
@@ -22,14 +22,7 @@ Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source0:	%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 Patch0:		libmediainfo-01-CriticalSection.patch
 
-# BuildRequires:  gcc-c++
 BuildRequires:	SFElibzen-devel
-# BuildRequires:  pkgconfig
-# BuildRequires:  zlib-devel
-# BuildRequires:  doxygen
-# BuildRequires:  libtool
-# BuildRequires:  automake
-# BuildRequires:  autoconf
 %include	default-depend.inc
 
 %description
@@ -102,6 +95,8 @@ pushd Project/GNU/Library
 popd
 
 %install
+rm -rf %buildroot
+
 pushd Project/GNU/Library/
     make install DESTDIR=%{buildroot}
 popd
