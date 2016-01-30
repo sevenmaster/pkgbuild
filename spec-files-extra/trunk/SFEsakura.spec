@@ -3,6 +3,8 @@
 #
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %define srcname sakura
 %include packagenamemacros.inc
 
@@ -12,17 +14,17 @@ Summary:	Lightweight terminal emulator based on GTK and VTE
 Group:		Applications/System Utilities
 URL:		http://www.pleyades.net/david/projects/sakura
 # This is the last release that doesn't depend on gtk-3
-Version:	2.4.2
+Version:	3.1.5
 License:	GPLv2
 Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%version.tar.bz2
 %include default-depend.inc
 SUNW_Copyright: sakura.copyright
 SUNW_BaseDir:	%_basedir
 BuildRequires:	%pnm_buildrequires_developer_build_cmake
-BuildRequires:	SUNWgtk2-devel
-Requires:	SUNWgtk2
-BuildRequires:	SUNWgnome-terminal
-Requires:	SUNWgnome-terminal
+BuildRequires:	SFEgtk3-gpp-devel
+Requires:	SFEgtk3-gpp
+BuildRequires:	SFEvte-gpp
+Requires:	SFEvte-gpp
 #BuildRequires:	library/ncurses   # Apparently not needed
 
 %if %build_l10n
@@ -41,8 +43,14 @@ mkdir build
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
+export CXX=g++
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
+
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=%_prefix ..
+cmake	-DCMAKE_INSTALL_PREFIX=%_prefix \
+	-DCMAKE_INSTALL_RPATH=/usr/g++/lib \
+	..
 
 make -j$CPUS
 
@@ -83,9 +91,11 @@ rm -rf %buildroot
 
 
 %changelog
-* Sun Aug 30 2015 - Alex Viskovatoff <hezen@imap.cc>
+* Thu Jan  7 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 3.1.5; build with gcc
+* Sun Aug 30 2015 - Alex Viskovatoff <herzen@imap.cc>
 - use pnm macro for cmake depedency
-* Sat Aug 22 2015 - Alex Viskovatoff <hezen@imap.cc>
+* Sat Aug 22 2015 - Alex Viskovatoff <herzen@imap.cc>
 - Allow use of system cmake
 * Sun Feb 16 2014 - Alex Viskovatoff
 - Update to 2.4.2
