@@ -2,9 +2,11 @@
 # spec file for package SFEparrot
 #
 
+# This spec was created because rakudo-perl required it.  However, rakudo no
+# longer uses the parrot virtual machine.  Thus, this package currently has
+# no known uses.
+
 %include Solaris.inc
-%define cc_is_gcc 1
-%include base.inc
 %define srcname parrot
 
 Name:		SFE%srcname
@@ -12,7 +14,7 @@ IPS_Package_Name:	runtime/parrot
 Summary:	Register-based virtual machine designed to run dynamic languages efficiently
 URL:		http://www.parrot.org/
 Meta(info.upstream):	Parrot Developers <parrot-dev@lists.parrot.org>
-Version:	6.0.0
+Version:	7.9.0
 License:	Artistic 2.0
 Group:		Development/Other Languages
 SUNW_Copyright:	parrot.copyright
@@ -23,7 +25,6 @@ SUNW_BaseDir:	%_basedir
 # Don't require perl-5 explicitly, since all Solaris systems have it,
 # and we don't want to require a specific minor version.
 #BuildRequires:	SUNWperl584core
-#Requires:	SUNWperl584core
 
 %package devel
 Summary:	%summary - development files
@@ -46,7 +47,7 @@ Ruby, Lua, Scheme, PHP, Python, Perl 6, APL, and a .NET bytecode translator.
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-perl Configure.pl --prefix=%_prefix --cc=gcc --cxx=g++ --ccflags="%picflags" --ld=/usr/bin/ld --optimize
+perl Configure.pl --prefix=%_prefix --cc=cc --cxx=CC --optimize
 make -j$CPUS
 
 
@@ -82,6 +83,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Jan 29 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 7.9.0; go back to building with Studio
 * Sun Feb  2 2013 - Alex Viskovatoff
 - update to 6.0.0; use gcc (building with Sun Studio does not work anymore)
 * Tue Aug 30 2011 - Alex Viskovatoff
