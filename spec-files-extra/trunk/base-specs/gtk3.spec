@@ -86,9 +86,6 @@ like it because it is small, efficient and very configurable.
 %patch16 -p1
 %patch17 -p1
 
-# Don't make examples: something goes wrong in examples/bp
-gsed -i -e 's/tests testsuite examples/tests testsuite/' Makefile.am
-
 
 %build
   CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -105,20 +102,22 @@ autoheader
 automake -a -c -f
 autoconf
 
-./configure --prefix=%{_prefix} \
-            --libdir=%{_libdir} \
-            --bindir=%{_bindir} \
-            --datadir=%{_datadir} \
-            --mandir=%{_mandir} \
-            --infodir=%{_infodir} \
-	    --sysconfdir=%{_sysconfdir}	\
+./configure --prefix=%_prefix		\
 	    --enable-explicit-deps=yes	\
 	    --disable-glibtest		\
 	    --disable-papi		\
 	    %{gtk_doc_option}
 
-# The build needs to use our glib-genmarshal, not the one that comes with S11.3
-export PATH=/usr/g++/bin:$PATH
+# Temporary workaround to get examples built:
+# For some reason, the following Makefile line gets added on hipster but not S11
+# Needed for this command to get executed
+#   glib-compile-resources --target=bloatpad-gresources.c --sourcedir=.
+#			   --generate-source bloatpad.gresources.xml
+
+pushd examples/bp
+gsed -i -e "s/GLIB_COMPILE_SCHEMAS =/GLIB_COMPILE_RESOURCES = glib-compile-resources\nGLIB_COMPILE_SCHEMAS =/" Makefile
+popd
+
 gmake -j $CPUS
 
 %install
@@ -127,10 +126,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/gtk-3.0
 # mkdir -p $RPM_BUILD_ROOT/etc/profile.d
 # cp %SOURCE1 $RPM_BUILD_ROOT/etc/profile.d/
 # cp %SOURCE2 $RPM_BUILD_ROOT/etc/profile.d
-# #Copy zh_HK from zh_TW
-# #Fixes bug 4930405
-# install -d $RPM_BUILD_ROOT%{_datadir}/locale/zh_HK/LC_MESSAGES
-# install --mode=0644 $RPM_BUILD_ROOT%{_datadir}/locale/zh_TW/LC_MESSAGES/*.mo $RPM_BUILD_ROOT%{_datadir}/locale/zh_HK/LC_MESSAGES/
 
 rm $RPM_BUILD_ROOT%{_libdir}/gtk-3.0/*/printbackends/*.la
 rm $RPM_BUILD_ROOT%{_libdir}/*.la

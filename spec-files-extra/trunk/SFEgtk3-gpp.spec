@@ -129,6 +129,7 @@ export CXXFLAGS="%cxx_optflags -I/usr/g++/include/glib-2.0 -I/usr/g++/lib/glib-2
 export RPM_OPT_FLAGS="$CFLAGS"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -lglib-2.0"
 export PKG_CONFIG_PATH="%_pkg_config_path"
+export PATH=/usr/g++/bin:$PATH
 %gtk.build -d %name-%version/%{base_arch}
 
 %install
@@ -305,6 +306,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jan 29 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Build examples
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Import spec from Solaris desktop repository
 * Sat Sep 15 2012 - Brian.Cameron@oracle.com
