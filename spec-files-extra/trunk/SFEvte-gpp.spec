@@ -25,7 +25,7 @@ BuildRequires:	library/desktop/g++/gtk3
 BuildRequires:	SFEgnutls
 BuildRequires:	SFEzlib-pkgconfig
 BuildRequires:	SFElibtool
-
+BuildRequires:	SFEvala
 
 %prep
 %setup -q -n %srcname-%version

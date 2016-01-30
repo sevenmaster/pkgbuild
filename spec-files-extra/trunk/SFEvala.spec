@@ -1,26 +1,20 @@
 #
 # spec file for package SFEvala
 #
-# includes module(s): vala
-#
+
 %include Solaris.inc
 
-# NOTE 29.08.2015:							     ###
-# vala 0.12.1 does not build on an SFE environment under Solaris 11.2.	     ###
-
 %define	src_name vala
-%define	src_url	http://download.gnome.org/sources/vala/0.12
 
 Name:                SFEvala
 Summary:             Vala programming language
-Version:             0.12.0
+Version:             0.29.3
 IPS_package_name:    sfe/developer/vala
-URL:                 http://live.gnome.org/Vala
-Source:              %{src_url}/%{src_name}-%{version}.tar.bz2
+URL:                 http://wiki.gnome.org/Projects/Vala/
+Source:		     http://download.gnome.org/sources/vala/0.29/vala-%version.tar.xz
 License:	     GPLv2
 SUNW_Copyright:	     vala.copyright
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 %description
@@ -52,12 +46,10 @@ libtoolize --copy --force
 automake -a -f
 autoconf -f 
 ./configure --prefix=%{_prefix}			\
-            --bindir=%{_bindir}			\
-            --libdir=%{_libdir}			\
             --sysconfdir=%{_sysconfdir}		\
-            --includedir=%{_includedir} 	\
             --mandir=%{_mandir}			\
 	    --infodir=%{_infodir}		\
+	    --enable-vapigen			\
 	    --disable-static			\
 	    --enable-shared
 
@@ -76,11 +68,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%_libdir/vala-0.30/gen-introspect-0.30
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/devhelp
 %dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/vala.*
-%{_datadir}/vala-0.12/vapi/*
+%_datadir/aclocal/vapigen.m4
+%_datadir/vala/Makefile.vapigen
+%_datadir/pkgconfig/vapigen*.pc
+%{_datadir}/vala-0.30/vapi/*
 %{_mandir}
 
 %files devel
@@ -91,6 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Jan 13 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.29.3; enable vapigen
 * Sat Aug 29 2015 - Alex Viskovatoff <herzen@imap.cc>
 - add IPS package name
 * Mon Jul 25 2011 - N.B.Prashanth
