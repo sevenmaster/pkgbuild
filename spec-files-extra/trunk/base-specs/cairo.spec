@@ -101,6 +101,7 @@ autoconf
   export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -DNDEBUG"
 %endif
 
+# Enabling xcb-shm makes gtk3 applications crash
 ./configure \
     --prefix=%{_prefix} \
     --libdir=%{_libdir} \
