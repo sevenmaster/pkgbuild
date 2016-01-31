@@ -1,8 +1,12 @@
 #
-# spec file for package SFElibmaa
+# spec file for package SFElibass
 #
-# includes module: libass
-#
+
+# NOTE (herzen): Building with the assembler does not work at present,
+# producing link errors, so this is presently disabled by passing --disable-asm
+# to configure.  This is quite possibly related to the assembler code expecting
+# HAVE_ALIGNED_STACK to be defined.  Building with the assembler also fails
+# earlier on if "-f elf" is not passed to it.
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -13,17 +17,17 @@ Name:		SFElibass
 IPS_Package_Name:	library/video/libass
 Summary:	Portable renderer for the ASS/SSA (Substation Alpha) subtitle format
 Group:		System/Multimedia Libraries
-URL:		http://code.google.com/p/libass/
-Version:	0.10.1
+URL:		https://github.com/libass/libass
+Version:	0.13.1
 License:	ISC
 SUNW_Copyright:	libass.copyright
-Source:		http://%srcname.googlecode.com/files/%srcname-%version.tar.gz
 SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%name-%version-build
+Source:		http://github.com/%srcname/%srcname/releases/download/%version/%srcname-%version.tar.xz
 %include default-depend.inc
-BuildRequires:	SFEgcc
-Requires:	SFEgccruntime
-Requires:	SFElibfribidi
+BuildRequires:	SFElibfribidi-devel
+BuildRequires:	SFEharfbuzz-gpp-devel
+BuildRequires:	SFEfontconfig-gpp
+BuildRequires:	SFEgraphite2-gpp
 
 # Copied from Wikipedia
 %description
@@ -49,19 +53,24 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags"
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
+export LDFLAGS="%_ldflags -R/usr/g++/lib"
+export ASFLAGS="-f elf"
+# This is so our fontconfig gets found
+export PATH=/usr/g++/bin:$PATH
 
-./configure --prefix=%_prefix
+# Disable use of assembler to avoid text relocation link errors
+./configure --prefix=%_prefix --disable-asm
 gmake -j$CPUS
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-gmake install DESTDIR=$RPM_BUILD_ROOT
-rm $RPM_BUILD_ROOT%_libdir/*.*a
+rm -rf %buildroot
+make install DESTDIR=%buildroot
+rm %buildroot%_libdir/*.*a
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 
 %files

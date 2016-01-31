@@ -15,16 +15,9 @@ URL:		http://www.freedesktop.org/wiki/Software/fontconfig/
 License:	GPLv2
 SUNW_Copyright:	GPLv2.copyright
 Group:		System/Libraries
-Version:	2.10.91
+Version:	2.11.1
 Source:		http://www.freedesktop.org/software/%srcname/release/%srcname-%version.tar.bz2
 %include	default-depend.inc
-
-# This is a dummy package to simplify giving /etc as the location of
-# fontconfig's configuration files
-Requires: %name-root
-%package root
-Summary:                 %{summary} - / filesystem
-SUNW_BaseDir:            /
 
 
 %prep
@@ -36,7 +29,6 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
-#export PKG_CONFIG_PATH="%_pkg_config_path"
 
 ./configure --prefix=%_prefix --sysconfdir=%_std_sysconfdir --disable-static
 
