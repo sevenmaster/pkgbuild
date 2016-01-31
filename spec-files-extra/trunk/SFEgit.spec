@@ -1,54 +1,3 @@
-# check this # 
-# check this # +https://github.com/OpenIndiana/oi-userland/commit/0bad6d05fd05e8afa3fd5d21bfd2e4dd433ec2ef
-# check this # +
-# check this # +o@@ -0,0 +1,33 @@
-# check this # ++From fe054b8cbe161d01a66637976c1cabad0ce1c973 Mon Sep 17 00:00:00 2001
-# check this # ++From: Ben Walton <bwalton@opencsw.org>
-# check this # ++Date: Mon, 30 Jul 2012 18:13:23 +0200
-# check this # ++Subject: [PATCH] Use getpassphrase instead of getpass when prompting for
-# check this # ++ passwords
-# check this # ++
-# check this # ++The legacy getpass function returns at most 9 characters, including
-# check this # ++null termination which means an 8-character password. Instead, use
-# check this # ++getpassphrase which allows up to 257 characters.
-# check this # ++
-# check this # ++Mantis ID 4943
-# check this # ++
-# check this # ++Signed-off-by: Ben Walton <bwalton@opencsw.org>
-# check this # ++---
-# check this # ++ compat/terminal.c | 2 +-
-# check this # ++ 1 file changed, 1 insertion(+), 1 deletion(-)
-# check this # ++
-# check this # ++diff --git a/compat/terminal.c b/compat/terminal.c
-# check this # ++index 6d16c8f..2585436 100644
-# check this # ++--- a/compat/terminal.c
-# check this # +++++ b/compat/terminal.c
-# check this # ++@@ -75,7 +75,7 @@ char *git_terminal_prompt(const char *prompt, int echo)
-# check this # ++
-# check this # ++ char *git_terminal_prompt(const char *prompt, int echo)
-# check this # ++ {
-# check this # ++- return getpass(prompt);
-# check this # +++ return getpassphrase(prompt);
-# check this # ++ }
-# check this # ++
-# check this # ++ #endif
-# check this # ++--
-# check this # ++1.7.10.3
-# check this # ++
-# check this # +
-#
-# spec file for package : SFEgit
-#
-# includes module(s): git
-#
-# %description
-# This is a stupid (but extremely fast) directory content manager.  It
-# doesn't do a whole lot, but what it _does_ do is track directory
-# contents efficiently. It is intended to be the base of an efficient,
-# distributed source code management system. This package includes
-# rudimentary tools that can be used as a SCM, but you should look
-# elsewhere for tools for ordinary humans layered on top of this.
-#
 %include Solaris.inc
 %define cc_is_gcc 1
 %include usr-gnu.inc
@@ -58,16 +7,12 @@
 Name:                SFEgit
 IPS_Package_Name:    sfe/developer/versioning/git
 Summary:             A fast version control system
-Version:             1.8.5.4
+Version:             2.7.0
 License:             GPLv2
 SUNW_Copyright:      git.copyright
 URL:                 http://git-scm.com/
-Source:              http://git-core.googlecode.com/files/git-%{version}.tar.gz
-Patch1:              git-01-solaris-shell.diff
-Patch2:              git-02-fixshell.diff
-Patch3:              git-03-xmlto.diff
+Source:		     http://www.kernel.org/pub/software/scm/git/git-%version.tar.xz
 SUNW_BaseDir:        %{_basedir}
-BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 Requires: SUNWzlib
@@ -77,72 +22,47 @@ Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: SUNWlexpt
 Requires: SUNWcurl
 Requires: %{pnm_requires_perl_default}
-#Requires: SFEpython3
 Requires: SUNWbash
 Requires: SUNWlexpt
 Requires: %{pnm_requires_text_gnu_diffutils}
 Requires: SUNWTk
 BuildRequires: %{pnm_buildrequires_SFEasciidoc}
-BuildRequires: SFExmlto
+BuildRequires: developer/documentation-tool/xmlto
+BuildRequires: library/pcre
 
 %prep
 %setup -q -n git-%version
-%patch1 -p1
-%patch2 -p1
-#%patch3 -p1
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags"
-export LDFLAGS="%arch_ldadd %ldadd ${EXTRA_LDFLAGS}"
-export PATH=$PATH:%{_builddir}/git-%version
-export NO_MSGFMT=1
+export LDFLAGS="%_ldflags"
+export CPPFLAGS=-I/usr/include/pcre
 make configure
 ./configure \
-        --prefix=%{_prefix} \
-        --mandir=%{_mandir} \
-        --libexecdir=%{_libexecdir} \
-        --with-perl=/usr/perl5/bin/perl \
-        --with-python=/usr/bin/python3
+	--prefix=%_prefix \
+	--libexecdir=%_libexecdir \
+	--with-libpcre \
+	--with-editor=emacsclient \
+	--with-perl=/usr/perl5/bin/perl \
+	--with-python=/usr/bin/python3
 make -j$CPUS all doc
+# Making info files requires docbook2X, which requires a little effor to get working
+#make -j$CPUS all man info
 
-# fix path to wish (tk shell)
-perl -pi -e 's,exec wish ,exec /usr/sfw/bin/wish8.3,' gitk
-
-# fix perl lib dir:
-for f in "
-    git-archimport
-    git-cvsexportcommit
-    git-cvsimport
-    git-cvsserver
-    git-relink
-    git-rerere
-    git-send-email
-    git-shortlog
-    git-svn
-    git-svnimport"; do
-  perl -pi -e 's,"/usr/lib/site_perl","/usr/perl5/vendor_perl/%{perl_version}",' $f
-done
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %buildroot
 
 make install install-doc DESTDIR=$RPM_BUILD_ROOT INSTALL=install
-
-# move perl stuff to vendor_perl in /usr/gnu
-mkdir -p $RPM_BUILD_ROOT/usr/gnu/perl5/vendor_perl/%{perl_version}
-mv $RPM_BUILD_ROOT%{_libdir}/site_perl/* $RPM_BUILD_ROOT/usr/gnu/perl5/vendor_perl/%{perl_version}
+#make install install-man install-info DESTDIR=%buirdroot INSTALL=install
 
 # remove unwanted stuff like .packlist and perllocal.pod
-rm -rf $RPM_BUILD_ROOT%{_libdir}/site_perl
-rm $RPM_BUILD_ROOT%{_libdir}/*-solaris-*/perllocal.pod
-rmdir $RPM_BUILD_ROOT%{_libdir}/*-solaris-*
+#rm $RPM_BUILD_ROOT%{_libdir}/*-solaris-*/perllocal.pod
+#rmdir $RPM_BUILD_ROOT%{_libdir}/*-solaris-*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -151,9 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (0755, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/git*
-%dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/git-core
-#%{_libdir}/python3.2/site-packages
+%_libdir
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/gitk
 %dir %{_datadir}/git-core
@@ -172,10 +90,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_mandir}/man?
 %{_mandir}/man?/*
 %{_datadir}/gitweb
-%dir %attr (0755, root, bin) %{_prefix}/perl5
-%dir %attr (0755, root, bin) %{_prefix}/perl5/vendor_perl
-%dir %attr (0755, root, bin) %{_prefix}/perl5/vendor_perl/%{perl_version}
-%{_prefix}/perl5/vendor_perl/%{perl_version}/*
 %if %{_share_locale_group_changed}
 %dir %attr (0755, root, %{_share_locale_group}) %{_datadir}/locale
 %defattr (-, root, %{_share_locale_group})
@@ -187,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 2.7.0; enable support for Perl-compatible regexes
+- fix git-svn by not making the spec interfere with upstream's standard install
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Fri Apr 26 2014 - Thomas Wagner
