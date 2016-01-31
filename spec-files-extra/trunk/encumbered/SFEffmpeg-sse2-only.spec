@@ -1,8 +1,6 @@
 #
 # spec file for package SFEffmpeg
 #
-# includes module(s): FFmpeg
-#
 
 %include Solaris.inc
 %define cc_is_gcc 1
@@ -10,7 +8,7 @@
 %include packagenamemacros.inc
 
 #change version number only here.
-%define ffmpeg_version 2.1.3
+%define ffmpeg_version 2.8.5
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -38,7 +36,6 @@ URL:			%{ffmpeg.url}
 Group:			System/Multimedia Libraries
 
 SUNW_BaseDir:		%{_basedir}
-BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 Autoreqprov:		on
 
 %include default-depend.inc
@@ -81,8 +78,8 @@ BuildRequires: SFEopenal-devel
 Requires: SFEopenal
 BuildRequires: SFElibvpx-devel
 Requires: SFElibvpx
-BuildRequires: %{pnm_buildrequires_NVDAgraphics_devel}
-Requires:      %{pnm_requires_NVDAgraphics}
+BuildRequires: consolidation/nvidia/nvidia-incorporation
+Requires: consolidation/nvidia/nvidia-incorporation
 
 %package devel
 Summary:                 %{summary} - development files
