@@ -1,8 +1,6 @@
 #
 # spec file for package libx264
 #
-# includes module(s): libx264
-#
 
 # NOTE:  At present, the CLI (x264 executable) is not very useful, since it
 #	 cannot link to libavcodec and libavformat, which means that it can
@@ -11,8 +9,8 @@
 ################################################################################
 #  x264_build MUST CORRESPOND to libx264.so.<number> as produced by the build  #
 ################################################################################
-%define x264_build       140
-%define snap             20140129
+%define x264_build       148
+%define snap             20160129
 
 %define snaph            2245-stable
 %define src_name         x264-snapshot
@@ -23,16 +21,11 @@ Summary:	H.264 encoder library
 Version:	0.%x264_build.0.%snap
 Source:		%src_url/%src_name-%snap-%snaph.tar.bz2
 URL:		http://www.videolan.org/developers/x264.html
-#Patch2:		libx264-02-version.diff
-#Patch6:		libx264-06-gpac.diff
 BuildRoot:	%_tmppath/%name-%version-build
 
 
 %prep
 %setup -q -n %src_name-%snap-%snaph
-
-#%patch2 -p1
-#%patch6 -p1
 
 
 %build
@@ -81,11 +74,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Thu Jan 20 2014 - Alex Viskovotoff
+* Sat Jan 30 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 20160129, updating x264_build to 148
+* Thu Jan 30 2014 - Alex Viskovatoff
 - update to 20140129, updating x264_build to 140 and commenting out two patches
-* Sun Jan 12 2014 - Alex Viskovotoff
+* Sun Jan 12 2014 - Alex Viskovatoff
 - bump to 20140111
-* Fri Nov  1 2013 - Alex Viskovotoff
+* Fri Nov  1 2013 - Alex Viskovatoff
 - update to 20131031, updating x264_build to 138
 * Wed Sep 11 2013 - Alex Viskovatoff
 - update to 20130910
