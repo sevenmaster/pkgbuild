@@ -1,9 +1,6 @@
 #
 # spec file for package SFEffmpeg
 #
-# includes module(s): FFmpeg
-#
-
 
 Summary:                 A very fast video and audio converter
 Version:                 %{ffmpeg_version}
@@ -14,7 +11,6 @@ Patch13:		 ffmpeg-13-rpath-link.diff
 Patch51:                 ffmpeg-51-openjpeg2.diff
 
 SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 Autoreqprov:             on
 
 %prep
@@ -39,6 +35,7 @@ export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -fno-rename-r
 %else
 export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -I%{xorg_inc} -I%{_includedir}"
 %endif
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
 export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib %{xorg_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export LDFLAGS="$LDFLAGS -m64"
