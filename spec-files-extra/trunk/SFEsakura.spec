@@ -13,8 +13,7 @@ IPS_Package_Name:	terminal/sakura
 Summary:	Lightweight terminal emulator based on GTK and VTE
 Group:		Applications/System Utilities
 URL:		http://www.pleyades.net/david/projects/sakura
-# This is the last release that doesn't depend on gtk-3
-Version:	3.1.5
+Version:	3.3.4
 License:	GPLv2
 Source:		http://launchpad.net/%srcname/trunk/%version/+download/%srcname-%version.tar.bz2
 %include default-depend.inc
@@ -25,7 +24,6 @@ BuildRequires:	SFEgtk3-gpp-devel
 Requires:	SFEgtk3-gpp
 BuildRequires:	SFEvte-gpp
 Requires:	SFEvte-gpp
-#BuildRequires:	library/ncurses   # Apparently not needed
 
 %if %build_l10n
 %package l10n
@@ -49,7 +47,7 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 
 cd build
 cmake	-DCMAKE_INSTALL_PREFIX=%_prefix \
-	-DCMAKE_INSTALL_RPATH=/usr/g++/lib \
+	-DCMAKE_INSTALL_RPATH=/usr/g++/lib:/usr/gnu/lib \
 	..
 
 make -j$CPUS

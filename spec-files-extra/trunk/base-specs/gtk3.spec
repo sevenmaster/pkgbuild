@@ -102,8 +102,18 @@ autoheader
 automake -a -c -f
 autoconf
 
+# Our gobject-introspection is too old to enable introspection
+
 ./configure --prefix=%_prefix		\
+	    --with-native-locale=yes	\
+	    --with-xinput=xfree		\
+	    --enable-shm		\
+	    --enable-xim		\
+	    --enable-fbmanager		\
+	    --with-gdktarget=x11	\
 	    --enable-explicit-deps=yes	\
+	    --without-libjasper		\
+	    --enable-man		\
 	    --disable-glibtest		\
 	    --disable-papi		\
 	    %{gtk_doc_option}

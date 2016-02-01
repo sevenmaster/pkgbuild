@@ -8,7 +8,8 @@
 
 %include Solaris.inc
 %include usr-g++.inc
-%define _pkg_docdir %_docdir/pango
+%define _pkg_docdir %_docdir/gtk3
+
 %define cc_is_gcc 1
 %include base.inc
 

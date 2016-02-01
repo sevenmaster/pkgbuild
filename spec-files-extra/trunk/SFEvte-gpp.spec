@@ -10,6 +10,7 @@
 %define cc_is_gcc 1
 %include base.inc
 %define srcname vte
+%define sover 91
 
 Name:		SFEvte-gpp
 IPS_Package_Name: system/library/g++/vte
@@ -18,13 +19,16 @@ URL:		https://wiki.gnome.org/action/show/Apps/Terminal/VTE
 License:	LGPLv2+
 SUNW_Copyright:	GPLv2.copyright
 Group:		System/Libraries
-Version:	0.42.2
+Version:	0.42.3
 Source:		http://git.gnome.org/browse/%srcname/snapshot/%srcname-%version.tar.xz
 %include	default-depend.inc
 BuildRequires:	library/desktop/g++/gtk3
 BuildRequires:	SFEgnutls
 BuildRequires:	SFEzlib-pkgconfig
+# With older libtool, get this undefined symbol:
+# __stack_chk_fail_local              .libs/libvte_2_91_la-iso2022.o  (symbol scope specifies local binding)
 BuildRequires:	SFElibtool
+# vala is only needed for introspection, which doesn't work, as explained below
 BuildRequires:	SFEvala
 
 %prep
@@ -42,8 +46,11 @@ export PKG_CONFIG_PATH="%_pkg_config_path:/usr/gnu/lib/pkgconfig"
 export PATH=/usr/g++/bin:$PATH
 
 ./autogen.sh --disable-Bsymbolic
+# We have to disable introspection because we don't have Gdk-3.0.gir
+# and vala requires introspection
 ./configure --prefix=%_prefix --libexecdir=%_libdir \
-	    --disable-Bsymbolic --disable-static
+	    --disable-Bsymbolic --disable-static \
+	    --disable-introspection --disable-vala
 
 gmake -j$CPUS
 
@@ -52,17 +59,17 @@ rm -rf %buildroot
 gmake install DESTDIR=%buildroot
 # Don't bother with locale data
 rm -r %buildroot%_datadir
-rm %Buildroot%_libdir/libvte2_90.la
+rm %buildroot%_libdir/libvte-2.%sover.la
+rmdir %buildroot/%_bindir
 
 %clean
 rm -rf %buildroot
 
 %files
 %defattr (-, root, bin)
-%_bindir/vte2_90
+#%_bindir/vte2_%sover
 %dir %attr (0755, root, bin) %dir %_libdir
-%_libdir/libvte2_90.so*
-%_libdir/gnome-pty-helper
+%_libdir/libvte-2.%sover.so*
 %dir %attr (0755, root, other) %_libdir/pkgconfig
 %_libdir/pkgconfig/*
 %dir %attr (0755, root, bin) %dir %_includedir
