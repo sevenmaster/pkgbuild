@@ -1,9 +1,16 @@
 This fix was obtained here:
 http://stackoverflow.com/questions/2197918/cross-platform-way-of-testing-whether-a-file-is-a-directory
+Some background is here:
+http://blueslugs.com/2010/06/13/adirent-ch-adding-d_type-to-struct-dirent-on-opensolaris/
 
---- qupzilla-1.4.4/src/lib/3rdparty/processinfo.cpp.orig	Sun Sep  1 07:17:48 2013
-+++ qupzilla-1.4.4/src/lib/3rdparty/processinfo.cpp	Sun Oct 27 13:53:27 2013
-@@ -66,6 +66,7 @@
+"The addition of d_type to struct dirent came first for the BSD Unixes and was
+later added to Linux. Because it’s not easy to add members to well-known
+structures and preserve binary compatibility, OpenSolaris and Solaris lack this
+field, as well as the DT_* constant definitions."
+
+--- QupZilla-1.8.6/src/lib/3rdparty/processinfo.cpp.orig	Mon Jan 26 09:26:15 2015
++++ QupZilla-1.8.6/src/lib/3rdparty/processinfo.cpp	Sun Jan 24 22:33:28 2016
+@@ -65,6 +65,7 @@
      char* chrptr_StringToCompare = NULL ;
      pid_t pid_ProcessIdentifier = (pid_t) - 1 ;
      struct dirent* de_DirEntity = NULL ;
@@ -12,9 +19,9 @@ http://stackoverflow.com/questions/2197918/cross-platform-way-of-testing-whether
  
      dir_proc = opendir("/proc/") ;
 @@ -76,7 +77,8 @@
- 
      // Loop while not NULL
      while ((de_DirEntity = readdir(dir_proc))) {
+ #ifndef __HAIKU__    	
 -        if (de_DirEntity->d_type == DT_DIR) {
 +        stat(de_DirEntity->d_name, &s);
 +        if (S_ISDIR(s.st_mode)) {
