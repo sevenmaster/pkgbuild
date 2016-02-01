@@ -15,8 +15,8 @@ URL:		http://www.qupzilla.com/
 License:	GPLv3
 SUNW_Copyright:	%srcname.copyright
 Group:		Applications/Internet
-Version:	1.6.1
-Source:		http://github.com/QupZilla/%srcname/archive/v%version.tar.gz
+Version:	1.8.9
+Source:		http://github.com/QupZilla/%srcname/releases/download/v%version/QupZilla-%version.tar.xz
 Patch0:		qupzilla-01-d_type.patch
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
@@ -34,7 +34,7 @@ Requires:       %name
 
 
 %prep
-%setup -q -n %srcname-%version
+%setup -q -n QupZilla-%version
 %patch0 -p 1
 
 # enable webgl support
@@ -49,10 +49,6 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-export CPPFLAGS="-I/usr/g++/include -I/usr/g++/include/qt"
-export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags -pthreads"
-export LDFLAGS="%_ldflags -pthreads -L/usr/g++/lib -R/usr/g++/lib"
 
 make -j$CPUS
 
@@ -85,6 +81,7 @@ rm -rf %buildroot
 %_datadir/icons
 %_datadir/pixmaps
 %_datadir/%srcname/themes
+%_datadir/appdata/%srcname.appdata.xml
 
 %if %build_l10n
 %files l10n
@@ -95,6 +92,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 1.8.9
 * Sat Feb  1 2014 - Alex Viskovatoff <herzen@imapmail.org>
 - update to 1.6.1, deleting patch added in previous commit
 * Tue Jan 14 2014 - Alex Viskovatoff <herzen@imapmail.org>
