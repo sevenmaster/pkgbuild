@@ -7,12 +7,6 @@
 # for "mpv plays videos", although the developers deny that it is a recursive
 # acronym.
 
-# NOTE: To make man display the man page correctly, use
-#	export PAGER="/usr/bin/less -insR"
-#	This will allow less to display /usr/share/man/cat1/mpv.1 correctly,
-#	which is pre-formatted with groff (Solaris's man page is apparently
-#	hard-wired to use groff, which doesn't understand some nroff macros).
-
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -26,33 +20,34 @@
 Name:			SFEmpv
 IPS_Package_Name:	media/mpv
 Summary:		Video player based on MPlayer/mplayer2
-License:		GPLv3
+License:		GPLv2
 SUNW_Copyright:		mpv.copyright
-Version:		0.3.4
+Version:		0.15.0
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
-SUNW_BaseDir:		%_basedir
 
 BuildRequires: SFEffmpeg-devel
-# libcdio is not found
-#BuildRequires: SFElibcdio-devel
+BuildRequires: SFElibcdio-devel
 BuildRequires: SFElibdvdnav-devel
-BuildRequires: SFEpython26-docutils
+BuildRequires: SFEpython27-docutils
 BuildRequires: %{pnm_buildrequires_SUNWgroff}
 %if %with_system_nvidia
-BuildRequires: driver/graphics/nvidia
+BuildRequires: consolidation/nvidia/nvidia-incorporation
 %endif
 BuildRequires: library/fribidi
 BuildRequires: SFEliba52-devel
 BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
 Requires:      %{pnm_requires_SFEopenjpeg}
-BuildRequires: SFElibass-devel
-BuildRequires: SFElibquvi
-
-# pkgbuild now takes care of most install-time dependencies, so do not
-# declare them unless pkgbuild can't find them
-Requires: libquvi
+# mpv will not display subtitles without libass
+BuildRequires:	SFElibass-devel
+Requires:	SFElibass
+# Lua is used for the gui
+BuildRequires:	runtime/lua
+Requires:	runtime/lua
+# This really should be an optional dependency;
+# It makes mpv play a YouTube video if you give a link to it
+Requires:	SFEpython34-youtube-dl
 
 Requires: %name-root
 %package root
@@ -96,27 +91,26 @@ Cflags: -I${includedir}
 Libs: -L${libdir} -lvdpau
 EOM
 
+# index_t is defined in sys/types.h
+gsed -i 's/index_t/index__t/g' video/out/dither.c
+
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
-# Solaris headers do not define BYTE_ORDER or BIG_ENDIAN, breaking sound
-export CFLAGS="-O3 -march=prescott -fomit-frame-pointer -DBYTE_ORDER=0 -DBIG_ENDIAN=1"
-export LDFLAGS="-lsocket -lnsl"
+export CFLAGS="-O3 -march=prescott -fomit-frame-pointer -D__EXTENSIONS__"
+# xorg runtime path is for libdrm.so
+export LDFLAGS="-lsocket -lnsl -R/usr/g++/lib:/usr/lib/xorg"
 # Use locally created vdpau.pc, because ./waf configure
 # refuses to accept --enable-vdpau if the autodetection test fails.
-export PKG_CONFIG_PATH="."
+export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:."
 
-# Enabling gl makes compilation fail.  When mplayer did compile with
-# gl enabled, gl made it crash immediately.
-# ./old-configure disables mpg123, which does not build.  FFmpeg can play mp3
-# streams, anyway.
+# Enabling gl makes compilation fail.
 ./waf configure				\
 	--prefix=%_prefix		\
-        --confdir=%_sysconfdir		\
-        --disable-gl			\
-	--disable-mpg123		\
+	--confdir=%_sysconfdir		\
+	--disable-gl			\
 	--disable-alsa
 
 ./waf -j$CPUS 
@@ -126,15 +120,6 @@ export PKG_CONFIG_PATH="."
 rm -rf %buildroot
 ./waf install --destdir=%buildroot
 
-mkdir examples
-mv etc/example.conf etc/input.conf examples
-
-# nroff does not understand macros used by mplayer man page
-# See http://www.mplayerhq.hu/DOCS/tech/manpage.txt
-pushd %buildroot/%_datadir/man
-mkdir cat1
-groff -mman -Tutf8 -rLL=80n man1/mpv.1 | col -bxp > cat1/mpv.1
-popd
 cd %buildroot/%_sysconfdir
 mkdir %srcname
 mv encoding-profiles.conf %srcname
@@ -149,8 +134,7 @@ rm -rf %buildroot
 %_bindir/%srcname
 %_mandir
 %defattr (-, root, other)
-%doc README.md RELEASE_NOTES examples/example.conf examples/input.conf
-%doc -d DOCS encoding.rst tech-overview.txt OUTDATED-tech/formats.txt OUTDATED-tech/general.txt OUTDATED-tech/hwac3.txt OUTDATED-tech/libao2.txt OUTDATED-tech/libvo.txt OUTDATED-tech/mpsub.sub OUTDATED-tech/swscaler_filters.txt OUTDATED-tech/swscaler_methods.txt
+%_docdir
 %_datadir/applications/%srcname.desktop
 %_datadir/icons
 
@@ -161,6 +145,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 2.8.5; mpv now needs to know about /usr/g++ on account of libass
 * Wed Jan 06 2016 - Rene Elgaard
 - Include packagenamemacros to resolve pnm macros
 * Sun Nov 29 2015 - Thomas Wagner
