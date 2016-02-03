@@ -37,6 +37,7 @@ BuildRequires: consolidation/nvidia/nvidia-incorporation
 %endif
 BuildRequires: library/fribidi
 BuildRequires: SFEliba52-devel
+BuildRequires: SFElibiconv
 BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
 Requires:      %{pnm_requires_SFEopenjpeg}
 # mpv will not display subtitles without libass
@@ -100,11 +101,12 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CFLAGS="-O3 -march=prescott -fomit-frame-pointer -D__EXTENSIONS__"
-# xorg runtime path is for libdrm.so
-export LDFLAGS="-lsocket -lnsl -R/usr/g++/lib:/usr/lib/xorg"
+# -L/usr/gnu/lib is for iconv
+# xorg runtime path is for libdrm.so; /usr/gnu/lib is for lcms2
+export LDFLAGS="-lsocket -lnsl -liconv -L/usr/gnu/lib -R/usr/g++/lib:/usr/gnu/lib:/usr/lib/xorg"
 # Use locally created vdpau.pc, because ./waf configure
 # refuses to accept --enable-vdpau if the autodetection test fails.
-export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:."
+export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:."
 
 # Enabling gl makes compilation fail.
 ./waf configure				\
