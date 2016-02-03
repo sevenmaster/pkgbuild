@@ -130,14 +130,15 @@ user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=N
 
 %files doc
 %defattr (-, root, bin)
-%doc FAQ README ChangeLog COPYING COPYING.LGPL COPYING.bzip2 COPYING.file COPYING.getopt COPYING.llvm COPYING.lzma COPYING.regex COPYING.sha256 COPYING.unrar COPYING.zlib
-%doc -d docs clamav-mirror-howto.pdf clamdoc.pdf phishsigs_howto.pdf signatures.pdf
+%doc FAQ README ChangeLog COPYING COPYING.LGPL COPYING.bzip2 COPYING.file COPYING.getopt COPYING.llvm COPYING.lzma COPYING.regex COPYING.unrar COPYING.zlib
+%doc -d docs clamdoc.pdf phishsigs_howto.pdf signatures.pdf
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 
 %changelog
 * Wed Jan  3 2016 - Thomas Wagner
 - bump to 0.98
+- fix %files
 * Tue Dec 10 2013 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %include packagenamemacros.inc
 * Mon Nov 4 2013 - Logan Bruns <logan@gedanken.org>
