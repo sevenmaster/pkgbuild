@@ -3,39 +3,15 @@
 Name:         poppler
 License:      GPL
 Group:        System/Libraries
-%if %{omnios}
-Version:      0.24.3
-Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
-%endif
-#use poppler from osdistro for now, so we don't build this spec file base-specs/poppler.spec you are looking at
-#%if %{oihipster}
-#Version:      0.00.0
-#Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
-#%endif
-%if %{solaris11}
-#Version:      0.14.5
-#using SFEcairo-gnu in version >= 1.10.x
-Version:      0.32.0
-#Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.gz
-Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
-%endif
-%if %{solaris12}
-#Version:      0.35.0
-Version:      0.32.0
-Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
-%endif
+Version:      0.39.0
 Summary:      PDF Rendering Library
-# date:2005-11-29 type:feature owner:laca bugzilla:9730
-Patch1:       poppler-01-uninstalled.pc.diff
+Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 URL:          http://poppler.freedesktop.org/
-BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 Docdir:       %{_docdir}/%{name}
 Autoreqprov:  on
 Prereq:       /sbin/ldconfig
 
-#%define cairo_version 0.5.0
-#%define gtk2_version 2.4.0
-%define cairo_version 1.10.2
+%define cairo_version 1.14.2
 %define gtk2_version 2.20.1
 
 Requires:      cairo >= %{cairo_version}
@@ -104,53 +80,13 @@ way.  Another example is cairo, which provides high quality 2D
 rendering.
 
 %prep
-#don't unpack please
-%setup -q -c -T
-echo %SOURCE0 | grep "xz$" && xz -dc %SOURCE0 | (cd ..; tar xf -)
-echo %SOURCE0 | grep "gz$" && gzip -d < %SOURCE0 | (cd ..; tar xf -)
-
-#%patch1 -p1
+%setup -q
 
 %build
-CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
-
-#paused #need to know 64-bit path as well %if opt_arch -> sed -e 's?/pkgconfig?%{_arch64}/pkgconfig?g'
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/g++/share/pkgconfig
-
-export CFLAGS="%optflags `pkg-config --cflags-only-I cairo`"
-export CXXFLAGS="%cxx_optflags `pkg-config --cflags-only-I cairo`"
-#export CXXFLAGS="%cxx_optflags -D_STDC_C11 `pkg-config --cflags-only-I cairo`"
-%if %( expr %{solaris11} '|' %{solaris12} )
-#-D_STDC_C11_BCI solves perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
-export CXXFLAGS="$CXXFLAGS -std=c++11 -D_STDC_C11_BCI"
-%endif
-export LDFLAGS="%{_ldflags}"
-
-#configure doen't handle the "1" version libopenjpeg1 ...
-export LIBOPENJPEG_CFLAGS=$( pkg-config --cflags "libopenjpeg1" )
-export LIBOPENJPEG_LIBS="-lopenjpeg"
-
-export CAIRO_CFLAGS="`pkg-config --cflags cairo`"
-export CAIRO_LIBS="`pkg-config --libs cairo`"
- 
-echo "Debug:
-PKG_CONFIG_PATH    $PKG_CONFIG_PATH
-LIBOPENJPEG_CFLAGS $LIBOPENJPEG_CFLAGS
-LIBOPENJPEG_LIBS   $LIBOPENJPEG_LIBS
-CAIRO_CFLAGS       $CAIRO_CFLAGS
-CAIRO_LIBS         $CAIRO_LIBS
-CFLAGS             $CFLAGS
-CXXFLAGS           $CXXFLAGS
-LDFLAGS            $LDFLAGS
-PATH               $PATH
-_arch64            %_arch64
-bld_arch           %bld_arch
-base_isa           %base_isa
-"
-
-echo "Note: editing out AC_CHECK_FUNCS(strcpy_s, strcat_s) from configure.ac. Else this fails with not switching on defines in std include files."
-gsed -i.bak '/AC_CHECK_FUNCS.*strcpy_s/ s/^dnl //' configure.ac
-autoconf
+  CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
+if test "x$CPUS" = "x" -o $CPUS = 0; then
+  CPUS=1
+fi
 
 # Building documentation currently breaks build
 ./configure --prefix=%{_prefix}		\
@@ -169,10 +105,9 @@ autoconf
 
 #stupid g-ir-scanner doesn't follow ENV variables nor what configure found.
 #push it a but to make it stuble over cairo.h in /usr/gnu/include/cairo
-#gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? -I /usr/gnu/include/cairo?' glib/Makefile.am
 gsed -i.bak -e '/INTROSPECTION_SCANNER_ARGS/ s?$? `pkg-config --cflags cairo` ?' glib/Makefile.am
 
-gmake V=2 -j$CPUS
+make -j $CPUS
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
