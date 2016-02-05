@@ -1,31 +1,5 @@
-
-#Building poppler with support for:
-#  font configuration: fontconfig
-#  splash output:      yes
-#  cairo output:       yes
-#  qt4 wrapper:        yes
-#  qt5 wrapper:        no
-#  glib wrapper:       yes
-#    introspection:    yes
-#  cpp wrapper:        yes
-#  use gtk-doc:        no
-#  use libjpeg:        yes
-#  use libpng:         yes
-#  use libtiff:        yes
-#  use zlib:           yes
-#  use libcurl:        no
-#  use libopenjpeg:    yes
-#      with openjpeg1
-#  use cms:            yes
-#      with lcms1
-#  command line utils: yes
-#  test data dir:      /localhomes/sfe/packages/BUILD/SFEpoppler-gpp-0.35.0/poppler-0.35.0/./../test
-
-
 #
 # spec file for package SFEpoppler-gpp
-#
-# includes module(s): poppler
 #
 # # Copyright 2008 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
@@ -43,6 +17,7 @@
 Name:                    SFEpoppler-gpp
 IPS_Package_Name:	 library/g++/poppler
 Summary:                 PDF rendering library (/usr/g++)
+Group:			 Desktop (GNOME)/Libraries
 URL:                     http://poppler.freedesktop.org
 License:                 GPLv2
 SUNW_Copyright:          poppler.copyright
@@ -88,7 +63,12 @@ mkdir %name-%version
 %build
 export CC=gcc
 export CXX=g++
+export CXXFLAGS="%cxx_optflags -std=c++11 -D_STDC_C11_BCI -fpermissive"
+export CFLAGS="%optflags"
+export LIBOPENJPEG_CFLAGS=-I/usr/include/openjpeg-1.5
+export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig"
 export PATH=/usr/g++/bin:$PATH
+export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib -lgmodule-2.0"
 export PERL_PATH=/usr/perl5/bin/perl
 
 %poppler.build -d %name-%version
@@ -98,17 +78,6 @@ rm -rf $RPM_BUILD_ROOT
 %poppler.install -d %name-%version
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
-
-# RUNPATH ends up getting incorrectly set, with /usr/g++/lib behind /usr/lib
-%define rpath 'dyn:runpath /usr/g++/lib:/usr/gnu/lib'
-# pushd %buildroot%_libdir
-# elfedit -e %rpath libpoppler-cpp.so.0.1.0
-# elfedit -e %rpath libpoppler-glib.so.5.0.0
-# elfedit -e %rpath libpoppler.so.7.0.0
-# popd
-
-# REMOVE l10n FILES - included in Solaris
-#rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
 
 # remove files included in SUNWgnome-pdf-viewer[-devel]:
 rm -r $RPM_BUILD_ROOT%{_mandir}
@@ -135,8 +104,10 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
-- change (Build)Requires to pnm_buildrequires_SFEopenjpeg
+* Tue Feb  2 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update this and base spec to 0.39.0
 * Mon Jan  4 2015 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEopenjpeg
 - add -D_STDC_C11_BCI -std=c++11 as well (S11.3)
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
