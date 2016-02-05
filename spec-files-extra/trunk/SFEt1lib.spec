@@ -10,11 +10,10 @@ IPS_Package_Name:	system/library/t1lib
 Summary:        Library allowing a programmer to generate/rasterize bitmaps from Adobe (TM) Type 1 fonts
 Group:		System/Multimedia Libraries
 Version:	5.1.2
-Source:		ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-%{version}.tar.gz
+Source:		ftp://ftp.tw.freebsd.org/pub/FreeBSD/FreeBSD/FreeBSD-current/ports/distfiles/t1lib-%version.tar.gz
 URL:		http://www.t1lib.org/
 License:	GPLv2+
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 %package devel

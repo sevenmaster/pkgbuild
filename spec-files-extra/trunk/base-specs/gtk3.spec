@@ -94,8 +94,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export SED="/usr/gnu/bin/sed"
-
-libtoolize --force
+# SFE's libtool prevents gtk3 from building, so use the system-provided one
+/usr/bin/libtoolize --force
 aclocal $ACLOCAL_FLAGS -I .
 gtkdocize
 autoheader
@@ -127,6 +127,9 @@ autoconf
 pushd examples/bp
 gsed -i -e "s/GLIB_COMPILE_SCHEMAS =/GLIB_COMPILE_RESOURCES = glib-compile-resources\nGLIB_COMPILE_SCHEMAS =/" Makefile
 popd
+
+# Again, do not use SFE's libtool, which is in /usr/gnu/bin
+gsed -i -e 's|$(SHELL) $(top_builddir)/libtool|/usr/bin/libtool|' Makefile
 
 gmake -j $CPUS
 
