@@ -1,22 +1,40 @@
 #
 # spec file for package SFEopenmotif
 #
-# includes module(s): OpenMotif
-#
+
+# Build with gcc since Solaris has no need for this package, since Solaris can use the commercial version
+# Install in /usr instead of /usr/g++, not observing the SFE convention, since this spec is intended especially
+# for OpenIndiana, which does not follow it.
+# This package is NOT intended for deployment on Oracle Solaris (although it does build there).
+
+# A list of Motif applications can be found here: http://motif.ics.com/book/export/html/31
+
+## This package does not currently build on OI hipster:
+##
+## In file included from XmRenderTI.h:33:0,
+##                  from Label.c:82:
+## /usr/include/X11/Xft/Xft.h:39:22: fatal error: ft2build.h: No such file or directory
+##  #include <ft2build.h>
+##
+## This is even though ft2build.h is in /usr/include/freetype2
+## Explicitly supplying that path to ./configure does not work.
 
 %include Solaris.inc
-%define src_name        openmotif
+%define cc_is_gcc 1
+%include base.inc
+%define src_name        motif
 %define X11_DIR %{_prefix}/X11
 
 Name:                    SFEopenmotif
-Summary:                 OpenMotif is the publicly licensed version of Motif, the industry standard user interface toolkit for UNIX systems.
-Version:                 2.3.0
-Source:                  ftp://ftp.ics.com/openmotif/2.3/2.3.0/openmotif-%{version}.tar.gz
-URL:                     http://www.motifzone.net/index.php
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-Patch0:                  %{src_name}-01-%{version}.diff
-Patch1:                  %{src_name}-02-compatibility.diff
-Source1:                 XmStrDefs21.ht
+IPS_package_name:	 sfe/library/motif
+Summary:                 Publicly licensed version of Motif, the industry standard user interface toolkit for UNIX systems.
+Version:                 2.3.4
+Source:                  %sf_download/%src_name/%src_name-%version-src.tgz
+URL:                     http://motif.ics.com/motif
+License:                 LGPL
+#Patch0:                  %{src_name}-01-%{version}.diff
+#Patch1:                  %{src_name}-02-compatibility.diff
+#Source1:                 XmStrDefs21.ht
 
 %include default-depend.inc
 
@@ -24,11 +42,9 @@ Requires: SUNWcsu
 Requires: SUNWxwxft
 Requires: SUNWjpg
 BuildRequires: SUNWjpg-devel
-Requires: SUNWpng
-BuildRequires: SUNWpng-devel
+BuildRequires: image/library/libpng
 Requires: SUNWfontconfig
-Requires: SFEfreetype
-BuildRequires: SFEfreetype-devel
+BuildRequires: system/library/freetype-2
 Conflicts: SUNWmfrun
 Conflicts: SUNWmfdev
 
@@ -40,28 +56,34 @@ Requires: %{name}
 Conflicts: SUNWmfdev
 
 %prep
-%setup -q -n openmotif-%version
-%patch0 -p1
+%setup -q -n %src_name-%version
+#%patch0 -p1
 
 %build
+export CC=gcc
+export CXX=g++
+export CFLAGS="%optflags"
+export LDFLAGS="%_ldflags"
+
+./autogen.sh
 ./configure --prefix=%{X11_DIR} \
             --mandir=%{X11_DIR}/share/man \
             --sysconfdir=%{_sysconfdir} \
             --enable-xft \
             --enable-jpeg \
             --enable-png \
-            --with-freetype-config=%{gnu_bin}/freetype-config
+	    --disable-static
 
-cat %{PATCH1} | gpatch -p1 --fuzz=0
-cp %{SOURCE1} lib/Xm
+#cat %{PATCH1} | gpatch -p1 --fuzz=0
+#cp %{SOURCE1} lib/Xm
 
 make
 
 %install
+rm -rf %buildroot
 make install DESTDIR=$RPM_BUILD_ROOT
 
-rm -rf ${RPM_BUILD_ROOT}/%{_prefix}/share
-rm -rf ${RPM_BUILD_ROOT}/%{X11_DIR}/man
+rm %buildroot%X11_DIR/lib/lib*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -72,7 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{X11_DIR}/bin
 %{X11_DIR}/bin/*
 %dir %attr (0755, root, bin) %{X11_DIR}/lib
-%{X11_DIR}/lib/*
+%{X11_DIR}/lib/lib*.so*
+%X11_DIR/lib/X11
 %dir %attr(0755, root, bin) %{X11_DIR}/share
 %dir %attr(0755, root, bin) %{X11_DIR}/share/man
 %dir %attr(0755, root, bin) %{X11_DIR}/share/man/man1
@@ -89,6 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{X11_DIR}/share/Xm
 %dir %attr (0755, root, bin) %{X11_DIR}/share/Xm/pixmaps
 %{X11_DIR}/share/Xm/pixmaps/*
+%X11_DIR/share/Xm/drag_and_drop
 
 %files devel
 %defattr (-, root, bin)
@@ -130,6 +154,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{X11_DIR}/share/Xm/wsm/*
 
 %changelog
+* Fri Dec 18 2015 - Alex Viskovatoff
+- Update to 2.3.4; add IPS package name
 * Thu Feb 07 2008 - moinak.ghosh@sun.com
 - Rework to add compatibility with Solaris Motif.
 - Add devel package.

@@ -24,7 +24,6 @@ Patch1:		qgit-01-git_config.patch
 %include	default-depend.inc
 
 BuildRequires:	SFEqt-gpp
-Requires:	developer/versioning/git
 
 %prep
 %setup -q -n %srcname
