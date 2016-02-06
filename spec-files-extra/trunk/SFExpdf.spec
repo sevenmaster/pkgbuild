@@ -8,7 +8,7 @@
 %define src_version	3.04
 
 Name:		SFExpdf
-IPS_Package_Name:	desktop/pdf-viewer/xpdf
+IPS_Package_Name:	desktop/motif/pdf-viewer/xpdf
 Summary:	X PDF document viewer
 Group:		X11/Applications
 Version:	3.4
@@ -16,7 +16,6 @@ Source:		ftp://ftp.foolabs.com/pub/xpdf/xpdf-%{src_version}.tar.gz
 URL:		http://foolabs.com/xpdf/
 License:	GPLv2+
 SUNW_BaseDir:	%{_basedir}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires: %{name}-root
 BuildRequires: library/motif

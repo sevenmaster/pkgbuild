@@ -15,14 +15,14 @@
 %include Solaris.inc
 
 Name:              SFExdiary
-Summary:           xdiary - Personal Organizer
+IPS_package_name:  motif/project-management/xdiary
+Summary:           Personal organizer
+Group:		   Applications/Office
 Version:           3.0.3
 URL:               http://ftp.x.org/contrib/office/
 Source:            http://ftp.x.org/contrib/office/xmdiary-%{version}.tar.gz
 Patch1:            xdiary-01-tmpl.diff
 Patch2:            xdiary-02-fixups.diff
-SUNW_BaseDir:      %{_basedir}
-BuildRoot:         %{_tmppath}/%{name}-%{version}-build
 License:           Public Domain
 SUNW_Copyright:    %{name}.copyright
 Distribution:      OpenSolaris
@@ -35,21 +35,20 @@ Meta(info.classification):      org.opensolaris.category.2008:System/X11
 
 %include default-depend.inc
 
-BuildRequires: SUNWscpu
 Requires:      SUNWmfrun
 
 %description
-XDiary is your personal organizer that combines the functions of 
-a desktop calendar, an appointment book and an alarm clock. XDiary 
-will help you keep track of your meetings, appointments and plan 
+XDiary is your personal organizer that combines the functions of
+a desktop calendar, an appointment book and an alarm clock. XDiary
+will help you keep track of your meetings, appointments and plan
 your time.
 
-XDiary is a Motif/X Windows application which allows you to manage 
-one or more calendars with a 'few clicks with the mouse'.
+XDiary is a Motif/X Window application which allows you to manage
+one or more calendars with a 'few clicks of the mouse'.
 
-XDiary can be used as a stand-alone tool but it also contains all 
-the functions necessary to be used as a group calendar. As a group 
-calendar, XDiary will help you to plan meetings, distribute information 
+XDiary can be used as a stand-alone tool but it also contains all
+the functions necessary to be used as a group calendar. As a group
+calendar, XDiary will help you to plan meetings, distribute information
 to specific groups etc.
 
 %prep
