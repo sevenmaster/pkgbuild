@@ -1,23 +1,25 @@
 %include Solaris.inc
-%define _pkg_docdir %_docdir/lua-51
+%define _pkg_docdir %_docdir/lua52
+%define lua_maj_min 5.2
+%define lua_revision 4
 
-Name:           SFElua-51
-IPS_package_name: runtime/lua-51
-Version:        5.1.4
+Name:           SFElua
+IPS_package_name: sfe/runtime/lua
+Version:        %lua_maj_min.%lua_revision
 Summary:        Powerful light-weight programming language (compat version)
 Group:          Development/Languages
 License:        MIT
 URL:            http://www.lua.org/
-Source0:        http://www.lua.org/ftp/lua-%{version}.tar.gz
-Patch0:         lua-5.1.4-00-autotoolize.patch
-Patch1:         lua-5.1.4-01-lunatic.patch
-Patch2:         lua-5.1.4-02-idsize.patch
-Patch3:         lua-5.1.4-03-2.patch
-Patch4:         lua-5.1.4-04-pc-compat.patch
-BuildRequires:  readline ncurses libtool
+Source0:        http://www.lua.org/ftp/lua-%version.tar.gz
+Source1:	lua.pc
+# Use patches taken from OpenIndiana Userland
+Patch0:		lua-01-Makefile.patch
+Patch1:		lua-03-headers.patch
+Patch2:		lua-04-src_Makefile.patch
+BuildRequires:  readline ncurses
 
 %description
-This package contains a compatibility version of the lua-5.1 binaries.
+This package contains a compatibility version of the lua-5.2 binaries.
 
 %package devel
 Summary:        Development files for %{name}
@@ -27,52 +29,45 @@ Requires: %name
 %description devel
 This package contains development files for compat-lua-libs.
 
-
 %prep
 %setup -q -n lua-%version
-%patch0 -p1
+%patch0 -p0
 %patch1 -p0
-%patch2 -p1
-%patch3 -p0
-%patch4 -p1
-# fix perms on auto files
-chmod u+x autogen.sh config.guess config.sub configure depcomp install-sh missing
-# Avoid make doing auto-reconf itself, killing our rpath removel in the process
-autoreconf -i -f
-
+%patch2 -p0
 
 %build
-%configure --with-readline
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-sed -i 's/ -Wall//' src/Makefile
-# hack so that only /usr/bin/lua gets linked with readline as it is the
-# only one which needs this and otherwise we get License troubles
-#make %{?_smp_mflags} LIBS="-lm -ldl" luac_LDADD="liblua.la -lm -ldl"
-make LIBS="-lm -ldl" luac_LDADD="liblua.la -lm -ldl"
-# also remove readline from lua.pc
-sed -i 's/-lreadline -lncurses //g' etc/lua.pc
-
+make
 
 %install
 rm -rf %buildroot
-make install DESTDIR=%buildroot
-rm %buildroot%{_libdir}/liblua.{a,la}
-mkdir -p %buildroot%{_libdir}/lua/5.1
-mkdir -p %buildroot%{_datadir}/lua/5.1
-# Rename some files to avoid conflicts with 5.2
-mv %buildroot%{_bindir}/lua %buildroot%{_bindir}/lua-5.1
-mv %buildroot%{_bindir}/luac %buildroot%{_bindir}/luac-5.1
-mv %buildroot%{_mandir}/man1/lua.1 \
-  %buildroot%{_mandir}/man1/lua-5.1.1
-mv %buildroot%{_mandir}/man1/luac.1 \
-  %buildroot%{_mandir}/man1/luac-5.1.1
-mkdir -p %buildroot%{_includedir}/lua-5.1
-mv %buildroot%{_includedir}/l*h* %buildroot%{_includedir}/lua-5.1
-rm %buildroot%{_libdir}/liblua.so
-mv %buildroot%{_libdir}/pkgconfig/lua.pc \
-  %buildroot%{_libdir}/pkgconfig/lua-5.1.pc
+ROOT=%buildroot make install
 
+cd %buildroot/usr
+# Rename some files to avoid conflicts with system lua
+cd bin
+chmod u+w lua*
+# ld(1) looks in RPATH before it looks in the default paths,
+# so the executable will not link with the system library
+%define rpath "dyn:runpath /usr/lib/lua/%lua_maj_min"
+/usr/bin/elfedit -e %rpath lua
+/usr/bin/elfedit -e %rpath luac
+mv lua lua%lua_maj_min
+mv luac luac%lua_maj_min
+cd ../share
+pushd man/man1
+mv lua.1 lua%lua_maj_min.1
+mv luac.1 luac%lua_maj_min.1
+popd
+mv doc/lua doc/lua52
+mkdir -p lua/%lua_maj_min
+cd ../lib
+mkdir -p lua/%lua_maj_min
+mv liblua.so lua/%lua_maj_min
+mkdir pkgconfig
+cp %SOURCE1 pkgconfig/lua52.pc
+cd ../include
+mkdir lua%lua_maj_min
+mv l*.h* lua%lua_maj_min
 
 %clean
 rm -rf %buildroot
@@ -81,25 +76,26 @@ rm -rf %buildroot
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %_datadir
-%{_bindir}/lua-5.1
-%{_bindir}/luac-5.1
-%{_mandir}/man1/lua*5.1.1*
-%doc COPYRIGHT HISTORY README doc/*.html doc/*.css doc/*.gif doc/*.png
-%{_libdir}/liblua-5.1.so
-%dir %{_libdir}/lua
-%dir %{_libdir}/lua/5.1
+%{_bindir}/lua%lua_maj_min
+%{_bindir}/luac%lua_maj_min
+%{_mandir}/man1/lua*%lua_maj_min.1*
+%dir %attr (0755, root, other) %_docdir
+%_pkg_docdir
+%_libdir/lua/%lua_maj_min/liblua.so
 %dir %{_datadir}/lua
-%dir %{_datadir}/lua/5.1
+%dir %{_datadir}/lua/%lua_maj_min
 
 %files devel
 %defattr (-, root, bin)
-%{_includedir}/lua-5.1/
+%{_includedir}/lua%lua_maj_min/
 %dir %attr (0755, root, other) %_libdir/pkgconfig
-%{_libdir}/pkgconfig/lua-5.1.pc
-
+%_libdir/pkgconfig/lua52.pc
 
 %changelog
-* Tue Oct 29 2013 - Alex Viskovatoff <herzen@imapmail.org>
+* Tue Dec 22 2015 - Alex Viskovatoff <herzen@imap.cc>
+- Supply lua 5.2, since S11.3 delivers lua 5.1, and remove version number
+  from package name
+* Tue Oct 29 2013 - Alex Viskovatoff <herzen@imap.cc>
 - Import Fedora spec compat-lua.spec
 * Sat Aug  3 2013 Hans de Goede <hdegoede@redhat.com> - 5.1.4-5
 - New Fedora package with full lua-5.1 for use with applications not yet
