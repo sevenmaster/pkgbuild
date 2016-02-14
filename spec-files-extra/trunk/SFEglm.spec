@@ -112,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/%src_name
 
 %changelog
+* Sun Feb 14 2016 - Thomas Wagner
+- fix patch1: remove CR at end of line
 * Wed Jan 13 2016 - Rene Elgaard
 - Update download source and setup call
 * Mon Jan  4 2016 - Thomas Wagner (merged with Jan 13 2016)
