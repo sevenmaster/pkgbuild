@@ -15,7 +15,11 @@
 
 Name:		SFEstellarium
 IPS_Package_Name:	image/stellarium
-Version:	0.12.4
+#version 0.13.x 0.14.x need Qt5
+#Version:	0.12.4
+Version:	0.12.6
+#Version:	0.13.3
+#Version:	0.14.2
 Summary:	Photo-realistic night sky renderer
 Group:		Scientific/Astronomy
 License:	GPLv2+
@@ -23,6 +27,7 @@ SUNW_Copyright:	GPLv2.copyright
 URL:		http://stellarium.free.fr/
 Source:		%{sf_download}/%{srcname}/%{srcname}-%{version}.tar.gz
 Patch2:		stellarium-02-gcc-name-conflict.diff
+
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
 
@@ -33,6 +38,7 @@ BuildRequires: library/audio/sdl-mixer
 Requires:      library/audio/sdl-mixer
 BuildRequires: SUNWimagick
 BuildRequires: SFEcmake
+##TODO## update stellarium to 0.13.x 0.14.x once SFEqt5-gpp is available!
 BuildRequires: SFEqt-gpp-devel
 Requires:      SFEqt-gpp
 
@@ -52,6 +58,7 @@ Requires:	%{name}
 
 %prep
 %setup -q -n stellarium-%{version}
+
 %patch2 -p1
 
 %build
@@ -119,6 +126,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Sun Feb 14 2016 - Thomas Wagner
+- bump to 0.12.6 (last version working on Qt4)
 * Sun Feb  7 2016 - Thomas Wagner
 - merge with local workspace
 - temporarily use IPS name for sdl-mixer
