@@ -1,4 +1,3 @@
-#
 # spec file for package SFEcmake
 #
 # includes module(s): cmake
@@ -22,10 +21,12 @@ IPS_Package_Name:	sfe/developer/build/cmake
 IPS_Package_Name:	developer/build/cmake 
 %endif
 Summary:	Cross platform make system
-Version:	2.8.11
+Version:	2.8.12.2
 License:	BSD3c
 SUNW_Copyright:	cmake.copyright
 Source:		http://www.cmake.org/files/v2.8/cmake-%{version}.tar.gz
+Patch1:         cmake-01-remove-special-case-linking-C++-shared-libraries.diff
+Patch2:         cmake-02-SystemInformation.cxx-backtrace_prototype.diff
 URL:		http://www.cmake.org
 Group:		Development/Distribution Tools
 SUNW_BaseDir:	%{_basedir}
@@ -35,6 +36,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n cmake-%{version}
+
+%patch1 -p1
+%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -74,6 +78,12 @@ rm -rf %{buildroot}
 %{_docdir}/cmake
 
 %changelog
+* Sun Feb 14 2016 - Thomas Wagner
+- bump to 2.8.12.2 (for stellarium 0.14.2)
+- add patch1 cmake-01-remove-special-case-linking-C++-shared-libraries.diff (integrated in cmake 3.4.x)
+  SunOS: Drop special case for linking C++ shared libraries with gcc
+- add patch2 (modified) cmake-02-SystemInformation.cxx-backtrace_prototype.diff
+  SystemInformation.cxx", line 1382: Error: The function "backtrace_symbols" must have a prototype.
 * Sun Sep 01 2013 - Milan Jurik
 - bump to 2.8.11
 * Sun Nov 11 2012 - Logan Bruns <logan@gedanken.org>
