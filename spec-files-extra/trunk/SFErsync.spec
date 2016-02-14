@@ -66,6 +66,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 13 2016 - Thomas Wagner
+- bump to 3.1.2 - bug and security fix
 * Fri Jan 24 2014 - Thomas Wagner
 - bump to 3.1.0
 - add IPS_Package_Name
