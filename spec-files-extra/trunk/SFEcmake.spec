@@ -12,10 +12,15 @@
 # Avoid conflict with SUNWcmake
 %include usr-gnu.inc
 
+#S12 build >= 70
 #developer/build/cmake                             2.8.6-5.12.0.0.0.70.0      ---
 
+#S11.3
+#2.8.6-0.175.3.0.0.18.0
+#0000017500030000000000180000
+
 Name:		SFEcmake
-%if %( expr %{solaris12} '&' %{osbuild} '>=' 70 )
+%if %( expr %{solaris12} '&' %{osbuild} '>=' 70 '|' %{solaris11} '&' %{osdistro_entire_padded_number4} '>=' 0000017500030000000000180000)
 IPS_Package_Name:	sfe/developer/build/cmake 
 %else
 IPS_Package_Name:	developer/build/cmake 
@@ -84,6 +89,7 @@ rm -rf %{buildroot}
   SunOS: Drop special case for linking C++ shared libraries with gcc
 - add patch2 (modified) cmake-02-SystemInformation.cxx-backtrace_prototype.diff
   SystemInformation.cxx", line 1382: Error: The function "backtrace_symbols" must have a prototype.
+- make IPS unique again for S11.3 (sfe/)
 * Sun Sep 01 2013 - Milan Jurik
 - bump to 2.8.11
 * Sun Nov 11 2012 - Logan Bruns <logan@gedanken.org>
