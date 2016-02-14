@@ -5,10 +5,13 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
+
 %define cc_is_gcc 1
 %include base.inc
+
 %define srcname stellarium
-%define _pkg_docdir %_docdir/%srcname
+%define _pkg_docdir %{_docdir}/%{srcname}
 
 Name:		SFEstellarium
 IPS_Package_Name:	image/stellarium
@@ -18,17 +21,20 @@ Group:		Scientific/Astronomy
 License:	GPLv2+
 SUNW_Copyright:	GPLv2.copyright
 URL:		http://stellarium.free.fr/
-Source:		%sf_download/%srcname/%srcname-%version.tar.gz
+Source:		%{sf_download}/%{srcname}/%{srcname}-%{version}.tar.gz
 Patch2:		stellarium-02-gcc-name-conflict.diff
-SUNW_BaseDir:	%_basedir
+SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
 
-BuildRequires: SFEsdl-mixer-devel
-Requires: SFEsdl-mixer
+#BuildRequires: SFEsdl-mixer-devel
+#Requires: SFEsdl-mixer
+##TODO## make a pnm_macro for sdl-mixer / SFEsdl-mixer
+BuildRequires: library/audio/sdl-mixer
+Requires:      library/audio/sdl-mixer
 BuildRequires: SUNWimagick
 BuildRequires: SFEcmake
 BuildRequires: SFEqt-gpp-devel
-Requires: SFEqt-gpp
+Requires:      SFEqt-gpp
 
 %description
 Stellarium is a real-time 3D photo-realistic nightsky renderer. It can
@@ -63,21 +69,23 @@ export QMAKESPEC=solaris-g++
 mkdir -p builds/unix
 cd builds/unix
 
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_LIBRARY_PATH=/usr/gnu/lib:/usr/g++/lib ../..
-#make VERBOSE=1 -j$CPUS
-make -j$CPUS
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_LIBRARY_PATH=/usr/g++/lib:/usr/gnu/lib ../..
+make VERBOSE=1 -j$CPUS
 cd ../..
 convert -size 32x32 data/icon.bmp stellarium.png
 
 
 %install
-rm -rf %buildroot
+rm -rf %{buildroot}
 cd builds/unix
-make install DESTDIR=%buildroot INSTALL="%_bindir/ginstall -c -p"
+make install DESTDIR=%{buildroot} INSTALL="%{_bindir}/ginstall -c -p"
 cd ../..
 
 # Setting CMAKE_LIBRARY_PATH does not do any good
-/usr/bin/elfedit -e 'dyn:runpath /usr/gnu/lib:/usr/g++/lib' %buildroot/%_bindir/stellarium
+/usr/bin/elfedit -e 'dyn:runpath /usr/g++/lib:/usr/gnu/lib' %buildroot/%_bindir/stellarium
+
+mkdir -p %{buildroot}%{_datadir}/pixmaps/
+install -m 0644 -p stellarium.png %{buildroot}%{_datadir}/pixmaps/stellarium.png
 
 %if %build_l10n
 %else
@@ -87,21 +95,21 @@ rm -rf %{buildroot}%{_datadir}/locale
 
 
 %clean
-rm -rf %buildroot
+rm -rf %{buildroot}
 
 %files
 %defattr(-, root, bin)
 %doc AUTHORS ChangeLog CHANGES-FROM-TRUNK.txt README
-%_bindir
-%dir %attr (0755, root, sys) %_datadir
-%_datadir/%srcname
-%dir %attr (0755, root, bin) %_mandir
-%dir %attr (0755, root, bin) %_mandir/man1
-%_mandir/man1/stellarium.1
+%{_bindir}
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/%{srcname}
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/stellarium.1
 %defattr (-, root, other)
-%_datadir/applications/%srcname.desktop
-%_datadir/pixmaps/%srcname.xpm
-%_datadir/icons
+%{_datadir}/applications/%{srcname}.desktop
+%{_datadir}/pixmaps/%{srcname}*
+%{_datadir}/icons
 
 %if %build_l10n
 %files l10n
@@ -111,8 +119,17 @@ rm -rf %buildroot
 %endif
 
 %changelog
+* Sun Feb  7 2016 - Thomas Wagner
+- merge with local workspace
+- temporarily use IPS name for sdl-mixer
 * Thu Oct 31 2013 - Alex Viskovatoff
 - update to 0.12.4; undo unexplained move to archive/
+- change oder for runpath in stellarium (g++ first, then gnu, then default)
+* Thu Aug 16 2012 - Thomas Wagner
+- bump to 0.11.3
+- add IPS_package_name
+* Wed Apr 11 2012 - Thomas Wagner
+- bump to 0.11.2
 * Sun Jan 1 2012 - Ken Mays <kmays2000@gmail.com>
 - bump to 0.11.1
 * Wed Sep 14 2011 - Ken Mays <kmays2000@gmail.com>
