@@ -130,7 +130,12 @@ $cpan_file=~s/$version/\%\{tarball_version\}/;
 
 # get license file
 my $license_url="http://search.cpan.org/src/".$mod->{RO}->{CPAN_USERID}."/".$module_name."-".$mod->{RO}->{CPAN_VERSION}."/LICENSE";
-system("wget -O copyright/SFEperl-$pkg.copyright $license_url");
+if (system("wget -O copyright/SFEperl-$pkg.copyright $license_url"))  { 
+   print "copyright file could not be loaded, please check license information\n";
+   open HANDLE, ">>copyright/SFEperl-$pkg.copyright" or print "failed to touch copyright/SFEperl-$pkg.copyright: $!\n";
+   close HANDLE; 
+   }
+
 
 # work around for empty description (might depend on older CPAN module version!)
 #Summary:	$mod->{RO}->{description}
@@ -160,6 +165,10 @@ system("wget -O copyright/SFEperl-$pkg.copyright $license_url");
 #temporary solution is to just place the module name into spec files Summary and %description
 $mod->{RO}->{description} = $mod->{ID} unless defined $mod->{RO}->{description};
  
+if (-f "SFEperl-".$pkg.".spec") {
+   print STDERR "Spec file already exists! SFEperl-$pkg.spec\n" ;
+   exit 1;
+   }
 
 # out spec files
 open (OUT,">SFEperl-$pkg.spec") or die ("cannot write SFEperl-$pkg.spec");
@@ -176,6 +185,8 @@ print OUT <<_END ;
 \%include Solaris.inc
 \%include packagenamemacros.inc
 
+#\%define _use_internal_dependency_generator 0
+
 \%define tarball_version $mod->{RO}->{CPAN_VERSION}
 \%define tarball_name    $module_name
 
@@ -183,10 +194,11 @@ Name:		SFEperl-$pkg
 IPS_package_name: library/perl-5/$pkg
 Version:	$mod->{RO}->{CPAN_VERSION}
 IPS_component_version: $ips_version
+Group:          Development/Libraries                    
 Summary:	$mod->{RO}->{description}
 License:	Artistic
-Distribution:   OpenSolaris
-Vendor:         OpenSolaris Community
+#Distribution:   OpenSolaris
+#Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~$userid/\%{tarball_name}-\%{tarball_version}
 SUNW_Basedir:	\%{_basedir}
 SUNW_Copyright: \%{name}.copyright
@@ -212,6 +224,7 @@ perl Makefile.PL \\
     LIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
     INSTALLSITELIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
     INSTALLSITEARCH=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version}/\%{perl_dir} \\
+    INSTALLARCHLIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version}/\%{perl_dir} \\
     INSTALLSITEMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
     INSTALLSITEMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3 \\
     INSTALLMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
@@ -256,6 +269,8 @@ print "3nd,\nremove or add lines form the \%files section\n";
 
 __DATA__
 %changelog
+* Sun Dec  8 2013 - Thomas Wagner
+- add INSTALLARCHLIB as it is sometimes empty on perl 5.10.x on OI, make complains on recoursive variable
 * Sun Nov  4 2012 - Thomas Wagner
 - add workaround to place module ID into description unless defined : Summary %description
 * Wed Oct 24 2012 - Thomas Wagner
