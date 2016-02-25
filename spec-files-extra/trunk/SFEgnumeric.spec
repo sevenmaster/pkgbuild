@@ -8,7 +8,7 @@ Name:		SFEgnumeric
 IPS_Package_Name:	desktop/spreadsheet/gnumeric
 Summary:	Spreadsheet for GNOME
 URL:		http://www.gnome.org/projects/gnumeric/
-Version:	1.10.17
+Version:	1.10.14
 Group:		Applications/Spreadsheet
 License:	GPLv2
 Source:		http://ftp.gnome.org/pub/GNOME/sources/gnumeric/1.10/gnumeric-%{version}.tar.bz2
@@ -33,7 +33,7 @@ BuildRequires:	SUNWlibgsf-devel
 BuildRequires:	SUNWgnome-common-devel
 BuildRequires:	SUNWgtk-doc
 BuildRequires:	SUNWperl-xml-parser
-BuildRequires:	SUNWgnu-findutils
+BuildRequires:	file/gnu-findutils
 
 %package devel
 Summary:	%{summary} - development files
@@ -188,6 +188,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Feb 24 2016 - Alex Viskovatoff <herzen@imap.cc>
+- Switch to 1.10.14: goffice on S11.3 is too old for 1.10.17
 * Fri Sep 30 2011 - Brian Cameron  <brian.cameron@oracle.com>
 - Bump to 1.10.17.
 * Fri Sep 24 2010 - Brian Cameron  <brian.cameron@oracle.com>
