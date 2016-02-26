@@ -11,7 +11,7 @@
 Name:                   SFEyasm
 IPS_Package_Name:	developer/yasm
 Summary:                Yet another assembler
-Version:                1.2.0
+Version:                1.3.0
 Source:                 %{src_url}/%{src_name}-%{version}.tar.gz
 License:		LGPL
 SUNW_Copyright:		yasm.copyright
@@ -64,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+- bump to 1.3.0
 * Thu Jun 21 2012 - Milan Jurik
 - bump to 1.2.0
 * Sun Oct 16 2011 - Milan Jurik
