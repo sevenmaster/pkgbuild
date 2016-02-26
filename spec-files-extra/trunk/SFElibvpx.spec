@@ -24,7 +24,8 @@ IPS_Package_Name:	library/video/libvpx
 Summary:	The VP8 Codec SDK
 Group:		System/Multimedia Libraries
 Version:	%{libvpx.version}
-URL:		http://www.webmproject.org/
+URL:            http://www.webmproject.org/code/
+#versioned snapshots: http://downloads.webmproject.org/releases/webm/index.html
 License:        BSD
 SUNW_Copyright:	libvpx.copyright
 SUNW_BaseDir:	%{_basedir}
@@ -89,11 +90,23 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+#- bump to 1.5.0 need patch rework
+- bump to 1.4.0 - pause patch3, import patch2 for 1.4.0 from OI
+- new Source URL and trick stupid gitub causing duplicate filenames between different projects ( "think-1.1.1.tar" and "otherproject-1.1.1.tar" would be both SOURCES/1.1.1.tar )
+* Sun Mar 23 2014 - Ian Johnson
+- add --disable-unit-tests to configure line (test suite fails to build on Solaris 11.1)
 * Sat Sep 28 2013 - Milan Jurik
 - bump to 1.2.0 (trigger autobuild)
 * Tue Nov  1 2011 - Alex Viskovatoff
 - Fix directory attributes
+* Sun Aug 05 2012 - Milan Jurik
+- bump to 1.1.0
 * Thu Jul 21 2011 - Alex Viskovatoff
 - Add SUNW_Copyright
+* Sun Oct 23 2011 - Milan Jurik
+- bump to 0.9.7-p1
+* Fri Mar 18 2011 - Milan Jurik
+- fix x86 multiarch
 * Thu Mar 17 2011 - Milan Jurik
 - initial spec
