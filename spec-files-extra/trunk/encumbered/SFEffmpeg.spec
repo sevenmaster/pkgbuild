@@ -191,6 +191,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+- add standard $PKG_CONFIG_PATH to make it find SFElibass
 * Sat Jan 16 2016 - Thomas Wagner
 - bump to 2.8.5
 * Sun Nov 29 2015 - Thomas Wagner

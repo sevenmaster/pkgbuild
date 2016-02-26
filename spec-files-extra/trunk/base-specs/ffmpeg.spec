@@ -35,7 +35,7 @@ export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -fno-rename-r
 %else
 export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -I%{xorg_inc} -I%{_includedir}"
 %endif
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib %{xorg_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export LDFLAGS="$LDFLAGS -m64"
@@ -125,6 +125,8 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+- add standard $PKG_CONFIG_PATH to make it find SFElibass
 * Sat Jan 16 2016 - Thomas Wagner
 - bump to 2.8.5
 * Sun Nov 29 2015 - Thomas Wagner
