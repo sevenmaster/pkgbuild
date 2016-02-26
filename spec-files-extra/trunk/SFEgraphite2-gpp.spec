@@ -13,7 +13,7 @@
 
 %define	src_name	graphite2
 
-Name:			SFEgraphite2
+Name:			SFEgraphite2-gpp
 IPS_Package_Name:	library/g++/graphite2
 Summary:		SILgraphite - rendering engine for complex scripts
 Group:			System/Libraries
@@ -122,6 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+- change back SVR4 name to SFEgraphite-gpp or this breakes automatic solve for dependcies (regression from rev 6136)
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Change SVr4 name to maintain consistency with IPS name
 * Mon Aug 10 2015 - Thomas Wagner
