@@ -22,12 +22,21 @@ Version:	0.13.1
 License:	ISC
 SUNW_Copyright:	libass.copyright
 SUNW_BaseDir:	%_basedir
-Source:		http://github.com/%srcname/%srcname/releases/download/%version/%srcname-%version.tar.xz
+Source:		http://github.com/%srcname/%srcname/releases/download/%version/%srcname-%version.tar.gz
+
 %include default-depend.inc
+#currently off BuildRequires:	SFEyasm >= 1.3.0
+
 BuildRequires:	SFElibfribidi-devel
+Requires:	SFElibfribidi
 BuildRequires:	SFEharfbuzz-gpp-devel
+Requires:	SFEharfbuzz-gpp-devel
 BuildRequires:	SFEfontconfig-gpp
+Requires:	SFEfontconfig-gpp
 BuildRequires:	SFEgraphite2-gpp
+Requires:	SFEgraphite2-gpp
+BuildRequires:	SFEgcc
+Requires:	SFEgccruntime
 
 # Copied from Wikipedia
 %description
@@ -53,24 +62,28 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CFLAGS="%optflags"
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
-export LDFLAGS="%_ldflags -R/usr/g++/lib"
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:$PKG_CONFIG_PATH
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+#export ASFLAGS="-f elf -DHAVE_ALIGNED_STACK=1"
 export ASFLAGS="-f elf"
 # This is so our fontconfig gets found
 export PATH=/usr/g++/bin:$PATH
 
-# Disable use of assembler to avoid text relocation link errors
+sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
+
+#./configure --prefix=%_prefix
+# Disable use of assembler to avoid text relocation link errors. Needs ASFLAGS="-f elf -DHAVE_ALIGNED_STACK=1" as well
 ./configure --prefix=%_prefix --disable-asm
 gmake -j$CPUS
 
 
 %install
-rm -rf %buildroot
-make install DESTDIR=%buildroot
-rm %buildroot%_libdir/*.*a
+rm -rf $RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
+rm $RPM_BUILD_ROOT%_libdir/*.*a
 
 %clean
-rm -rf %buildroot
+rm -rf $RPM_BUILD_ROOT
 
 
 %files
@@ -87,6 +100,16 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+#- enable again assembler, use yasm 1.3.0 instead 1.2.0 (updated SFEyasm.spec to 1.3.0 - undefined symbol HAVE_ALIGNED_STACK)
+- merge different spec files sitting around
+- to keep information in one non-volatile place: add forgotten %changelog entries below:
+- use *.gz source
+- add dependencies
+* Sun Jan 31 2016 - Alex Viskovatoff
+- update to 0.13.1; disable use of assembler
+* Mon Sep  9 2013 - Thomas Wagner
+- use bash in configure (endless loop sleep 1)
 * Sat Feb 09 2013 - Milan Jurik
 - bump do 0.10.1
 * Thu Jun 21 2012 - Logan Bruns <logan@gedanken.org>
