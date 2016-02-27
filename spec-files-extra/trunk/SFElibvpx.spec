@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 27 2016 - Thomas Wagner
+- bump to 1.4.0.0.1 trick the IPS solver to stay ahead with the OpenIndiana Hipster delivered version of libvpx
 * Fri Feb 26 2016 - Thomas Wagner
 #- bump to 1.5.0 need patch rework
 - bump to 1.4.0 - pause patch3, import patch2 for 1.4.0 from OI
