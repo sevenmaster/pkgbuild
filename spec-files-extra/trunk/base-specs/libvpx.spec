@@ -5,10 +5,9 @@
 Name:		libvpx
 License:	BSD
 #Version:	1.5.0
-#give the version number a slight advance to stay ahead of the OpenIndiana Hipster deliveres libvpx
-Version:	1.4.0.0.1
+Version:	1.4.0
 #versioned snapshots: http://downloads.webmproject.org/releases/webm/index.html
-Source:         http://github.com/webmproject/%{name}/archive/v%{version}.tar.gz -O %{_sourcedir}/%{name}-v%{version}.tar.gz
+Source:         http://github.com/webmproject/%{name}/archive/v%{version}.tar.gz -O %{_sourcedir}/%{name}-%{version}.tar.gz
 
 Patch1:		libvpx-01-shared.diff
 #Patch2:		libvpx-02-mapfile.diff
@@ -16,7 +15,7 @@ Patch2:		libvpx-02-1.4.0-mapfile.diff
 #Patch3:		libvpx-03-rtcd.diff
 
 %prep
-%setup -q -n %{name}-v%{version}
+%setup -q -n %{name}-%{version}
 %patch1 -p1
 %patch2 -p1
 #%patch3 -p1
@@ -58,7 +57,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sat Feb 27 2016 - Thomas Wagner
-- bump to 1.4.0.0.1 trick the IPS solver to stay ahead with the OpenIndiana Hipster delivered version of libvpx
+- bump to 1.4.0.0.1 trick the IPS solver to stay ahead with the OpenIndiana Hipster delivered version of libvpx by using IPS_Component_Version
+- fix download filename (no >v<)
 * Fri Feb 26 2016 - Thomas Wagner
 #- bump to 1.5.0 need patch rework
 - bump to 1.4.0 - pause patch3, import patch2 for 1.4.0 from OI
