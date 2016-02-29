@@ -6,8 +6,11 @@
 
 #if number of CPUS is greater then totalmemory/1024, then use memory/1024 as limiting factor to number of CPUS
 #e.g. _cpus=16, _totalmemory=4096, then calculate _cpus_memory=4 instead of 16
-%define _cpus_memory  %( test %{_cpus} -gt `expr %{_totalmemory} / 1024` ] && expr %{_totalmemory} '/' 1024  || echo %{_cpus} )
+#%define _cpus_memory  %( test %{_cpus} -gt `expr %{_totalmemory} / 1024` ] && expr %{_totalmemory} '/' 1024  || echo %{_cpus} )
+%define _cpus_memory  %( test %{_cpus} -gt `expr %{_totalmemory} / 768` ] && expr %{_totalmemory} '/' 768  || echo %{_cpus} )
 
 
 
-
+%changelog
+* Sun Jan  3 2016 - Thomas Wagner
+- calculate _cpus_memory with less memory (one CPU count per 768 MB memory)

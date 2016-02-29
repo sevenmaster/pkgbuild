@@ -1142,6 +1142,18 @@
 #END >= 144
 
 
+
+%if %{oihipster}
+#oihipster lost SUNWxwinc, try a replacement.
+#  usr/include/X11/X.h pkg:/x11/header/xproto@7.0.28-2015.0.1.0
+%define pnm_buildrequires_SUNWxwinc_devel	x11/header/xproto
+%define pnm_buildrequires_SUNWxwinc		x11/header/xproto
+%define pnm_requires_SUNWxwinc			x11/header/xproto
+%endif
+#END oihipster
+
+
+
 #info: graphviz added around consolidation/userland/userland-incorporation@0.5.11,5.11-0.172:20110815T080358Z
 #
 #note: if you prefer the maybe more uptodate "version" ofr SFEgraphviz, then put that SFEpackagename into (Build)Requirements
@@ -2997,6 +3009,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Fri Dec 25 2015 - Thomas Wagner
+- special setting  pnm_buildrequires_SUNWxwinc_devel  x11/header/xproto (OIH)
 * Sun Dec 20 2015 - Thomas Wagner
 - handle pnm_buildrequires_system_hal: service/hal renamed to system/hal (S11)
 * Sat Dec  5 2015 - Thomas Wagner
