@@ -14,14 +14,10 @@
 %define pnm_buildrequires_SFElibschroedinger	library/video/libschroedinger
 %define pnm_requires_SFElibschroedinger		library/video/libschroedinger
 
-#oihipster lost SUNWxwinc, try a replacement. Set the default for all other osdistro here
-#  usr/include/X11/X.h pkg:/x11/header/xproto@7.0.28-2015.0.1.0
-%define pnm_buildrequires_SUNWxwinc_devel	x11/header/xproto
-%define pnm_buildrequires_SUNWxwinc		x11/header/xproto
-%define pnm_requires_SUNWxwinc			x11/header/xproto
-
 
 %changelog
+* Fri Dec 25 2015 - Thomas Wagner
+- moved SUNWxwinc to allbuilds
 * Sun Nov 29 2015 - Thomas Wagner
 - handle openjeg, default to SFEopenjpeg for all, except (OIH) where we use the osdistro package for the moment
 - handle orc / libschroedinger, default to SFEorc / SFElibschroedinger for all, except (OIH) where we use the osdistro package for the moment
