@@ -1,0 +1,199 @@
+#!/usr/bin/bash
+
+SPECFILE="$1"
+echo "Testbuild perl spec file: ${SPECFILE}"
+
+prepare_svn () {
+
+  INITCHANGELOGNAME=""
+  svn add ${SPECFILE} && \
+    INITCHANGELOGNAME=$( LC_ALL=C svn info . ${SPECFILE} | grep "Author" | tail -1 | gsed -e 's/.*: \{0,1\}//' )
+
+  ENTRYL1="* `date '+%a %h %d %Y'` - $INITCHANGELOGNAME\n- initial spec"
+
+  [ -n ${INITCHANGELOGNAME} ] \
+    && gsed -i.bak_changelog -e "/^##TODO## add changelog/ s/.*/${ENTRYL1}/" ${SPECFILE} \
+    && diff -u ${SPECFILE}.bak_changelog ${SPECFILE}
+
+return $?
+
+}
+
+
+pkgtool --download --IPS build ${SPECFILE}
+_rc=$?
+
+if [ $_rc != 0 ]
+ then
+ echo "First build error handling for: $SPECFILE"
+# RPM_BUILD_ROOT=$( spectool eval "%{buildroot}" $SPECFILE )
+# BINDIR=$( spectool eval "%{_bindir}" $SPECFILE )
+# MAN1DIR=$( spectool eval "%{_mandir}" $SPECFILE )"/man1"
+# MAN3DIR=$( spectool eval "%{_mandir}" $SPECFILE )"/man3"
+ # /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build:/usr/bin:/usr/share/man
+ DIRS=$( spectool eval "%{buildroot}:%{_bindir}:%{_mandir}" $SPECFILE )
+ RPM_BUILD_ROOT=$( echo $DIRS | awk -F':' '{ print $1}' )
+ BINDIR=$( echo $DIRS | awk -F':' '{ print $2}' )
+ MAN1DIR=$( echo $DIRS | awk -F':' '{ print $3}' )"/man1"
+ MAN3DIR=$( echo $DIRS | awk -F':' '{ print $3}' )"/man3"
+
+ echo "bindir: ${BINDIR}"
+ echo "man1dir: ${MAN1DIR}"
+ echo "man3dir: ${MAN3DIR}"
+ 
+ bin_present=false
+ man1_present=false
+ man3_present=false
+ [ -d ${RPM_BUILD_ROOT}/${BINDIR} ] && bin_present=true
+
+ [ -d ${RPM_BUILD_ROOT}/${MAN1DIR} ] && man1_present=true
+
+ [ -d ${RPM_BUILD_ROOT}/${MAN3DIR} ] && man3_present=true
+
+ if [ $bin_present == "true" ]; then
+  #     #%dir %attr(0755,root,bin) %{_bindir}
+  #     #%{_bindir}/*
+  #make sure, "#" sign is *removed*
+   egrep "^%dir .*%{_bindir}" ${SPECFILE} \
+     || gsed -i.bak_bindir \
+           -e '/^#.*%dir .*%{*_bindir}*/ s?^#.*?%dir %attr(0755,root,bin) %{_bindir}?' \
+           -e '/^#.*%{*_bindir}*/ s?^#.*?%{_bindir}/*?' \
+           $SPECFILE 
+ fi #bin_present
+
+
+#attention: reversed logic here
+ if [ "$man1_present" == "false" ]; then
+  #     %dir %attr(0755,root,bin) %{_mandir}/man1
+  #     %{_mandir}/man1/*
+  #make sure, "#" sign is *added*
+   egrep "(^%dir .*%{*_mandir}*/man1|^%{*_mandir}*/man1)" ${SPECFILE} \
+     && gsed -i.bak_man1dir \
+           -e '/^%dir .*%{*_mandir}*\/man1/ s?^?#?' \
+           -e '/^%{*_mandir}*\/man1/ s?^?#?' \
+           $SPECFILE 
+ fi #man1_present
+
+
+#attention: reversed logic here
+ if [ "$man3_present" == "false" ]; then
+  #     %dir %attr(0755,root,bin) %{_mandir}/man3
+  #     %{_mandir}/man3/*
+  #make sure, "#" sign is *added*
+   egrep "(^%dir .*%{*_mandir}*/man3|^%{*_mandir}*/man3)" ${SPECFILE} \
+     && gsed -i.bak_man3dir \
+           -e '/^%dir .*%{*_mandir}*\/man3/ s?^?#?' \
+           -e '/^%{*_mandir}*\/man3/ s?^?#?' \
+           $SPECFILE 
+ fi #man3_present
+
+ echo "changes to the spec file are the following. Please re-run the build command to test results"
+
+ [ -f ${SPECFILE}.bak_bindir ] && diff -u ${SPECFILE}.bak_bindir ${SPECFILE}
+ [ -f ${SPECFILE}.bak_man1dir ] && diff -u ${SPECFILE}.bak_man1dir ${SPECFILE}
+ [ -f ${SPECFILE}.bak_man3dir ] && diff -u ${SPECFILE}.bak_man3dir ${SPECFILE}
+
+ pkgbuild --short-circuit -bb ${SPECFILE} \
+    && IPSPKGNAME=$( spectool get_package_names --IPS ${SPECFILE} ) \
+    && pfexec pkg install -v ${IPSPKGNAME} \
+    && prepare_svn \
+    && _rc=$? \
+       echo "Build succeeded. Exitcode: $_rc"
+  
+ exit $_rc
+
+else
+
+  prepare_svn
+  
+  echo "Build succeeded. Exitcode: $_rc"
+fi #first build error handling
+
+exit $_rc
+
+
+
+#%changelog
+#* Fri Feb 26 2016 - Thomas Wagner
+#- initial spec
+#- usage: experimental/testbuildperlmodule SFEperl-this-fresh-module-from-makescript.spec
+#  does a test-build, edits "man1", "man3" and "bin" in %files as needed, then re-runs the build, adds $changelog and then adds spec to SVN
+
+
+##TODO##
+
+
+# erkennen, ob beim Bau ein ERROR gezeigt wurde zu vorausgesetzene Modulen
+
+# egrep "ERROR: .*is not installed" SFEperl-********.log
+# ERROR: Test::CPAN::Meta is not installed
+
+# erkennen, ob binare Objekte vorhanden sind, dann den Schalter "dependency_generator" aktiv lassen,
+# ansonsten: passiv schalten
+#find /var/tmp/pkgbuild-tom/SFEperl-locale-maketext-lexicon-1.00-build/ -name \*so
+
+
+
+## test for regexes:
+# (echo "#%dir %attr(0755,root,bin) %{_bindir}"; echo "#%dir %attr(0755,root,bin) %_bindir"; echo "#%{_bindir}/*"; echo "#%_bindir/*" ) | gsed -e '/^#.*%dir .*%{*_bindir}*/ s?^#.*?%dir %attr(0755,root,bin) %{_bindir}?' -e '/^#.*%{*_bindir}*/ s?^#.*?%{_bindir}/*?'
+
+
+
+# 
+# PKGNAME=( spectool get_package_names --SVR4 SFEperl-file-slurper.spec )
+# PKGVERION=$( spectool eval "%version" SFEperl-file-slurper.spec )
+# RPM_
+# 
+# /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build
+# 
+# 
+# /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build/
+# total 2
+# drwxr-xr-x 4 tom other 4 Feb 20 19:57 usr
+# 
+
+
+WARNING: omitting runtime/perl-512 from the SVr4 depend file
+pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build/usr/bin
+pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build/usr/bin/*
+pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build/usr/share/man/man1/*
+ERROR: SFEperl-file-slurper FAILED
+Would you like to continue? (yes/no) [yes]no
+First build error handling for: SFEperl-file-slurper.spec
+experimental/testbuildperlmodule: line 18: [: too many arguments
+experimental/testbuildperlmodule: line 19: [: too many arguments
+experimental/testbuildperlmodule: line 20: [: too many arguments
+experimental/testbuildperlmodule: line 43: SFEperl-file-slurper.spec: command not found
+%dir %attr(0755, root, bin) %{_mandir}/man3
+gsed: -e expression #1, char 23: unknown command: `m'
+experimental/testbuildperlmodule: line 56: SFEperl-file-slurper.spec: command not found
+changes to the spec file are the following. Please re-run the build command to test results
+--- SFEperl-file-slurper.spec   2016-02-20 20:48:29.739146036 +0100
++++ SFEperl-file-slurper.spec.bak_bindir        2016-02-20 20:09:50.357469480 +0100
+@@ -96,11 +96,11 @@
+ %defattr(-,root,bin)
+ %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
+ %{_prefix}/%{perl_path_vendor_perl_version}/*
+-%dir %attr(0755,root,bin) %{_bindir}
+-%{_bindir}/*
++#%dir %attr(0755,root,bin) %{_bindir}
++#%{_bindir}/*
+ %dir %attr(0755,root,sys) %{_datadir}
+ %dir %attr(0755, root, bin) %{_mandir}
+-#%dir %attr(0755, root, bin) %{_mandir}/man1
++%dir %attr(0755, root, bin) %{_mandir}/man1
+ %{_mandir}/man1/*
+ %dir %attr(0755, root, bin) %{_mandir}/man3
+ %{_mandir}/man3/*
+--- SFEperl-file-slurper.spec   2016-02-20 20:48:29.739146036 +0100
++++ SFEperl-file-slurper.spec.bak_man1dir       2016-02-20 20:36:14.811656396 +0100
+@@ -100,7 +100,7 @@
+ %{_bindir}/*
+ %dir %attr(0755,root,sys) %{_datadir}
+ %dir %attr(0755, root, bin) %{_mandir}
+-#%dir %attr(0755, root, bin) %{_mandir}/man1
++%dir %attr(0755, root, bin) %{_mandir}/man1
+ %{_mandir}/man1/*
+ %dir %attr(0755, root, bin) %{_mandir}/man3
+ %{_mandir}/man3/*
+
