@@ -1,4 +1,13 @@
 #!/usr/bin/perl
+#
+
+
+#potential for improvement: use the dependency solver from here: https://github.com/DrHyde/CPANdeps/pull/3
+#it is used on this website where you can see modules and theirs build results
+#http://deps.cpantesters.org/?module=Error;perl=latest
+
+
+
 
 #http://cpansearch.perl.org/src/NIERLEIN/Monitoring-Generator-TestConfig-0.42/META.yml
 # ---
@@ -41,6 +50,7 @@ use CPAN;
 use Data::Dumper;
 sub p { print Dumper shift }
 
+my $ModuleName = $ARGV[0];
 
 sub help {
     print <<__HELP;
@@ -65,31 +75,31 @@ sub get_distriute_uri{
 }
 
 
-sub make_defines{
-    my ($mod) = @_;
-    my @filename=split(/\//,$mod->{RO}->{CPAN_FILE});
-    my $progs1=$filename[@filename-1];
-    my $progs1_dir=$progs1;
-    $progs1_dir=~s/\.tar\.[bg]z2?$//;
-    my $uri=get_distriute_uri($mod);
-    my $pkg=$mod->{ID};
-    $pkg=~ s/::/-/g;
-    my $result= <<__END;
-PROG1=$progs1
-PROG1_DIR=$progs1_dir
-PROG1_SITE=$uri
-TARGET=perl584-$pkg.pkg
-__END
-    return $result;
-}
+#sub make_defines{
+    #my ($mod) = @_;
+    #my @filename=split(/\//,$mod->{RO}->{CPAN_FILE});
+    #my $progs1=$filename[@filename-1];
+    #my $progs1_dir=$progs1;
+    #$progs1_dir=~s/\.tar\.[bg]z2?$//;
+    #my $uri=get_distriute_uri($mod);
+    #my $pkg=$mod->{ID};
+    #$pkg=~ s/::/-/g;
+    #my $result= <<__END;
+#PROG1=$progs1
+#PROG1_DIR=$progs1_dir
+#PROG1_SITE=$uri
+#TARGET=perl584-$pkg.pkg
+#__END
+    #return $result;
+#}
 
 
 # Main
 
-my $mod = CPAN::Shell->expand('Module', $ARGV[0]);
+my $mod = CPAN::Shell->expand('Module', $ModuleName);
 
 unless($mod){
-    print "\n'$ARGV[0]' is not found in CPAN module\n\n";
+    print "\n'$ModuleName' is not found in CPAN module\n\n";
     print "Explain:\n";
     &help();
 }
@@ -185,6 +195,8 @@ print OUT <<_END ;
 \%include Solaris.inc
 \%include packagenamemacros.inc
 
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
 #\%define _use_internal_dependency_generator 0
 
 \%define tarball_version $mod->{RO}->{CPAN_VERSION}
@@ -195,7 +207,7 @@ IPS_package_name: library/perl-5/$pkg
 Version:	$mod->{RO}->{CPAN_VERSION}
 IPS_component_version: $ips_version
 Group:          Development/Libraries                    
-Summary:	$mod->{RO}->{description}
+Summary:	$mod->{ID} - $mod->{RO}->{description}
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
@@ -213,13 +225,18 @@ Meta(info.upstream_url):        http://search.cpan.org/~$userid/\%{tarball_name}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 \%description
+$mod->{ID}
 $mod->{RO}->{description}
 
 \%prep
 \%setup -q -n \%{tarball_name}-\%{tarball_version}
 
 \%build
-perl Makefile.PL \\
+
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  \%{_prefix}/perl\%{perl_major_version}/\%{perl_version}/bin/perl Makefile.PL \\
     PREFIX=\$RPM_BUILD_ROOT\%{_prefix} \\
     LIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
     INSTALLSITELIB=\$RPM_BUILD_ROOT\%{_prefix}/\%{perl_path_vendor_perl_version} \\
@@ -229,12 +246,32 @@ perl Makefile.PL \\
     INSTALLSITEMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3 \\
     INSTALLMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
     INSTALLMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3
-make CC=\$CC CCCDLFLAGS="\%picflags" OPTIMIZE="\%optflags" LD=\$CC
 
+  make CC=\$CC CCCDLFLAGS="\%picflags" OPTIMIZE="\%optflags" LD=\$CC
+else
+  # style "Build.PL"
+  \%{_prefix}/perl\%{perl_major_version}/\%{perl_version}/bin/perl Build.PL \\
+    --installdirs vendor --makefile_env_macros 1 \\
+    --install_path lib=\%{_prefix}/\%{perl_path_vendor_perl_version} \\
+    --install_path arch=\%{_prefix}/\%{perl_path_vendor_perl_version}/\%{perl_dir} \\
+    --install_path bin=\%{_bindir} \\
+    --install_path bindoc=\%{_mandir}/man1 \\
+    --install_path libdoc=\%{_mandir}/man3 \\
+    --destdir \$RPM_BUILD_ROOT
+
+  \%{_prefix}/perl\%{perl_major_version}/\%{perl_version}/bin/perl Build build
+fi
 
 \%install
 rm -rf \$RPM_BUILD_ROOT
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   \%{_prefix}/perl\%{perl_major_version}/\%{perl_version}/bin/perl Build install
+fi
 
 find \$RPM_BUILD_ROOT -name .packlist -exec \%{__rm} {} \\; -o -name perllocal.pod  -exec \%{__rm} {} \\;
 
@@ -255,7 +292,7 @@ rm -rf \$RPM_BUILD_ROOT
 \%{_mandir}/man3/*
 
 \%changelog
-##TODO##
+##TODO## add changelog
 _END
 
 close(OUT);
@@ -269,6 +306,11 @@ print "3nd,\nremove or add lines form the \%files section\n";
 
 __DATA__
 %changelog
+* Sun Jan 21 2016 - Thomas Wagner
+- add module name to target package Summary and to package %description
+- add build trough "Build.PL" and test for presence of "Makefile.PL". If absent, go for "Build.PL"
+- use absolute path to perl executable when building
+- see also script testbuildperlmodule which does a test-build, edits "man1", "man3" and "bin", then re-runs the build, adds $changelog and then adds spec to SVN
 * Sun Dec  8 2013 - Thomas Wagner
 - add INSTALLARCHLIB as it is sometimes empty on perl 5.10.x on OI, make complains on recoursive variable
 * Sun Nov  4 2012 - Thomas Wagner
