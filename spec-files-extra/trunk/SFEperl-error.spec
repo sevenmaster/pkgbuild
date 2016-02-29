@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-html-parser
+# spec file for package: SFEperl-error
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 3.72
-%define tarball_name    HTML-Parser
+%define tarball_version 0.17024
+%define tarball_name    Error
 
-Name:		SFEperl-html-parser
-IPS_package_name: library/perl-5/html-parser
-Version:	3.72
-IPS_component_version: 3.72
+Name:		SFEperl-error
+IPS_package_name: library/perl-5/error
+Version:	0.17024
+IPS_component_version: 0.17024
 Group:          Development/Libraries                    
-Summary:	HTML::Parser - Basic HTML Parser
+Summary:	Error - Error/exception handling in an OO-ish way
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~shlomif/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{name}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/S/SH/SHLOMIF/Error-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Shlomi Fish <shlomif@shlomifish.org>
+Meta(info.upstream_url):        http://search.cpan.org/~shlomif/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-HTML::Parser
-Basic HTML Parser
+Error
+Error/exception handling in an OO-ish way
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -106,5 +106,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
-* Sun Feb 28 2016 - 
+* Sun Feb 28 2016 - tom68
 - initial spec
