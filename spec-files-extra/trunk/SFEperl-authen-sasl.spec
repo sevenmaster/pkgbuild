@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-html-parser
+# spec file for package: SFEperl-authen-sasl
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 3.72
-%define tarball_name    HTML-Parser
+%define tarball_version 2.16
+%define tarball_name    Authen-SASL
 
-Name:		SFEperl-html-parser
-IPS_package_name: library/perl-5/html-parser
-Version:	3.72
-IPS_component_version: 3.72
+Name:		SFEperl-authen-sasl
+IPS_package_name: library/perl-5/authen-sasl
+Version:	2.16
+IPS_component_version: 2.16
 Group:          Development/Libraries                    
-Summary:	HTML::Parser - Basic HTML Parser
+Summary:	Authen::SASL - SASL authentication framework
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gbarr/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{name}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Authen-SASL-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Graham Barr <gbarr@pobox.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gbarr/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-HTML::Parser
-Basic HTML Parser
+Authen::SASL
+SASL authentication framework
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -106,5 +106,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
-* Sun Feb 28 2016 - 
+* Sun Feb 28 2016 - tom68
 - initial spec
