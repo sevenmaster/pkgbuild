@@ -9,7 +9,7 @@ Name:                    SFErsync
 IPS_Package_Name:	 sfe/network/rsync
 Summary:                 rsync - fast incremental file transfer (%{_basedir}/gnu/bin/rsync)
 URL:                     http://rsync.samba.org/
-Version:                 3.1.0
+Version:                 3.1.2
 Source:                  http://rsync.samba.org/ftp/rsync/rsync-%{version}.tar.gz
 License:		 GPLv3
 SUNW_Copyright:		 rsync.copyright
