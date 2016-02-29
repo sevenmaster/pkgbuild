@@ -45,7 +45,8 @@ BuildRequires: SFEfaad2-devel
 Requires: SFEfaad2
 BuildRequires: SFEliba52-devel
 Requires: SFEliba52
-Requires: SUNWfreetype2
+BuildRequires: %{pnm_buildrequires_SUNWfreetype2}
+Requires:      %{pnm_requires_SUNWfreetype2}
 %if %with_jack
 BuildRequires: SFEjack-devel
 Requires: SFEjack
@@ -143,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Fri Dec 25 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWfreetype2} (OIH)
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFEopenjpeg (OIH)
 * Mon Jan  6 2014 - Thomas Wagner
