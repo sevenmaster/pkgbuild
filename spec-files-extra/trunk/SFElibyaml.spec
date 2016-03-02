@@ -4,7 +4,6 @@
 # includes module(s): libyaml
 #
 %include Solaris.inc
-%include packagenamemacros.inc
 
 %define _prefix /usr
 %define	tarball_version	0.1.6
@@ -17,7 +16,6 @@ Version:	%{tarball_version}
 IPS_package_name:  library/text/yaml
 License:	MIT license
 Source:		%{src_url}/%{tarball_name}-%{tarball_version}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 #Meta(info.maintainer_url):      http://pyyaml.org/wiki/LibYAML
 Meta(info.upstream_url):        http://pyyaml.org/wiki/LibYAML
@@ -43,7 +41,7 @@ cd %{tarball_name}-%{tarball_version}
 
 export CFLAGS="-i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
 
-./configure --prefix=%_prefix
+./configure --prefix=%_prefix --disable-static
 
 make -j$CPUS
 
@@ -53,6 +51,7 @@ cd ../%{tarball_name}-%{tarball_version}-64
 export CFLAGS="-m64 -i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
 
 ./configure\
+    --disable-static \
  --prefix=%{_prefix}\
  --exec-prefix=%{_prefix}\
  --libdir=%{_libdir}/%{_arch64} \
@@ -63,12 +62,15 @@ gmake -j$CPUS
 %endif
 
 %install
+rm -rf %buildroot
 cd %{tarball_name}-%{tarball_version}
 make install DESTDIR=$RPM_BUILD_ROOT
+rm %buildroot%_libdir/libyaml.la
 
 %ifarch amd64 sparcv9
 cd ../%{tarball_name}-%{tarball_version}-64
 make install DESTDIR=$RPM_BUILD_ROOT
+rm %buildroot%_libdir/amd64/libyaml.la
 %endif
 
 %clean
@@ -89,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Feb 29 2016 - Alex Viskovatoff <herzen@imap.cc>
+- do not package static libraries
 * Wed Oct 21 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Remove errant backslash in configure line in :46
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
