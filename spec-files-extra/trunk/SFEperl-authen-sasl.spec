@@ -11,7 +11,7 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-#%define _use_internal_dependency_generator 0
+%define _use_internal_dependency_generator 0
 
 %define tarball_version 2.16
 %define tarball_name    Authen-SASL
@@ -27,7 +27,7 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~gbarr/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/G/GB/GBARR/Authen-SASL-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
@@ -106,5 +106,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
-* Sun Feb 28 2016 - tom68
+* Sun Feb 28 2016 - Thomas Wagner
 - initial spec
