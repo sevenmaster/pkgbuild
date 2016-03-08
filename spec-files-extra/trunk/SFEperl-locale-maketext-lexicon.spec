@@ -101,11 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-%dir %attr(0755, root, bin) %{_mandir}/man1
-%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+%{_mandir}/*/*
 
 %changelog
-* Sun Feb 21 2016 - tom68
+* Sun Feb 21 2016 - Thomas Wagner
 - initial spec

@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-algorithm-diff
+# spec file for package: SFEperl-cpan-meta
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 1.1903
-%define tarball_name    Algorithm-Diff
+%define tarball_version 2.150005
+%define tarball_name    CPAN-Meta
 
-Name:		SFEperl-algorithm-diff
-IPS_package_name: library/perl-5/algorithm-diff
-Version:	1.1903
-IPS_component_version: 1.1903
+Name:		SFEperl-cpan-meta
+IPS_package_name: library/perl-5/cpan-meta
+Version:	2.150005
+IPS_component_version: 2.150005
 Group:          Development/Libraries                    
-Summary:	Algorithm::Diff - Diff (also Longest Common Subsequence)
+Summary:	CPAN::Meta - CPAN::Meta
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~andrewc/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~dagolden/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/T/TY/TYEMQ/Algorithm-Diff-%{tarball_version}.tar.gz
+SUNW_Copyright: %{name}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/CPAN-Meta-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Andrew Chadwick <and-x-rewc@pi-y-ffle.org.z>
-Meta(info.upstream_url):        http://search.cpan.org/~andrewc/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            David Golden <dagolden@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~dagolden/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Algorithm::Diff
-Diff (also Longest Common Subsequence)
+CPAN::Meta
+CPAN::Meta
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -100,11 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-#%dir %attr(0755, root, bin) %{_mandir}/man1
-#%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+%{_mandir}/*/*
 
 %changelog
-* Sun Feb 28 2016 - Thomas Wagner
+* Mon Mar 07 2016 - Thomas Wagner
 - initial spec
