@@ -131,7 +131,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.0.3
+Version:                 3.0.4
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1046,6 +1046,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Mar  9 2016 - Thomas Wagner
+- bump to 3.0.4
 * Sat Jan 16 2016 - Thomas Wagner
 - add mediated symlink /etc/aliases -> /etc/mail/aliases only on OmniOS and OpenIndiana Hipster (OM, OIH)
 - mv postfix template aliases file to /etc/mail/aliases (with renamenew)
