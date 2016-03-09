@@ -1,5 +1,21 @@
+
+
+##TODO## on S11.3 you see:
+#Using included version of CPAN::Meta::Requirements (2.127) because it is not already installed.
+#Using included version of ExtUtils::Manifest (1.65) as it is newer than the installed version (1.57).
+#Using included version of JSON::PP (2.27203) because it is not already installed.
+
+
+
+
+
+
+
+
+
+
 #
-# spec file for package: SFEperl-algorithm-annotate
+# spec file for package: SFEperl-extutils-makemaker
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,36 +27,34 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-#%define _use_internal_dependency_generator 0
+%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.10
-%define tarball_name    Algorithm-Annotate
+%define tarball_version 7.10
+%define tarball_name    ExtUtils-MakeMaker
 
-Name:		SFEperl-algorithm-annotate
-IPS_package_name: library/perl-5/algorithm-annotate
-Version:	0.10
-IPS_component_version: 0.10
+Name:		SFEperl-extutils-makemaker
+IPS_package_name: library/perl-5/extutils-makemaker
+Version:	7.10
+IPS_component_version: 7.10
 Group:          Development/Libraries                    
-Summary:	Algorithm::Annotate - Algorithm::Annotate
+Summary:	ExtUtils::MakeMaker - Writes Makefiles for extensions
 License:	Artistic
-#Distribution:   OpenSolaris
-#Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~mschwern/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/C/CL/CLKAO/Algorithm-Annotate-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Chia-liang Kao <clkao@clkao.org>
-Meta(info.upstream_url):        http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Michael G Schwern <mschwern@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~mschwern/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Algorithm::Annotate
-Algorithm::Annotate
+ExtUtils::MakeMaker
+Writes Makefiles for extensions
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -89,6 +103,9 @@ fi
 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
+#hack: file of same name already present
+[ -f $RPM_BUILD_ROOT%{_mandir}/man3/version.3 ] && mv $RPM_BUILD_ROOT%{_mandir}/man3/version.3 $RPM_BUILD_ROOT%{_mandir}/man3/version_.3
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -96,14 +113,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-#%dir %attr(0755,root,bin) %{_bindir}
-#%{_bindir}/*
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
 %{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
-* Tue Mar 08 2016 - 
-- initial spec / renew existing
-* Tue Nov 13 2007 - trisk@acm.jhu.edu
-- Initial spec
+* Mon Mar  7 2016 - Thomas Wagner
+- bump to 7.10
+- rework spec
+* Mon Jun 30 2014 - Thomas Wagner
+- bump to 6.98 as download vanished
+* Sat Aug 17 2013 - Thomas Wagner
+- initial spec 6.72 - note exception to install into site_perl instead vendor_perl

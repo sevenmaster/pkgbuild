@@ -17,7 +17,7 @@ IPS_package_name: library/perl-5/io-compress
 Version:	2.062
 IPS_component_version: 2.62
 Summary:	IO::Compress
-License:	perl
+License:	Artistic
 Distribution:   OpenSolaris
 Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~pmqs/%{tarball_name}-%{tarball_version}
