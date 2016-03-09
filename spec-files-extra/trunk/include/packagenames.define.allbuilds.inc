@@ -1809,6 +1809,15 @@
 # echo %{_prefix}/%{perl_path_site_perl_version}   -> prints /usr/perl5/site_perl/5.8.4 (or 5.10.0)
 %define perl_path_site_perl_version perl%{perl_major_version}/site_perl/%{perl_version}
 
+%if %{omnios}
+#Exception! OmniOS uses different directory 5.16 -> 5.16.1
+#overwrite the above settings now
+#example: /usr/perl5/vendor_perl/5.16.1
+#example: /usr/perl5/5.16.1
+%define perl_path_vendor_perl_version perl%{perl_major_version}/vendor_perl/%{perl_major_minor_micro_version}
+%define perl_path_site_perl_version perl%{perl_major_version}/site_perl/%{perl_major_minor_micro_version}
+%endif
+
 %if %{?perl_dir:1}%{!?perl_dir:0}
 #skip this, the perl_dir variable is already defined
 %else
@@ -3009,6 +3018,8 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Tue Mar  8 2016 - Thomas Wagner
+- Exception for perl_path_*** vendor_perl on OmniOS: It uses different directory 5.16 -> 5.16.1 (OM)
 * Fri Dec 25 2015 - Thomas Wagner
 - special setting  pnm_buildrequires_SUNWxwinc_devel  x11/header/xproto (OIH)
 * Sun Dec 20 2015 - Thomas Wagner
