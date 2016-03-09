@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-algorithm-annotate
+# spec file for package: SFEperl-dbd-sqlite
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.10
-%define tarball_name    Algorithm-Annotate
+%define tarball_version 1.50
+%define tarball_name    DBD-SQLite
 
-Name:		SFEperl-algorithm-annotate
-IPS_package_name: library/perl-5/algorithm-annotate
-Version:	0.10
-IPS_component_version: 0.10
+Name:		SFEperl-dbd-sqlite
+IPS_package_name: library/perl-5/dbd-sqlite
+Version:	1.50
+IPS_component_version: 1.50
 Group:          Development/Libraries                    
-Summary:	Algorithm::Annotate - Algorithm::Annotate
+Summary:	DBD::SQLite - DBD::SQLite
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~adamk/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/C/CL/CLKAO/Algorithm-Annotate-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/I/IS/ISHIGAKI/DBD-SQLite-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Chia-liang Kao <clkao@clkao.org>
-Meta(info.upstream_url):        http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Adam Kennedy <adamk@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~adamk/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Algorithm::Annotate
-Algorithm::Annotate
+DBD::SQLite
+DBD::SQLite
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -100,10 +100,12 @@ rm -rf $RPM_BUILD_ROOT
 #%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
 %{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
 * Tue Mar 08 2016 - 
-- initial spec / renew existing
-* Tue Nov 13 2007 - trisk@acm.jhu.edu
-- Initial spec
+- initial spec

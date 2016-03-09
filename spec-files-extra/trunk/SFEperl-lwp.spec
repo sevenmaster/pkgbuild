@@ -19,6 +19,8 @@ Name:		SFEperl-lwp
 IPS_Package_Name:	library/perl-5/libwww-perl-lwp
 Summary:	%{module_name}-%{module_version} PERL module
 Version:	%{perl_version}.%{module_version}
+License:        Artistic
+SUNW_Copyright: %{license}.copyright
 Source:		http://www.cpan.org/modules/by-module/%{module_name_major}/%{module_name}-%{module_version_download}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build

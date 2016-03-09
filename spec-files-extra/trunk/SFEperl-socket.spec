@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-algorithm-annotate
+# spec file for package: SFEperl-socket
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,38 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.10
-%define tarball_name    Algorithm-Annotate
+%define tarball_version 2.021
+%define tarball_name    Socket
 
-Name:		SFEperl-algorithm-annotate
-IPS_package_name: library/perl-5/algorithm-annotate
-Version:	0.10
-IPS_component_version: 0.10
+Name:		SFEperl-socket
+IPS_package_name: library/perl-5/socket
+Version:	2.021
+IPS_component_version: 2.21
 Group:          Development/Libraries                    
-Summary:	Algorithm::Annotate - Algorithm::Annotate
+Summary:	Socket - Defines socket-related constants
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gnat/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/C/CL/CLKAO/Algorithm-Annotate-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/P/PE/PEVANS/Socket-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+# ExtUtils::Constant version 0.23 required--this is only version 0.22 at Makefile.PL line 6.
+BuildRequires:  SFEperl-extutils-constant
+Requires:       SFEperl-extutils-constant
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Chia-liang Kao <clkao@clkao.org>
-Meta(info.upstream_url):        http://search.cpan.org/~clkao/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Nathan Torkington <nathan@torkington.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gnat/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Algorithm::Annotate
-Algorithm::Annotate
+Socket
+Defines socket-related constants
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -100,10 +104,12 @@ rm -rf $RPM_BUILD_ROOT
 #%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
 %{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
-* Tue Mar 08 2016 - 
-- initial spec / renew existing
-* Tue Nov 13 2007 - trisk@acm.jhu.edu
-- Initial spec
+* Tue Mar 08 2016 - tom68
+- initial spec
