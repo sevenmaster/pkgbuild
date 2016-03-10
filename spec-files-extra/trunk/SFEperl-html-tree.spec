@@ -27,11 +27,21 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~petek/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/C/CJ/CJM/HTML-Tree-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+
+BuildRequires:  SFEperl-test-fatal
+BuildRequires:  SFEperl-html-parser
+BuildRequires:  SFEperl-html-tagset
+BuildRequires:  SFEperl-html-entities
+
+#SFEperl-html-tree.log:pkgbuild:  - ERROR: Test::Fatal is not installed
+#SFEperl-html-tree.log:pkgbuild:  - ERROR: HTML::Parser is not installed
+#SFEperl-html-tree.log:pkgbuild:  - ERROR: HTML::Tagset is not installed
+#SFEperl-html-tree.log:pkgbuild:  - ERROR: HTML::Entities is not installed
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Pete Krawczyk <petek@bsod.net>
@@ -103,8 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
 * Sun Feb 21 2016 - Thomas Wagner

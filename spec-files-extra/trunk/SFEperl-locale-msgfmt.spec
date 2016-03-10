@@ -25,7 +25,7 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~szabgab/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/A/AZ/AZAWAWI/Locale-Msgfmt-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
@@ -75,8 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
 * Sat Feb 20 2016 - Thomas Wagner
