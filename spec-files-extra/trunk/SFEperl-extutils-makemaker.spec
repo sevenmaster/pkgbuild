@@ -1,19 +1,3 @@
-
-
-##TODO## on S11.3 you see:
-#Using included version of CPAN::Meta::Requirements (2.127) because it is not already installed.
-#Using included version of ExtUtils::Manifest (1.65) as it is newer than the installed version (1.57).
-#Using included version of JSON::PP (2.27203) because it is not already installed.
-
-
-
-
-
-
-
-
-
-
 #
 # spec file for package: SFEperl-extutils-makemaker
 #
@@ -46,6 +30,16 @@ Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-%
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+
+#Using included version of CPAN::Meta::Requirements (2.127) because it is not already installed.
+#Using included version of ExtUtils::Manifest (1.65) as it is newer than the installed version (1.57).
+#Using included version of JSON::PP (2.27203) because it is not already installed.
+BuildRequires:  SFEperl-cpan-meta-requirements
+Requires:       SFEperl-cpan-meta-requirements
+BuildRequires:  SFEperl-extutils-manifest
+Requires:       SFEperl-extutils-manifest
+BuildRequires:  SFEperl-json-pp
+Requires:       SFEperl-json-pp
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Michael G Schwern <mschwern@cpan.org>
@@ -124,6 +118,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Thu Mar 10 2016 - Thomas Wagner
+- add (Build)Requires SFEperl-cpan-meta-requirements SFEperl-extutils-manifest SFEperl-json-pp
 * Mon Mar  7 2016 - Thomas Wagner
 - bump to 7.10
 - rework spec

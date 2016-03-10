@@ -9,6 +9,10 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
+%define _use_internal_dependency_generator 0
+
 %define tarball_version 2.95
 %define tarball_name    HTML-Template
 
@@ -16,17 +20,21 @@ Name:		SFEperl-html-template
 IPS_package_name: library/perl-5/html-template
 Version:	2.95
 IPS_component_version: 2.95
-Summary:	a simple HTML templating system
+Group:          Development/Libraries                    
+Summary:	HTML::Template - a simple HTML templating system
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~samtregar/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: perl.copyright
+SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/W/WO/WONKO/HTML-Template-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+
+BuildRequires:  SFEperl-cpan-meta-yaml
+Requires:       SFEperl-cpan-meta-yaml
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Sam Tregar <sam@tregar.com>
@@ -34,16 +42,18 @@ Meta(info.upstream_url):        http://search.cpan.org/~samtregar/%{tarball_name
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
+HTML::Template
 a simple HTML templating system
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-#on older perl, e.g. 5.8.4
-#NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
-#export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
-perl Makefile.PL \
+
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
@@ -53,15 +63,32 @@ perl Makefile.PL \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
-make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-#on older perl, e.g. 5.8.4
-#NOTE: we need fresh extutils::makemaker, so search it in site_perl (it installs there in an exception)
-#export PERL5LIB=%{_prefix}/%{perl_path_site_perl_version}
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+fi
 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
@@ -78,13 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
-* Fri Jan 23 2015 - Thomas Wagner
-- fix copyright tag
-* Mon Jun 30 2014 - Thomas Wagner
-- bump to 2.95, re-create, tested only on S11.2
-* Sat Aug 17 2013 - Thomas Wagner
-- initial spec (2.94)
+* Thu Mar 10 2016 - 
+- initial spec

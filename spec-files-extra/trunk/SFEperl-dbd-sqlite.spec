@@ -11,7 +11,7 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-#%define _use_internal_dependency_generator 0
+%define _use_internal_dependency_generator 0
 
 %define tarball_version 1.50
 %define tarball_name    DBD-SQLite
@@ -107,5 +107,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Tue Mar 08 2016 - 
+* Tue Mar 08 2016 - Thomas Wagner
 - initial spec
