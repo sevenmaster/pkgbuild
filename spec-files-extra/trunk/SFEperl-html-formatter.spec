@@ -27,11 +27,23 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~jgoff/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{name}.copyright
+SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/N/NI/NIGELM/HTML-Formatter-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+
+BuildRequires:  SFEperl-test-cpan-meta
+BuildRequires:  SFEperl-test-notabs
+BuildRequires:  SFEperl-test-eol
+BuildRequires:  SFEperl-html-tree
+
+#SFEperl-html-formatter.log:pkgbuild:  - ERROR: Test::CPAN::Meta is not installed
+#SFEperl-html-formatter.log:pkgbuild:  - ERROR: Test::NoTabs is not installed
+#SFEperl-html-formatter.log:pkgbuild:  - ERROR: Test::EOL is not installed
+#SFEperl-html-formatter.log:pkgbuild:  - ERROR: HTML::Element is not installed  -->>  SFEperl-html-tree
+#SFEperl-html-formatter.log:pkgbuild:  - ERROR: HTML::TreeBuilder is not installed  -->>  SFEperl-html-tree
+
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Jeff Goff <drforr@pobox.com>
@@ -102,9 +114,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
+* Fri Feb 26 2016 - Thomas Wagner
+- add dependencies
 * Sat Feb 20 2016 - Thomas Wagner
 - initial spec
