@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-html-tagset
+# spec file for package: SFEperl-parse-cpan-meta
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 3.20
-%define tarball_name    HTML-Tagset
+%define tarball_version 1.4417
+%define tarball_name    Parse-CPAN-Meta
 
-Name:		SFEperl-html-tagset
-IPS_package_name: library/perl-5/html-tagset
-Version:	3.20
-IPS_component_version: 3.20
+Name:		SFEperl-parse-cpan-meta
+IPS_package_name: library/perl-5/parse-cpan-meta
+Version:	1.4417
+IPS_component_version: 1.4417
 Group:          Development/Libraries                    
-Summary:	HTML::Tagset - data tables useful in parsing HTML
+Summary:	Parse::CPAN::Meta - Parse::CPAN::Meta
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~petdance/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~smueller/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/HTML-Tagset-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/Parse-CPAN-Meta-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Andy Lester <andy@petdance.com>
-Meta(info.upstream_url):        http://search.cpan.org/~petdance/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Steffen Mueller <smueller@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~smueller/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-HTML::Tagset
-data tables useful in parsing HTML
+Parse::CPAN::Meta
+Parse::CPAN::Meta
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -102,20 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
-* Wed Mar 09 2016 - Thomas Wagner
-- reworked / renewed spec
-* Fri Jun 23 2011 - Thomas Wagner
-- change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
-  paths dynamic, define fewer directories in %files
-- note: INSTALLSITELIB now without the directory %{perl_dir} (platform specific directory)
-- remove /auto/.packlist
-* Tue Feb  1 2011 - Thomas Wagner
-- change BuildRequires to %{pnm_buildrequires_SUNWsfwhea}, %include packagenamemacros.inc
-* Sat Aug 17 2008 - rafael.alfaro@gmail.com
-- Add license and group
-* Thu Jun 19 2008 - rafael.alfaro@gmail.com
-- Initial spec file 
+* Thu Mar 10 2016 - 
+- initial spec
