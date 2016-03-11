@@ -9,6 +9,8 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
 %define tarball_version 0.15
@@ -19,7 +21,7 @@ IPS_package_name: library/perl-5/locale-msgfmt
 Version:	0.15
 IPS_component_version: 0.15
 Group:          Development/Libraries                    
-Summary:	Locale::Msgfmt
+Summary:	Locale::Msgfmt - Locale::Msgfmt
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
@@ -38,12 +40,17 @@ Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
 Locale::Msgfmt
+Locale::Msgfmt
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-perl Makefile.PL \
+
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
@@ -53,12 +60,32 @@ perl Makefile.PL \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
-make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
 
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+fi
 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
@@ -75,9 +102,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
+%{_mandir}/*/*
 #%dir %attr(0755, root, bin) %{_mandir}/man3
 #%{_mandir}/man3/*
 
 %changelog
+* Fri Mar 11 2016 - 
+- initial spec
 * Sat Feb 20 2016 - Thomas Wagner
 - initial spec

@@ -1,80 +1,122 @@
 #
-# spec file for package SFEperl-uri
+# spec file for package: SFEperl-uri
 #
-# includes module(s): uri perl module
-#
-# Copyright (c) 2004 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-
+# includes module(s):
+#
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define uri_version 1.58
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
+%define _use_internal_dependency_generator 0
 
-Name:                    SFEperl-uri
-IPS_Package_Name:	library/perl-5/uri
-Summary:                 URI-%{uri_version} PERL module
-Group:		Development/Perl
-License:                 GPL+ or Artistic
-SUNW_Copyright:          perl-uri.copyright
-Version:                 %{perl_version}.%{uri_version}
-Source:                  http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/URI-%{uri_version}.tar.gz
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-BuildRequires:           %{pnm_buildrequires_perl_default}
-Requires:                %{pnm_requires_perl_default}
-BuildRequires:           %{pnm_buildrequires_SUNWsfwhea}
+%define tarball_version 1.71
+%define tarball_name    URI
 
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
-%include default-depend.inc
+Name:		SFEperl-uri
+IPS_package_name: library/perl-5/uri
+Version:	1.71
+IPS_component_version: 1.71
+Group:          Development/Libraries                    
+Summary:	URI - URI
+License:	Artistic
+#Distribution:   OpenSolaris
+#Vendor:         OpenSolaris Community
+Url:		http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
+SUNW_Basedir:	%{_basedir}
+SUNW_Copyright: %{license}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/URI-%{tarball_version}.tar.gz
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires:	%{pnm_requires_perl_default}
+
+BuildRequires:  SFEperl-cpan-meta-yaml
+Requires:       SFEperl-cpan-meta-yaml
+
+Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
+Meta(info.upstream):            Gisle Aas <gisle@ActiveState.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
+Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
+
+%description
+URI
+URI
 
 %prep
-%setup -q            -c -n %name-%version
+%setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-cd URI-%{uri_version}
-perl Makefile.PL \
+
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
-make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd URI-%{uri_version}
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+fi
 
-rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
-
-%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
+find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
+%defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/URI
-%{_prefix}/%{perl_path_vendor_perl_version}/URI/*
-%{_prefix}/%{perl_path_vendor_perl_version}/*.pm
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto
-%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto/*
-%dir %attr(0755, root, sys) %{_datadir}
+%{_prefix}/%{perl_path_vendor_perl_version}/*
+#%dir %attr(0755,root,bin) %{_bindir}
+#%{_bindir}/*
+%dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
+* Thu Mar 10 2016 - 
+- reworked / renewd
+- add (Build)Requires SFEperl-cpan-meta-yaml
+- Sun Jan 10 2016 - Thomas Wagner
+- bump to 1.71 (for munin req >= 1.65 )
+- recreated spec with experimental/make_perl_cpan_settings.pl
+history:
 * Fri Jun 17 2011 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
   paths dynamic, define fewer directories in %files
