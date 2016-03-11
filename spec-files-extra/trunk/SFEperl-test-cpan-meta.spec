@@ -102,9 +102,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
+%{_mandir}/*/*
 #%dir %attr(0755, root, bin) %{_mandir}/man3
 #%{_mandir}/man3/*
 
 %changelog
+* Fri Mar 11 2015 - Thomas Wagner
+- fix %files %{_mandir}/*/*
 * Sun Feb 21 2016 - Thomas Wagner
 - initial spec

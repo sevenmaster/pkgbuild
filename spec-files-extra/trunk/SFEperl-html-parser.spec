@@ -32,6 +32,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-%{tarball_
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:  %{pnm_buildrequires_SUNWpcre_devel}
+Requires:       %{pnm_buildrequires_SUNWpcre}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
@@ -106,5 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Mar 11 2016 - Thomas Wagner
+- add (Build)Requires pnm_buildrequires_SUNWpcre_devel
 * Sun Feb 28 2016 - Thomas Wagner
 - initial spec
