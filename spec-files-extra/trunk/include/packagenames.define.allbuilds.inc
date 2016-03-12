@@ -1812,8 +1812,10 @@
 %if %{omnios}
 #Exception! OmniOS uses different directory 5.16 -> 5.16.1
 #overwrite the above settings now
+#e.g. /usr/perl5/5.16.1/bin/perl         # that is also weird. others would use /usr/perl5/5.16/bin/perl
 #example: /usr/perl5/vendor_perl/5.16.1
 #example: /usr/perl5/5.16.1
+%define perl_version %{perl_major_minor_micro_version}
 %define perl_path_vendor_perl_version perl%{perl_major_version}/vendor_perl/%{perl_major_minor_micro_version}
 %define perl_path_site_perl_version perl%{perl_major_version}/site_perl/%{perl_major_minor_micro_version}
 %endif
@@ -3018,6 +3020,9 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Sat Mar 12 2016 - Thomas Wagner
+- Exception for perl_version on OmniOS: It uses different number 5.16 -> 5.16.1 (OM)
+  solves perl module builds where /usr/perl5/%{perl_version}/bin/perl is /usr/perl5/5.16.1/bin/perl
 * Tue Mar  8 2016 - Thomas Wagner
 - Exception for perl_path_*** vendor_perl on OmniOS: It uses different directory 5.16 -> 5.16.1 (OM)
 * Fri Dec 25 2015 - Thomas Wagner
