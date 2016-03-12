@@ -1,7 +1,46 @@
 #!/usr/bin/bash
 
+
+
+
+
+#######
+#######
+####### what it does, is this: what it actually does, is determined by you (:
+#######
+####### a generated perl spec from experimental/make_perl_cpan_settings.pl has placeholders
+#######
+####### now test the build, recursively!
+#######
+####### experimental/testbuildperlmodule This::Module
+#######          (it tries to compile prerequisite modules as well by calling 
+#######           itself again with the other spec file! impefect but useful)
+#######
+####### tries to put a svn user name and a date into %changelog - edit accordingly
+#######
+####### tries to annoy you by leaving active the pkg dependency generator, eating
+####### your livetime
+#######
+####### so think and if there is *not* a single one external binary dependency,
+####### then uncomment the line _use_internal_dependency_generator in the spec file
+#######
+#######
+
+
 SPECFILE="$1"
 echo "Testbuild perl spec file: ${SPECFILE}"
+ME=`basename $0`
+
+export TEMPFILELOG=$( mktemp /tmp/tempfilelog-$ME-XXXXXX )
+MISSINGMODULES=""
+
+trap cleanup EXIT
+
+function cleanup {
+echo "cleaning up..."
+set -x
+[ ! -f /tmp/no-remove-tempfilelog -a -f $TEMPFILELOG ] && rm $TEMPFILELOG
+}
 
 prepare_svn () {
 
@@ -9,19 +48,64 @@ prepare_svn () {
   svn add ${SPECFILE} && \
     INITCHANGELOGNAME=$( LC_ALL=C svn info . ${SPECFILE} | grep "Author" | tail -1 | gsed -e 's/.*: \{0,1\}//' )
 
+  CONFIGFILE="`dirname $0`/.`basename $0`"
+  [ -r $CONFIGFILE ] && INITCHANGELOGNAME=$( cat $CONFIGFILE )
+
   ENTRYL1="* `date '+%a %h %d %Y'` - $INITCHANGELOGNAME\n- initial spec"
 
   [ -n ${INITCHANGELOGNAME} ] \
     && gsed -i.bak_changelog -e "/^##TODO## add changelog/ s/.*/${ENTRYL1}/" ${SPECFILE} \
-    && diff -u ${SPECFILE}.bak_changelog ${SPECFILE}
+    && {
+        diff -u ${SPECFILE}.bak_changelog ${SPECFILE}; 
+        true;
+       }
 
 return $?
 
-}
+} #end prepare_svn
 
 
-pkgtool --download --IPS build ${SPECFILE}
-_rc=$?
+function check_prerequisites () {
+local SPECS="$*"
+local spec
+local _rc
+                     
+#kommandant tom ~/spec-files-extra spectool get_buildrequires SFEperl-alien-rrdtool.spec 
+#SFEperl-file-which
+#runtime/perl-512
+BUILDREQUIRES=$( spectool get_buildrequires $SPECS )
+echo "Found BuildRequies: $BUILDREQUIRES"
+
+BUILDORDER=$( pkgtool --autodeps build-order $BUILDREQUIRES | grep "SFEperl-.*\.spec" )
+echo "Found BuildORDER: $BUILDORDER"
+for spec in $BUILDORDER; do
+  echo "recursive: build this spec first: $spec"
+  echo "note: no error handling for recursive $ME"
+  echo "calling: $ME $spec"
+  $0 $spec 
+  _rc=$?
+  echo "$ME $spec exit code was: $_rc"
+done #spec
+echo
+
+} #end check_prerequisites
+
+function filter_logfilename {
+ grep "INFO: Check the build log in .* for details" \
+  | gsed -e 's?INFO:.*log in ??' -e 's? for details.*??'
+
+} #end filter_logfilename
+
+function filter_extract_cant_locate {
+egrep "pkgbuild: Can.t locate" | gsed -e 's?pkgbuild: Can.t locate ??' -e 's? in @.*??' -e 's?/?::?g' -e 's?\.pm??' | uniq 
+} #end filter_extract_cant_locate
+
+check_prerequisites ${SPECFILE}
+
+#do the first build!
+pkgtool --download --IPS build ${SPECFILE} | tee >( filter_logfilename > ${TEMPFILELOG} )
+_rc=${PIPESTATUS[0]}
+#http://stackoverflow.com/questions/6871859/piping-command-output-to-tee-but-also-save-exit-code-of-command
 
 if [ $_rc != 0 ]
  then
@@ -31,24 +115,43 @@ if [ $_rc != 0 ]
 # MAN1DIR=$( spectool eval "%{_mandir}" $SPECFILE )"/man1"
 # MAN3DIR=$( spectool eval "%{_mandir}" $SPECFILE )"/man3"
  # /var/tmp/pkgbuild-tom/SFEperl-file-slurper-0.008-build:/usr/bin:/usr/share/man
- DIRS=$( spectool eval "%{buildroot}:%{_bindir}:%{_mandir}" $SPECFILE )
+ DIRS=$( spectool eval "%{buildroot}:%{_bindir}:%{_mandir}:%{_prefix}/%{perl_path_vendor_perl_version}" $SPECFILE )
  RPM_BUILD_ROOT=$( echo $DIRS | awk -F':' '{ print $1}' )
  BINDIR=$( echo $DIRS | awk -F':' '{ print $2}' )
  MAN1DIR=$( echo $DIRS | awk -F':' '{ print $3}' )"/man1"
  MAN3DIR=$( echo $DIRS | awk -F':' '{ print $3}' )"/man3"
+ PERLVENDORVERSIONDIR=$( echo $DIRS | awk -F':' '{ print $4}' )
 
+ echo "perlvendorversiondir: ${PERLVENDORVERSIONDIR}"
  echo "bindir: ${BINDIR}"
  echo "man1dir: ${MAN1DIR}"
  echo "man3dir: ${MAN3DIR}"
  
+ perlvendorversion_present=false
  bin_present=false
  man1_present=false
  man3_present=false
+ [ -d ${RPM_BUILD_ROOT}/${PERLVENDORVERSIONDIR} ] && perlvendorversion_present=true
+
  [ -d ${RPM_BUILD_ROOT}/${BINDIR} ] && bin_present=true
 
  [ -d ${RPM_BUILD_ROOT}/${MAN1DIR} ] && man1_present=true
 
  [ -d ${RPM_BUILD_ROOT}/${MAN3DIR} ] && man3_present=true
+
+
+ if [ $perlvendorversion_present == "true" ]; then
+  #%{_prefix}/%{perl_path_vendor_perl_version}
+  #pkgbuild: pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEperl-module-build-0.4216-build/usr/perl5/vendor_perl/5.12
+  #pkgbuild: pkgbuild: File not found by glob: /var/tmp/pkgbuild-tom/SFEperl-module-build-0.4216-build/usr/perl5/vendor_perl/5.12/*
+  #make sure, "#" sign is *removed*
+   egrep "^%dir .*%{_prefix}/%{perl_path_vendor_perl_version}" ${SPECFILE} \
+     || gsed -i.bak_perlvendorversiondir \
+           -e '/^%dir .*%{*_prefix}*\/%{*perl_path_vendor_perl_version}*/ s?^?#?' \
+           -e '/^%{*_prefix}*\/%{*perl_path_vendor_perl_version}*/ s?^?#?' \
+           $SPECFILE 
+ fi #perlvendorversion_present
+
 
  if [ $bin_present == "true" ]; then
   #     #%dir %attr(0755,root,bin) %{_bindir}
@@ -87,8 +190,22 @@ if [ $_rc != 0 ]
            $SPECFILE 
  fi #man3_present
 
+ echo "check log file ${TEMPFILELOG} for common patterns for missing Perl modules. Capture / guess the module names"
+#pkgbuild: Can't locate File/chdir.pm in @INC (@INC contains: /usr/perl5/site_perl/5.12/i86pc-solaris-64int
+#/usr/perl5/site_perl/5.12 /usr/perl5/vendor_perl/5.12/i86pc-solaris-64int /usr/perl5/vendor_perl/5.12
+#/usr/perl5/5.12/lib/i86pc-solaris-64int /usr/perl5/5.12/lib .) at inc/MyBuilder.pm line 14.
+
+ MISSINGMODULES="${MISSINGMODULES} $( cat ${TEMPFILELOG} | filter_extract_cant_locate )"
+
+ echo "Missing modules is now: >"${MISSINGMODULES}"<"
+
+ if [ -n $MISSINGMODULES ]; then
+    echo "consider adding these modules to the \"(Build)Requires section: ${MISSINGMODULES}" >> $SPECFILE
+ fi
+
  echo "changes to the spec file are the following. Please re-run the build command to test results"
 
+ [ -f ${SPECFILE}.bak_perlvendorversiondir ] && diff -u ${SPECFILE}.bak_perlvendorversiondir ${SPECFILE}
  [ -f ${SPECFILE}.bak_bindir ] && diff -u ${SPECFILE}.bak_bindir ${SPECFILE}
  [ -f ${SPECFILE}.bak_man1dir ] && diff -u ${SPECFILE}.bak_man1dir ${SPECFILE}
  [ -f ${SPECFILE}.bak_man3dir ] && diff -u ${SPECFILE}.bak_man3dir ${SPECFILE}
@@ -114,6 +231,8 @@ exit $_rc
 
 
 #%changelog
+#* Mon Mar  7 2016 - Thomas Wagner
+#- handle /usr/perl5/vendor_perl/5.12 (example: SFEperl-module-build.spec)
 #* Fri Feb 26 2016 - Thomas Wagner
 #- initial spec
 #- usage: experimental/testbuildperlmodule SFEperl-this-fresh-module-from-makescript.spec
