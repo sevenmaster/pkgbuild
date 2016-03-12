@@ -7,6 +7,7 @@
 #http://deps.cpantesters.org/?module=Error;perl=latest
 
 
+##visit license detection, should not write Artistic without checking files
 
 
 #http://cpansearch.perl.org/src/NIERLEIN/Monitoring-Generator-TestConfig-0.42/META.yml
@@ -146,6 +147,7 @@ if (system("wget -O copyright/SFEperl-$pkg.copyright $license_url"))  {
    close HANDLE; 
    }
 
+##TODO## check if the license is artitic perl license, if yes, default "SUNW_Copyright: %{license}.copyright" and "License: Artistic"
 
 # work around for empty description (might depend on older CPAN module version!)
 #Summary:	$mod->{RO}->{description}
@@ -213,7 +215,7 @@ License:	Artistic
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~$userid/\%{tarball_name}-\%{tarball_version}
 SUNW_Basedir:	\%{_basedir}
-SUNW_Copyright: \%{name}.copyright
+SUNW_Copyright: \%{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/$cpan_file
 
 BuildRequires:	\%{pnm_buildrequires_perl_default}
@@ -247,7 +249,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=\$RPM_BUILD_ROOT\%{_mandir}/man1 \\
     INSTALLMAN3DIR=\$RPM_BUILD_ROOT\%{_mandir}/man3
 
+
+\%if \%( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null \&\& echo 1 \|\| echo 0 )
+  make
+\%else
   make CC=\$CC CCCDLFLAGS="\%picflags" OPTIMIZE="\%optflags" LD=\$CC
+\%endif
+
 else
   # style "Build.PL"
   \%{_prefix}/perl\%{perl_major_version}/\%{perl_version}/bin/perl Build.PL \\
@@ -286,10 +294,11 @@ rm -rf \$RPM_BUILD_ROOT
 \#\%{_bindir}/*
 \%dir \%attr(0755,root,sys) \%{_datadir}
 \%dir %attr(0755, root, bin) %{_mandir}
-\%dir %attr(0755, root, bin) %{_mandir}/man1
-\%{_mandir}/man1/*
-\%dir %attr(0755, root, bin) %{_mandir}/man3
-\%{_mandir}/man3/*
+#\%dir %attr(0755, root, bin) %{_mandir}/man1
+#\%{_mandir}/man1/*
+\%{_mandir}/*/*
+#\%dir %attr(0755, root, bin) %{_mandir}/man3
+#\%{_mandir}/man3/*
 
 \%changelog
 ##TODO## add changelog
@@ -306,6 +315,12 @@ print "3nd,\nremove or add lines form the \%files section\n";
 
 __DATA__
 %changelog
+* Sat Mar 12 2016 - Thomas Wagner
+- fix build for packages with binaries on OmniOS amd64/perl and OIH i86pc/perl (both use gcc) (remove all broken options for studio on make command line) (OM OIH)
+* Wed Mar  9 2016 - Thomas Wagner
+- use default license as %{license}.copyright (matches most modules, still check each one until automated from meta.yml
+* Mon Mar  7 2016 - Thomas Wagner
+- try simpler %files entry for %{_mandir}/*/*
 * Sun Jan 21 2016 - Thomas Wagner
 - add module name to target package Summary and to package %description
 - add build trough "Build.PL" and test for presence of "Makefile.PL". If absent, go for "Build.PL"
