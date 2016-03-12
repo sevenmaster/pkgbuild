@@ -13,7 +13,7 @@
 
 %define tarball_version 2.069
 #Note: This is different from the Perl-Module-Name!
-%define tarball_name    IO-Compress-Base
+%define tarball_name    IO-Compress
 
 Name:		SFEperl-io-compress
 IPS_package_name: library/perl-5/io-compress
@@ -108,7 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+* Fr. Mär 11 2016 - 
+- initial spec
 - reworked / renewed version 2.62 -> 2.69 / 2.062 -> 2.069
 - keep shorter spec filename w/o -base
 * Sun Dec  8 2013 - Thomas Wagner
@@ -139,3 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 - make version number IPS capable
 * Tue Nov 13 2007 - trisk@acm.jhu.edu
 - Initial spec
+consider adding these modules to the "(Build)Requires section:  
+consider adding these modules to the "(Build)Requires section:  
+consider adding these modules to the "(Build)Requires section:  
+consider adding these modules to the "(Build)Requires section:  
