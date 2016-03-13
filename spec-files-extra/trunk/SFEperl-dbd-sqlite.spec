@@ -33,6 +33,9 @@ Source0:	http://search.cpan.org/CPAN/authors/id/I/IS/ISHIGAKI/DBD-SQLite-%{tarba
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-dbi
+Requires:       SFEperl-dbi
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Adam Kennedy <adamk@cpan.org>
 Meta(info.upstream_url):        http://search.cpan.org/~adamk/%{tarball_name}-%{tarball_version}
@@ -113,6 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Mar 14 2016 - Thomas Wagner
+- add (Build)Requires SFEperl-dbi
 * Sat Mar 12 2016 - Thomas Wagner
 - accept gcc compiler on OmniOS and Hipster, linking errors (OM OIH)
 * Tue Mar 08 2016 - Thomas Wagner

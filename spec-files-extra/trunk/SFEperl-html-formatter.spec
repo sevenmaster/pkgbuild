@@ -114,10 +114,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
+%{_mandir}/*/*
 #%dir %attr(0755, root, bin) %{_mandir}/man3
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Mar 13 2016 - Thomas Wagner
+- fix %files for manpages
 * Fri Feb 26 2016 - Thomas Wagner
 - add dependencies
 * Sat Feb 20 2016 - Thomas Wagner

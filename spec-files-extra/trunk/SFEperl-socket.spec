@@ -11,7 +11,7 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-#%define _use_internal_dependency_generator 0
+%define _use_internal_dependency_generator 0
 
 %define tarball_version 2.021
 %define tarball_name    Socket
@@ -65,7 +65,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -111,5 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Mar 13 2016 - Thomas Wagner
+- fix build on OmniOS / Hipster (gcc link errors)
 * Tue Mar 08 2016 - Thomas Wagner
 - initial spec
