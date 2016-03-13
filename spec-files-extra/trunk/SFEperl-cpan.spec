@@ -87,6 +87,12 @@ else
    %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
 fi
 
+%if %{omnios}
+mkdir -p  $RPM_BUILD_ROOT/%{_prefix}/gnu/bin
+mv $RPM_BUILD_ROOT/%{_bindir}/cpan* $RPM_BUILD_ROOT/%{_prefix}/gnu/bin/
+rmdir     $RPM_BUILD_ROOT/%{_bindir}
+%endif
+
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
@@ -96,8 +102,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
+%if %{omnios}
+%dir %attr(0755,root,bin) %{_prefix}/gnu/bin
+%{_prefix}/gnu/bin/*
+%else
 %dir %attr(0755,root,bin) %{_bindir}
 %{_bindir}/*
+%endif
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -107,5 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Fri Mar 11 2016 - tom68
+* Sun Mar 13 2016 - Thomas Wagner
+- move /usr/bin/cpan to /usr/gnu/bin/cpan on OmniOS (OM)
+* Fri Mar 11 2016 - Thomas Wagner
 - initial spec
