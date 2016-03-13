@@ -34,8 +34,11 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 BuildRequires:  SFEperl-test-fatal
+Requires:       SFEperl-test-fatal
 BuildRequires:  SFEperl-html-parser
+Requires:       SFEperl-html-parser
 BuildRequires:  SFEperl-html-tagset
+Requires:       SFEperl-html-tagset
 
 #SFEperl-html-tree.log:pkgbuild:  - ERROR: Test::Fatal is not installed
 #SFEperl-html-tree.log:pkgbuild:  - ERROR: HTML::Parser is not installed
