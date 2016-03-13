@@ -112,10 +112,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
+%{_mandir}/*/*
 #%dir %attr(0755, root, bin) %{_mandir}/man3
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Mar 13 2016 - Thomas Wagner
+- fix %files for manpages
 * Fri Mar 11 2016 - Thomas Wagner
 - remove (Build)Requires SFEperl-html-entities (doesn't exist, module is contained in SFEperl-html-parser)
 * Sun Feb 21 2016 - Thomas Wagner
