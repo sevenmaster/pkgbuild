@@ -39,7 +39,11 @@ cd %{tarball_name}-%{tarball_version}
 %define target i386-sun-solaris
 %endif
 
+%if %{cc_is_gcc}
+export CFLAGS="%{optflags}"
+%else
 export CFLAGS="-i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
+%endif
 
 ./configure --prefix=%_prefix --disable-static
 
@@ -48,7 +52,11 @@ make -j$CPUS
 %ifarch amd64 sparcv9
 cd ../%{tarball_name}-%{tarball_version}-64
 
+%if %{cc_is_gcc}
+export CFLAGS="%{optflags}"
+%else
 export CFLAGS="-m64 -i -xO4 -xspace -xstrconst -fast -Kpic -xregs=no%frameptr -xCC"
+%endif
 
 ./configure\
     --disable-static \
@@ -91,6 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Mar 15 2016 - Thomas Wagner
+- temp fix to enable build on OIH (spec needs rework to be common 32/64-bit spec file layout)
 * Mon Feb 29 2016 - Alex Viskovatoff <herzen@imap.cc>
 - do not package static libraries
 * Wed Oct 21 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
