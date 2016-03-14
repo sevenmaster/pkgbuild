@@ -72,13 +72,12 @@
 %define with_giflib %(pkginfo -q SFEgiflib && echo 1 || echo 0)
 %define with_faac %(pkginfo -q SFEfaac && echo 1 || echo 0)
 
-%define SFElibsndfile   %(/usr/bin/pkginfo -q SFElibsndfile && echo 1 || echo 0)
-
 Name:		SFEmplayer
 IPS_Package_Name:	media/mplayer
 Summary:	mplayer - The Movie Player
-Version:	1.1.1
-%define tarball_version 1.1.1
+#for ffmpeg 2.8 -> mplayer 1.2.1
+Version:	1.2.1
+%define tarball_version %{version}
 URL:		http://www.mplayerhq.hu/
 Source:         http://www.mplayerhq.hu/MPlayer/releases/MPlayer-%{tarball_version}.tar.xz
 Source2:	http://www.mplayerhq.hu/MPlayer/skins/XFce4-1.0.tar.bz2
@@ -102,23 +101,28 @@ Requires: SUNWgnome-audio
 BuildRequires: SUNWgnome-audio-devel
 Requires: SUNWxorg-clientlibs
 Requires: SUNWfontconfig
-Requires: SUNWfreetype2
-Requires: SUNWspeex
+BuildRequires:  %{pnm_buildrequires_SUNWfreetype2}
+Requires:       %{pnm_requires_SUNWfreetype2}
+BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
+Requires:      %{pnm_requires_SUNWspeex}
 Requires: SUNWjpg
 Requires: SUNWpng
 Requires: SUNWogg-vorbis
 Requires: SUNWlibtheora
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
-Requires: SUNWgnome-base-libs
+BuildRequires: %{pnm_buildrequires_SUNWgnome_base_libs}
+Requires: %{pnm_requires_SUNWgnome_base_libs}
+BuildRequires: %{pnm_buildrequires_SUNWfontconfig}
+Requires: %{pnm_requires_SUNWfontconfig}
 BuildRequires: SUNWxwrtl
 Requires: SUNWxwrtl
 BuildRequires: SUNWxorg-mesa
 Requires: SUNWxorg-mesa
 BuildRequires: %{pnm_buildrequires_SUNWaalib_devel}
 Requires:      %{pnm_buildrequires_SUNWaalib}
-BuildRequires: SUNWlibsdl-devel
-Requires: SUNWlibsdl
+BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
+Requires:      %{pnm_requires_SUNWlibsdl}
 BuildRequires: %{pnm_buildrequires_SUNWlibm}
 Requires:      %{pnm_buildrequires_SUNWlibm}
 Requires: SFElivemedia
@@ -251,11 +255,11 @@ bash ./configure			\
 %endif
             --disable-xvr100		\
             --disable-crash-debug	\
-            --disable-dvdread-internal	\
             --disable-esd		\
-            --disable-mp3lib \
 	    $dbgflag
 
+       #     --disable-dvdread-internal	\
+       #     --disable-mp3lib \
        #     --disable-live		\
 
 gmake -j$CPUS
@@ -314,6 +318,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/256x256/apps/*
 
 %changelog
+* Mon Mar 14 2016 - Thomas Wagner
+- bump to 1.2.1
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFEopenjpeg, SFElibschroedinger to use (OIH) openjpeg, libschroedinger
 * Sun Dec  7 2014 - Thomas Wagner
