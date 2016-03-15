@@ -67,6 +67,8 @@ if test -f Makefile.PL
 
 
 %if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  #avoid double declaration of gai_strerror netdb.h
+  gsed -i.bak -e '/^CCFLAGS =/ s?CCFLAGS = ?CCFLAGS = -DHAS_GAI_STRERROR ?' Makefile
   make
 %else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
@@ -117,6 +119,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Tue Mar 15 2016 - Thomas Wagner
+- avoid double declaration of gai_strerror netdb.h by adding to CCFLAGS: -DHAS_GAI_STRERROR (fix build on OM)
 * Sun Mar 13 2016 - Thomas Wagner
 - fix build on OmniOS / Hipster (gcc link errors)
 * Tue Mar 08 2016 - Thomas Wagner
