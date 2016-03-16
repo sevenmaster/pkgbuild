@@ -25,7 +25,9 @@ Summary:	The VP8 Codec SDK
 Group:		System/Multimedia Libraries
 Version:	%{libvpx.version}
 #give the IPS version number a slight advance to stay ahead of the OpenIndiana Hipster delivered libvpx
+%if %{hipster}
 IPS_Component_Version: %{version}.0.1
+%endif
 URL:            http://www.webmproject.org/code/
 #versioned snapshots: http://downloads.webmproject.org/releases/webm/index.html
 License:        BSD
@@ -92,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Mar 16 2016 - Thomas Wagner
+- make IPS_Component_Version a bit higher to trick IPS solver on OpenIndiana Hipster to be SFE package selected over OIH one
 * Sat Feb 27 2016 - Thomas Wagner
 - bump to 1.4.0.0.1 trick the IPS solver to stay ahead with the OpenIndiana Hipster delivered version of libvpx by using IPS_Component_Version
 - fix download filename (no >v<)

@@ -13,6 +13,11 @@
 Name:		SFElibyaml
 Summary:	LibYAML is a YAML 1.1 parser and emitter written in C. 
 Version:	%{tarball_version}
+##give the IPS version number a slight advance to stay ahead of the OpenIndiana Hipster delivered libvpx
+%if %{hipster}
+IPS_Component_Version: %{version}.0.1
+%endif
+URL:            http://www.webmproject.org/code/
 IPS_package_name:  library/text/yaml
 License:	MIT license
 Source:		%{src_url}/%{tarball_name}-%{tarball_version}.tar.gz
