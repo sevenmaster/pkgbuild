@@ -26,7 +26,7 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.19.12
+Version:             0.19.13
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://www.musicpd.org/
@@ -35,6 +35,7 @@ SUNW_BaseDir:        %{_basedir}
 %include default-depend.inc
 
 BuildRequires: %{pnm_buildrequires_system_header_header_audio}
+BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
 BuildRequires: SUNWogg-vorbis-devel
@@ -89,7 +90,9 @@ Requires: SFEtwolame
 Requires: SFEmpg123
 Requires: SFElibid3tag
 %endif
-BuildRequires: %pnm_buildrequires_boost_gpp_default
+
+BuildRequires:  %{pnm_buildrequires_boost_gpp_default}
+Requires:       %{pnm_requires_boost_gpp_default}
 BuildRequires: SFEicu-gpp
 Requires: SFEicu-gpp
 
@@ -104,7 +107,9 @@ auto-network SFEpulseaudio ( via pulseaudio, libao (sun|pulse) ).
 
 
 %prep
-%setup -q -n %src_name-%version
+#don't unpack please
+%setup -q -c -T -n %{src_name}-%{version}
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -114,16 +119,17 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__"
+export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__ -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags"
 # Without -R, icu libs are not found (RPATH does not get added to SOs)
-export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -Wl,-znodeferred"
+export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -L/usr/g++/lib -Wl,-znodeferred"
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
 ./configure --prefix=%{_prefix}  \
-            --with-boost=/usr/g++ \
+            --mandir=%{_mandir}  \
+            --with-boost=%{boost_gpp_default_prefix} \
     	    --enable-ao          \
 	    --enable-iso9660     \
 	    --enable-shout       \
@@ -175,8 +181,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Wed Mar 16 2016 - Thomas Wagner
+- bump to 0.19.13
 * Fri Dec 18 2015 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 0.19.12; reenable icu
+* Mon Sep  1 2015 - Thomas Wagner
+- find boost --with-boost=%{boost_gpp_default_prefix}
+- change to %{pnm_buildrequires_boost_gpp_default}, developer_icu, 
+- enable icu
 * Tue Sep 01 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.19.10; disable icu for now (link fails)
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
