@@ -1,85 +1,120 @@
 #
-# spec file for package SFEperl-archive-tar
+# spec file for package: SFEperl-archive-tar
 #
-# includes module(s): Archive-Tar
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
 #
-
-
+# includes module(s):
+#
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define module_version 1.84
-%define module_version_download 1.84
-%define module_package_name archive-tar
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
+%define _use_internal_dependency_generator 0
 
-Name:                    SFEperl-archive-tar
-Summary:                 Archive-Tar-%{module_version_download} PERL module
-IPS_package_name:        library/perl-5/%{module_package_name}
-Version:                 %{perl_version}.%{module_version}
-Source:                  http://www.cpan.org/modules/by-module/Archive/Archive-Tar-%{module_version_download}.tar.gz
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-BuildRequires:           %{pnm_buildrequires_perl_default}
-Requires:                %{pnm_requires_perl_default}
-BuildRequires:           %{pnm_buildrequires_SUNWsfwhea}
+%define tarball_version 2.04
+%define tarball_name    Archive-Tar
 
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
-%include default-depend.inc
+Name:		SFEperl-archive-tar
+IPS_package_name: library/perl-5/archive-tar
+Version:	2.04
+IPS_component_version: 2.4
+Group:          Development/Libraries                    
+Summary:	Archive::Tar - Read, write and manipulate tar files
+License:	Artistic
+#Distribution:   OpenSolaris
+#Vendor:         OpenSolaris Community
+Url:		http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+SUNW_Basedir:	%{_basedir}
+SUNW_Copyright: %{license}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/Archive-Tar-%{tarball_version}.tar.gz
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires:	%{pnm_requires_perl_default}
+
+Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
+Meta(info.upstream):            Jos Boumans <kane@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
+
+%description
+Archive::Tar
+Read, write and manipulate tar files
 
 %prep
-%setup -q            -c -n %name-%version
+%setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-cd Archive-Tar-%{module_version_download}
-perl Makefile.PL \
+
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
-    INSTALLDIRS=vendor \
-    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version} \
-    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
-    INSTALLVENDORLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
-    INSTALLVENDORARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    INSTALLVENDORMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLVENDORMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
-make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd Archive-Tar-%{module_version_download}
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+fi
 
-rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
-
-%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
+%defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-%dir %attr(0755, root, sys) %{_datadir}
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
+%dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-%dir %attr(0755, root, bin) %{_mandir}/man1
-%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
-
-#special case because package delivers regular binary to non perl localtion  and has non-perl manpages
-%dir %attr(0755, root, bin) %{_bindir}
-%{_bindir}/ptar*
-
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
+* Wed Mar 16 2016 - Thomas Wagner
+- rework / renew version 1.84 -> 2.04 (IPS 2.4)
 * Tue May 15 2012 - Thomas Wagner
 - add missing INSTALLVENDORLIB to get path vendor_perl work on perl 5.12
 - bump version to 1.84 (1.84 on IPS)
@@ -90,3 +125,4 @@ rm -rf $RPM_BUILD_ROOT
 - BuildRequires: %{pnm_buildrequires_SUNWsfwhea}
 * Sat Jul 11 2009 - Thomas Wagner
 - Initial spec
+consider adding these modules to the "(Build)Requires section:  

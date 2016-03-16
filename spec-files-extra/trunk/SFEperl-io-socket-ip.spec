@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-io-socket-ssl
+# spec file for package: SFEperl-io-socket-ip
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,48 +11,36 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 2.024
-%define tarball_name    IO-Socket-SSL
+%define tarball_version 0.37
+%define tarball_name    IO-Socket-IP
 
-Name:		SFEperl-io-socket-ssl
-IPS_package_name: library/perl-5/io-socket-ssl
-Version:	2.024
-IPS_component_version: 2.24
+Name:		SFEperl-io-socket-ip
+IPS_package_name: library/perl-5/io-socket-ip
+Version:	0.37
+IPS_component_version: 0.37
 Group:          Development/Libraries                    
-Summary:	IO::Socket::SSL - IO::Socket::SSL
+Summary:	IO::Socket::IP - IO::Socket::IP
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~sullr/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~pevans/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/P/PE/PEVANS/IO-Socket-IP-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
-BuildRequires:  SFEperl-io-socket
-Requires:       SFEperl-io-socket
-BuildRequires:  SFEperl-net-ssleay
-Requires:       SFEperl-net-ssleay
-
-
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Steffen Ullrich <Steffen_Ullrich@genua.de>
-Meta(info.upstream_url):        http://search.cpan.org/~sullr/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Paul Evans <leonerd@leonerd.org.uk>
+Meta(info.upstream_url):        http://search.cpan.org/~pevans/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-IO::Socket::SSL
-This module is a true drop-in replacement for IO::Socket::INET that
-uses SSL to encrypt data before it is transferred to a remote server
-or client. IO::Socket::SSL supports all the extra features that one
-needs to write a full-featured SSL client or server application:
-multiple SSL contexts, cipher selection, certificate verification, and
-SSL version selection. As an extra bonus, it works perfectly with
-mod_perl.
+IO::Socket::IP
+IO::Socket::IP
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -125,10 +113,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Wed Mar 16 2016 - Thomas Wagner
-- renew / rework version 1.77 -> 2.024 (IPS 2.24)
-* Sun Nov  4 2012 - Thomas Wagner
-- bump to 1.77 (from 1.33)
-- create new spec file with make_perl_cpan_settings.pl (align with other perl module spec files)
-* Thu Sep 02 2010 - Milan Jurik
-- Initial spec based on Fedora
+* Wed Mar 16 2016 - tom68
+- initial spec
