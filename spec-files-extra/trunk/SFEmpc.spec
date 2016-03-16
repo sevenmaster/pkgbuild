@@ -12,8 +12,8 @@ Summary:             Command line tool and client for Music Player Daemon
 License:             GPLv2
 SUNW_Copyright:	     mpc.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.25
-Source:		     http://www.musicpd.org/download/%srcname/0/%srcname-%version.tar.xz
+Version:             0.27
+Source:		     http://www.musicpd.org/download/%srcname/0/%srcname-%version.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -75,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Wed Mar 16 2016 - Thomas Wagner
+- bump to 0.27
+* Mon Apr 14 2014 - Thomas Wagner
+- switch to .gz download file (old pkgbuild)
 * Sat Jan 25 2013 - Alex Viskovatoff
 - update to 0.25; follow new naming convention for mpd clients
 * Tue Sep 17 2013 - Thomas Wagner
