@@ -536,7 +536,7 @@ ln -sf ../..%{mailq_path}	$RPM_BUILD_ROOT%{symlink_usrbin_mailq}
 ln -sf ../../../..%{mailq_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_mailq_1}
 %endif
 ln -sf ../../../..%{newaliases_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_newaliases_1}
-ln -sf ../../../..%{sendmail_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_sendmailmailq_1}
+ln -sf ../../../..%{sendmail_1_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_sendmail_1}
 ln -sf ../../../..%{aliases_5_postfix_path}	$RPM_BUILD_ROOT%{symlink_man_aliases_5}
 
 
@@ -610,6 +610,7 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases ${RPM_BUILD_ROOT}%{_sysconfdi
 #link created in %install - mediator in %files
 ln -s mail/aliases ${RPM_BUILD_ROOT}%{_sysconfdir}/aliases
 #use the postfix provided default aliases. in %files existing aliases protected by renamenew
+[ -d ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/ ] && mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/
 mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases.unused ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/aliases
 %endif
 
@@ -1046,6 +1047,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon Mar 21 2016 - Thomas Wagner
+- crate target directory for aliases file on OmniOS and OIH (different minimalistic mta, directory not present)
+- remove typo for mediator symlinks
 * Wed Mar  9 2016 - Thomas Wagner
 - bump to 3.1.0
 * Wed Mar  9 2016 - Thomas Wagner
