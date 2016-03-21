@@ -83,6 +83,8 @@ rm -rf %{buildroot}
 %{_docdir}/cmake
 
 %changelog
+* Mon Mar 21 2016 - Thomas Wagner
+- bump to 2.8.12.2.0.1 add 0.1 to get most recent package when pkg solver runs (OIH)
 * Sun Feb 14 2016 - Thomas Wagner
 - bump to 2.8.12.2 (for stellarium 0.14.2)
 - add patch1 cmake-01-remove-special-case-linking-C++-shared-libraries.diff (integrated in cmake 3.4.x)
