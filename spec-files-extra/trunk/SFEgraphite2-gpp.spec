@@ -91,7 +91,6 @@ gmake test
 %install
 rm -rf $RPM_BUILD_ROOT
 cd build
-gmake install DESTDIR=$RPM_BUILD_ROOT
 
 %if %{cc_is_gcc}
 #libstdc++.so.6 defines the missing symbols
@@ -110,19 +109,29 @@ gmake install DESTDIR=$RPM_BUILD_ROOT
 #__gxx_personality_v0                /usr/g++/lib/libgraphite2.so.3
 #ld: fatal: symbol referencing errors. No output written to /tmp/ffconf.zexGdUP4
 
-echo "editing into elf-header of src/libgraphite2.so:   NEEDED libstdc++.so.6"
-/usr/bin/elfdump -d src/libgraphite2.so > elf-header.before
-/usr/bin/elfedit -e 'dyn:value -add -s NEEDED libstdc++.so.6' src/libgraphite2.so
-/usr/bin/elfdump -d src/libgraphite2.so > elf-header.after
-echo "Diff of elf-header"
-if gdiff -u0 elf-header.before elf-header.after ;
+echo "testing library for presence of libstdc++.so.6 in the elf header as \"NEEDED\" library"
+if /usr/bin/elfdump -d src/libgraphite2.so | grep "NEEDED.*libstdc\+\+.so.6";
   then
-   echo "ERROR: editing in the libstdc++.so.6 as a NEEDED library in libgraphite2.so has failed"
-  else
-   #gdiff tells us there is a difference, which is what we want to see
-   echo "ok"
-fi
+  #yes
+  echo "NEEDED libstdc++.so.6 is already present, nothing to do"
+ else #already present?
+   #no
+   echo "editing into elf-header of src/libgraphite2.so:   NEEDED libstdc++.so.6"
+   /usr/bin/elfdump -d src/libgraphite2.so > elf-header.before
+   /usr/bin/elfedit -e 'dyn:value -add -s NEEDED libstdc++.so.6' src/libgraphite2.so
+   /usr/bin/elfdump -d src/libgraphite2.so > elf-header.after
+   echo "Diff of elf-header"
+   if gdiff -u0 elf-header.before elf-header.after ;
+     then
+      echo "ERROR: editing in the libstdc++.so.6 as a NEEDED library in libgraphite2.so has failed"
+     else
+      #gdiff tells us there is a difference, which is what we want to see
+      echo "ok"
+   fi
+fi #already present?
 %endif
+
+gmake install DESTDIR=$RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
 
@@ -153,6 +162,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 29 2016 - Thomas Wagner
+- improve elfedit section and print changes into pkgbuild log files
 * Sat Feb 27 2016 - Thomas Wagner
 - link in libstdc++.so.6 to fix ffmpeg build failing when probing for libass which
   uses libgraphite2 which then has unresolved symbols (missing libstdc++.so.6)
