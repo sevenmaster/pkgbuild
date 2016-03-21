@@ -610,8 +610,8 @@ mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases ${RPM_BUILD_ROOT}%{_sysconfdi
 #link created in %install - mediator in %files
 ln -s mail/aliases ${RPM_BUILD_ROOT}%{_sysconfdir}/aliases
 #use the postfix provided default aliases. in %files existing aliases protected by renamenew
-[ -d ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/ ] && mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/
-mv ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases.unused ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/aliases
+[ -d ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/ ] || mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/
+cp -p ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix/aliases.unused ${RPM_BUILD_ROOT}%{_sysconfdir}/mail/aliases.example
 %endif
 
 for i in active bounce corrupt defer deferred flush incoming private saved \
@@ -670,6 +670,7 @@ install -m 644 tmp/postfix-sasl.conf ${RPM_BUILD_ROOT}%{sasl_lib_dir}/smtpd.conf
 #Not on Solaris install -m 644 tmp/postfix-pam.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/pam.d/smtp.postfix
 #Not on Solaris mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 ##TODO## this is for SFEcyrus-sasl .. so check if this is /etc/sasl2 or /etc/gnu/sasl2 (more the second one since usr-gnu.inc is in SFEcyrus-sasl.spec)
+[ -d ${RPM_BUILD_ROOT}%{_sysconfdir}/mail ] || mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/mail
 [ -d ${RPM_BUILD_ROOT}%{gnu_sysconfdir}/sasl2/ ] || mkdir -p ${RPM_BUILD_ROOT}%{gnu_sysconfdir}/sasl2/
 install -m 644 tmp/postfix-saslauthd.conf ${RPM_BUILD_ROOT}%{gnu_sysconfdir}/sasl2/saslauthd.postfix
 %endif
@@ -954,12 +955,14 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
+%attr (0755, root, mail) %dir %{_sysconfdir}/mail
 #Solaris sendmail: link path=etc/aliases target=./mail/aliases
 #Omnios sendmail:  link mediator=mta mediator-implementation=sendmail path=etc/aliases target=./mail/aliases
 %if %( expr %{oihipster} '|' %{omnios} )
 #link created in %install
 %ips_tag(mediator=%{mediator} mediator-implementation=%{mediator_implementation}) %{_sysconfdir}/aliases
-%class(renamenew) %{_sysconfdir}/mail/aliases
+#%class(renamenew) %attr (0755, root, mail) %{_sysconfdir}/mail/aliases
+%attr (0755, root, mail) %{_sysconfdir}/mail/aliases.example
 %endif
 
 %attr (0755, root, sys) %dir %{_sysconfdir}/%{src_name}
@@ -1049,7 +1052,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %changelog
 * Mon Mar 21 2016 - Thomas Wagner
 - crate target directory for aliases file on OmniOS and OIH (different minimalistic mta, directory not present)
-- remove typo for mediator symlinks
+- remove typo for mediator symlinks, really mkdir etc/mail, use copy instead of mv
+- workaround to fix %files rights for etc/mail etc/mail/aliases (shared with other mta package) (OM, OIH)
 * Wed Mar  9 2016 - Thomas Wagner
 - bump to 3.1.0
 * Wed Mar  9 2016 - Thomas Wagner
