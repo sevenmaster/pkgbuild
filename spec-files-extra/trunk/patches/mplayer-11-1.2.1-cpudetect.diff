@@ -1,0 +1,64 @@
+--- MPlayer-1.2.1/cpudetect.c.orig	2016-01-08 13:39:01.000000000 +0100
++++ MPlayer-1.2.1/cpudetect.c	2016-03-15 02:04:21.317659409 +0100
+@@ -39,22 +39,25 @@
+ #include <sys/sysctl.h>
+ #elif defined(__linux__)
+ #include <signal.h>
+ #elif defined(__MINGW32__) || defined(__CYGWIN__)
+ #include <windows.h>
+ #elif defined(__OS2__)
+ #define INCL_DOS
+ #include <os2.h>
+ #elif defined(__AMIGAOS4__)
+ #include <proto/exec.h>
++#elif defined(__sun)
++#include <sys/utsname.h>
+ #endif
+ 
++
+ /* Thanks to the FreeBSD project for some of this cpuid code, and
+  * help understanding how to use it.  Thanks to the Mesa
+  * team for SSE support detection and more cpu detect code.
+  */
+ 
+ #if CONFIG_RUNTIME_CPUDETECT
+ /* I believe this code works.  However, it has only been used on a PII and PIII */
+ 
+ #if defined(__linux__) && !ARCH_X86_64
+ static void sigill_handler_sse( int signal, struct sigcontext sc )
+@@ -201,20 +204,35 @@
+     }
+ 
+     /* Restore the original signal handlers.
+      */
+     sigaction( SIGILL, &saved_sigill, NULL );
+ 
+     /* If we've gotten to here and the XMM CPUID bit is still set, we're
+      * safe to go ahead and hook out the SSE code throughout Mesa.
+      */
+     mp_msg(MSGT_CPUDETECT,MSGL_V, "Tests of OS support for SSE %s\n", gCpuCaps.hasSSE ? "passed." : "failed!" );
++
++#elif defined(__sun)
++   struct utsname solname;
++   long major, minor = 0;
++   char *radix;
++
++   if (uname(&solname) > 0) {
++      major = strtol(solname.release, &radix, 10);
++      if (*radix != '\0')
++         minor = strtol(++radix, NULL, 10);
++      if (!(major >= 5 && minor >= 9))
++        gCpuCaps.hasSSE=0;
++   } else {
++      gCpuCaps.hasSSE=0;
++   }
+ #else
+     /* Do nothing on other platforms for now.
+      */
+     mp_msg(MSGT_CPUDETECT,MSGL_WARN, "Cannot test OS support for SSE, leaving disabled.\n" );
+     gCpuCaps.hasSSE=0;
+ #endif /* __linux__ */
+ }
+ #endif
+ 
+ 
