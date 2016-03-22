@@ -87,7 +87,7 @@ Source5:	http://www.mplayerhq.hu/MPlayer/skins/neutron-1.5.tar.bz2
 Source6:	http://www.mplayerhq.hu/MPlayer/skins/proton-1.2.tar.bz2
 Source7:	http://www.mplayerhq.hu/MPlayer/skins/brushedGnome-1.0.tar.bz2
 Patch1:		mplayer-01-cddb.diff
-Patch11:	mplayer-11-cpudetect.diff
+Patch11:	mplayer-11-1.2.1-cpudetect.diff
 Patch12:	mplayer-12-realplayer.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{tarball_version}-build
@@ -256,6 +256,7 @@ bash ./configure			\
             --disable-xvr100		\
             --disable-crash-debug	\
             --disable-esd		\
+            --disable-ffmpeg_a          \
 	    $dbgflag
 
        #     --disable-dvdread-internal	\
@@ -318,6 +319,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/256x256/apps/*
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- rework patch11 mplayer-11-1.2.1-cpudetect.diff
+* Tue Mar 15 2016 - Thomas Wagner
+- --disable-ffmpeg_a or get missing symbol gcry_control (libavformat.a -> gnutls)
 * Mon Mar 14 2016 - Thomas Wagner
 - bump to 1.2.1
 * Sun Nov 29 2015 - Thomas Wagner
