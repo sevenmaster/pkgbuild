@@ -7,7 +7,7 @@
 Name:                SFEgit
 IPS_Package_Name:    sfe/developer/versioning/git
 Summary:             A fast version control system
-Version:             2.7.0
+Version:             2.7.4
 License:             GPLv2
 SUNW_Copyright:      git.copyright
 URL:                 http://git-scm.com/
@@ -16,7 +16,7 @@ SUNW_BaseDir:        %{_basedir}
 
 %include default-depend.inc
 Requires: SUNWzlib
-Requires: %{pnm_reqires_SUNWsshu}
+Requires: %{pnm_requires_SUNWsshu}
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
 Requires: SUNWlexpt
@@ -101,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Tue Mar 22 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 2.7.4
 * Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update to 2.7.0; enable support for Perl-compatible regexes
 - fix git-svn by not making the spec interfere with upstream's standard install
