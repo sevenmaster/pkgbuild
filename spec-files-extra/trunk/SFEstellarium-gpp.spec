@@ -36,7 +36,8 @@ SUNW_BaseDir:	%{_basedir}
 ##TODO## make a pnm_macro for sdl-mixer / SFEsdl-mixer
 BuildRequires: library/audio/sdl-mixer
 Requires:      library/audio/sdl-mixer
-BuildRequires: SUNWimagick
+BuildRequires: %{pnm_buildrequires_SUNWimagick_devel}
+Requires:      %{pnm_buildrequires_SUNWimagick}
 BuildRequires: SFEcmake
 ##TODO## update stellarium to 0.13.x 0.14.x once SFEqt5-gpp is available!
 BuildRequires: SFEqt-gpp-devel
@@ -126,6 +127,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWimagick_devel}
 * Sun Feb 14 2016 - Thomas Wagner
 - bump to 0.12.6 (last version working on Qt4)
 * Sun Feb  7 2016 - Thomas Wagner
