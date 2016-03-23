@@ -6,11 +6,12 @@
 
 %define	src_name gpac
 
-Name:                SFEgpac
+Name:                gpac
 Summary:             Open Source multimedia framework
-Version:             0.5.0
+Version:             0.5.2
 URL:                 http://gpac.sourceforge.net/
-Source:              %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
+#Source:              %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.gz
+Source:              http://github.com/gpac/gpac/archive/v%{version}.tar.gz -O %{_sourcedir}/%{src_name}-%{version}.tar.gz
 Patch1:		     gpac-01-configure.diff
 Patch2:              gpac-02-stringcat.diff 
 Patch3:              gpac-03-ldflags.diff
@@ -21,7 +22,9 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %prep
 unset P4PORT
-%setup -q -n gpac
+%setup -q -n %{name}-%{version}
+#%setup -q -T -n %{name}-%{version}
+#gzip -dc `echo %SOURCE0 | sed -e 's/ .*//'` | (cd ..; tar xf -)
 #%patch1 -p1
 #%patch2 -p1
 #%patch3 -p1
@@ -142,6 +145,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Mar 23 2016 - Thomas Wagner
+- bump to 0.5.2
+- new Source URL to download tarball from github
 * Mon Jan  6 2014 - Thomas Wagner
 - bump to 0.5.0
 - propper make install, layout and hard-links to isaexec for 32-bit/64-bit commandline tools,

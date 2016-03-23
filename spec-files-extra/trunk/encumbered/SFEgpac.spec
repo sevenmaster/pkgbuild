@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Wed Mar 23 2016 - Thomas Wagner
+- bump to 0.5.2
+- new Source URL to download tarball from github
 * Fri Dec 25 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWfreetype2} (OIH)
 * Sun Nov 29 2015 - Thomas Wagner
