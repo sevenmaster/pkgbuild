@@ -9,8 +9,8 @@
  ifeq ($(STATICBUILD),yes)
  	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/gm_oss_audio-static.$(DYN_LIB_SUFFIX) $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac_static $(OSS_LDFLAGS)
  endif
---- gpac/modules/pulseaudio/Makefile.orig	2013-12-25 11:59:57.206638903 +0100
-+++ gpac/modules/pulseaudio/Makefile	2013-12-25 11:58:25.778718493 +0100
+--- gpac-0.5.2/modules/pulseaudio/Makefile.orig	2016-03-23 14:30:14.618350810 +0100
++++ gpac-0.5.2/modules/pulseaudio/Makefile	2016-03-23 14:36:16.504499791 +0100
 @@ -25,7 +25,7 @@
  all: $(LIB)
  
@@ -18,5 +18,5 @@
 -	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib -lpulse-simple
 +	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib -lpulse-simple
  
- 
- %.o: %.c
+ clean: 
+ 	rm -f $(OBJS) ../../bin/gcc/$(LIB)
