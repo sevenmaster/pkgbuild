@@ -1,3 +1,6 @@
+##TODO## pre-set for Solaris where ffmpeg, vlc, flvstreamer, 
+##TODO## add dependencies (optional)
+
 #
 # spec file for package SFEmediathek
 #
@@ -8,12 +11,14 @@
 %define subdir    mediathek
 %define docversion 2.6.0
 
+%define _use_internal_dependency_generator 0
+
 Name:                    SFEmediathek
 IPS_package_name:        media/mediathek
 Group:                   Applications/Sound and Video
 Summary:                 mediathek - download TV broadcasters online offers, download podcasts
 URL:                     http://zdfmediathk.sourceforge.net/
-Version:                 9
+Version:                 11
 Source:                  %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{version}/MediathekView_%{version}.zip
 Source2:                 %{sf_download}/project/zdfmediathk/Mediathek/Mediathek\ %{docversion}/Kurzanleitung_%{docversion}.pdf
 
@@ -60,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 27 2016 - Thomas Wagner
+- bump to version 11
 * Thu Mar 26 2015 - Thomas Wagner
 - bump to version 9
 * Mon Dec 15 2014 - Thomas Wagner
