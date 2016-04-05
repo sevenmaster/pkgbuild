@@ -14,8 +14,15 @@
 %define pnm_buildrequires_SFElibschroedinger	library/video/libschroedinger
 %define pnm_requires_SFElibschroedinger		library/video/libschroedinger
 
+#only oihipster has libschroedinger, try this
+#libyaml is a slowly updated lib, no C++ involved
+%define pnm_buildrequires_SFElibyaml		library/libyaml
+%define pnm_requires_SFElibyaml			library/libyaml
+
 
 %changelog
+* Thu Mar 17 2016 - Thomas Wagner
+- handle pnm_buildrequires_SFElibyaml (only OIH has own libyaml)
 * Fri Dec 25 2015 - Thomas Wagner
 - moved SUNWxwinc to allbuilds
 * Sun Nov 29 2015 - Thomas Wagner
