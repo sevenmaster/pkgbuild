@@ -23,7 +23,7 @@ Version:        0.98
 Summary:        Multiple GNOME terminals in one window
 Source:         http://launchpad.net/terminator/trunk/%{version}/+download/terminator-%{version}.tar.gz
 # date:2009-02-19 owner:mattman type:branding
-Patch1:         terminator-01-manpages.diff
+#Patch1:         terminator-01-manpages.diff
 URL:            http://www.tenshu.net/terminator/
 SUNW_Basedir:   %{_basedir}
 SUNW_Copyright: %{license}.copyright
@@ -35,10 +35,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires: %{pnm_buildrequires_python_default}
 Requires: %{pnm_requires_python_default}
 ##TODO## on python_default update, might need better fix for marjorminor number in pkg name
-BuildRequires: %{pnm_buildrequires_library_python_setuptools_26}
-BuildRequires: %{pnm_buildrequires_SUNWgnome_python26_libs_devel}
-Requires: %{pnm_buildrequires_service_gnome_desktop_cache}
-Requires: %{pnm_requires_library_gnome_gnome_libs}
+#TESTING with a constructed package name. Does not cover older OS disto versions where /python-2/ is in the name
+BuildRequires: library/python/setuptools-%{python_version_package_string}
+BuildRequires: library/python/pygtk2-%{python_version_package_string}
+Requires:      library/python/pygtk2-%{python_version_package_string}
+Requires:      %{pnm_buildrequires_service_gnome_desktop_cache}
+Requires:      %{pnm_requires_library_gnome_gnome_libs}
 
 %description
 This is a project to produce an efficient way of filling a
@@ -53,7 +55,7 @@ Summary: %{summary} - l10n files
 %prep
 %setup -q -c -n terminator-%{version}
 cd terminator-%{version}
-%patch1 -p1
+#%patch1 -p1
 rm po/ru_RU.po
 
 perl -pi -e 's:^#! *.*/python.*:#!/usr/bin/python%{python_major_minor_version}:'  `ggrep -r -l "^#\!.*/bin/python"`
@@ -119,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 - change (Build)Requires to pnm_macro, include packagenamemacros.inc
 - remove patch1, replace patch2 with perl regex
 - change IPS name to sfe/terminal/terminator to escape incorporation dictatorship
+- remove patch1
+- rework dependencies, temporary solution to add pything version as pnm_macro
 * Thu Jul 11 2013 - wasif.khan@oracle.com
 - Added TPNO and modified copyright
 * Fri Feb 10 2012 - padraig.obriain@oracle.com
