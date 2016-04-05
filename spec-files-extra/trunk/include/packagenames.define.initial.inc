@@ -25,6 +25,11 @@
 %define pnm_buildrequires_SFEeditline		SFEeditline
 %define pnm_requires_SFEeditline		SFEeditline
 
+%define pnm_buildrequires_developer_documentation_tool_xmlto	SFExmlto
+%define pnm_requires_developer_documentation_tool_xmlto		SFExmlto
+%define pnm_buildrequires_SFExmlto				SFExmlto
+%define pnm_requires_SFExmlto					SFExmlto
+
 #only oihipster has openjeg, see packagenames.define.oihipster-specialcases.inc
 %define pnm_buildrequires_SFEopenjpeg		SFEopenjpeg
 %define pnm_requires_SFEopenjpeg		SFEopenjpeg
@@ -37,6 +42,9 @@
 %define pnm_buildrequires_SFElibschroedinger    SFElibschroedinger
 %define pnm_requires_SFElibschroedinger         SFElibschroedinger
 
+#only oihipster has libyaml, try this
+%define pnm_buildrequires_SFElibyaml		SFElibyaml
+%define pnm_requires_SFElibyaml			SFElibyaml
 
 #oihipster lost SUNWxwinc, try a replacement. Set the default for all other osdistro here
 %define pnm_buildrequires_SUNWxwinc_devel	SUNWxwinc
@@ -45,6 +53,10 @@
 
 
 %changelog
+* Thu Mar 24 2016 - Thomas Wagner
+- handle pnm_requires_developer_documentation_tool_xmlto SFExmlto (older distro don't have it)
+* Thu Mar 17 2016 - Thomas Wagner
+- handle pnm_buildrequires_SFElibyaml (only OIH has own libyaml)
 * Mon Nov 30 2015 - Thomas Wagner
 - fix typo SFE_openjpeg -> SFEopenjpeg
 * Sun Nov 29 2015 - Thomas Wagner

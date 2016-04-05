@@ -952,6 +952,12 @@
 %define pnm_requires_SFElibgpg_error			library/security/libgpg-error
 %define pnm_buildrequires_sfe_library_security_libgpg_error	library/security/libgpg-error
 %define pnm_requires_sfe_library_security_libgpg_error	library/security/libgpg-error
+
+%define pnm_buildrequires_developer_documentation_tool_xmlto	text/xmlto
+%define pnm_requires_developer_documentation_tool_xmlto		text/xmlto
+%define pnm_buildrequires_SFExmlto				text/xmlto
+%define pnm_requires_SFExmlto					text/xmlto
+
 %endif
 #END oihipster
 
@@ -1598,6 +1604,23 @@
 %endif
 #END solaris11
 
+#START Solaris 11 Update 3
+#
+%if %{solaris11}
+%if %( expr  %{osdistrelnumber} '>=' 201103 )
+
+#Added to S11.3 build 26 and S12 build 90
+# developer/documentation-tool/xmlto@0.0.25,5.11-0.175.3.0.0.26.0
+%define pnm_buildrequires_developer_documentation_tool_xmlto	developer/documentation-tool/xmlto
+%define pnm_requires_developer_documentation_tool_xmlto		developer/documentation-tool/xmlto
+%define pnm_buildrequires_SFExmlto				developer/documentation-tool/xmlto
+%define pnm_requires_SFExmlto					developer/documentation-tool/xmlto
+
+%endif
+#END osdistrelnumber >= 201102 aka solaris11 11.2 and newer
+%endif
+#END solaris11
+
 
 #START Solaris 12
 #
@@ -1634,6 +1657,12 @@
 %define pnm_buildrequires_shell_gnugetopt		pkg://solaris/shell/gnu-getopt
 %define pnm_requires_shell_gnugetopt			pkg://solaris/shell/gnu-getopt
 
+#Added to S11.3 build 26 and S12 build 90
+# developer/documentation-tool/xmlto
+%define pnm_buildrequires_developer_documentation_tool_xmlto	developer/documentation-tool/xmlto
+%define pnm_requires_developer_documentation_tool_xmlto		developer/documentation-tool/xmlto
+%define pnm_buildrequires_SFExmlto				developer/documentation-tool/xmlto
+%define pnm_requires_SFExmlto					developer/documentation-tool/xmlto
 
 %endif
 #END solaris12
@@ -1827,6 +1856,10 @@
 %define perl_dir sun4-solaris-64int
 %else
 %define perl_dir i86pc-solaris-64int 
+%if %{omnios}
+%define perl_dir i86pc-solaris-thread-multi-64
+%endif 
+#END omnios
 %endif
 #END sparc else i86pc
 %endif
@@ -1900,6 +1933,59 @@
 %define pnm_requires_python_default		runtime/python-26
 %endif
 #END %{osbulild} => 133 or %{solaris12}
+
+
+#Solaris >= 175.3.0.0.26.0
+%if %( expr %{solaris11} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000260000.0 )
+#note: the name is subject to change if we find a better one
+#_default string is not meant to be a part of the package name...
+%define python_version 2.7
+%define python_major_version 2
+%define python_major_minor_version 2.7
+%define python_major_minor_micro_version 2.7.9
+%define python_version_package_string 27
+%define pnm_buildrequires_python_default	runtime/python-27
+%define pnm_requires_python_default		runtime/python-27
+%endif
+#END %{solaris11} >= 11.3
+
+
+#Solaris >= 175.3.0.0.30.0
+%if %( expr %{solaris11} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000300000.0 )
+#the IPS name changed from python-2/ to python/
+##TODO##1 check if consuming specs can concentrate on only these pnm_macros below and not older/other variant
+##TODO##2 prepare for new default python version on S11.3 build 26 and S12 b70
+%define pnm_buildrequires_SUNWpython26_setuptools_devel	library/python/setuptools-26
+%define pnm_buildrequires_SUNWpython26_setuptools	library/python/setuptools-26
+%define pnm_requires_SUNWpython26_setuptools		library/python/setuptools-26
+%define pnm_requires_library_python_setuptools_26	library/python/setuptools-26
+%define pnm_buildrequires_library_python_setuptools_26	library/python/setuptools-26
+%define pnm_requires_library_python_setuptools_26	library/python/setuptools-26
+#there has been no SUNWpython27
+%define pnm_requires_library_python_setuptools_27	library/python/setuptools-27
+%define pnm_buildrequires_library_python_setuptools_27	library/python/setuptools-27
+%define pnm_requires_library_python_setuptools_27	library/python/setuptools-27
+%endif
+#END %{solaris11} >= 11.3
+
+#Solaris >= 12.0.0.0.70.0
+%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000700000.0 )
+#the IPS name changed from python-2/ to python/
+##TODO##1 check if consuming specs can concentrate on only these pnm_macros below and not older/other variant
+##TODO##2 prepare for new default python version on S11.3 build 26 and S12 b70
+%define pnm_buildrequires_SUNWpython26_setuptools_devel	library/python/setuptools-26
+%define pnm_buildrequires_SUNWpython26_setuptools	library/python/setuptools-26
+%define pnm_requires_SUNWpython26_setuptools		library/python/setuptools-26
+%define pnm_requires_library_python_setuptools_26	library/python/setuptools-26
+%define pnm_buildrequires_library_python_setuptools_26	library/python/setuptools-26
+%define pnm_requires_library_python_setuptools_26	library/python/setuptools-26
+#there has been no SUNWpython27
+%define pnm_requires_library_python_setuptools_27	library/python/setuptools-27
+%define pnm_buildrequires_library_python_setuptools_27	library/python/setuptools-27
+%define pnm_requires_library_python_setuptools_27	library/python/setuptools-27
+%endif
+#END %{solaris12} >= build 86
+
 
 #Solaris >= 12.0.0.0.86.0
 %if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000860000.0 )
@@ -3020,6 +3106,13 @@
 #S12 lost the legacy name SUNWslang
 
 %changelog
+* Tue Apr  5 2016 - Thomas Wagner
+- IPS package name lost python"-2" library/python/setuptools-26 on S11.3 b30 and S12 b70
+- python_default changed to 2.7 (27) on S11.3 b26 and S12 b86
+* Thu Mar 24 2016 - Thomas Wagner
+- handle pnm_requires_developer_documentation_tool_xmlto SFExmlto (older distro < S11.3b26 < S12b90 don't have it) (OIH has text/xmlto)
+* Sun Mar 13 2016 - Thomas Wagner
+- OmniOS perl is multi-threaded, needs perl_dir i86pc-solaris-thread-multi-64 or doesn't find its *.pm (OM)
 * Sat Mar 12 2016 - Thomas Wagner
 - Exception for perl_version on OmniOS: It uses different number 5.16 -> 5.16.1 (OM)
   solves perl module builds where /usr/perl5/%{perl_version}/bin/perl is /usr/perl5/5.16.1/bin/perl
