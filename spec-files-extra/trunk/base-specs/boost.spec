@@ -98,12 +98,16 @@ BOOST_ROOT=`pwd`
 #else: /usr/include/sys/feature_tests.h:392:2: error: #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications       require the use of c99"
 # #error "Compiler or options invalid; UNIX 03 and POSIX.1-2001 applications \
 #-D_GLIBCXX_USE_C99_MATH or get on S11.3+SFEgcc 4.8.5 this: ./boost/math/special_functions/fpclassify.hpp:525:17: error: 'isnan' is not a member of 'std'
-%if %( expr %{solaris11} '|' %{solaris12} )
-export CFLAGS="%optflags -D_XPG6"
-export CXXFLAGS="%cxx_optflags -D_XPG6 -std=c++11 -D_GLIBCXX_USE_C99_MATH"
-%else
+#defaults
 export CFLAGS="%optflags -D_XPG6"
 export CXXFLAGS="%cxx_optflags -D_XPG6"
+%if %( expr %{solaris11} )
+export CFLAGS="%optflags -D_XPG6"
+export CXXFLAGS="%cxx_optflags -D_XPG6 -std=c++11 -D_GLIBCXX_USE_C99_MATH"
+%endif
+%if %( expr %{solaris12} )
+export CFLAGS="%optflags -D_XPG6"
+export CXXFLAGS="%cxx_optflags -D_XPG6 -std=c++11"
 %endif
 
 %if %cc_is_gcc
@@ -187,6 +191,9 @@ CPUS=%{_cpus_memory}
 
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- bump version to 0.60.0 on (S12)
+- keep CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH (S11) but only use -std=c++11 on (S12) or get /cmath: error: redefinition of 'constexpr bool std::isunordered...'
 * Fri Jan  8 2016 - Thomas Wagner
 - bump version to 0.59.0 on (OIH)
 * Mon Jan  4 2016 - Thomas Wagner
