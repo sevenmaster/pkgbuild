@@ -20,8 +20,12 @@
 %define        patchlevel 0
 
 #simplified, even on older builds use 59
-%if %( expr %{solaris12} '|' %{solaris11} '|' %{oihipster} )
+%if %( expr %{solaris11} '|' %{oihipster} )
 %define        minor      59
+%endif
+
+%if %( expr %{solaris12} )
+%define        minor      60
 %endif
 
 %define        ver_boost  %{major}_%{minor}_%{patchlevel}
@@ -183,6 +187,9 @@ rm -rf %buildroot
 %{_docdir}/boost-%{version}
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- bump version to 0.60.0 on (S12)
+- keep CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH (S11) but only use -std=c++11 on (S12) or get /cmath: error: redefinition of 'constexpr bool std::isunordered...'
 * Fri Jan  8 2016 - Thomas Wagner
 - bump version to 0.59.0 on (OIH)
 * Mon Jan  4 2016 - Thomas Wagner
