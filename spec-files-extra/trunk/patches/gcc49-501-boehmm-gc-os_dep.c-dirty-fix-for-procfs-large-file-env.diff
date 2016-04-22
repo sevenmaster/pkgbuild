@@ -1,0 +1,19 @@
+--- gcc-4.9.3/boehm-gc/os_dep.c	2013-03-06 16:08:58.000000000 +0100
++++ gcc-4.9.3/boehm-gc/os_dep.c	2016-04-05 19:42:03.094911351 +0200
+@@ -3128,6 +3128,16 @@
+  * address space), but it avoids intercepting system calls.
+  */
+ 
++/* test fix to avoid procfs.h complain about */
++/* libtool: compile:  BUILD/SFEgcc-4.9.3/gcc/./gcc/xgcc -BBUILD/SFEgcc-4.9.3/gcc/./gcc/ -B/usr/gcc/4.9/i386-pc-solaris2.11/bin/ -B/usr/gcc/4.9/i386-pc-solaris2.11/lib/ -isystem /usr/gcc/4.9/i386-pc-solaris2.11/include -isystem /usr/gcc/4.9/i386-pc-solaris2.11/sys-include -DHAVE_CONFIG_H -I. -I../../../gcc-4.9.3/boehm-gc -I./include -IBUILD/SFEgcc-4.9.3/gcc-4.9.3/boehm-gc/include -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -D_REENTRANT=1 -D__EXTENSIONS__=1 -fexceptions -Iinclude -I././targ-include -I.//libc/include -zinterpose -O2 -fPIC -DPIC -Xlinker -i -MT os_dep.lo -MD -MP -MF .deps/os_dep.Tpo -c ../../../gcc-4.9.3/boehm-gc/os_dep.c  -fPIC -DPIC -o .libs/os_dep.o
++In file included from /usr/include/sys/procfs.h:26:0,
++                 from ../../../gcc-4.9.3/boehm-gc/os_dep.c:3136:
++/usr/include/sys/old_procfs.h:31:2: error: #error "Cannot use procfs in the large file compilation environment"
++ #error "Cannot use procfs in the large file compilation environment"
++*/
++#undef _FILE_OFFSET_BITS
++
++
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/signal.h>
