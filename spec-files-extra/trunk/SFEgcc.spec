@@ -201,7 +201,6 @@
 %endif
 #special handling of version / gcc_version
 
-
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #%define major_minor %( echo %{version} | sed -e 's/\([0-9]*\)\.\([0-9]*\)\..*/\1.\2/' )
 #below is a workaround for pkgbuild 1.3.104 failing to parse the escaped \( and \)
@@ -212,6 +211,54 @@
 %define majorminornumber %( echo %{major_minor} | sed -e 's/\.//g' )
 %define _prefix /usr/gcc/%major_minor
 %define _infodir %{_prefix}/info
+
+# Supported languages are: c,c,c++,fortran,go,java,lto,objc,obj-c++
+%define gcc_enable_languages c,c++,fortran,objc
+
+#enable java compiler --with-gcj
+#is default on with majorminor > 4.9
+%define gcj %{?_with_gcj:1}%{?!_with_gcj:0}
+
+#enable compiling java gcj
+%if %( expr %{major_minor} '>=' 4.9 )
+%define gcj 1
+%endif
+
+%if %{gcj}
+#%define ecj_jar_abs_path  %{topdir}/gcc-%{version}/ecj.jar
+%define ecj_jar_abs_path  %_builddir/%name-%version/ecj.jar
+%define gcc_configure_java --with-java --with-ecj-jar=%{ecj_jar_abs_path} --enable-libgcj
+%define gcc_enable_languages_java ,java
+%define gcc_symlinks_pattern bin/ecj bin/aot-compile bin/gappletviewer bin/gc-analyze bin/gcj bin/gcj-dbtool bin/gcjh bin/gij bin/gjar bin/gjarsigner bin/gjavah bin/gkeytool bin/gnative2ascii bin/gorbd bin/grmic bin/grmid bin/grmiregistry bin/gserialver bin/gtnameserv bin/jcf-dump bin/jv-convert bin/rebuild-gcj-db lib/gcj-* lib/libgcj-tools.so lib/libgcj-tools.so.15 lib/libgcj-tools.so.15.0.0 lib/libgcj.so lib/libgcj.so.15 lib/libgcj.so.15.0.0 lib/libgcj.spec lib/libgij.so lib/libgij.so.15 lib/libgij.so.15.0.0 lib/logging.properties lib/pkgconfig lib/security
+%define gcc_symlinks_pattern_arch64 lib/%{_arch64}/gcj-4.9.3-15 lib/%{_arch64}/libgcj-tools.so lib/%{_arch64}/libgcj-tools.so.15 lib/%{_arch64}/libgcj-tools.so.15.0.0 lib/%{_arch64}/libgcj.so lib/%{_arch64}/libgcj.so.15 lib/%{_arch64}/libgcj.so.15.0.0 lib/%{_arch64}/libgij.so lib/%{_arch64}/libgij.so.15 lib/%{_arch64}/libgij.so.15.0.0 lib/%{_arch64}/logging.properties lib/%{_arch64}/pkgconfig lib/%{_arch64}/security
+%else
+#no java
+%define gcc_configure_java
+%define gcc_enable_languages_java
+%define gcc_symlinks_pattern
+%define gcc_symlinks_pattern_arch64
+%endif
+
+
+#`--with-ecj-jar=FILENAME'
+#     This option can be used to specify the location of an external jar
+#     file containing the Eclipse Java compiler.  A specially modified
+#     version of this compiler is used by `gcj' to parse `.java' source
+#     files.  If this option is given, the `libjava' build will create
+#     and install an `ecj1' executable which uses this jar file at
+#     runtime.
+#
+#     If this option is not given, but an `ecj.jar' file is found in the
+#     topmost source tree at configure time, then the `libgcj' build
+#     will create and install `ecj1', and will also install the
+#     discovered `ecj.jar' into a suitable place in the install tree.
+#
+#     If `ecj1' is not installed, then the user will have to supply one
+#     on his path in order for `gcj' to properly parse `.java' source
+#     files.  A suitable jar is available from
+#     `ftp://sourceware.org/pub/java/'.
+
+
 
 # force using SFEbinutils_gpp from the pkgtool/pkgbuild command line - for testing purpose
 #if SFEbinutils_gpp is not present, force it by the commandline switch --with_SFEbinutils_gpp
@@ -250,6 +297,9 @@ License:             GPLv3+
 Group:		Development/C
 SUNW_Copyright:      gcc.copyright
 Source:              ftp://ftp.gnu.org/pub/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
+#%define version_ecj  -latest
+%define version_ecj  %{major_minor}
+Source2:             ftp://sourceware.org/pub/java/ecj-%{version_ecj}.jar
 Patch1:              gcc-01-libtool-rpath.diff
 
 %if %with_handle_pragma_pack_push_pop
@@ -269,10 +319,10 @@ Patch3:              gcc-03-gnulib.diff
 #LINK_LIBGCC_SPEC
 #gcc-05 could be reworked to know both, amd64 and sparcv9
 %ifarch i386 amd64
-##PAUSE## Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
+Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
 %endif
 %ifarch sparcv9
-##PAUSE## Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
+Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
 %endif
 %endif
 #END %{major_minor} <= 4.9
@@ -333,6 +383,10 @@ Patch226: gcc49-026-basic_string.patch
 Patch227: gcc49-027-cmath_c99.patch
 #END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
 %endif
+
+##TODO## temporary fix, probably needs rework. With java we get boehm-gc/os_dep.c complain about procfs.h not large file aware so we #undef _FILE_OFFSET_BITS
+#        and hope, that is only uses procfs stuff where this doesn't matter.
+Patch501: gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff
 
 
 
@@ -524,7 +578,12 @@ exit 1
 
 %setup -q -c -n %{name}-%version
 
+
 mkdir gcc
+#cp -p %{SOURCE2}            gcc/ecj-%{version_ecj}.jar 
+#cp -p %{SOURCE2} gcc-%{version}/ecj.jar 
+cp -p %{SOURCE2} ecj.jar 
+
 #with 4.3.3 in new directory libjava/classpath/
 cd gcc-%{version}/libjava/classpath/
 #%patch1 -p1
@@ -540,7 +599,7 @@ cd gcc-%{version}
 
 #note: up to gcc 4.8 we apply patch5 here, with gcc 4.9 we apply patch5 *after* the large batch of solaris userland patches (see below!)
 %if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.9 )
-##temporarily paused## %patch5 -p1
+%patch5 -p1
 %endif
 
 ##TODO## check versions which apply. bug says 4.3.3 is not, but 4.6.0 is
@@ -602,9 +661,10 @@ cd gcc-%{version}
 #%{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9
 %endif
 
-#note: up to gcc 4.8 we apply patch5 above the large userland batch, with gcc 4.9 we apply patch5 *after* the large batch of solaris userland patches (which is *here*)
+#note: up to gcc 4.8 we apply patch5 before the large userland batch, with gcc 4.9 we apply patch5 right *after* the large batch of solaris userland patches (which is *here*)
 %if %( expr %{major_minor} '>=' 4.9 )
-##PAUSE## %patch5 -p1
+%patch5 -p1
+%patch501 -p1
 %endif
 
 
@@ -763,6 +823,9 @@ CC:		${CC}
 CXX:		${CXX}
 CPP:		${CPP}
 
+build java gcj: %{gcj}
+languages:      %{gcc_enable_languages}%{gcc_enable_languages_java}
+configure options %{gcc_configure_java}
 switch cc_is_gcc:	      %{cc_is_gcc}
 switch SFEbinutils_gpp:       %SFEbinutils_gpp
 switch SUNWbinutils:          %SUNWbinutils
@@ -776,6 +839,7 @@ LD_FOR_TARGET: ${LD_FOR_TARGET}
 
 #OmniOS gcc 4.8.1:    ../gcc-4.8.5/configure --prefix=/usr/gcc/4.8 --host i386-pc-solaris2.11 --build i386-pc-solaris2.11 --target i386-pc-solaris2.11 --with-boot-ldflags=-R/usr/gnu/lib --with-gmp=/usr/gnu --with-mpfr=/usr/gnu --with-mpc=/usr/gnu --enable-languages=c,c++ --without-gnu-ld --with-ld=/bin/ld --with-as=/usr/bin/gas --with-gnu-as --with-build-time-tools=/usr/gnu/i386-pc-solaris2.11/bin
 
+
 ../gcc-%{version}/configure			\
 	--prefix=%{_prefix}			\
         --libdir=%{_libdir}			\
@@ -785,7 +849,8 @@ LD_FOR_TARGET: ${LD_FOR_TARGET}
         %{configure_binutils}                   \
 	--with-ld=$LD_FOR_TARGET                \
 	--without-gnu-ld			\
-	--enable-languages=c,c++,fortran,objc	\
+        %{gcc_configure_java} \
+	--enable-languages=%{gcc_enable_languages}%{gcc_enable_languages_java} \
 	--enable-shared				\
 	--disable-static			\
 	--enable-decimal-float			\
@@ -888,7 +953,8 @@ do
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
-  for filepath in lib/libgcc_s.so.1 lib/libgcc_s.so lib/libgfortran.so.3 lib/libgfortran.so lib/libgomp.so.1 lib/libgomp.so lib/libobjc_gc.so.2 lib/libobjc_gc.so lib/libobjc.so.2 lib/libobjc.so lib/libssp.so.0 lib/libssp.so lib/libstdc++.so.6 lib/libstdc++.so lib/libquadmath.so lib/libquadmath.so.0
+  # gcc_symlinks_pattern includes bin/ and lib/ and directory matched by pattern
+  for filepath in %{gcc_symlinks_pattern} lib/libgcc_s.so.1 lib/libgcc_s.so lib/libgfortran.so.3 lib/libgfortran.so lib/libgomp.so.1 lib/libgomp.so lib/libobjc_gc.so.2 lib/libobjc_gc.so lib/libobjc.so.2 lib/libobjc.so lib/libssp.so.0 lib/libssp.so lib/libstdc++.so.6 lib/libstdc++.so lib/libquadmath.so lib/libquadmath.so.0
   do
   [ -r $OFFSET/gcc/%major_minor/$filepath ] && ln -s $OFFSET/gcc/%major_minor/$filepath
   done #for file
@@ -903,7 +969,8 @@ do
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
-  for filepath in lib/%{_arch64}/libgcc_s.so.1 lib/%{_arch64}/libgcc_s.so lib/%{_arch64}/libgfortran.so.3 lib/%{_arch64}/libgfortran.so lib/%{_arch64}/libgomp.so.1 lib/%{_arch64}/libgomp.so lib/%{_arch64}/libobjc.so.2 lib/%{_arch64}/libobjc.so lib/%{_arch64}/libssp.so.0 lib/%{_arch64}/libssp.so lib/%{_arch64}/libstdc++.so.6 lib/%{_arch64}/libstdc++.so lib/%{_arch64}/libquadmath.so lib/%{_arch64}/libquadmath.so.0
+  # gcc_symlinks_pattern_arch64 matches e.g. lib/%{_arch64}/libgij.so
+  for filepath in %{gcc_symlinks_pattern_arch64} lib/%{_arch64}/libgcc_s.so.1 lib/%{_arch64}/libgcc_s.so lib/%{_arch64}/libgfortran.so.3 lib/%{_arch64}/libgfortran.so lib/%{_arch64}/libgomp.so.1 lib/%{_arch64}/libgomp.so lib/%{_arch64}/libobjc.so.2 lib/%{_arch64}/libobjc.so lib/%{_arch64}/libssp.so.0 lib/%{_arch64}/libssp.so lib/%{_arch64}/libstdc++.so.6 lib/%{_arch64}/libstdc++.so lib/%{_arch64}/libquadmath.so lib/%{_arch64}/libquadmath.so.0
   do
   #note add one ../ for %{_arch64}
   [ -r $OFFSET/../gcc/%major_minor/$filepath ] && ln -s $OFFSET/../gcc/%major_minor/$filepath
@@ -999,12 +1066,36 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/clearcap.map
 %{_libdir}/libgcc-unwind.map
 %endif
+%if %{gcj}
+%{_libdir}/security/classpath.security
+%{_libdir}/logging.properties
+%{_libdir}/pkgconfig/libgcj-4.9.pc
+%{_libdir}/gcj-*/libjvm.so
+%{_libdir}/gcj-*/classmap.db
+%{_libdir}/gcj-*/libjvm.la
+%dir %attr (0755, root, sys) %{_datadir}
+%{_datadir}/java/libgcj-4.9.3.jar
+%{_datadir}/java/libgcj-tools-4.9.3.jar
+%dir %attr (0755, root, sys) %{_datadir}/gcc-%{version}
+%dir %attr (0755, root, sys) %{_datadir}/gcc-%{version}/python
+%{_datadir}/gcc-*/python/libjava/classfile.py
+%{_datadir}/gcc-*/python/libjava/aotcompile.py
+%endif
+
 
 %ifarch amd64 sparcv9 i386
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
 %{_libdir}/%{_arch64}/lib*.spec
 %{_libdir}/%{_arch64}/lib*.a
+%if %{gcj}
+%{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc
+%{_libdir}/%{_arch64}/security/classpath.security
+%{_libdir}/%{_arch64}/logging.properties
+%{_libdir}/%{_arch64}/gcj-*/libjvm.la
+%{_libdir}/%{_arch64}/gcj-*/libjvm.so
+%{_libdir}/%{_arch64}/gcj-*/classmap.db
+%endif
 %endif
 
 %if %symlinktarget1enabled
@@ -1044,6 +1135,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- rework patch 007-userlandgate-gcc-sol2.h.patch.modified.diff to no longer interfere with patch5 gcc-05-LINK_LIBGCC_SPEC-4.8.diff
+- re-enable patch5 LINK_LIBGCC_SPEC to lookup libgcc_s.so and libstdc++.so.6 in /usr/gcc/<major.minor>/lib first
+* Wed Apr  6 2016 - Thomas Wagner
+- add java language (default for version >= 4.9)
+- add --with-ecj-jar to get ecj1 and wapper
+- fetch extra source eclipse java compiler and copy into source tree
+* Tue Apr  5 2016 - Thomas Wagner
+- add to --enable-languages=java  (only tested on 4.9.3, please test SFEgcc.spec with 4.8.5 as well)
+- add patch501 as a temporary fix - gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff  (probably introduced by adding java)
 * Sun Jan  3 2015 - Thomas Wagner
 - add support for gcc 4.9.3 
   use: pkgtool --IPS --download  --define 'gcc_version 4.9.3' build-only SFEgcc && pfexec pkg install -v gcc-49 gcc-49-runtime
