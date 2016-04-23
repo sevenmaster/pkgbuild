@@ -1,3 +1,27 @@
+
+#Building poppler with support for:
+#  font configuration: fontconfig
+#  splash output:      yes
+#  cairo output:       yes
+#  qt4 wrapper:        yes
+#  qt5 wrapper:        no
+#  glib wrapper:       yes
+#    introspection:    yes
+#  cpp wrapper:        yes
+#  use gtk-doc:        no
+#  use libjpeg:        yes
+#  use libpng:         yes
+#  use libtiff:        yes
+#  use zlib:           yes
+#  use libcurl:        no
+#  use libopenjpeg:    yes
+#      with openjpeg1
+#  use cms:            yes
+#      with lcms1
+#  command line utils: yes
+#  test data dir:      /localhomes/sfe/packages/BUILD/SFEpoppler-gpp-0.35.0/poppler-0.35.0/./../test
+
+
 #
 # spec file for package SFEpoppler-gpp
 #
@@ -79,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
+##TODO## verify RPATH of resulting libs to have /usr/g++/lib first
+
 # remove files included in SUNWgnome-pdf-viewer[-devel]:
 rm -r $RPM_BUILD_ROOT%{_mandir}
 #rm -r $RPM_BUILD_ROOT%{_includedir}
@@ -104,6 +130,9 @@ rm -rf $RPM_BUILD_ROOT
 %_datadir/gir-1.0
 
 %changelog
+* Sat Apr 23 2016 - Thomas Wagner
+- revert commit 6199 as it broke compile on most osdistro by removing code switching the version based on osdistro
+- merge in only selected changes from commit 6199
 * Tue Feb  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update this and base spec to 0.39.0
 * Mon Jan  4 2015 - Thomas Wagner
