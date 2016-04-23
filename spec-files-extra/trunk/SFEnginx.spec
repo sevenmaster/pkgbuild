@@ -4,7 +4,6 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-# Owner: lewellyn
 # Modified: ianj 2013-2015
 #
 
@@ -38,7 +37,7 @@
 
 Name:		SFEnginx
 IPS_Package_Name:	web/server/nginx
-Version:	1.8.0
+Version:	1.9.15
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -53,7 +52,6 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 # IPS Manifest stuff
 Meta(info.upstream):		Igor Sysoev <http://sysoev.ru/en/>
-Meta(info.maintainer):		Matt Lewandowsky <matt@greenviolet.net>
 
 %include default-depend.inc
 
@@ -91,6 +89,13 @@ Even if you don't expect to handle thousands of simultaneous requests, you can
 still benefit from Nginx's high-performance and small memory footprint. Nginx
 scales in all directions: from the smallest VPS all the way up to clusters of
 servers.
+
+Some configuration guides:
+https://www.nginx.com/resources/wiki/start
+http://nginx.org/en/docs/beginners_guide.html
+http://blog.martinfjordvald.com/2010/07/nginx-primer (updated 2014, wrote a book?)
+
+
 
 %prep
 %setup -q -n %{sname}-%{version}
@@ -175,10 +180,11 @@ export LDFLAGS="%{_ldflags}"
 		--with-http_stub_status_module	\
 		--with-http_sub_module		\
 		--with-ipv6			\
-		--with-rtsig_module		\
 		--with-select_module		\
 		--with-http_xslt_module		\
 		%{geoip}
+
+		#no longer valid --with-rtsig_module		\
 
 make -j$CPUS
 
@@ -221,6 +227,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 23 2016 - Thomas Wagner
+- bump to 1.9.15
 * Tue Oct 20 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 1.8.0
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
