@@ -10,11 +10,11 @@
 Name:                    SFElibdvdnav
 IPS_Package_Name:	 library/video/libdvdnav 
 Summary:                 DVD navigation library
-Version:                 4.2.0
+Version:                 5.0.3
 License:                 GPLv2+
 SUNW_Copyright:	         libdvdnav.copyright
-URL:                     http://dvdnav.mplayerhq.hu
-Source:                  http://dvdnav.mplayerhq.hu/releases/libdvdnav-%{version}.tar.bz2
+URL:                     http://videolan.org
+Source:		         http://download.videolan.org/pub/videolan/libdvdnav/%{version}/libdvdnav-%{version}.tar.bz2
 Patch1:                  libdvdnav-01-Wall.diff
 SUNW_BaseDir:            %{_basedir}
 buildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Apr  2 2016 - Thomas Wagner
+- bump to 5.0.3
+- new download URL
 * Thu Oct 20 2011 - Ken Mays <kmays2000@gmail.com>
 - Bumped to 4.2.0
 * Mon Oct 10 2011 - Milan Jurik
