@@ -10,7 +10,7 @@ Name:                    SFExmlto
 IPS_Package_Name:	 developer/documentation-tool/xmlto
 Summary:                 Converts an XML file into a specified format
 Group:                   Development/Distribution Tools
-Version:                 0.0.25
+Version:                 0.0.28
 URL:                     http://fedorahosted.org/xmlto/
 Source:                  http://fedorahosted.org/releases/x/m/xmlto/xmlto-%{version}.tar.bz2
 License: 		 GPLv2
@@ -19,25 +19,31 @@ SUNW_Copyright:          xmlto.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWlxsl
-Requires: SUNWlxml
-%if %( expr %{osbuild} '>=' 175 )
+
+BuildRequires: %{pnm_buildrequires_SUNWlxsl_devel}
+Requires:      %{pnm_requires_SUNWlxsl_devel}
+BuildRequires: %{pnm_buildrequires_SUNWlxml_devel}
+Requires:      %{pnm_requires_SUNWlxml_devel}
+
+##%if %( expr %{osbuild} '>=' 175 )
 # Note: this is temporary since tom wants to rework the package macros
 # to handle this case in a different way. I'm not sure when Sun/Oracle
 # broke data/docbook into multiple packages. On OI it is just
 # data/docbook but on S11 175 (and probably some earlier version) it is
 # split into three packages.
-Requires: data/docbook/docbook-dtds
-Requires: data/docbook/docbook-style-dsssl
-Requires: data/docbook/docbook-style-xsl
-%else
+##Requires: data/docbook/docbook-dtds
+##Requires: data/docbook/docbook-style-dsssl
+##Requires: data/docbook/docbook-style-xsl
+##%else
 # Note: these are equivalent to the data/docbook package on OI
-Requires: SUNWgnome-xml-share
-Requires: SUNWgnome-xml-root
-%endif
-Requires: SUNWw3m
+##Requires: SUNWgnome-xml-share
+##Requires: SUNWgnome-xml-root
+##%endif
+BuildRequires: %{pnm_buildrequires_data_docbook}
+Requires:      %{pnm_requires_data_docbook}
+Requires:      %{pnm_requires_web_browser_w3m}
 BuildRequires: %{pnm_buildrequires_SFEgnugetopt}
-Requires: %{pnm_requires_SFEgnugetopt}
+Requires:      %{pnm_requires_SFEgnugetopt}
 
 %prep
 rm -rf %name-%version
@@ -78,6 +84,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Thu Mar 24 2016 - Thomas Wagner
+- bump to 0.0.28
+- change (Build)Requires to pnm_requires_SUNWlxsl_devel, pnm_requires_SUNWlxml_devel, pnm_requires_SUNWw3m
+* Mon Mar 24 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_data_docbook}
 * Sun Mar 23 2014 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SFEgnugetopt} to fix build on >= S11.2, S12
 * Sun Jun 24 2012 - Logan Bruns <logan@gedanken.org>

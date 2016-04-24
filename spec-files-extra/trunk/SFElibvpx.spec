@@ -8,6 +8,7 @@
 #
 
 %include Solaris.inc
+%include osdistro.inc
 
 # No sparcv9 target
 
@@ -25,7 +26,7 @@ Summary:	The VP8 Codec SDK
 Group:		System/Multimedia Libraries
 Version:	%{libvpx.version}
 #give the IPS version number a slight advance to stay ahead of the OpenIndiana Hipster delivered libvpx
-%if %{hipster}
+%if %{oihipster}
 IPS_Component_Version: %{version}.0.1
 %endif
 URL:            http://www.webmproject.org/code/
@@ -94,6 +95,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Apr 24 2016 - Thomas Wagner
+- fix osdistro detection (OIH)
 * Wed Mar 16 2016 - Thomas Wagner
 - make IPS_Component_Version a bit higher to trick IPS solver on OpenIndiana Hipster to be SFE package selected over OIH one
 * Sat Feb 27 2016 - Thomas Wagner

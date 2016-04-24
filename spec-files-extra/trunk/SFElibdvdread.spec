@@ -10,11 +10,11 @@
 Name:                    SFElibdvdread
 IPS_Package_Name:	 library/video/libdvdread 
 Summary:                 Library for reading DVD video disks
-Version:                 4.2.0
+Version:                 5.0.3
+URL:                     http://videolan.org
+Source:		         http://download.videolan.org/pub/videolan/libdvdread/%{version}/libdvdread-%{version}.tar.bz2
 License:                 GPLv2+
 SUNW_Copyright:	         libdvdread.copyright
-URL:                     http://dvdnav.mplayerhq.hu
-Source:                  http://dvdnav.mplayerhq.hu/releases/libdvdread-%{version}.tar.bz2
 Patch1:			 libdvdread-01-dvdfilestat.diff
 Patch2:			 libdvdread-02-wall.diff
 SUNW_BaseDir:            %{_basedir}
@@ -69,18 +69,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/*
+#%dir %attr (0755, root, bin) %{_bindir}
+#{_bindir}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_datadir}/aclocal
-%{_datadir}/aclocal/*
+%dir %attr (0755, root, sys) %{_docdir}
+%{_docdir}/libdvdread/*
+#dir %attr (0755, root, other) %{_datadir}/aclocal
+#{_datadir}/aclocal/*
 
 
 %changelog
+* Sat Apr  2 2016 - Thomas Wagner
+- bump to 5.0.3
+- new download URL
+- bin/dvdread-config is removed, aclocal files are removed
 * Thu Oct 20 2011 - Ken Mays <kmays2000@gmail.com>
 - Bumped to 4.2.0
 * Mon Oct 10 2011 - Milan Jurik
