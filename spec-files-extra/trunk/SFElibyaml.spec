@@ -4,8 +4,8 @@
 # includes module(s): libyaml
 #
 %include Solaris.inc
+%include osdistro.inc
 
-%define _prefix /usr
 %define	tarball_version	0.1.6
 %define	tarball_name yaml
 %define	src_url	http://pyyaml.org/download/libyaml
@@ -13,9 +13,10 @@
 Name:		SFElibyaml
 Summary:	LibYAML is a YAML 1.1 parser and emitter written in C. 
 Version:	%{tarball_version}
-##give the IPS version number a slight advance to stay ahead of the OpenIndiana Hipster delivered libvpx
-%if %{hipster}
-IPS_Component_Version: %{version}.0.1
+%if %{oihipster}
+%include usr-gnu.inc
+%include base.inc
+Summary:	LibYAML is a YAML 1.1 parser and emitter written in C. (/usr/gnu)
 %endif
 URL:            http://www.webmproject.org/code/
 IPS_package_name:  library/text/yaml
@@ -104,6 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Apr 24 2016 - Thomas Wagner
+- relocaate to usr-gnu.inc only on (OIH)
 * Tue Mar 15 2016 - Thomas Wagner
 - temp fix to enable build on OIH (spec needs rework to be common 32/64-bit spec file layout)
 * Mon Feb 29 2016 - Alex Viskovatoff <herzen@imap.cc>

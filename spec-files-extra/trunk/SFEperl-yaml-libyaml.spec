@@ -33,8 +33,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/T/TI/TINITA/YAML-LibYAML-%{tarba
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
-BuildRequires:	SFElibyaml
-Requires:	SFElibyaml
+BuildRequires:	%{pnm_buildrequires_SFElibyaml}
+Requires:	%{pnm_requires_SFElibyaml}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Yuval Kogman <nothingmuch@woobling.org>
@@ -119,6 +119,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Thu Mar 17 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SFElibyaml} (OIH, all)
 * Sun Mar 13 2016 - Thomas Wagner
 - reworked / renewed
 * Tue Mar  1 2016 - Alex Viskovatoff <herzen@imap.cc>
