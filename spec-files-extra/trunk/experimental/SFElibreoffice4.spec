@@ -170,6 +170,8 @@ Patch1:			libreoffice-01-python-mk.diff
 Patch2:			libreoffice-02-config-01-python.diff
 Patch3:			libreoffice-03-config-CPUs.patch
 Patch4:			libreoffice-04-no-symbols-ld-complains.diff
+Patch5:			libreoffice-05-process.cxx-new-procfs.diff
+Patch6:			libreoffice-06-hypot-cast-args.diff
 SUNW_BaseDir:  		%{_basedir}
 BuildRoot:     		%{_tmppath}/%{name}-%{version}-build
 
@@ -282,9 +284,16 @@ Requires:	%{pnm_requires_icu_gpp_default}
 #on S11, problems compiling --without-openldap is doesn't find nssutil.h and other stuff
 #now: try --with-system-openldap=/usr/gnu and see if it is found and nss3 / nspr goes away
 %define SFEopenldap 1
+%if %{solaris12}
+#try system openldap for now
+%define SFEopenldap 0
+%endif
 %if %{SFEopenldap}
 BuildRequires:  SFEopenldap-gnu
 Requires:       SFEopenldap-gnu
+%else
+BuildRequires:  library/openldap
+Requires:       library/openldap
 %endif
 
 #we want the libs and for compiling add the headers
@@ -304,11 +313,11 @@ BuildRequires:	library/c++/harfbuzz
 Requires:	library/c++/harfbuzz
 %else
 #all other osdistro currently
-BuildRequires:	SFEgraphite2
-Requires:	SFEgraphite2
+BuildRequires:	SFEgraphite2-gpp
+Requires:	SFEgraphite2-gpp
 
-BuildRequires:	SFEharfbuzz
-Requires:	SFEharfbuzz
+BuildRequires:	SFEharfbuzz-gpp
+Requires:	SFEharfbuzz-gpp
 %endif
 #END oihipster
 
@@ -407,9 +416,9 @@ Requires:	SFElibodfgen
 
 %if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
 #S11 S12 need zlib.pc
-BuildRequires:  SFEzlib-pkgconfig
-#for pkgtool's dependency resoultion
-Requires:       SFEzlib-pkgconfig
+BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig}
+#for pkgtool's dependency resolution
+Requires:       %{pnm_requires_SFEzlib_pkgconfig}
 
 %endif
 
@@ -454,15 +463,6 @@ Requires:	SFElibglew
 # pkgbuild:   dependency discovered: x11/library/toolkit/libxt@1.0.8-0.151.1.8
 
 
-%package desktop-int
-IPS_Package_Name:	desktop/application/libreoffice4-desktop-int
-Summary:		%summary - Desktop integration
-Version:		%{version}
-SUNW_BaseDir:		%_basedir
-%include default-depend.inc
-Requires: %name
-
-
 %description
 LibreOffice is a powerful office suite; its clean interface and powerful tools
 let you unleash your creativity and grow your productivity. LibreOffice embeds
@@ -473,6 +473,20 @@ Base, our database and database frontend, and Math for editing mathematics.
 
 fixed CVEs (only recent) for more, see https://www.libreoffice.org/about-us/security/advisories/
 CVE-2015-5214 DOC Bookmark Status Memory Corruption (fixed in 4.4.6)
+
+Remember to install package libreoffice4-desktop-int to get the
+Links for LibreOffice in your Desktop Menu.
+
+%package desktop-int
+IPS_Package_Name:	desktop/application/libreoffice4-desktop-int
+Summary:		%summary - Desktop integration
+Version:		%{version}
+SUNW_BaseDir:		%_basedir
+%include default-depend.inc
+Requires: %name
+
+%description desktop-int
+This package integrates desktop menu items and symbolic links /usr/bin/loffice
 
 #targets sfe.opencsw.org produced binaries. make our old SFElibreoffice4 package go away
 %if %{oihipster}
@@ -550,6 +564,12 @@ cd %{src_name}-%{version}
 #make Solaris linker happy, solve for ooopathutils
 #ld: elf error  elf_getarsym
 %patch4 -p1
+
+
+#new procfs.h the only one on S12 remaining. (introduction in S2.6)
+%patch5 -p1
+
+%patch6 -p1
 
 # should probably do this with a patch but sed would be more reselient
 # Swap LINUX for SOLARIS in a number of .mk files
@@ -714,13 +734,21 @@ fi
 export CFLAGS="%{optflags} ${ADD_TO_CFLAGS} %{gpp_inc} -I%{gnu_inc}"
 export CXXFLAGS="%{cxx_optflags} ${ADD_TO_CFLAGS} %{gpp_inc} -I%{gnu_inc}"
 export CPPFLAGS="-I%{gpp_inc} -I%{gnu_inc}"
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} )
+%if %( expr %{solaris11} '|' %{oihipster} )
 #
 #-pthreads helps getting over boost complaining missing -pthreads support (stupid bcs it's there on Solarish). e.g. libcdr
 export CFLAGS="$CFLAGS -pthreads"
 ##REMOVE_IF_IT_WORKS## #glm configure detection doesn't use CXXFLAGS, only CFLAGS CPPFLAGS
 #using CPPFLAGS here breakes workdir/UnpackedTarball/exttextcat as it injects CPPFLAGS to regular gcc command line as well
 export CXXFLAGS="$CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH -pthreads"
+%endif
+%if %{solaris12}
+#
+#-pthreads helps getting over boost complaining missing -pthreads support (stupid bcs it's there on Solarish). e.g. libcdr
+export CFLAGS="$CFLAGS -pthreads"
+##REMOVE_IF_IT_WORKS## #glm configure detection doesn't use CXXFLAGS, only CFLAGS CPPFLAGS
+#using CPPFLAGS here breakes workdir/UnpackedTarball/exttextcat as it injects CPPFLAGS to regular gcc command line as well
+export CXXFLAGS="$CXXFLAGS -std=c++11                         -pthreads"
 %endif
 
 # Do we need /usr/lib 'cuase it should just find that.
@@ -1443,6 +1471,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 23 2016 - Thomas Wagner
+- add patch6 libreoffice-06-hypot-cast-args.diff first seen on (S12)
+  error: call of overloaded 'hypot(long int, long int)' is ambiguous
+* Fri Apr 22 2016 - Thomas Wagner
+- remove -D_GLIBCXX_USE_C99_MATH for (S12)
+- change (Build)Requires to SFEharfbuzz-gpp SFEgraphite2-gpp (added -gpp)
+* Thu Apr 21 2016 - Thomas Wagner
+- add patch5 new procfs.h (S12) contributed by Jaffar
 * Mon Jan  4 2016 - Thomas Wagner
 - add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
 - add patch to coinmp as it uses unquoted >"< in a warning macro and uses typeof in wrong context
