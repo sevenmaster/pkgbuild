@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-socket6
+# spec file for package: SFEperl-pmtools
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,37 +13,40 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 0.25
-%define tarball_name    Socket6
+#note: 2.0 is the tarball version but unpacked we see pmtools-2.0.0 source directory
+%define tarball_version 2.0
+%define tarball_name    pmtools
 
-Name:		SFEperl-socket6
-IPS_package_name: library/perl-5/socket6
-Version:	0.25
-IPS_component_version: 0.25
+Name:		SFEperl-pmtools
+IPS_package_name: library/perl-5/pmtools
+Version:	2.0.0
+IPS_component_version: 2.0.0
 Group:          Development/Libraries                    
-Summary:	Socket6 - getaddrinfo/getnameinfo support module
+Summary:	pmtools - pmtools
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~umemoto/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~mlfisher/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/U/UM/UMEMOTO/Socket6-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/M/ML/MLFISHER/pmtools-%{tarball_version}.0.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Hajimu Umemoto <ume@mahoroba.org>
-Meta(info.upstream_url):        http://search.cpan.org/~umemoto/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Mark Leighton Fisher <markleightonfisher@gmail.com>
+Meta(info.upstream_url):        http://search.cpan.org/~mlfisher/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Socket6
-getaddrinfo/getnameinfo support module
+pmtools
+pmtools
 
 %prep
-%setup -q -n %{tarball_name}-%{tarball_version}
+#note: 2.0 is the tarball version but unpacked we see pmtools-2.0.0 source directory
+#%setup -q -n %{tarball_name}-%{tarball_version}
+%setup -q -n %{tarball_name}-%{version}
 
 %build
 
@@ -96,8 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-#%dir %attr(0755,root,bin) %{_bindir}
-#%{_bindir}/*
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -107,9 +110,6 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Sun Apr 24 2016 - Thomas Wagner
-- reworked
-* Fri Aug  8 2014 - Thomas Wagner
-- reworked spec version 0.25
-* Tue Mar 02 2010 - matt@greenviolet.net
-- Initial spec file version 0.23
+* Sun Apr 24 2016 - 
+- initial spec
+consider adding these modules to the "(Build)Requires section:  
