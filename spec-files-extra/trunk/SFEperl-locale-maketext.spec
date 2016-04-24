@@ -33,6 +33,9 @@ Source0:	http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/Locale-Maketext-%{tar
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-extutils-makemaker
+Requires:       SFEperl-extutils-makemaker
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Adriano Ferreira <ferreira@cpan.org>
 Meta(info.upstream_url):        http://search.cpan.org/~ferreira/%{tarball_name}-%{tarball_version}
@@ -113,5 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- add (Build)Requires SFEperl-extutils-makemaker
 * Wed Mar 16 2016 - Thomas Wagner
 - initial spec

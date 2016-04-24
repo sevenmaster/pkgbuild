@@ -14,7 +14,7 @@
 %define _use_internal_dependency_generator 0
 
 %define tarball_version 2.33
-%define tarball_name    Term-ReadKey
+%define tarball_name    TermReadKey
 
 Name:		SFEperl-term-readkey
 IPS_package_name: library/perl-5/term-readkey
@@ -113,6 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Mon Mar 14 2016 - Thomas Wagner
+- fix tarball_name TermReadKey (no "-")
 * Sun Mar 13 2016 - Thomas Wagner
 - fix build on OmniOS / Hipster (gcc link errors)
 - rework / renew

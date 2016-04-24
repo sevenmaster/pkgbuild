@@ -33,8 +33,6 @@ Source0:	http://search.cpan.org/CPAN/authors/id/S/SU/SULLR/IO-Socket-SSL-%{tarba
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
-BuildRequires:  SFEperl-io-socket
-Requires:       SFEperl-io-socket
 BuildRequires:  SFEperl-net-ssleay
 Requires:       SFEperl-net-ssleay
 
@@ -125,6 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- remove (Build)Requires SFEperl-io-socket
 * Wed Mar 16 2016 - Thomas Wagner
 - renew / rework version 1.77 -> 2.024 (IPS 2.24)
 * Sun Nov  4 2012 - Thomas Wagner
