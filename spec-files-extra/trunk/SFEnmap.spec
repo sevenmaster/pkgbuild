@@ -4,11 +4,14 @@
 # includes module(s): nmap
 #
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
+%include packagenamemacros.inc
 
 Name:         SFEnmap
 Summary:      Network Mapper
 License:      GPL
-Version:      7.10
+Version:      7.12
 Group:        System/GUI/GNOME
 Source:       http://download.insecure.org/nmap/dist/nmap-%{version}.tar.bz2
 #Patch1:       nmap-01-__FUNCTION__.diff
@@ -18,6 +21,9 @@ BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 URL:          http://insecure.org/nmap/index.html
 
 %include default-depend.inc
+
+BuildRequires: 	         %{pnm_buildrequires_python_default}
+Requires: 	         %{pnm_requires_python_default}
 
 %description
 Nmap ("Network Mapper") is a free open source utility for network exploration or security auditing.
@@ -29,29 +35,19 @@ Nmap ("Network Mapper") is a free open source utility for network exploration or
 
 
 %build
-%ifos linux
-if [ -x /usr/bin/getconf ]; then
-  CPUS=`getconf _NPROCESSORS_ONLN`
-fi
-%else
-  CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-%endif
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-  CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-%if %cc_is_gcc
-export NMAP_CXX="$CXX"
-%else
-export NMAP_CXX="${CXX} -norunpath"
-%endif
+export CC=gcc
+export CXX=g++
 
-export CXXFLAGS="%opt_cxxflags -features=extensions"
+export CFLAGS="%optflags"
+export CXXFLAGS="%cxx_optflags"
+export LDFLAGS="%_ldflags"
 
 ./configure --prefix=%{_prefix} \
             --mandir=%{_mandir}
 
-make -j $CPUS CXX="$NMAP_CXX"
+make -j$CPUS
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
@@ -64,9 +60,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
+%dir %attr (0755, root, bin) %{_libdir}
+%{_libdir}/*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_datadir}/nmap
 %{_datadir}/nmap/*
+%dir %attr (0755, root, bin) %{_datadir}/zenmap
+%{_datadir}/zenmap/*
 %dir %attr (0755, root, other) %{_datadir}/applications
 %{_datadir}/applications/*
 %dir %attr (0755, root, bin) %{_mandir}
@@ -75,6 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 24 2016 - Thomas Wagner
+- bump to 7.12
 * Sat Mar 19 2016 - Thomas Wagner
 - bump to 7.10
 * Thu Jan 11 2007 - dermot.mccluskey@sun.com
