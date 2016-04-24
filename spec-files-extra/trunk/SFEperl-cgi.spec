@@ -13,13 +13,13 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 4.26
+%define tarball_version 4.28
 %define tarball_name    CGI
 
 Name:		SFEperl-cgi
 IPS_package_name: library/perl-5/cgi
-Version:	4.26
-IPS_component_version: 4.26
+Version:	4.28
+IPS_component_version: 4.28
 Group:          Development/Libraries                    
 Summary:	CGI - Simple Common Gateway Interface Class
 License:	Artistic
@@ -50,7 +50,7 @@ Simple Common Gateway Interface Class
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
-  /usr/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
     LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
@@ -61,10 +61,16 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
-  /usr/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
     --installdirs vendor --makefile_env_macros 1 \
     --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
     --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
@@ -73,7 +79,7 @@ else
     --install_path libdoc=%{_mandir}/man3 \
     --destdir $RPM_BUILD_ROOT
 
-  /usr/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
 
 %install
@@ -84,7 +90,7 @@ if test -f Makefile.PL
    make install
 else
    # style "Build.PL"
-   /usr/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
 fi
 
 find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
@@ -102,8 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
 #%{_mandir}/man1/*
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
 * Sun Feb 21 2016 - Thomas Wagner

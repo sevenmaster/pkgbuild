@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-socket6
+# spec file for package: SFEperl-fcgi
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,36 +11,36 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.25
-%define tarball_name    Socket6
+%define tarball_version 0.78
+%define tarball_name    FCGI
 
-Name:		SFEperl-socket6
-IPS_package_name: library/perl-5/socket6
-Version:	0.25
-IPS_component_version: 0.25
+Name:		SFEperl-fcgi
+IPS_package_name: library/perl-5/fcgi
+Version:	0.78
+IPS_component_version: 0.78
 Group:          Development/Libraries                    
-Summary:	Socket6 - getaddrinfo/getnameinfo support module
+Summary:	FCGI - Fast CGI
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~umemoto/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~mstrout/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/U/UM/UMEMOTO/Socket6-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/FCGI-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Hajimu Umemoto <ume@mahoroba.org>
-Meta(info.upstream_url):        http://search.cpan.org/~umemoto/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Matt S Trout <mst-pause@shadowcat.co.uk>
+Meta(info.upstream_url):        http://search.cpan.org/~mstrout/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Socket6
-getaddrinfo/getnameinfo support module
+FCGI
+Fast CGI
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -61,7 +61,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -107,9 +113,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Sun Apr 24 2016 - Thomas Wagner
-- reworked
-* Fri Aug  8 2014 - Thomas Wagner
-- reworked spec version 0.25
-* Tue Mar 02 2010 - matt@greenviolet.net
-- Initial spec file version 0.23
+* Wed Mar 16 2016 - Thomas Wagner
+- initial spec
