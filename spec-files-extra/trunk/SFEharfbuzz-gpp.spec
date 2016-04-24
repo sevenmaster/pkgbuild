@@ -23,11 +23,13 @@ IPS_Package_Name:	library/g++/harfbuzz
 Summary:		harfbuzz - text shaping engine (/usr/g++)
 Group:			System/Libraries
 #available: 0.9.42 and 1.0.1
-Version:		0.9.38
+Version:		1.0.6
 URL:			http://www.freedesktop.org/wiki/Software/HarfBuzz
 License:		MIT
 SUNW_Copyright:		%{src_name}.copyright
 Source:			http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-%{version}.tar.bz2
+Patch1:			harfbuzz-01-cast-double-scalbn.diff
+Patch2:			harfbuzz-02-cast-double-lround.diff
 
 SUNW_BaseDir:		%_basedir
 
@@ -57,6 +59,9 @@ Requires: %name
 %prep
 %setup -q -n %{src_name}-%{version}
 
+%patch1 -p1
+%patch2 -p1
+
 %build
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -84,7 +89,7 @@ export GRAPHITE2_LIBS="-lgraphite2 -lstdc++"
         --with-glib=yes         \
         ;
 
-gmake
+gmake V=2 -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -121,6 +126,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 23 2016 - Thomas Wagner
+- bump to 1.0.6
+- add patch1 harfbuzz-01-cast-double-scalbn.diff, patch2 harfbuzz-02-cast-double-lround.diff  (cast argument to scalbn and lround)
 * Tue Dec 29 2015 - Alex Viskovatoff <herzen@imap.cc>
 - enable glib; change SVr4 name to maintain consistency with IPS name
 * Sun Oct 25 2015 - Thomas Wagner

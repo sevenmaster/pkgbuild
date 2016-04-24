@@ -17,7 +17,7 @@
 %define src_url  http://dev-www.libreoffice.org/src/libvisio
 
 %define major_version 0.1
-%define minor_version 3
+%define minor_version 5
 
 Name:			SFElibvisio
 IPS_Package_Name:	sfe/library/g++/libvisio
@@ -94,10 +94,13 @@ export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -lboost_system"
-%if %(expr %{solaris12} '|' %{solaris11} )
-#test for boot presence
+%if %{solaris11}
 export CFLAGS="$CFLAGS"
-export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99_MATH --std=c++11"
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99_MATH -std=c++11"
+%endif
+%if %{solaris12}
+export CFLAGS="$CFLAGS"
+export CXXFLAGS="$CXXFLAGS -std=c++11"
 %endif
 
 #let's try this order
@@ -105,6 +108,8 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:$PKG_CONFIG
 
 ./configure	\
 	--prefix=%_prefix	\
+        --disable-weffc         \
+        --disable-werror        \
 	--enable-shared		\
 	--disable-static	\
 	;
@@ -158,6 +163,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- remove -D_GLIBCXX_USE_C99_MATH for (S12) or get /usr/gcc/4.8/include/c++/4.8.5/cmath: error: redefinition of 'constexpr int std::fpclassify(float)'
+- --disable-weffc is told to be not useful: "-Weffc++ warnings are not designed with C++11 in mind." and "Or don't use -Weffc++, it's close to useless" - https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55837
+- --disable-werror
+* Thu Apr 21 2016 - Thomas Wagner
+- bump version to 0.1.5
 * Sat Jan  2 2016 - Thomas Wagner
 ##PAUSED## compile error "trait" - bump version to 0.1.4
 - add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)

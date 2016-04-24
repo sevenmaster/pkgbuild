@@ -114,7 +114,12 @@ export CFLAGS="%optflags -I/usr/g++/include"
 ##paused##%if %{solaris12}
 ##paused##export CXXFLAGS="%cxx_optflags -pthreads -I/usr/g++/include"
 ##paused##%else
+%if %{solaris11}
 export CXXFLAGS="%cxx_optflags -D_GLIBCXX_USE_C99_MATH -pthreads --std=c++0x -I/usr/g++/include"
+%endif
+%if %{solaris12}
+export CXXFLAGS="%cxx_optflags -pthreads --std=c++0x -I/usr/g++/include"
+%endif
 ##paused##%endif
 ##TODO## if g++ runtime makes troubles, try entering a runpath which takes g++ runtime from SFEgcc instead of using the osdistro /usr/lib/libstdc++.so.6
 export LDFLAGS="%_ldflags -pthreads -L/usr/g++/lib -R/usr/g++/lib"
@@ -141,8 +146,9 @@ export PYTHON_CFLAGS=`$PKG_CONFIG --cflags "python-2.7 >= 0.27.1" 2>/dev/null`
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
 
 
+##TODO## find a way to patch in the osdistro default perl version so we can be sure to have it available as package
 %if %{openindiana}
-## TODO ## Fix for 2.6 python on OI
+##TODO## Fix for 2.6 python on OI
 gsed -i -e 's|checking whether $PYTHON version is >= 2.7.0"|checking whether $PYTHON version is >= 2.6.0"|g'	\
 	-e 's|checking for a Python interpreter with version >= 2.7.0"|checking for a Python interpreter with version >= 2.6.0"|g'	\
 	-e 's|minver = list(map(int, '\''2.7.0'\''|minver = list(map(int, '\''2.6.0'\''|g'	\
@@ -197,6 +203,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- remove -D_GLIBCXX_USE_C99_MATH for (S12) or get /usr/gcc/4.8/include/c++/4.8.5/cmath: error: redefinition of 'constexpr int std::fpclassify(float)'
 * Mon Jan  4 2016 - Thomas Wagner
 - add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (all, needed S11 S12)
 * Fri Oct 23 2015 - Thomas Wagner

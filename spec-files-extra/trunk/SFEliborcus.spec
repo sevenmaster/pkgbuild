@@ -65,9 +65,9 @@ Requires:       %{pnm_requires_SUNWzlib}
 
 %if %( expr %{solaris11} '+' %{solaris12}  '+' %{openindiana} '>=' 1 )
 #S11 S12 openindiana need zlib.pc (should not bother oihipster, which probably already has a propper zlib.pc)
-BuildRequires:  SFEzlib-pkgconfig 
+BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig} 
 #for pkgtool's dependency resoultion
-Requires:       SFEzlib-pkgconfig 
+Requires:       %{pnm_buildrequires_SFEzlib_pkgconfig} 
 %endif
 
 BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
@@ -209,6 +209,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEzlib_pkgconfig
 * Fri Oct 23 2015 - Thomas Wagner
 - merge in pjama's changes
 * Sun Oct 11 2015 - Thomas Wagner
