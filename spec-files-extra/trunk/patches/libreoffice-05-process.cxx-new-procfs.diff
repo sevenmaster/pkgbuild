@@ -1,0 +1,31 @@
+--- libreoffice-4.4.5.2/sal/osl/unx/process.cxx.orig	2015-07-22 23:09:04.000000000 +0200
++++ libreoffice-4.4.5.2/sal/osl/unx/process.cxx	2016-04-21 20:58:25.790684059 +0200
+@@ -42,7 +42,7 @@
+ 
+ #include "system.hxx"
+ #if defined(SOLARIS)
+-# include <sys/procfs.h>
++# include <procfs.h>
+ #endif
+ #include <osl/diagnose.h>
+ #include <osl/mutex.h>
+@@ -1030,15 +1030,15 @@
+ #if defined(SOLARIS)
+ 
+         int  fd;
+-        sal_Char name[PATH_MAX + 1];
++        sal_Char name[PATH_MAX];
+ 
+-        snprintf(name, sizeof(name), "/proc/%u", pid);
++        snprintf(name, sizeof(name), "/proc/%ul/status", pid);
+ 
+         if ((fd = open(name, O_RDONLY)) >= 0)
+         {
+-            prstatus_t prstatus;
++            pstatus_t prstatus;
+ 
+-            if (ioctl(fd, PIOCSTATUS, &prstatus) >= 0)
++            if (read(fd, (void *) &prstatus, sizeof(pstatus_t)) != sizeof(pstatus_t))
+             {
+                 if (Fields & osl_Process_CPUTIMES)
+                 {
