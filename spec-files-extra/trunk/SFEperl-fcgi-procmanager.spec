@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-lwp
+# spec file for package: SFEperl-fcgi-procmanager
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,51 +11,36 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 6.15
-%define tarball_name    libwww-perl
+%define tarball_version 0.25
+%define tarball_name    FCGI-ProcManager
 
-Name:		SFEperl-lwp
-#IPS_package_name: library/perl-5/lwp
-IPS_Package_Name:	library/perl-5/libwww-perl-lwp
-Version:	6.15
-IPS_component_version: 6.15
+Name:		SFEperl-fcgi-procmanager
+IPS_package_name: library/perl-5/fcgi-procmanager
+Version:	0.25
+IPS_component_version: 0.25
 Group:          Development/Libraries                    
-Summary:	LWP - Libwww-perl
+Summary:	FCGI::ProcManager - A FastCGI process manager
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~jurach/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/libwww-perl-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/A/AR/ARODLAND/FCGI-ProcManager-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
-BuildRequires:  SFEperl-encode
-Requires:       SFEperl-encode
-BuildRequires:  SFEperl-encode-locale
-Requires:       SFEperl-encode-locale
-BuildRequires:  SFEperl-http-message	
-Requires:       SFEperl-http-message	
-BuildRequires:	SFEperl-io-compress
-Requires:	SFEperl-io-compress
-BuildRequires:	SFEperl-html-parser
-Requires:	SFEperl-html-parser
-BuildRequires:	SFEperl-uri
-Requires:	SFEperl-uri
-BuildRequires:  SFEperl-net-http
-Requires:       SFEperl-net-http
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            James E Jurach Jr. <muaddib@erf.net>
+Meta(info.upstream_url):        http://search.cpan.org/~jurach/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-LWP
-Libwww-perl
+FCGI::ProcManager
+A FastCGI process manager
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -76,7 +61,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -122,27 +113,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Fri Mar 11 2016 - Thomas Wagner
-- reworked / renewed version 6.05 -> 6.15
-* Sat Oct  5 2013 - Thomas Wagner
-- add (Build)Requires SFEperl-net-http
-* Fri Oct  4 2013 - Thomas Wagner
-- add (Build)Requires SFEperl-http-message, SFEperl-encode, SFEperl-encode-locale
-* Thu Sep 26 2013 - Thomas Wagner
-- bump to 6.05
-* Fri Feb 01 2013 - Thomas Wagner
-- change (Build)Requires to SFEperl-io-compress (now includes Zlib.pm from older SFEperl-compress-zlib)
-* Sun May 27 2012 - Milan Jurik
-- bump to 6.04, all except LWP:: went to separate packages
-* Tue Feb  1 2011 - Thomas Wagner
-- change BuildRequires to %{pnm_buildrequires_SUNWsfwhea}, %include packagenamemacros.inc
-* Sun Jul 19 2009 - matt@greenviolet.net
-- bumped verion to 5.829
-- Added missing Requires
-* Wed Nov 28 2007 - Thomas Wagner
-- renamed package and if necessary (Build-)Requires
-* Sat Nov 24 2007 - Thomas Wagner
-- moved from site_perl to vendor_perl
-- released into the wild
-* Wed, 19 July 2007  - Thomas Wagner
-- Initial spec file
+* Wed Mar 16 2016 - tom68
+- initial spec
