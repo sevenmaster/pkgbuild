@@ -56,7 +56,19 @@
 %define pnm_buildrequires_SFEzlib_pkgconfig	SFEzlib-pkgconfig
 %define pnm_requires_SFEzlib_pkgconfig		SFEzlib-pkgconfig
 
+#SFEautomake-115 - may be replaced by an osdistro.
+#if you get upgrade contraints, then uninstall the SFE automake-115 package
+#starting with S12 (some build) we have developer/build/automake-115
+%define pnm_buildrequires_developer_build_automake_115        SFEautomake-115
+%define pnm_buildrequires_developer_build_automake_115        SFEautomake-115
+%define pnm_buildrequires_SUNWautomake_115            SFEautomake-115
+%define pnm_requires_SUNWautomake_115                 SFEautomake-115
+%define pnm_buildrequires_SFEautomake_115             SFEautomake-115
+%define pnm_requires_SFEautomake_115                  SFEautomake-115
+
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- handle SFEautomake-115 / automake / pnm_requires_SFEautomake_115 (S12)
 * Fri Apr 22 2016 - Thomas Wagner
 - handle pnm_buildrequires_SFEzlib_pkgconfig SFEzlib-pkgconfig (see example for replacement with regular zlib for S12b87 in other pnm include file)
 * Thu Mar 24 2016 - Thomas Wagner

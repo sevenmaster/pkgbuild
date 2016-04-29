@@ -1639,6 +1639,16 @@
 %define pnm_buildrequires_SFEautomake_111		developer/build/automake-111
 %define pnm_requires_SFEautomake_111			developer/build/automake-111
 
+#SFEautomake-115 - may be replaced by an osdistro.
+#if you get upgrade contraints, then uninstall the SFE automake-115 package
+#starting with S12 (some build) we have developer/build/automake-115
+%define pnm_buildrequires_developer_build_automake_115        developer/build/automake-115
+%define pnm_buildrequires_developer_build_automake_115        developer/build/automake-115
+%define pnm_buildrequires_SUNWautomake_115            developer/build/automake-115
+%define pnm_requires_SUNWautomake_115                 developer/build/automake-115
+%define pnm_buildrequires_SFEautomake_115             developer/build/automake-115
+%define pnm_requires_SFEautomake_115                  developer/build/automake-115
+
 #S12 lost the legacy name SUNWgnu-dbm
 %define pnm_buildrequires_SFEgdbm		library/database/gdbm
 %define pnm_requires_SFEgdbm		 	library/database/gdbm
@@ -3116,6 +3126,8 @@
 
 
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- handle SFEautomake-115 / automake / pnm_requires_SFEautomake_115 (S12)
 * Fri Apr 22 2016 - Thomas Wagner
 - handle pnm_buildrequires_SFEzlib_pkgconfig SFEzlib-pkgconfig -> is regular library/zlib on (S12 build 87+)
 * Tue Apr  5 2016 - Thomas Wagner
