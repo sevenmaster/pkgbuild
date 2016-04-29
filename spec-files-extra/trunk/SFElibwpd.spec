@@ -17,7 +17,7 @@
 %define src_url  http://downloads.sourceforge.net/libwpd
 
 %define major_version 0.10
-%define minor_version 0
+%define minor_version 1
 
 Name:			SFElibwpd
 IPS_Package_Name:	sfe/library/g++/libwpd
@@ -79,7 +79,7 @@ export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
-export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib -lboost_system"
 
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 
@@ -125,6 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  2 2016 - Thomas Wagner
+- bump to version 0.10.1
+- add to LDFLAGS -lboost_system
 * Fri Oct 23 2015 - Thomas Wagner
 - merge in pjama's changes
 * Sun Oct 11 2015 - Thomas Wagner

@@ -80,6 +80,10 @@ export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
 export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
+%if %{solaris12}
+#symbol not found:  boost::system::system_category boost::system::generic_category
+export LDFLAGS="$LDFLAGS -lboost_system"
+%endif
 
 export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig:/usr/g++/lib/pkgconfig
 
@@ -96,10 +100,11 @@ export ICU_CONFIG='/usr/g++/bin/icu-config'
 #g++: error: unrecognized command line option '-compat=5'
 #./Makefile:ICU_CFLAGS =   -compat=5
 #./Makefile:LIBVISIO_CXXFLAGS = -I/usr/include/librevenge-0.0   -I/usr/include/libxml2      -compat=5
+
 grep "compat=5" Makefile && \
   perl -w -pi -e "s,-compat=5,," Makefile src/test/Makefile src/conv/text/Makefile src/conv/Makefile src/conv/raw/Makefile src/conv/svg/Makefile src/Makefile src/lib/Makefile inc/libvisio/Makefile inc/Makefile build/Makefile 
 
-make -j$CPUS
+gmake V=2 -j$CPUS
 
 
 %install
@@ -135,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 17 2015 - Thomas Wagner
+- fix linking by adding -lboost_system because  boost::system::system_category boost::system::generic_category not found  (S12)
 * Sun Oct 25 2015 - Thomas Wagner
 - now really change to (Build)Requires %{pnm_buildrequires_icu_gpp_default}
 * Fri Oct 23 2015 - Thomas Wagner
