@@ -1667,6 +1667,14 @@
 %endif
 #END solaris12
 
+%if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000000870000.1 )
+#many osdistro do not deliver the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
+#osdistro which have one, can replace this in pnm_macro include file (example: S12)
+%define pnm_buildrequires_SFEzlib_pkgconfig     library/zlib
+%define pnm_requires_SFEzlib_pkgconfig          library/zlib
+%endif
+#END solaris12 special build version 87 and newer
+
 
 #START setting perl5, defaults  - Part 1 of 3
 #define perl defaults, primarily shared settings and default version, paths
@@ -3105,7 +3113,11 @@
 ##TODO## check if this is the case as well for S11 (!)
 #S12 lost the legacy name SUNWslang
 
+
+
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- handle pnm_buildrequires_SFEzlib_pkgconfig SFEzlib-pkgconfig -> is regular library/zlib on (S12 build 87+)
 * Tue Apr  5 2016 - Thomas Wagner
 - IPS package name lost python"-2" library/python/setuptools-26 on S11.3 b30 and S12 b70
 - python_default changed to 2.7 (27) on S11.3 b26 and S12 b86

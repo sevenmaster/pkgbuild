@@ -51,8 +51,14 @@
 %define pnm_buildrequires_SUNWxwinc		SUNWxwinc
 %define pnm_requires_SUNWxwinc			SUNWxwinc
 
+#many osdistro do not delive the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
+#osdistro which have one, can replace this in pnm_macro include file (example: S12)
+%define pnm_buildrequires_SFEzlib_pkgconfig	SFEzlib-pkgconfig
+%define pnm_requires_SFEzlib_pkgconfig		SFEzlib-pkgconfig
 
 %changelog
+* Fri Apr 22 2016 - Thomas Wagner
+- handle pnm_buildrequires_SFEzlib_pkgconfig SFEzlib-pkgconfig (see example for replacement with regular zlib for S12b87 in other pnm include file)
 * Thu Mar 24 2016 - Thomas Wagner
 - handle pnm_requires_developer_documentation_tool_xmlto SFExmlto (older distro don't have it)
 * Thu Mar 17 2016 - Thomas Wagner
