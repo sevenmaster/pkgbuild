@@ -10,8 +10,9 @@
 %define	src_url	ftp://alpha.gnu.org/gnu/gss
 
 Name:                SFEgsslib
+##TODO## IPS_Package_Name:	
 Summary:             GNU Generic Security Service
-Version:             0.0.22
+Version:             0.1.5
 Source:              %{src_url}/%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -120,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Oct 25 2014 - Thomas Wagner
+- bump to 0.1.5
 * Sun Apr 01 2012 - Pavel Heimlich
 - source url
 * Fri Jul 27 2007 - dougs@truemail.co.th
