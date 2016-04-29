@@ -315,7 +315,7 @@ BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 #BuildRequires:  %{pnm_buildrequires_SUNWautomake_111}
-BuildRequires:  SFEautomake-115
+BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
 Requires:      %{pnm_requires_SUNWlibsdl}
 
@@ -844,6 +844,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SFEautomake_115}
 * Mon Dec  7 2015 - Thomas Wagner
 - add Patch37 vlc-37-221-vdpau.c-git-20151206.diff - try the git version to see if calls to vdpau stop core dumping
 - enable -gdwarf-2 to see where vdpau calls core dump, add debug flags as well to VDPAU_CFLAGS

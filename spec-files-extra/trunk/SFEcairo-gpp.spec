@@ -44,7 +44,7 @@ BuildRequires: system/library/fontconfig
 BuildRequires: image/library/libpng
 BuildRequires: x11/compatibility/links-svid
 BuildRequires: x11/server/xorg
-BuildRequires: SFEautomake-115
+BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
 ##TODO## runtime requires, go read from pkgdepend's results and put it into "Requires:"
 
 %package devel		
@@ -222,6 +222,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SFEautomake_115}
 * Fri Dec 28 - Alex Viskovatoff <herzen@imap.cc>
 - Use newer glib2 in /usr/g++; build with gcc to maintain consistency
 - create automatic renamed-to package

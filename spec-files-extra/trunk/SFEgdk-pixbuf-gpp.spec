@@ -32,8 +32,9 @@ SUNW_BaseDir:            %{_basedir}
 License:                 %{gdkpixbuf.license}
 
 %include default-depend.inc
-BuildRequires:	SFEautomake-115
+BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
 BuildRequires:	SFEglib2
+Requires:	SFEglib2
 
 %package devel
 Summary:		 %{summary} - development files
@@ -174,6 +175,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SFEautomake_115}
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Import spec from Solaris desktop repository
 * Tue May 01 2012 - brian.cameron@oracle.com
