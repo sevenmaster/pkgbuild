@@ -20,7 +20,7 @@ Summary:             An SSL client/server encryption wrapper
 Version:             5.32
 #remove leading "0"s. 5.09 -> 5.9
 IPS_Component_Version: $( echo %{version} | sed -e 's?\.0*?.?g' )
-Source:              Source:              https://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
+Source:              http://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
 Source2:             stunnel.xml
 
 SUNW_BaseDir:        %{_basedir}
