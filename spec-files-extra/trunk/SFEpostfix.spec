@@ -131,7 +131,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.1.0
+Version:                 3.1.1
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1050,6 +1050,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon May 16 2016 - Thomas Wagner
+- bump to 3.1.1 small fixes
 * Mon Mar 21 2016 - Thomas Wagner
 - crate target directory for aliases file on OmniOS and OIH (different minimalistic mta, directory not present)
 - remove typo for mediator symlinks, really mkdir etc/mail, use copy instead of mv
