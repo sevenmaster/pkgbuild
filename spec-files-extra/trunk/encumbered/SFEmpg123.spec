@@ -28,7 +28,7 @@ BuildRequires:  %{pnm_buildrequires_SUNWlibsdl_devel}
 Requires:       %{pnm_requires_SUNWlibsdl}
 Requires:       SUNWlibms
 BuildRequires:	SUNWaudh
-BuildRequires:	SUNWgnome-common-devel
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 Requires:       %{name}-devel
 
 %description
@@ -54,6 +54,19 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 #export CFLAGS="%{optflags}"
 export CFLAGS="-i -xO4 -xspace -xstrconst -xarch=sse -mr -xregs=no%frameptr"
 export LDFLAGS="%{_ldflags}"
+
+%if %cc_is_gcc
+export CFLAGS="%{gcc_optflags} -std=c99 -D_XPG6 -D__EXTENSIONS__"
+
+#remove libtools inserted: "-z text" or get "ld: fatal: relocations remain against allocatable but non-writable sections"
+cat - > ld-remove-z_text << EOF
+#!/usr/bin/bash
+/usr/bin/ld \`echo \$* | sed -e 's/-z text//g'\`
+EOF
+chmod a+rx ld-remove-z_text
+export LD_ALTEXEC=`pwd`/ld-remove-z_text
+%endif
+
 # Build fails with --with-optimization set to > 1
 ./configure --prefix=%{_prefix}         \
             --bindir=%{_bindir}         \
@@ -100,6 +113,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libmpg123.so
 
 %changelog
+* Mon May 23 2016 - Thomas Wagner
+- fix compile and linking on (OIH): 
+  - if cc_is_gcc set CFLAGS for gcc
+  - add wrapper to remove libtool's addition -z text of (or get ld: fatal: relocations remain against allocatable but non-writable sections)
+- change (Build)Requires to pnm_buildrequires_SUNWgnome_common_devel
 * Sun Mar 23 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - syntax error in %include Solaris.inc (was %Include)
 * Sun Jun 24 2012 - Thomas Wagner
