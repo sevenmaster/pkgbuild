@@ -13,6 +13,8 @@
 # gnutls
 #
 %include Solaris.inc
+# %define cc_is_gcc 1
+# %include base.inc
 
 %include packagenamemacros.inc
 %include usr-gnu.inc
@@ -64,6 +66,17 @@ BuildRequires:           %{pnm_buildrequires_SUNWzlib_devel}
 Requires:                %{pnm_buildrequires_SUNWzlib}
 
 
+#only S12 and OIH has fresh enough autogen (>=5.16.2)
+# or get "missing sourcecode files" 
+%if %( expr %{solaris12} '+' %{oihipster} '>=' 1 )
+BuildRequires:  %{pnm_buildrequires_developer_build_autogen}
+%else
+BuildRequires:  SFEautogen
+%endif
+
+
+
+
 %package devel
 %include default-depend.inc
 Summary:       %{summary} - development files
@@ -78,16 +91,15 @@ mkdir -p %name-%version
 %ifarch amd64 sparcv9
 mkdir -p %name-%version/%_arch64
 %gnutls64.prep -d %name-%version/%_arch64
+gsed -i -e '/^  *\/usr\/bin\/guile-config / s?/usr/bin/?/usr/bin/%_arch64/?' %name-%version/%_arch64/gnutls-%version/bin/guile-config
 %endif
 
 mkdir -p %name-%version/%base_arch
 %gnutls.prep -d %name-%version/%base_arch
 
 %build
-%if %cc_is_gcc
-%else
-export CXX="${CXX} -norunpath"
-%endif
+# export CC=gcc
+# export CXX=g++
 
 %ifarch amd64 sparcv9
 %gnutls64.build -d %name-%version/%_arch64
@@ -120,7 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/srptool
 %{_bindir}/gnutls-serv
 %{_bindir}/ocsptool
-%{_bindir}/tpmtool
+#3.5.0 has no tpmtool
+#%{_bindir}/tpmtool
 %{_bindir}/gnutls-cli-debug
 %{_bindir}/gnutls-cli
 %ifarch amd64 sparcv9
@@ -131,7 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/guile/*
 %ifarch amd64 sparcv9
 %{_libdir}/%{_arch64}/lib*.so*
-##TODO## guile 32/64-bit, then enable: %{_libdir}/%{_arch64}/guile/*
+%{_libdir}/%{_arch64}/guile/*
 %endif
 
 %files devel
@@ -153,6 +166,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/guile/site/*
 
 %changelog
+* Tue May 24 2016 - Thomas Wagner
+- enable patch1 for any osdistro (OIH)
+- move CPP variable to base-specs/gnutls.spec (guile-snarf not seeing CPP)
+- edit %_arch64 into wrapper script bin/guile-config
+- bump to 3.5.0, removed is /usr/gnu/bin/tpmtool
+- CFLAGS add -D__EXTENSIONS__
+- LDFLAGS add -liconv
+- edit configure to remove "-z defs" as it stubles over unused UNDEF function _start in /usr/lib/libguile.so (S11)
+* Tue May 24 2016 - Thomas Wagner
+- enable patch1 for any osdistro (OIH)
+* Wed Apr 13 2016 - Thomas Wagner
+- bump to 3.4.11
 * Sat Jan 16 2016 - Thomas Wagner
 - enable patch1 for disable pkcs11 on (OM)
 - fix %files guile for (OM), see if necessary on other OS as well, ##TODO## revisit once SFEguile.spec is 32/64-bit
