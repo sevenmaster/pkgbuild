@@ -1,23 +1,50 @@
-#
-# Copyright 2009 Sun Microsystems, Inc.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
+
+#!!only for autogen version 5.16.2
+#build this spec on solaris 11 and OmniOS
+%if %( expr %{omnios} '+' %{solaris11} '<=' 0 )
+#do not build on Solaris 12, openindiana hipster
+echo "Only to be used on OmniOS and Solaris 11, other OS-distro use distro provided guile"
+exit 1
+%endif
 
 %include Solaris.inc
+%include packagenamemacros.inc
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use autogen_64 = autogen.spec
+%endif
+
+%include base.inc
+%use autogen = autogen.spec
+
+
+
 
 Name:                SFEautogen
+IPS_Package_Name:    sfe/developer/build/autogen
 Summary:             Templatized program/text generation system
-URL:                 http://autogen.sourceforge.net/
-Version:             5.9.7
-Source:              %{sf_download}/autogen/autogen-%{version}.tar.bz2
+Version:             %{autogen.version}
+#beware of IPS once sub-micro version is removed, IPS would not upgrade if simply removed
+#needs guile 2.x Version:             5.18.5.029
+IPS_Component_Version: %( echo %{version} | sed -e 's?\.0*?.?g' )
+Source2:             guile-config_remove_compiler_defines_pthreads
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-Requires: SUNWbash
-Requires: SUNWlxml
-Requires: SFEguile
-BuildRequires: SUNWgnu-mp
+
+#Requires: SUNWbash
+BuildRequires: %{pnm_buildrequires_SUNWlxml_devel}
+Requires:      %{pnm_requires_SUNWlxml}
+#too old. needs 2.x BuildRequires: %{pnm_buildrequires_SUNWguile_devel}
+#too old. needs 2.x Requires:      %{pnm_requires_SUNWguile}
+#autogen 5.18 needs guild 2.x BuildRequires:  SFEguile
+#autogen 5.18 needs guild 2.x Requires:       SFEguile
+#BuildRequires: %{pnm_buildrequires_SUNWguile_devel}
+#Requires:      %{pnm_requires_SUNWguile}
+#BuildRequires: SUNWgnu-mp
+#BuildRequires:  SFEguile
+#Requires:       SFEguile
 
 %package devel
 Summary:                 %{summary} - development files
@@ -26,83 +53,106 @@ SUNW_BaseDir:            %{_prefix}
 Requires: %name
 
 %prep
-%setup -q -n autogen-%version
+rm -rf %{name}-%{version}
+
+%ifarch amd64 sparcv9
+mkdir -p %{name}-%{version}/%_arch64
+%autogen_64.prep -d %{name}-%{version}/%_arch64
+%endif
+
+mkdir -p %{name}-%{version}/%base_isa
+%autogen.prep -d %{name}-%{version}/%base_isa
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+%ifarch amd64 sparcv9
+%autogen_64.build -d %{name}-%{version}/%_arch64
+%endif
 
-export CFLAGS="%optflags -I/usr/include/gmp"
-export LDFLAGS="%_ldflags"
+%autogen.build -d %{name}-%{version}/%{base_isa}
 
-./configure --prefix=%{_prefix} \
-            --mandir=%{_mandir} \
-            --enable-static=no
-
-make -j $CPU
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-rm ${RPM_BUILD_ROOT}%{_libdir}/lib*.la
-rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+rm -rf %{buildroot}
+%ifarch amd64 sparcv9
+%autogen_64.install -d %{name}-%{version}/%_arch64
+%endif
+
+%autogen.install -d %{name}-%{version}/%{base_isa}
+
+mkdir -p %{buildroot}/%{_bindir}/%{base_isa}
+
+for binary in `cd %{buildroot}/%{_bindir}; ls -1`
+  do
+  [ "$binary" == "%{base_isa}" ] && continue
+  [ "$binary" == "%{_arch64}" ] && continue
+  #move real i386/sparc 32 bit binaries to %{_bindir}/%{base_isa}
+  echo "move / symlink file $binary"
+  mv %{buildroot}/%{_bindir}/$binary %{buildroot}/%{_bindir}/%{base_isa}/
+  #sorry, this is a hack. we have no isaexec in /usr/gnu/lib
+  ln -s -f /usr/lib/isaexec %{buildroot}/%{_bindir}/${binary}
+done #for binary
+#symbolic links remain in place, they are copied instead
+
+find $RPM_BUILD_ROOT%{_libdir} -type f -name "*.la" -exec rm -f {} ';'
+
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'autogen.info' ;
-  echo '"';
-  echo 'retval=0';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} %{_infodir}/$info || retval=1';
-  echo 'done';
-  echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
-
-%preun
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'autogen.info' ;
-  echo '"';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} --delete %{_infodir}/$info';
-  echo 'done';
-  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
 
 %files
-%defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
+%defattr (0755, root, bin)
+%ifarch amd64 sparcv9
+%{_bindir}/%{base_isa}/*
+%{_bindir}/%{_arch64}/*
+%hard %{_bindir}/autogen
+%hard %{_bindir}/autoopts-config
+%hard %{_bindir}/columns
+%hard %{_bindir}/getdefs
+%hard %{_bindir}/xml2ag
+%else
 %{_bindir}/*
+%endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/lib*.so*
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%{_libdir}/%{_arch64}/pkgconfig/*
+%endif
+
+%dir %attr (0755, root, bin) %{_includedir}
+%dir %attr (0755, root, other) %{_includedir}/autoopts
+%{_includedir}/autoopts/*
+
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/autogen
 %{_datadir}/autogen/*
 %dir %attr(0755, root, bin) %{_datadir}/info
 %{_datadir}/info/*
+%dir %attr (0755, root, other) %{_datadir}/aclocal
+%{_datadir}/aclocal/*
+
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man1
 %{_mandir}/man1/*
 %dir %attr (0755, root, bin) %{_mandir}/man3
 %{_mandir}/man3/*
 
-%files devel
-%defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_libdir}
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
-%{_libdir}/pkgconfig/*
-%dir %attr (0755, root, bin) %{_includedir}
-%dir %attr (0755, root, other) %{_includedir}/autoopts
-%{_includedir}/autoopts/*
-%dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_datadir}/aclocal
-%{_datadir}/aclocal/*
 
 %changelog
+* Tue May 24 2016 - Thomas Wagner
+- go back to version 5.16.2
+- fix build with wrapper around guile-config (remove -pthreads)
+* Thu Apr 14 2016 - Thomas Wagner
+- set IPS_Package_Name to sfe/developer/build/autogen to escape the consolidation/userland/userland-incorporation version-dictatroship
+- rework to 32/64-bit, remove -devel package
+* Wed Apr 13 2016 - Thomas Wagner
+- bump to 5.18.5.029 (beware of IPS once sub-micro version is removed, IPS would not upgrade then)
 * Sun Jan 18 2009 - halton.huo@sun.com
 - Bump to 5.9.7
 * Wed Aug 20 2008 - nonsea@users.sourceforge.net
