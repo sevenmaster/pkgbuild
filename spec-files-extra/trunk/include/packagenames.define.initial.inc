@@ -66,7 +66,41 @@
 %define pnm_buildrequires_SFEautomake_115             SFEautomake-115
 %define pnm_requires_SFEautomake_115                  SFEautomake-115
 
+
+#SPECIAL CASE: SFE package was replaced with a SUNW package - one day this will
+#be migrated to translation table in an exteral file
+#with one build number the SUNWsane-backend was added, so SFEsane-backends was deleted (oh!)
+#just replace the SFEsane-backends starting with that build-number with the SUNWsane-backend
+#or the package-rename-project's new name
+#http://opensolaris.org/jive/thread.jspa?threadID=62982  -->> snv90 introduced SUNWsane-backend
+
+#set default for moderatly old osdistro > build 90
+%define pnm_buildrequires_SFEsane_backend_devel		SUNWsane-backend-devel
+%define pnm_requires_SFEsane_backend	 		SUNWsane-backend
+%define pnm_buildrequires_SUNWsane_backend_devel	SUNWsane-backend-devel
+%define pnm_requires_SUNWsane_backend	 		SUNWsane-backend
+%define pnm_buildrequires_image_scanner_xsane_sane_backends	SUNWsane-backend-devel
+%define pnm_requires_image_scanner_xsane_sane_backends 		SUNWsane-backend
+
+
+#we need SFE version on very old builds
+#%if %( expr %{osbuild} '<=' 90 '&' %{solaris12} '=' 0 )
+#not exactly os2nnn = 0, but good enough for now (re-visit this if building for very old builds)
+%if %( expr %{osbuild} '<=' 90 '&' %{os2nnn} '=' 0 )
+#running an old build or Solaris 10
+%define pnm_buildrequires_SFEsane_backend_devel		SFEsane-backend-devel
+%define pnm_requires_SFEsane_backend	 		SFEsane-backend
+%define pnm_buildrequires_SUNWsane_backend_devel	SFEsane-backend-devel
+%define pnm_requires_SUNWsane_backend	 		SFEsane-backend
+%define pnm_buildrequires_image_scanner_xsane_sane_backends	SFEsane-backend-devel
+%define pnm_requires_image_scanner_xsane_sane_backends 		SFEsane-backend
+%endif
+#END <=90
+
+
 %changelog
+* Mon May 23 2016 - Thomas Wagner
+- move sane handling from packagenames.define.allbuilds.inc to packagenames.define.initial.inc
 * Fri Apr 29 2016 - Thomas Wagner
 - handle SFEautomake-115 / automake / pnm_requires_SFEautomake_115 (S12)
 * Fri Apr 22 2016 - Thomas Wagner
