@@ -7,6 +7,7 @@
 #
 # Confirmed build of Wine 1.6.2 on oi_151a/GCC 4.6.4 07/09/14  - Ken Mays
 # Confirmed build of Wine 1.7.10 on oi_151a/GCC 4.7.3 1/3/14   - Ken Mays
+#                         1.9.10 on S11.3 + OI-H 2015.0.1.1    - tom68
 
 %include Solaris.inc
 
@@ -33,7 +34,7 @@ Name:                   SFEwine
 Summary:                Windows API compatibility and ABI runtime
 IPS_package_name:       desktop/wine
 Group:                  Desktop (GNOME)/Sessions
-Version:                1.7.38
+Version:                1.9.10
 URL:                    http://www.winehq.org/
 Source:                 http://downloads.sourceforge.net/project/wine/Source/wine-%{version}.tar.bz2
 #
@@ -58,6 +59,8 @@ Source109:              wine-winemine.desktop
 Source110:              wine-wordpad.desktop
 Source1000:             wine-svg-icons.tar.bz2
 Patch1:			wine-01-solaris.diff
+#undef GS from sys/regset.h - only recent illumos distro have fix for this namespace pollution
+Patch4:                 wine-04-d3d10effect.h-undef_GS.diff
 NoSource:		1
 Group:			System/Virtualization
 License:		LGPL
@@ -76,24 +79,25 @@ Requires:	SUNWdbus
 Requires:	SUNWxorg-clientlibs
 BuildRequires:	SUNWxorg-headers
 Requires:	SUNWxorg-mesa
-##TODO## use SFElcms2 only?
-Requires:	SUNWlcms
 BuildRequires:	SUNWjpg-devel
 Requires:	SUNWjpg
 BuildRequires:	SUNWpng-devel
 Requires:	SUNWpng
 Requires:	SUNWlxml
 Requires:	SUNWlxsl
-##TODO## might need a pnm macro
-Requires:	SUNWcupsu
-##TODO## might need a pnm macro
-Requires:	SUNWsane-backendu
+BuildRequires:	%{pnm_buildrequires_SUNWcups}
+Requires:	%{pnm_requires_SUNWcups}
+BuildRequires:  %{pnm_buildrequires_SUNWsane_backend_devel}
+Requires:       %{pnm_requires_SUNWsane_backend}
 BuildRequires:  %{pnm_buildrequires_SUNWncurses_devel}
 Requires:       %{pnm_requires_SUNWncurses}
 BuildRequires:  %{pnm_buildrequires_SUNWopenssl_include}
 Requires:       %{pnm_requires_SUNWopenssl_libraries}
-BuildRequires:	SUNWgnutls-devel
-Requires:	SUNWgnutls
+#BuildRequires:	SUNWgnutls-devel
+#Requires:	SUNWgnutls
+#use uptodate SFEgnutls
+BuildRequires:  SFEgnutls-devel
+Requires:       SFEgnutls
 Requires:	SUNWfreetype2
 Requires:	SFElibaudioio
 BuildRequires:  SFElibgsm-devel
@@ -116,6 +120,17 @@ Requires: %name
 %setup -q -n %{sname}-%{version}
 %setup -n %{sname}-%{version} -D -T -a 1000
 %patch1 -p1
+%patch4 -p1
+
+#rework configure to get typeof -->> __typeof__ effective or get xrandr, xinerama, gnutls, libpng ... not detected propperly
+#error: invalid storage class for function 'typeof'
+gsed -i.bak_typeof \
+   -e 's?typeof?__typeof__?g'  \
+   configure.ac
+
+gsed -i.bak_boolean_t \
+   -e '/^typedef BOOL boolean_t/ s?^?// ?' \
+   programs/winedbg/db_disasm64.c
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -130,10 +145,74 @@ export CXX=g++
 # I retuned for GCC 4.5.3/4.6 optimizations for wider usage. (kmays)
 #
 
-export CFLAGS="-std=c99 -pedantic-errors -fextended-identifiers -g -Os -pipe -fno-omit-frame-pointer -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -i" 
-export LDFLAGS="-L/lib -R/lib -L/usr/lib -R/usr/lib %{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
-export LD=/usr/ccs/bin/ld
+####export CFLAGS="-std=c99 -fextended-identifiers -g -Os -pipe -fno-omit-frame-pointer -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -pthread" 
+####export LDFLAGS="-L/lib -R/lib -L/usr/lib -R/usr/lib %{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
+#try minimalistic, port.o would othervise not export ASM function wine_call_on_stack
+#bad /usr/bin/nm port.o
+#[21]    |         0|         0|NOTY |GLOB |0    |UNDEF  |wine_call_on_stack
+#good
+#[30]    |       176|         0|NOTY |GLOB |0    |1      |wine_call_on_stack
 
+#/usr/bin/nm libs/wine/port.o | grep "UNDEF.*wine_call_on_stack" && echo "Fatal Error: port.o does not define wine_call_on_stack propperly. check -stdc=gnu99 CFLAGS"
+
+
+#pkgbuild@s11175> /usr/gcc/4.9/bin/gcc -c -o port.o port.c -I. -I../../include -D__WINESRC__ -DWINE_UNICODE_API=""    -Wall  -std=c99 -D__EXTENSIONS__ -I/usr/include -I/usr/X11/include -I/usr/gnu/include -I/usr/sfw/include 
+##THIS IS AN GNU-nm example!
+#pkgbuild@s11175> /usr/gnu/bin/nm port.o 
+#00000071 T __asm_dummy_wine_call_on_stack
+#         U abort
+#         U asm
+#00000000 D libwine_port_functions
+#         U memcpy
+#00000000 b pthread_functions
+#         U wine_call_on_stack
+#         U wine_cp_enum_table
+#         U wine_cp_get_table
+#         U wine_cp_mbstowcs
+#         U wine_cp_wcstombs
+#         U wine_cpsymbol_mbstowcs
+#         U wine_cpsymbol_wcstombs
+#         U wine_fold_string
+#00000000 T wine_pthread_get_functions
+#00000029 T wine_pthread_set_functions
+#00000052 T wine_switch_to_stack
+#         U wine_utf8_mbstowcs
+#         U wine_utf8_wcstombs
+#pkgbuild@s11175> /usr/gcc/4.9/bin/gcc -c -o port.o port.c -I. -I../../include -D__WINESRC__ -DWINE_UNICODE_API=""    -Wall  -std=gnu99 -D__EXTENSIONS__ -I/usr/include -I/usr/X11/include -I/usr/gnu/include -I/usr/sfw/include 
+#pkgbuild@s11175> /usr/gnu/bin/nm port.o 
+#00000071 T __asm_dummy_wine_call_on_stack
+#         U abort
+#00000000 D libwine_port_functions
+#         U memcpy
+#00000000 b pthread_functions
+#00000074 T wine_call_on_stack
+#         U wine_cp_enum_table
+#         U wine_cp_get_table
+#         U wine_cp_mbstowcs
+#         U wine_cp_wcstombs
+#         U wine_cpsymbol_mbstowcs
+#         U wine_cpsymbol_wcstombs
+#         U wine_fold_string
+#00000000 T wine_pthread_get_functions
+#00000029 T wine_pthread_set_functions
+#00000052 T wine_switch_to_stack
+#         U wine_utf8_mbstowcs
+#         U wine_utf8_wcstombs
+#pkgbuild@s11175> exit 1
+#exit
+
+
+#get PATH_MAX with __EXTENSIONS__
+export CFLAGS="-std=gnu99 -D__EXTENSIONS__ -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -pthread"
+export LDFLAGS="%{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
+#try gnuld
+#export LD=/usr/gnu/bin/ld
+
+#try gnu ar
+export AR=/usr/gnu/bin/ar
+
+#rework configure to get typeof -->> __typeof__ effective or get xrandr, xinerama, gnutls, libpng ... not detected propperly
+autoconf --force
 ./configure --prefix=%{_prefix}		\
 	    --bindir=%{_bindir}		\
 	    --mandir=%{_mandir}		\
@@ -166,7 +245,7 @@ export LD=/usr/ccs/bin/ld
 	    --with-sane			\
 	    --with-xcomposite		\
 	    --with-xcursor		\
-	    --with-xinerama		\
+    	    --with-xinerama		\
 	    --with-xinput		\
 	    --with-xml			\
 	    --with-xrandr		\
@@ -177,12 +256,16 @@ export LD=/usr/ccs/bin/ld
 	    --with-xxf86vm		\
 	    --with-x
 
-make -j$CPUS || make
+
+#intetional
+gmake -j$CPUS V=2 
+gmake -j$CPUS V=2 || { [ -f libs/wine/port.o ] && /usr/bin/nm libs/wine/port.o | grep "UNDEF.*wine_call_on_stack" && echo "Fatal Error: port.o does not define wine_call_on_stack propperly. check -stdc=gnu99 CFLAGS"; exit 111; }
+
 
 %install
 # First, install wine.
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
 
 # Then, it's time for winetricks
 #mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -272,6 +355,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon May 23 2016 - Thomas Wagner
+- bump to 1.9.10
+- remove/change to (Build)Requires -SUNWlcms -SUNWgnutls pnm_.*SUNWcupsu pnm.*SUNWsane-backendu
+- remove double define typedef BOOL boolean_t
+- port.o w/o exported wine_call_on_stack caused by -std=c99, fixed by -std=gnu99 - yes this changes undefined function 
+- go with a shortened CFLAGS for now, -std=gnu99 -D__EXTENSIONS__ for PATH_MAX
+- add check for propperly exported function wine_call_on_stack if make fails
+* Wed Jan 20 2016 - Thomas Wagner
+- bump to 1.9.1
+- remove "-i" (ignore LD_LIBRARY_PATH) from LDFLAGS as it makes configure fail on testing X11 funcs like xcursor
+- add -pthread to CFLAGS
+- change  typeof -->> __typeof__ in configure.ac, run autoconf --force
+- add patch4 wine-04-d3d10effect.h-undef_GS.diff needed for non-illumos distro
 * Sat Mar  7 2015 - Thomas Wagner
 - bump to 1.7.38
 - change (Build)Requires to %{pnm_requires_SUNWopenssl_include}, %include packagenamemacros.inc

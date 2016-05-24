@@ -1,0 +1,16 @@
+illumos has fixed namespace pollution, other osdistro may still
+have GS defined 0 in /usr/include/sys/regset.h
+
+--- wine-1.9.1/include/d3d10effect.h.orig	2016-01-20 19:16:05.314122828 +0100
++++ wine-1.9.1/include/d3d10effect.h	2016-01-20 19:15:26.478344534 +0100
+@@ -89,6 +89,10 @@
+     UINT Annotations;
+ } D3D10_TECHNIQUE_DESC;
+ 
++#ifdef GS
++#undef GS
++#endif
++
+ typedef struct _D3D10_STATE_BLOCK_MASK
+ {
+     BYTE VS;
