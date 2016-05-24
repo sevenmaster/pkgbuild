@@ -1,13 +1,14 @@
 #
 #
 Name:     	gnutls
-Version: 	3.4.8
+Version: 	3.5.0
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
 URL:		http://www.gnutls.org
 %define        major_minor_version %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 Source:        ftp://ftp.gnutls.org/gcrypt/gnutls/v%{major_minor_version}/gnutls-%{version}.tar.xz
+Source2:       guile-config_remove_compiler_defines_pthreads
 Patch1:        gnutls-01-ENABLE_PKCS11.diff
 
 
@@ -16,21 +17,48 @@ Patch1:        gnutls-01-ENABLE_PKCS11.diff
 %setup -q -c -T -n %{name}-%{version}
 xz -dc %SOURCE0 | (cd ..; tar xf -)
 
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{omnios} )
+#%if %( expr %{solaris11} '|' %{solaris12} '|' %{omnios} )
 #pkcs11_common
 %patch1 -p1 
-%endif
+#%endif
+
+mkdir bin
+cp %{SOURCE2} bin/guile-config
+chmod 0755 bin/guile-config
+#note: %{_arch64} is edited into the path by the mail spec file
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CFLAGS="%optflags -I/usr/include/idn -I%{gnu_inc}"
+export CPP="${CC} -E"
+%if %cc_is_gcc
+%else
+export CXX="${CXX} -norunpath"
+%endif
+
+export CFLAGS="%optflags -I/usr/include/idn -I%{gnu_inc} -D__EXTENSIONS__"
 export CXXFLAGS="%cxx_optflags -I/usr/include/idn -I%{gnu_inc}"
-export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path}"
+export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path} -liconv"
 
 export PKG_CONFIG_PATH=%{_pkg_config_path}
 
+#find fixed guile-config (remove invalid flags)
+export PATH=`pwd`/bin:$PATH
+#using the wrapper in `pwd`/bin/guile-tools
+export GUILE_TOOLS=guile-tools
+export GUILE_CFLAGS="${gcc_optflags} `$GUILE_TOOLS compile`"
+
 echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+
+#linker complains about _start not defined (is in /usr/lib/libguile.so as UNDEF)
+#pkgbuild@s11175> grep "no_undefined_flag=' -z defs'" configure
+#      no_undefined_flag=' -z defs'
+#at linking time
+#_start                              /usr/lib/libguile.so
+%if %{solaris11}
+gsed -i.bak_-z_defs -e '/no_undefined_flag=. -z defs./ s?^?# removed by SFE spec-file ?' configure
+%endif
+
 
 ./configure \
     --prefix=%{_prefix} \
@@ -41,12 +69,13 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
     --infodir=%{_datadir}/info \
     --localstatedir=%{_localstatedir} \
     --without-p11-kit \
-    --disable-cxx
+    --disable-cxx \
+    --enable-guile \
 
-make -j $CPUS
+gmake V=2 -j$CPUS
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+gmake V=2 install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
@@ -55,6 +84,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 24 2016 - Thomas Wagner
+- enable patch1 for any osdistro (OIH)
+- move CPP variable to base-specs/gnutls.spec (guile-snarf not seeing CPP)
+- edit %_arch64 into wrapper script bin/guile-config
+- bump to 3.5.0
+- CFLAGS add -D__EXTENSIONS__
+- LDFLAGS add -liconv
+- edit configure to remove "-z defs" as it stubles over unused UNDEF function _start in /usr/lib/libguile.so (S11)
+* Wed Apr 13 2016 - Thomas Wagner
+- bump to 3.4.11
 * Sat Jan 16 2016 - Thomas Wagner
 - enable patch1 for disable pkcs11 on (OM)
 - fix %files guile for (OM), see if necessary on other OS as well, ##TODO## revisit once SFEguile.spec is 32/64-bit
