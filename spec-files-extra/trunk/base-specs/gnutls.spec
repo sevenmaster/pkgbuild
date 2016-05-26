@@ -55,7 +55,7 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
 #      no_undefined_flag=' -z defs'
 #at linking time
 #_start                              /usr/lib/libguile.so
-%if %{solaris11}
+%if %( expr %{solaris11} '+' %{solaris12} '>' 0 )
 gsed -i.bak_-z_defs -e '/no_undefined_flag=. -z defs./ s?^?# removed by SFE spec-file ?' configure
 %endif
 
@@ -84,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 25 2016 - Thomas Wagner
+- do not edit path into wrapper script bin/guile-config *if* we run in S12
 * Tue May 24 2016 - Thomas Wagner
 - enable patch1 for any osdistro (OIH)
 - move CPP variable to base-specs/gnutls.spec (guile-snarf not seeing CPP)

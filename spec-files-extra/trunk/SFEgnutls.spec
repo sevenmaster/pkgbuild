@@ -1,3 +1,24 @@
+#Workaround on S12
+#diff -u /usr/share/guile/1.8/srfi/srfi-1.scm.orig /usr/share/guile/1.8/srfi/srfi-1.scm
+#--- /usr/share/guile/1.8/srfi/srfi-1.scm.orig   2016-04-13 20:05:29.586989662 +0200
+#+++ /usr/share/guile/1.8/srfi/srfi-1.scm        2016-05-25 18:28:30.687253724 +0200
+#@@ -220,7 +220,7 @@
+# 
+# ;; Load the compiled primitives from the shared library.
+# ;;
+#-(load-extension "libguile-srfi-srfi-1-v-3" "scm_init_srfi_1")
+#+(load-extension "/usr/lib/64/libguile-srfi-srfi-1-v-3" "scm_init_srfi_1")
+# 
+# 
+# ;;; Constructors
+
+
+##TODO## see where the ca-certificate.crt is read from. could be by default the system-wide location by 
+#        kepping the config directory at the /etc/gnu/ localtion
+
+#Test gnutls:  -->> Wiki
+#./gnutls-cli --x509cafile /etc/certs/ca-certificates.crt --starttls-proto=imap yourimapserver -p 143
+
 ##TODO## optional 
 
 #is this needed/wanted?
@@ -91,7 +112,12 @@ mkdir -p %name-%version
 %ifarch amd64 sparcv9
 mkdir -p %name-%version/%_arch64
 %gnutls64.prep -d %name-%version/%_arch64
+%if %{solaris12}
+echo "Info: only 64-bit /usr/bin/guile available, libraries are dual and pkgconfig files %base_arch / %_arch64 specific guile*.pc files are available"
+%else
+echo "Info: patch %_arch64 into bin/guile-config"
 gsed -i -e '/^  *\/usr\/bin\/guile-config / s?/usr/bin/?/usr/bin/%_arch64/?' %name-%version/%_arch64/gnutls-%version/bin/guile-config
+%endif
 %endif
 
 mkdir -p %name-%version/%base_arch
@@ -106,6 +132,7 @@ mkdir -p %name-%version/%base_arch
 %endif
 
 %gnutls.build -d %name-%version/%base_arch
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -166,6 +193,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/guile/site/*
 
 %changelog
+* Wed May 25 2016 - Thomas Wagner
+- do not edit path into wrapper script bin/guile-config *if* we run in S12
 * Tue May 24 2016 - Thomas Wagner
 - enable patch1 for any osdistro (OIH)
 - move CPP variable to base-specs/gnutls.spec (guile-snarf not seeing CPP)
