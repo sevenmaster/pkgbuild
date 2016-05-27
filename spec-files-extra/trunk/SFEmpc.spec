@@ -48,6 +48,14 @@ export LDFLAGS="%_ldflags"
 sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
 mv Makefile.xnet Makefile
 
+%if %{cc_is_gcc}
+#cc_is_gcc
+%else
+#remove unsuitable switches for solarisstudio
+# -ffunction-sections -fdata-sections -fvisibility=hidden 
+gsed -i.back_remove_compileroptions '/^CFLAGS =/ s?\(-ffunction-sections\|-fdata-sections\|-fvisibility=hidden\)??g' Makefile
+%endif
+
 gmake -j$CPUS
 
 %install
@@ -75,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Fri May 27 2016 - Thomas Wagner
+- remove switches not for solarisstudio from Makefile: -ffunction-sections -fdata-sections -fvisibility=hidden  (S11 S12)
 * Wed Mar 16 2016 - Thomas Wagner
 - bump to 0.27
 * Mon Apr 14 2014 - Thomas Wagner

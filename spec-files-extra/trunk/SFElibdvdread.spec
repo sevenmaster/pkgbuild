@@ -76,13 +76,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, sys) %{_docdir}
+%dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/libdvdread/*
+
 #dir %attr (0755, root, other) %{_datadir}/aclocal
 #{_datadir}/aclocal/*
 
 
 %changelog
+* Fri May 27 2016 - Thomas Wagner
+- fix %files group to be "other" for %{_docdir}
 * Sat Apr  2 2016 - Thomas Wagner
 - bump to 5.0.3
 - new download URL
