@@ -30,7 +30,9 @@ SUNW_BaseDir:            %{_prefix}
 Requires: %name
 
 %prep
-%setup -q -n %{src_name}-%version
+%setup -q -c -T -n %{src_name}-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -87,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri May 27 2016 - Thomas Wagner
+- manually unpack for older pkgtool
 * Wed Jan 13 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.29.3; enable vapigen
 * Sat Aug 29 2015 - Alex Viskovatoff <herzen@imap.cc>

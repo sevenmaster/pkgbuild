@@ -22,7 +22,9 @@ Requires: SUNWbash
 Requires: SUNWpostrun
 
 %prep
-%setup -q -n libtool-%version
+%setup -q -c -T -n %libtool-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -73,6 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/libtool/*
 
 %changelog
+* Fri May 27 2016 - Thomas Wagner
+- manually unpack for older pkgtool
 * Sat Jan  9 2015 - Alex Viskovatoff
 - Bump to 2.4.6
 * Fri Sep 13 2013 - Alex Viskovatoff
