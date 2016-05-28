@@ -38,8 +38,8 @@ BuildRequires: SFEpython27-docutils
 Requires:      SFEpython27
 BuildRequires: %{pnm_buildrequires_SUNWgroff}
 BuildRequires: %{pnm_buildrequires_driver_graphics_nvidia}
-BuildRequires: SFElibfibidi-devel
-Requires:      SFElibfibidi
+BuildRequires: SFElibfribidi-devel
+Requires:      SFElibfribidi
 BuildRequires: SFEliba52-devel
 Requires:      SFEliba52
 BuildRequires: SFElibiconv
