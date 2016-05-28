@@ -13,7 +13,7 @@ Name:			SFEquassel
 IPS_package_name:	desktop/irc/quassel
 Group:			Applications/Internet
 Summary:		Graphical IRC client based on a client-server model
-Version:		0.12.2
+Version:		0.12.4
 URL:			http://quassel-irc.org/
 License:		GPLv2
 SUNW_Copyright:		GPLv2.copyright
@@ -81,6 +81,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri May 27 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 0.12.4
 * Sun Nov  7 2015 - Thomas Wagner
 - compile works, quasselcore + quasselclient both okay when compiled with SFEgcc.spec (rev 6024), so use this on S11 and other osdistro
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
