@@ -15,20 +15,25 @@ Source:		     http://www.kernel.org/pub/software/scm/git/git-%version.tar.xz
 SUNW_BaseDir:        %{_basedir}
 
 %include default-depend.inc
-Requires: SUNWzlib
-Requires: %{pnm_requires_SUNWsshu}
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
+
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires: %{pnm_requires_SUNWopenssl_libraries}
-Requires: SUNWlexpt
-Requires: SUNWcurl
-Requires: %{pnm_requires_perl_default}
-Requires: SUNWbash
-Requires: SUNWlexpt
-Requires: %{pnm_requires_text_gnu_diffutils}
-Requires: SUNWTk
+#not badly needed Requires: %{pnm_requires_SUNWssh}
+BuildRequires: %{pnm_buildrequires_SUNWlexpt_devel}
+Requires:      %{pnm_requires_SUNWlexpt}
+BuildRequires: %{pnm_buildrequires_SUNWcurl_devel}
+Requires:      %{pnm_requires_SUNWcurl}
+BuildRequires: %{pnm_requires_perl_default}
+Requires:      %{pnm_requires_perl_default}
+Requires:      %{pnm_requires_text_gnu_diffutils}
+BuildRequires: %{pnm_buildrequires_SUNWTk_devel}
+Requires:      %{pnm_requires_SUNWTk}
 BuildRequires: %{pnm_buildrequires_SFEasciidoc}
-BuildRequires: developer/documentation-tool/xmlto
-BuildRequires: library/pcre
+BuildRequires: %{pnm_buildrequires_developer_documentation_tool_xmlto
+BuildRequires: %{pnm_buildrequires_SUNWpcre_devel}
+Requires:      %{pnm_requires_SUNWpcre}
 
 %prep
 %setup -q -n git-%version
@@ -101,10 +106,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Sat May 28 2016 - Thomas Wagner
+- merge uncommitted local copy with SVN
 * Fri May 27 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 2.8.3
+* Tue Mar 22 2016 - Thomas Wagner (merged)
+- change (Build)Requires to  %{pnm_buildrequires_SUNWTk_devel}, %{pnm_requires_SUNWssh}
+- add missing changelog entry
 * Tue Mar 22 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 2.7.4
+* Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 2.7.0, fix git-svn by not making the spec interfere with upstream's standard install, enable support for Perl-compatible regexes
 * Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update to 2.7.0; enable support for Perl-compatible regexes
 - fix git-svn by not making the spec interfere with upstream's standard install
