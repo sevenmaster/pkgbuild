@@ -8,6 +8,7 @@
 # acronym.
 
 %include Solaris.inc
+%include packagenamemacros.inc
 %define cc_is_gcc 1
 %include base.inc
 %define srcname mpv
@@ -28,16 +29,21 @@ Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
 
 BuildRequires: SFEffmpeg-devel
+Requires:      SFEffmpeg
 BuildRequires: SFElibcdio-devel
+Requires:      SFElibcdio
 BuildRequires: SFElibdvdnav-devel
+Requires:      SFElibdvdnav
 BuildRequires: SFEpython27-docutils
+Requires:      SFEpython27
 BuildRequires: %{pnm_buildrequires_SUNWgroff}
-%if %with_system_nvidia
-BuildRequires: consolidation/nvidia/nvidia-incorporation
-%endif
-BuildRequires: library/fribidi
+BuildRequires: %{pnm_buildrequires_driver_graphics_nvidia}
+BuildRequires: SFElibfibidi-devel
+Requires:      SFElibfibidi
 BuildRequires: SFEliba52-devel
+Requires:      SFEliba52
 BuildRequires: SFElibiconv
+Requires:      SFElibiconv
 BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
 Requires:      %{pnm_requires_SFEopenjpeg}
 # mpv will not display subtitles without libass
@@ -147,6 +153,9 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri May 27 2016 - Thomas Wagner
+- make BuildRequires resolvable at build-time (pkgtool --autodeps build-order SFEmpv.spec)
+- use pnm_macro for nvidia, set the macro to system/kernel if you don't want this dependency at build time
 * Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update to 2.8.5; mpv now needs to know about /usr/g++ on account of libass
 * Wed Jan 06 2016 - Rene Elgaard
