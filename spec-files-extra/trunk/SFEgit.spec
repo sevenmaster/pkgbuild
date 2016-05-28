@@ -7,7 +7,7 @@
 Name:                SFEgit
 IPS_Package_Name:    sfe/developer/versioning/git
 Summary:             A fast version control system
-Version:             2.7.4
+Version:             2.8.3
 License:             GPLv2
 SUNW_Copyright:      git.copyright
 URL:                 http://git-scm.com/
@@ -101,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 
 %changelog
+* Fri May 27 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 2.8.3
 * Tue Mar 22 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 2.7.4
 * Sun Jan 31 2016 - Alex Viskovatoff <herzen@imap.cc>
