@@ -22,7 +22,8 @@ Autoreqprov:             on
 %endif
 perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "^#\!.*/bin/sh" {} \; -print`
 
-%patch51 -p1
+# This patch is not required for v. 3.0.2
+#%patch51 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')

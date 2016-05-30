@@ -8,7 +8,7 @@
 %include packagenamemacros.inc
 
 #change version number only here.
-%define ffmpeg_version 2.8.5
+%define ffmpeg_version 3.0.2
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -144,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 27 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 3.0.2 (openjpeg2 patch no longer required)
 * Sun Jan 26 2014 - Alex Viskovatoff
 - bump to 2.1.3
 * Mon Jan 13 2014 - Thomas Wagner
