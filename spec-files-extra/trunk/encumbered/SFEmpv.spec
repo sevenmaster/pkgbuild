@@ -23,7 +23,7 @@ IPS_Package_Name:	media/mpv
 Summary:		Video player based on MPlayer/mplayer2
 License:		GPLv2
 SUNW_Copyright:		mpv.copyright
-Version:		0.15.0
+Version:		0.17.0
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
@@ -55,12 +55,6 @@ Requires:	runtime/lua
 # This really should be an optional dependency;
 # It makes mpv play a YouTube video if you give a link to it
 Requires:	SFEpython34-youtube-dl
-
-Requires: %name-root
-%package root
-Summary:                 %{summary} - / filesystem
-SUNW_BaseDir:            /
-Requires: %name
 
 
 %description
@@ -128,10 +122,6 @@ export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:."
 rm -rf %buildroot
 ./waf install --destdir=%buildroot
 
-cd %buildroot/%_sysconfdir
-mkdir %srcname
-mv encoding-profiles.conf %srcname
-
 %clean
 rm -rf %buildroot
 
@@ -146,13 +136,10 @@ rm -rf %buildroot
 %_datadir/applications/%srcname.desktop
 %_datadir/icons
 
-%files root
-%defattr (-, root, sys)
-%dir %attr (-, root, sys) %_sysconfdir
-%attr (-, root, root) %_sysconfdir/%srcname/encoding-profiles.conf
-
 
 %changelog
+* Sat May 28 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.17.0
 * Fri May 27 2016 - Thomas Wagner
 - make BuildRequires resolvable at build-time (pkgtool --autodeps build-order SFEmpv.spec)
 - use pnm_macro for nvidia, set the macro to system/kernel if you don't want this dependency at build time
