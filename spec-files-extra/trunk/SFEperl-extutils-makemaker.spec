@@ -1,3 +1,11 @@
+#Important Note - this spec file disables bundling other modules!
+#read: https://github.com/Perl-Toolchain-Gang/ExtUtils-MakeMaker/blob/master/bundled/README
+#This directory contains CPAN modules which ExtUtils-MakeMaker depends on.
+#They are bundled with ExtUtils-MakeMaker to avoid dependency loops.
+#Vendor packages will want to disable this bundling.  See README.packaging in the top
+#level directory for details.
+
+
 #
 # spec file for package: SFEperl-extutils-makemaker
 #
@@ -13,13 +21,13 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 7.10
+%define tarball_version 7.18
 %define tarball_name    ExtUtils-MakeMaker
 
 Name:		SFEperl-extutils-makemaker
 IPS_package_name: library/perl-5/extutils-makemaker
-Version:	7.10
-IPS_component_version: 7.10
+Version:	7.18
+IPS_component_version: 7.18
 Group:          Development/Libraries                    
 Summary:	ExtUtils::MakeMaker - Writes Makefiles for extensions
 License:	Artistic
@@ -34,6 +42,8 @@ Requires:	%{pnm_requires_perl_default}
 #Using included version of CPAN::Meta::Requirements (2.127) because it is not already installed.
 #Using included version of ExtUtils::Manifest (1.65) as it is newer than the installed version (1.57).
 #Using included version of JSON::PP (2.27203) because it is not already installed.
+BuildRequires:  SFEperl-parse-cpan-meta
+Requires:       SFEperl-parse-cpan-meta
 BuildRequires:  SFEperl-cpan-meta-requirements
 Requires:       SFEperl-cpan-meta-requirements
 BuildRequires:  SFEperl-extutils-manifest
@@ -54,6 +64,22 @@ Writes Makefiles for extensions
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
+echo "BUILDLING AS A PACKAGE WITH NO BUNDLED PREREQUISITE PERL MODULES"
+echo "else you get file conflicts with e.g. parse-cpan-meta perl module"
+echo "Setting ENV variable  export BUILDING_AS_PACKAGE=1"
+echo "See README.packaging in the source"
+
+#background: if system has a dependency not yet installed, then extutils-makemaker
+#uses the bundles sources from this tarball. You end up in more then one IPS package
+#packaging the *same* filenames *if* a prerequisite module is not built and installed
+#before.
+#happended with not installed SFEperl-parse-cpan-meta, this is now added as IPS dependency
+#to the prerequisite perl module Parse::CPAN::Meta
+
+#safety measure: Build will/should fail with unsatisfied perl dependency, then we can fix it on the
+#build side and have a IPS depedency
+export BUILDING_AS_PACKAGE=1
 
 if test -f Makefile.PL
   then
@@ -118,6 +144,11 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Jun  5 2016 - Thomas Wagner
+- bump to 7.18
+- set build process to *NOT* include bundles prerequisite modules. You would end
+  up with file conflicts in IPS, depending of the order you build the perl modules
+  export BUILDING_AS_PACKAGE=1
 * Thu Mar 10 2016 - Thomas Wagner
 - add (Build)Requires SFEperl-cpan-meta-requirements SFEperl-extutils-manifest SFEperl-json-pp
 * Mon Mar  7 2016 - Thomas Wagner
