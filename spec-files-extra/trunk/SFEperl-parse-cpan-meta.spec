@@ -107,5 +107,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Thu Mar 10 2016 - 
+* Thu Mar 10 2016 - Thomas Wagner
 - initial spec

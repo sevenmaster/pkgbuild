@@ -33,6 +33,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/C/CJ/CJM/HTML-Tree-%{tarball_ver
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-module-build
+Requires:       SFEperl-module-build
 BuildRequires:  SFEperl-test-fatal
 Requires:       SFEperl-test-fatal
 BuildRequires:  SFEperl-html-parser
@@ -120,6 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Jun  5 2016 - Thomas Wagner
+- add (Build)Requires SFEperl-module-build
 * Sun Mar 13 2016 - Thomas Wagner
 - fix %files for manpages
 * Fri Mar 11 2016 - Thomas Wagner
