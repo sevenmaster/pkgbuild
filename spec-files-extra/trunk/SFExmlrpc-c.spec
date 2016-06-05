@@ -73,6 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Jun  5 2016 - Thomas Wagner
+- bump to 1.39.08 (IPS: 1.39.8)
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Thu Jan  1 2015 - Thomas Wagner
@@ -83,10 +85,14 @@ rm -rf $RPM_BUILD_ROOT
   removal of version 1.632 IPS Packages from repo and system)
 - add -std=c99
 - relocate to /usr/gnu (S11 has own xmlrpc-c), add IPS_Package_Name
-* Sat Mar 31 2012 - tropikhajma@gmail.com>
-- fix ips version
+* Sat Mar 31 2012 - tropikhajma@gmail.com
+- fix ips version and download location
+* Thu Jan 15 2009 - halton.huo@sun.com
+- Bump to 1.06.32
 * Tue Jun 24 2008 - trisk@acm.jhu.edu
 - Rename to SFExmlrpc-c since we don't distribute C++ libs
 - Add CFLAGS_PERSONAL for Studio
+- Disable C++ compilation since results are not used
+- Disable parallel make
 * Sat May 24 2008 - trisk@acm.jhu.edu
 - Initial spec
