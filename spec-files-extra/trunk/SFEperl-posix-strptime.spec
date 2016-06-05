@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-package-constants
+# spec file for package: SFEperl-posix-strptime
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,36 +11,36 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.06
-%define tarball_name    Package-Constants
+%define tarball_version 0.13
+%define tarball_name    POSIX-strptime
 
-Name:		SFEperl-package-constants
-IPS_package_name: library/perl-5/package-constants
-Version:	0.06
-IPS_component_version: 0.6
+Name:		SFEperl-posix-strptime
+IPS_package_name: library/perl-5/posix-strptime
+Version:	0.13
+IPS_component_version: 0.13
 Group:          Development/Libraries                    
-Summary:	Package::Constants - Package::Constants
+Summary:	POSIX::strptime - POSIX::strptime
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gozer/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/Package-Constants-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/G/GO/GOZER/POSIX-strptime-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Jos Boumans <kane@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Philippe M. Chiasson <gozer@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~gozer/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Package::Constants
-Package::Constants
+POSIX::strptime
+POSIX::strptime
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -114,14 +114,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sun Jun 05 2016 - Thomas Wagner
-- bump to version 06 - reworked
-* Thu Nov 29 2012 - Thomas Wagner
-- re-create spec file by script
-  which gets us the IPS_Package_Name as well
-* Fri Jun 23 2011 - Thomas Wagner
-- change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
-  paths dynamic, define fewer directories in %files
-- BuildRequires: %{pnm_buildrequires_SUNWsfwhea}
-- move out or perl/
-* Sat Jul 11 2009 - Thomas Wagner
-- Initial spec
+- initial spec
