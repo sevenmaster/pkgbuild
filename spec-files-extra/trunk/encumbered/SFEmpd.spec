@@ -83,6 +83,7 @@ BuildRequires: SFElame-devel
 BuildRequires: SFEtwolame-devel
 # libid3tag is not encumbered, but it is not used by flac or ogg
 BuildRequires: SFElibid3tag-devel
+Requires: SFEffmpeg
 Requires: SFElibmpcdec
 Requires: SFEfaad2
 Requires: SFElame
@@ -185,6 +186,7 @@ rm -rf $RPM_BUILD_ROOT
 - add to FLAGS -D_POSIX_PTHREAD_SEMANTICS to fix compile on S11.3 with getting wrong number of arguments to getpwnam_r (see documentation in /usr/include/pwd.h)
   src/fs/StandardDirectory.cxx:71:56: error: too many arguments to function 'passwd* getpwnam_r(const char*, passwd*, char*, int)'
   (still to check: should CFLAGS be synced with CXXFLAGS)
+- fix --autodeps: Requires: SFEffmpeg
 * Wed Mar 16 2016 - Thomas Wagner
 - bump to 0.19.13
 * Fri Dec 18 2015 - Alex Viskovatoff <herzen@imap.cc>
