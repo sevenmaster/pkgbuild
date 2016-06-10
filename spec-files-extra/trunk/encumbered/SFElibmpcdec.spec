@@ -47,6 +47,25 @@ export CFLAGS="%optflags"
 gsed -i.bak_remove_KPIC_cc_is_gcc -e '/^CFLAGS.*CFLAGS.*KPIC/ s?-KPIC??' configure.ac configure
 %endif
 
+#add missing line to configure.ac, if libtool is old
+
+#dnl Process this file with autoconf to produce a configure script.
+#AC_INIT(src/mpc_decoder.c)
+#AC_CONFIG_AUX_DIR(config)
+#AM_INIT_AUTOMAKE(libmpcdec,1.2.6)
+#AM_CONFIG_HEADER(include/config.h)
+#
+#AC_PROG_CXX
+#AM_PROG_LIBTOOL
+
+gsed -i.bak -e '/^AM_PROG_LIBTOOL/ i\
+dnl add missing C++ support - see https://autotools.io/forwardporting/libtool.html\
+AC_PROG_CXX
+'    configure.ac
+
+libtoolize --force --copy
+autoconf -f
+
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
             --libexecdir=%{_libexecdir}      \
@@ -74,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Jun 10 2016 - Thomas Wagner
+- add missing AC_PROG_CXX to configure.ac or get: Makefile with non-replaced macro "@am__fastdepCXX" (S11)
+  (too old macros)
 * Sun Nov 29 2015 - Thomas Wagner
 - remove -KPIC if cc_is_gcc or get configure: error: No signed 16 bit type found on this platform.
 * Fri Jul  5 2013 - Thomas Wagner
