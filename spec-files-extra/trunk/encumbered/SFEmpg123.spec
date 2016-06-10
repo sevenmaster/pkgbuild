@@ -12,7 +12,7 @@
 Name:           SFEmpg123
 IPS_package_name: audio/mpg123
 Summary:        Fast console MPEG Audio Player and decoder library
-Version:        1.13.4
+Version:        1.23.4
 URL:            http://www.mpg123.org/
 Source:         %{sf_download}/mpg123/mpg123/%{version}/mpg123-%{version}.tar.bz2
 License:        LGPL,GPL
@@ -52,8 +52,8 @@ Requires:       %name
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 #export CFLAGS="%{optflags}"
-export CFLAGS="-i -xO4 -xspace -xstrconst -xarch=sse -mr -xregs=no%frameptr"
-export LDFLAGS="%{_ldflags}"
+export CFLAGS="-i -xO4 -xc99 -D_XPG6 -D__EXTENSIONS__ -xspace -xstrconst -xarch=sse -mr -xregs=no%frameptr"
+export LDFLAGS="%{_ldflags} -lsocket"
 
 %if %cc_is_gcc
 export CFLAGS="%{gcc_optflags} -std=c99 -D_XPG6 -D__EXTENSIONS__"
@@ -66,6 +66,11 @@ EOF
 chmod a+rx ld-remove-z_text
 export LD_ALTEXEC=`pwd`/ld-remove-z_text
 %endif
+
+#fix http://solarisx86.yahoogroups.narkive.com/bgJNXAmR/compiling-mpg123-and-symbol-relocations
+#        "src/libmpg123/tabinit_mmx.S", line 48 : Illegal mnemonic
+#        "src/libmpg123/tabinit_mmx.S", line 48 : Syntax error
+sed -i.bak -e 's?\t\.short?\t.value?'  src/libmpg123/tabinit_mmx.S
 
 # Build fails with --with-optimization set to > 1
 ./configure --prefix=%{_prefix}         \
@@ -86,11 +91,11 @@ export LD_ALTEXEC=`pwd`/ld-remove-z_text
             --enable-ipv6=yes 		\
             --with-optimization=1
 
-make -j$CPUS 
+gmake -j$CPUS 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+gmake DESTDIR=$RPM_BUILD_ROOT install
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
 rm $RPM_BUILD_ROOT%{_libdir}/mpg123/output_*.la
 
@@ -102,17 +107,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}
 %{_mandir}
 %dir %attr (0755, root, sys) %{_datadir}
-%{_libdir}/libmpg123.so.*
+%{_libdir}/libmpg123.so*
+%{_libdir}/libout123.so*
 %{_libdir}/mpg123/output_*.so
+
 
 %files devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/libmpg123.pc
+%{_libdir}/pkgconfig/libout123.pc
 %{_includedir}
-%{_libdir}/libmpg123.so
 
 %changelog
+* Fri Jun 10 2016 - Thomas Wagner
+- fix assembler syntax error in tabinit_mmx.S line 48 : Illegal mnemonic / Syntax error
+- set -xc99 -D_XPG6 -D__EXTENSIONS__ for studio compiler
+* Tue May 24 2016 - Thomas Wagner
+- bump to 1.23.4, add new libs and libout123.pc
 * Mon May 23 2016 - Thomas Wagner
 - fix compile and linking on (OIH): 
   - if cc_is_gcc set CFLAGS for gcc
