@@ -119,8 +119,8 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__ -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags"
+export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__ -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags  -D_POSIX_PTHREAD_SEMANTICS"
 # Without -R, icu libs are not found (RPATH does not get added to SOs)
 export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -L/usr/g++/lib -Wl,-znodeferred"
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
@@ -181,6 +181,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Fri Jun 10 2016 - Thomas Wagner
+- add to FLAGS -D_POSIX_PTHREAD_SEMANTICS to fix compile on S11.3 with getting wrong number of arguments to getpwnam_r (see documentation in /usr/include/pwd.h)
+  src/fs/StandardDirectory.cxx:71:56: error: too many arguments to function 'passwd* getpwnam_r(const char*, passwd*, char*, int)'
+  (still to check: should CFLAGS be synced with CXXFLAGS)
 * Wed Mar 16 2016 - Thomas Wagner
 - bump to 0.19.13
 * Fri Dec 18 2015 - Alex Viskovatoff <herzen@imap.cc>
