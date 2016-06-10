@@ -5,6 +5,8 @@
 #
 
 %include Solaris.inc
+%define _use_internal_dependency_generator 0
+
 %define srcname libmpdclient
 
 Name:		SFElibmpdclient
@@ -17,6 +19,8 @@ License:	BSD
 Group:		System/Multimedia Libraries
 SUNW_Copyright:	libmpdclient.copyright
 Source:		http://www.musicpd.org/download/%srcname/2/%srcname-%version.tar.xz
+SUNW_BaseDir:	%_basedir
+BuildRoot:	%_tmppath/%name-%version-build
 %include default-depend.inc
 
 
@@ -28,7 +32,10 @@ Requires: %name
 
 
 %prep
-%setup -q -n %srcname-%version
+#don't unpack please
+%setup -q -c -T -n %{srcname}-%{version}
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
+
 
 
 %build
@@ -39,6 +46,10 @@ export LDFLAGS="%_ldflags"
 
 # --disable-static doesn't do what it's supposed to, but use it anyway
 ./configure --prefix=%_prefix --disable-static
+
+# Be modern and use libxnet instead of libsocket
+#sed 's/-lsocket -lnsl/-lxnet/' Makefile > Makefile.xnet
+#mv Makefile.xnet Makefile
 
 gmake -j$CPUS
 
@@ -71,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 16 2016 - Thomas Wagner
+- disable dependency generator 
+* Mon Sep  1 2015 - Thomas Wagner
+- unpack with xz
 * Thu Apr 02 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 2.10
 * Sat Jan 25 2013 - Alex Viskovatoff
