@@ -26,7 +26,7 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.19.13
+Version:             0.19.15
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://www.musicpd.org/
@@ -90,12 +90,41 @@ Requires: SFElame
 Requires: SFEtwolame
 Requires: SFEmpg123
 Requires: SFElibid3tag
+#audio/g++/faac
+BuildRequires:  SFEfaac-gpp
+Requires:       SFEfaac-gpp
+BuildRequires:  SFElibgsm
+Requires:       SFElibgsm
+BuildRequires:  SFEopencore-amr
+Requires:       SFEopencore-amr
+BuildRequires:  SFErtmpdump
+Requires:       SFErtmpdump
+BuildRequires:  SFElibx264
+Requires:       SFElibx264
+BuildRequires:  SFExvid
+Requires:       SFExvid
 %endif
 
 BuildRequires:  %{pnm_buildrequires_boost_gpp_default}
 Requires:       %{pnm_requires_boost_gpp_default}
-BuildRequires: SFEicu-gpp
-Requires: SFEicu-gpp
+BuildRequires:  SFEicu-gpp
+Requires:       SFEicu-gpp
+
+
+BuildRequires:  SFEwildmidi
+Requires:       SFEwildmidi
+
+BuildRequires:  SFExz-gnu
+Requires:       SFExz-gnu
+BuildRequires:  SFEorc
+Requires:       SFEorc
+BuildRequires:  SFElibschroedinger
+Requires:       SFElibschroedinger
+BuildRequires:  %{pnm_buildrequires_SUNWlibtheora_devel}
+Requires:       %{pnm_requires_SUNWlibtheora}
+BuildRequires:  SFElibvpx
+Requires:       SFElibvpx
+
 
 %description
 Music Daemon to play common audio fileformats to audio devices or 
@@ -182,6 +211,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Fri Jun 11 2016 - Thomas Wagner
+- bump to 0.19.15
+- add (Build)Reqires SFEwildmidi SFExz-gnu SFEorc SFElibschroedinger SUNWlibtheora SFElibvpx SFEfaac-gpp SFElibgsm SFEopencore-amr SFErtmpdump SFElibx264 SFExvid
+  (play audio from video files, e.g. music videos)
 * Fri Jun 10 2016 - Thomas Wagner
 - add to FLAGS -D_POSIX_PTHREAD_SEMANTICS to fix compile on S11.3 with getting wrong number of arguments to getpwnam_r (see documentation in /usr/include/pwd.h)
   src/fs/StandardDirectory.cxx:71:56: error: too many arguments to function 'passwd* getpwnam_r(const char*, passwd*, char*, int)'
