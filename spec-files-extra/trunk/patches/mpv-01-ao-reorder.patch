@@ -1,0 +1,24 @@
+Try oss before pulse for audio output
+
+--- mpv-0.18.0/audio/out/ao.c.orig	Fri Jun 24 21:23:40 2016
++++ mpv-0.18.0/audio/out/ao.c	Mon Jul  4 09:38:15 2016
+@@ -56,6 +56,9 @@
+ #if HAVE_COREAUDIO
+     &audio_out_coreaudio,
+ #endif
++#if HAVE_OSS_AUDIO
++    &audio_out_oss,
++#endif
+ #if HAVE_PULSE
+     &audio_out_pulse,
+ #endif
+@@ -65,9 +68,6 @@
+ #if HAVE_WASAPI
+     &audio_out_wasapi,
+ #endif
+-#if HAVE_OSS_AUDIO
+-    &audio_out_oss,
+-#endif
+     // wrappers:
+ #if HAVE_JACK
+     &audio_out_jack,

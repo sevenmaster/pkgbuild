@@ -23,10 +23,11 @@ IPS_Package_Name:	media/mpv
 Summary:		Video player based on MPlayer/mplayer2
 License:		GPLv2
 SUNW_Copyright:		mpv.copyright
-Version:		0.17.0
+Version:		0.18.0
 URL:			http://mpv.io/
 Source: http://github.com/mpv-player/mpv/archive/v%version.tar.gz
 Group:			Applications/Sound and Video
+Patch1:			mpv-01-ao-reorder.patch
 
 BuildRequires: SFEffmpeg-devel
 Requires:      SFEffmpeg
@@ -56,6 +57,11 @@ Requires:	runtime/lua
 # It makes mpv play a YouTube video if you give a link to it
 Requires:	SFEpython34-youtube-dl
 
+Requires: %name-root
+%package root
+Summary:                 %{summary} - / filesystem
+SUNW_BaseDir:            /
+Requires: %name
 
 %description
 mpv is a movie player based on MPlayer and mplayer2. It supports a wide variety
@@ -92,8 +98,10 @@ Cflags: -I${includedir}
 Libs: -L${libdir} -lvdpau
 EOM
 
-# index_t is defined in sys/types.h
+# index_t is defined in sys/types.h: avoid "conflicting types for 'index_t'" error
 gsed -i 's/index_t/index__t/g' video/out/dither.c
+
+%patch1 -p1
 
 
 %build
@@ -111,7 +119,7 @@ export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig:."
 # Enabling gl makes compilation fail.
 ./waf configure				\
 	--prefix=%_prefix		\
-	--confdir=%_sysconfdir		\
+	--confdir=%_sysconfdir/%srcname	\
 	--disable-gl			\
 	--disable-alsa
 
@@ -136,8 +144,13 @@ rm -rf %buildroot
 %_datadir/applications/%srcname.desktop
 %_datadir/icons
 
+%files root
+%attr (-, root, root) %{_sysconfdir}/%srcname/encoding-profiles.conf
+
 
 %changelog
+* Mon July 4 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 0.18.0; try oss before pulse for audio output
 * Sat May 28 2016 - Alex Viskovatoff <herzen@imap.cc>
 - update to 0.17.0
 * Fri May 27 2016 - Thomas Wagner
