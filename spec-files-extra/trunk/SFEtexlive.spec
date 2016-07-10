@@ -8,26 +8,27 @@
 # contrast is a build dependency of other SFE packages.  Distributions usually
 # split texmf up into smaller packages; we just omit a few files at this point.
 
+### NOTE: After installing, run "texconfig-sys init".
+
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
 %include osdistro.inc
 
-%define texlive_ver	20150523
-%define texlive_src_ver 20150521
-%define texlive_year	2015
+%define texlive_ver	20160523b
+%define texlive_src_ver 20160523
+%define texlive_year	2016
 
 Name:		SFEtexlive
 IPS_Package_Name:	text/texlive
 Version:	%texlive_year
 Summary:	Binaries for the TeX formatting system
-URL:		http://tug.org/texlive
 
 Group:		System/Text Tools
 License:	GPLv2 and More
 URL:		http://tug.org/texlive/
 
-Source:         ftp://tug.org/historic/systems/texlive/%texlive_year/texlive-%texlive_src_ver-source.tar.xz
+Source:         ftp://tug.org/historic/systems/texlive/%texlive_year/texlive-%{texlive_src_ver}b-source.tar.xz
 Source1:	ftp://tug.org/texlive/tlnet/install-tl-unx.tar.gz
 Source2:	ftp://tug.org/historic/systems/texlive/%texlive_year/texlive-%texlive_ver-texmf.tar.xz
 Source3:	texmf-exclude.list
@@ -119,6 +120,7 @@ cd build
 	--with-gmp-includes=/usr/include/gmp \
 	--disable-multiplatform \
 	--disable-luajittex \
+	--disable-mfluajit \
 	--disable-psutils
 
 make -j$CPUS
@@ -181,6 +183,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Jul  8 2016 - Alex Viskovatoff <herzen@imap.cc>
+- update to 20160523
 * Wed Dec 16 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 20150521; employ directory scheme used by distributions, taking
   texmf.cnf (which defines paths) unaltered from Arch Linux

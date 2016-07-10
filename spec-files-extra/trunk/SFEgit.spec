@@ -31,7 +31,7 @@ Requires:      %{pnm_requires_text_gnu_diffutils}
 BuildRequires: %{pnm_buildrequires_SUNWTk_devel}
 Requires:      %{pnm_requires_SUNWTk}
 BuildRequires: %{pnm_buildrequires_SFEasciidoc}
-BuildRequires: %{pnm_buildrequires_developer_documentation_tool_xmlto
+BuildRequires: %{pnm_buildrequires_developer_documentation_tool_xmlto}
 BuildRequires: %{pnm_buildrequires_SUNWpcre_devel}
 Requires:      %{pnm_requires_SUNWpcre}
 
