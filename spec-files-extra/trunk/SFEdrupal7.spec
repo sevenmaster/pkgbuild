@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.44
+Version:             7.50
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -103,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 13 2016 - Thomas Wagner
+- bump to 7.50 - several changes, improved PHP7 support, read the changelog https://www.drupal.org/blog/drupal-7-50
 * Thu Jun 15 2016 - Thomas Wagner
 - bump to 7.44 - Drupal Core - Moderately Critical - Multiple Vulnerabilities - SA-CORE-2016-002
 * Mon Feb 29 2016 - Thomas Wagner
