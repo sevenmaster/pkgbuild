@@ -27,7 +27,7 @@ URL:            http://MediaArea.net/MediaInfo
 Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source0:	%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 
-BuildRequires:	SFElibmediainfo-devel
+BuildRequires:	SFElibmediainfo
 BuildRequires:	SFEwxwidgets-gpp-devel
 
 %description
@@ -81,7 +81,11 @@ popd
 # now build GUI
 pushd Project/GNU/GUI
     ./autogen.sh
+%if %oihipster
+    %configure
+%else
     %configure --with-wx-config=/usr/g++/bin/wx-config
+%endif
     make
 popd
 
