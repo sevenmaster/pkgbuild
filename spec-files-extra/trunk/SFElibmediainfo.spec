@@ -22,7 +22,7 @@ Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source0:	%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 Patch0:		libmediainfo-01-CriticalSection.patch
 
-BuildRequires:	SFElibzen-devel
+BuildRequires:	SFElibzen
 %include	default-depend.inc
 
 %description
@@ -52,13 +52,10 @@ What format (container) does MediaInfo support?
 %package        doc
 Summary:        Most relevant technical and tag data for video and audio files -- documentation
 Group:          Development/Libraries
-Requires:       %{name}
 
 %package        devel
 Summary:        Most relevant technical and tag data for video and audio files -- development
 Group:          Development/Libraries
-Requires:       %{name}
-Requires:       libzen-devel
 
 
 %prep
