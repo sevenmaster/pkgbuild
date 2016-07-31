@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+
+if [ "$1" == "link" ];
+ then
+   /usr/bin/guile-config "${@}" | sed -e 's?-pthreads??g' -e 's?-D\w*??g'
+ else
+   /usr/bin/guile-config "${@}" | sed -e 's?-pthreads??g'
+fi
+
+#guile-config link    
+#-I/usr/include/gmp -D__USE_LEGACY_PROTOTYPES__ -D_REENTRANT -pthreads  -lguile -lltdl -lgmp -lsocket -lnsl -lm -lltdl
+#pkgbuild@s11175> which guile-config
+#/usr/bin/guile-config
+
