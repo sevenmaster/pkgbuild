@@ -64,6 +64,10 @@ Requires: SFExvid
 BuildRequires: %{pnm_buildrequires_SFEopenjpeg}
 Requires:      %{pnm_requires_SFEopenjpeg}
 
+#mp4client asks for spidermonkey -> libmozjs185.so -> libnspr4.sp
+BuildRequires: SFEspidermonkey
+Requires:      SFEspidermonkey
+
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_prefix}
@@ -123,6 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/%{_arch64}/*
 %hard %{_bindir}/MP4Box
 %hard %{_bindir}/MP4Client
+%hard %{_bindir}/MP42TS
 %else
 %{_bindir}/*
 %endif
@@ -144,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Aug  7 2016 - Thomas Wagner
+- add (Build)Requires: SFEspidermonkey for mp4client
+- add %hard %{_bindir}/MP42TS
 * Wed Mar 23 2016 - Thomas Wagner
 - bump to 0.5.2
 - new Source URL to download tarball from github
