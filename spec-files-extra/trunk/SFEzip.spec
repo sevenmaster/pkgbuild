@@ -92,4 +92,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sun Aug 16 2015 - pjama
-- initial spec to provide updated info-zip required by Libreoffice
+- initial spec to provide updated info-zip for OI 151a9 required by Libreoffice
