@@ -6,7 +6,6 @@
          ;;
 +        SunOS)
 +            PARALLELISM=${CPUS:-`/usr/sbin/psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}'`}
-3
 +        ;;
          # what else than above does profit here *and* has /proc?
          *)
