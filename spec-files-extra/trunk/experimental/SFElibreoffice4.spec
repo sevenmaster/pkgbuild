@@ -262,13 +262,30 @@ BuildRequires:	%{pnm_buildrequires_python_default}
 #solaris 11 1.0.2-0.175.3.0.0.18.0
 #solaris 12 1.0.2-5.12.0.0.0.70.0
 
-# Should fix pnm after discussion with Tomww re what distros have importlib. It *should* be included in python 2.7. 
-%if !%{openindiana}
-BuildRequires:    %{pnm_buildrequires_library_python_importlib}
-Requires:         %{pnm_requires_library_python_importlib}
-%else
+## Should fix pnm after discussion with Tomww re what distros have importlib. It *should* be included in python 2.7. 
+#%if !%{openindiana}
+#BuildRequires:    %{pnm_buildrequires_library_python_importlib}
+#Requires:         %{pnm_requires_library_python_importlib}
+#%else
+#BuildRequires:    library/python-2/importlib-26
+#Requires:         library/python-2/importlib-26
+#%endif
+
+# Rehash importlib requirement logic. It *should* be included in Python 2.7 and importlib-26 is just a backport of 2.7 code
+# ..... and it looks like I never supplied the 2.6 importlib spec file in the first place and poor Tomww had to write his own :/
+# see https://pypi.python.org/pypi/importlib
+%if %{oihipster}
+# Should fix this in pnm
+%define python_version 2.7
+%endif
+%if %( expr %{python_version} '=' 2.6 )
 BuildRequires:    library/python-2/importlib-26
 Requires:         library/python-2/importlib-26
+%else
+%if !%{oihipster}
+BuildRequires:    %{pnm_buildrequires_library_python_importlib}
+Requires:         %{pnm_requires_library_python_importlib}
+%endif
 %endif
 
 BuildRequires:	%{pnm_buildrequires_SUNWcurl}
@@ -1492,6 +1509,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 29 2016 - pjama
+- Rehash importlib requirement logic. OI151 requires python26-importlib, oihipster has it already in python 2.7
 * Sat Sep 24 2016 - pjama
 - add patch to enable update of libwps from 0.3.x to 0.4.x
 - gsed hack of configure.ac to look for and use libwps-0.4
