@@ -172,6 +172,7 @@ Patch3:			libreoffice-03-config-CPUs.patch
 Patch4:			libreoffice-04-no-symbols-ld-complains.diff
 Patch5:			libreoffice-05-process.cxx-new-procfs.diff
 Patch6:			libreoffice-06-hypot-cast-args.diff
+Patch7:			libreoffice4-07-libwps04.diff
 SUNW_BaseDir:  		%{_basedir}
 BuildRoot:     		%{_tmppath}/%{name}-%{version}-build
 
@@ -261,8 +262,14 @@ BuildRequires:	%{pnm_buildrequires_python_default}
 #solaris 11 1.0.2-0.175.3.0.0.18.0
 #solaris 12 1.0.2-5.12.0.0.0.70.0
 
+# Should fix pnm after discussion with Tomww re what distros have importlib. It *should* be included in python 2.7. 
+%if !%{openindiana}
 BuildRequires:    %{pnm_buildrequires_library_python_importlib}
 Requires:         %{pnm_requires_library_python_importlib}
+%else
+BuildRequires:    library/python-2/importlib-26
+Requires:         library/python-2/importlib-26
+%endif
 
 BuildRequires:	%{pnm_buildrequires_SUNWcurl}
 Requires:	%{pnm_requires_SUNWcurl}
@@ -284,7 +291,7 @@ Requires:	%{pnm_requires_icu_gpp_default}
 #on S11, problems compiling --without-openldap is doesn't find nssutil.h and other stuff
 #now: try --with-system-openldap=/usr/gnu and see if it is found and nss3 / nspr goes away
 %define SFEopenldap 1
-%if %{solaris12}
+%if %( expr %{solaris12} '|' %{oihipster} )
 #try system openldap for now
 %define SFEopenldap 0
 %endif
@@ -570,6 +577,14 @@ cd %{src_name}-%{version}
 %patch5 -p1
 
 %patch6 -p1
+
+# Patch writerperfect/source/writer/MSWorksImportFilter.cxx to use libwps v0.4
+%patch7 -p1
+
+# and hack configure.ac to look for libwps-0.4 insteaf of 0.3
+gsed -i.prelibwps -e 's/libwps-0.3/libwps-0.4/'	\
+	configure.ac	\
+	;
 
 # should probably do this with a patch but sed would be more reselient
 # Swap LINUX for SOLARIS in a number of .mk files
@@ -1226,7 +1241,7 @@ for compiletry in 5 4 3 2 1 0
 
  ###pdfunzip
    #don't delete it [ -r `pwd`/workdir/LinkTarget/Executable/pdfunzip ] && rm `pwd`/workdir/LinkTarget/Executable/pdfunzip
-   if [ ! -f `pwd`/LinkTarget/Executable/pdfunzip ] ; 
+   if [ ! -f `pwd`/workdir/LinkTarget/Executable/pdfunzip ] ; 
     then
      echo "====================== compiletry $compiletry"
      echo "recompile pdfunzip ourselves, with added \"-lboost_system\""
@@ -1237,7 +1252,7 @@ for compiletry in 5 4 3 2 1 0
 
  ###pdf2xml
    #don't delete it [ -r`pwd`/workdir/LinkTarget/Executable/pdf2xml ] && rm `pwd`/workdir/LinkTarget/Executable/pdf2xml
-   if [ ! -f `pwd`/LinkTarget/Executable/pdf2xml ] ; 
+   if [ ! -f `pwd`/workdir/LinkTarget/Executable/pdf2xml ] ; 
     then
      echo "====================== compiletry $compiletry"
      echo "recompile pdf2xml ourselves, with added \"-lboost_system\""
@@ -1449,28 +1464,40 @@ rm -rf $RPM_BUILD_ROOT
 %files desktop-int
 %defattr (-,root, bin)
 %dir %attr (0755, root, bin) %_bindir
-%{_bindir}/*
+%attr (0755, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_bindir}/libreoffice4.4
+%attr (0755, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_bindir}/loffice
 
 %dir %attr(0755, root, root) %_datadir/mime
 %dir %attr(0755, root, root) %_datadir/mime/packages
-%{_datadir}/mime/packages/libreoffice4.4.xml
+%attr (0644, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/mime/packages/libreoffice4.4.xml
 
 %dir %attr (0755, root, other) %{_datadir}/application-registry
-%{_datadir}/application-registry/libreoffice4.4.applications
+#%{_datadir}/application-registry/libreoffice4.4.applications
+%attr (0644, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/application-registry/libreoffice4.4.applications
 
 %dir %attr(0755, root, sys) %{_datadir}
 %dir %attr(0755, root, other) %{_datadir}/applications
-%{_datadir}/applications/*.desktop
+#%{_datadir}/applications/*.desktop
+%attr (0644, root, other) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/applications/*.desktop
 
 %dir %attr(0755, root, other) %{_datadir}/mime-info
-%{_datadir}/mime-info/libreoffice4.4.keys
-%{_datadir}/mime-info/libreoffice4.4.mime
+#%{_datadir}/mime-info/libreoffice4.4.keys
+#%{_datadir}/mime-info/libreoffice4.4.mime
+%attr (0644, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/mime-info/libreoffice4.4.keys
+%attr (0644, root, bin) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/mime-info/libreoffice4.4.mime
 
 %dir %attr (0755, root, other) %{_datadir}/pixmaps
-%{_datadir}/pixmaps/*.png
+#%{_datadir}/pixmaps/*.png
+%attr (0644, root, other) %ips_tag (mediator=libreoffice mediator-version=4.4) %{_datadir}/pixmaps/*.png
 
 
 %changelog
+* Sat Sep 24 2016 - pjama
+- add patch to enable update of libwps from 0.3.x to 0.4.x
+- gsed hack of configure.ac to look for and use libwps-0.4
+- set openindiana OI151a[89] to require library/python-2/importlib-26 to go with it's dirty old python 2.6
+- fix (?) path to files it looked for in compiletry (ie prepend "/workdir" to path) because I think typo. Tomww please confirm.
+- Add tags in the %files area to enable mediated versions for libreoffice4-desktop-int package
 * Sat Apr 23 2016 - Thomas Wagner
 - add patch6 libreoffice-06-hypot-cast-args.diff first seen on (S12)
   error: call of overloaded 'hypot(long int, long int)' is ambiguous
