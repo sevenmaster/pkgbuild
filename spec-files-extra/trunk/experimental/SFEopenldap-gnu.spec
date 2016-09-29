@@ -19,6 +19,8 @@
 %include base.inc
 %include pkgbuild-features.inc
 
+# usr-gnu.inc sets _sysconfdir to /etc/gnu but base.inc resets this to /etc if run after usr-gnu.inc
+%define _sysconfdir /etc/%{_subdir}
 
 %define src_name openldap
 
@@ -306,6 +308,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Tue Sep 20 2016 - pjama
+- hard set _sysconfdir to /etc/gnu because base.inc run after usr-gnu.inc overwrites _sysconfdir to be /etc and breaks %files paths
 * Sun Aug 16 2015 - Thomas Wagner
 - fix order %include usr-g.*inc base.inc
 * Fri Jan 16 2015 - Thomas Wagner
