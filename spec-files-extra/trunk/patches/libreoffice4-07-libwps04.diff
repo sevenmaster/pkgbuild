@@ -1,0 +1,27 @@
+--- libreoffice-4.4.7.2/writerperfect/source/writer/MSWorksImportFilter.cxx.orig	2015-11-25 22:55:38.000000000 +1000
++++ libreoffice-4.4.7.2/writerperfect/source/writer/MSWorksImportFilter.cxx	2016-09-23 11:10:55.928139623 +1000
+@@ -39,7 +39,9 @@
+ bool MSWorksImportFilter::doDetectFormat(librevenge::RVNGInputStream &rInput, OUString &rTypeName)
+ {
+     libwps::WPSKind kind = libwps::WPS_TEXT;
+-    const libwps::WPSConfidence confidence = libwps::WPSDocument::isFileFormatSupported(&rInput, kind);
++    libwps::WPSCreator creator;
++    bool needsEncoding = false;
++    const libwps::WPSConfidence confidence = libwps::WPSDocument::isFileFormatSupported(&rInput, kind, creator, needsEncoding);
+ 
+     if ((kind == libwps::WPS_TEXT) && (confidence == libwps::WPS_CONFIDENCE_EXCELLENT))
+     {
+
+--- libreoffice-4.4.7.2/writerperfect/source/calc/MSWorksCalcImportFilter.cxx.orig	2015-11-25 22:55:38.000000000 +1000
++++ libreoffice-4.4.7.2/writerperfect/source/calc/MSWorksCalcImportFilter.cxx	2016-09-23 14:47:17.579105864 +1000
+@@ -32,7 +32,9 @@
+ bool MSWorksCalcImportFilter::doDetectFormat(librevenge::RVNGInputStream &rInput, OUString &rTypeName)
+ {
+     libwps::WPSKind kind = libwps::WPS_TEXT;
+-    const libwps::WPSConfidence confidence = libwps::WPSDocument::isFileFormatSupported(&rInput, kind);
++    libwps::WPSCreator creator;
++    bool needsEncoding = false;
++    const libwps::WPSConfidence confidence = libwps::WPSDocument::isFileFormatSupported(&rInput, kind, creator, needsEncoding);
+ 
+     if ((kind == libwps::WPS_SPREADSHEET || kind == libwps::WPS_DATABASE) && (confidence == libwps::WPS_CONFIDENCE_EXCELLENT))
+     {
