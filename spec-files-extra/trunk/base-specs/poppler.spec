@@ -4,6 +4,14 @@ Name:         poppler
 License:      GPL
 Group:        System/Libraries
 
+%if %{openindiana}
+#Version:      0.35.0 # Have used this previously and it works
+Version:      0.32.0
+Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
+#osdistro has 1.10.2
+%define cairo_version 1.10.2
+%endif
+
 %if %{omnios}
 Version:      0.24.3
 Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
@@ -131,6 +139,11 @@ export CXXFLAGS="%cxx_optflags `pkg-config --cflags-only-I cairo`"
 #-D_STDC_C11_BCI solves perf-test.cc:525:44: error: 'strcpy_s' was not declared in this scope
 export CXXFLAGS="$CXXFLAGS -std=c++11 -D_STDC_C11_BCI"
 %endif
+%if %{openindiana}
+# Overwrite FLAGS for OI to include /usr/gnu/include where we keep SFE libiconv includes
+export CFLAGS="%optflags -I/usr/gnu/include `pkg-config --cflags-only-I cairo`"
+export CXXFLAGS="%cxx_optflags -I/usr/gnu/include `pkg-config --cflags-only-I cairo`"
+%endif
 export LDFLAGS="%{_ldflags}"
 
 #configure doen't handle the "1" version libopenjpeg1 ...
@@ -207,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Fri Sep 30 2016 - pjama
+- Add config to define Version and cairo_version for openindiana
+- include /usr/gnu/include in CFLAGS path to find SFElibiconv headers for openindiana
 * Sat Apr 23 2016 - Thomas Wagner
 - revert commit 6199 as it broke compile on most osdistro by removing code switching the version based on osdistro
 - merge in only selected changes from commit 6199
