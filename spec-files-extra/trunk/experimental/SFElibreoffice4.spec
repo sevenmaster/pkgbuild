@@ -279,8 +279,8 @@ BuildRequires:	%{pnm_buildrequires_python_default}
 %define python_version 2.7
 %endif
 %if %( expr %{python_version} '=' 2.6 )
-BuildRequires:    library/python-2/importlib-26
-Requires:         library/python-2/importlib-26
+BuildRequires:	SFEpython26-importlib
+Requires:	SFEpython26-importlib
 %else
 %if !%{oihipster}
 BuildRequires:    %{pnm_buildrequires_library_python_importlib}
@@ -429,17 +429,20 @@ Requires:	SFEglm
 BuildRequires:	SFElibodfgen
 Requires:	SFElibodfgen
 
-# OI requires Info Zip Version 3.0 as osdistro version is 2.32
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? %if %(expr %{openindiana})
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? BuildRequires:	SFEzip-gnu
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? Requires:	SFEzip-gnu
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? %else
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? BuildRequires:	%{pnm_buildrequires_zip}
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? Requires:	%{pnm_requires_zip}
-##TODO##paused# does osdistro zip suffice if zlib.pc is present? %endif
+# LO requires "Info Zip" Version 3.0
+# OI 151* ships with version 2.32 which is too old.
+# Note: zlib != zip
+%if %(expr %{openindiana})
+BuildRequires:  SFEzip-gnu
+Requires:       SFEzip-gnu
+%else
+BuildRequires:  %{pnm_buildrequires_zip}
+Requires:       %{pnm_requires_zip}
+%endif
 
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
-#S11 S12 need zlib.pc
+
+%if %( expr %{openindiana} '|' %{solaris11} '|' %{solaris12} )
+#S11 S12 need zlib.pc as does OI151
 BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig}
 #for pkgtool's dependency resolution
 Requires:       %{pnm_requires_SFEzlib_pkgconfig}
@@ -1511,6 +1514,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Sep 29 2016 - pjama
 - Rehash importlib requirement logic. OI151 requires python26-importlib, oihipster has it already in python 2.7
+- make zlib.pc a requirement to OI151 as well
+- Req's for zip aka info-zip fixed. OI151's zip is to old so need SFE version
 * Sat Sep 24 2016 - pjama
 - add patch to enable update of libwps from 0.3.x to 0.4.x
 - gsed hack of configure.ac to look for and use libwps-0.4
