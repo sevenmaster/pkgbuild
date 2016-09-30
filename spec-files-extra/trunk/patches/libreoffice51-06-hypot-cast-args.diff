@@ -1,0 +1,73 @@
+--- libreoffice-4.4.7.2/tools/source/generic/line.cxx.orig	2016-04-23 21:46:48.394062344 +0200
++++ libreoffice-4.4.7.2/tools/source/generic/line.cxx	2016-04-23 21:46:09.983063883 +0200
+@@ -29,7 +29,7 @@
+ 
+ double Line::GetLength() const
+ {
+-    return hypot( maStart.X() - maEnd.X(), maStart.Y() - maEnd.Y() );
++    return hypot( (double) maStart.X() - maEnd.X(), (double) maStart.Y() - maEnd.Y() );
+ }
+ 
+ bool Line::Intersection( const Line& rLine, Point& rIntersection ) const
+--- libreoffice-4.4.7.2/filter/source/msfilter/escherex.cxx.orig	2015-11-25 13:55:38.000000000 +0100
++++ libreoffice-4.4.7.2/filter/source/msfilter/escherex.cxx	2016-04-24 00:56:39.734844332 +0200
+@@ -4499,7 +4499,7 @@
+     double fDist = (sal_uInt32)0xffffffff;
+     while( nCount-- )
+     {
+-        double fDistance = hypot( rPoint.X - rPoly[ nCount ].X(), rPoint.Y - rPoly[ nCount ].Y() );
++        double fDistance = hypot( (double) rPoint.X - rPoly[ nCount ].X(), (double) rPoint.Y - rPoly[ nCount ].Y() );
+         if ( fDistance < fDist )
+         {
+             nClosest =  nCount;
+@@ -4561,7 +4561,7 @@
+                             {
+                                 for ( b = 0; b < pInnerSequence->getLength(); b++, nIndex++, pArray++ )
+                                 {
+-                                    sal_uInt32 nDist = (sal_uInt32)hypot( aRefPoint.X - pArray->X, aRefPoint.Y - pArray->Y );
++                                    sal_uInt32 nDist = (sal_uInt32)hypot( (double) aRefPoint.X - pArray->X, (double) aRefPoint.Y - pArray->Y );
+                                     if ( nDist < nDistance )
+                                     {
+                                         nRule = nIndex;
+@@ -4614,7 +4614,7 @@
+                                     css::drawing::PolygonFlags ePolyFlags = *pFlags++;
+                                     if ( ePolyFlags == css::drawing::PolygonFlags_CONTROL )
+                                         continue;
+-                                    sal_uInt32 nDist = (sal_uInt32)hypot( aRefPoint.X - pArray->X, aRefPoint.Y - pArray->Y );
++                                    sal_uInt32 nDist = (sal_uInt32)hypot( (double) aRefPoint.X - pArray->X, (double) aRefPoint.Y - pArray->Y );
+                                     if ( nDist < nDistance )
+                                     {
+                                         nRule = nIndex;
+@@ -4698,7 +4698,7 @@
+                                 if ( rPoly.GetFlags( b ) != POLY_NORMAL )
+                                     continue;
+                                 const Point& rPt = rPoly[ b ];
+-                                sal_uInt32 nDist = (sal_uInt32)hypot( aRefPoint.X - rPt.X(), aRefPoint.Y - rPt.Y() );
++                                sal_uInt32 nDist = (sal_uInt32)hypot( (double) aRefPoint.X - rPt.X(), (double) aRefPoint.Y - rPt.Y() );
+                                 if ( nDist < nDistance )
+                                 {
+                                     nRule = nIndex;
+--- libreoffice-4.4.7.2/filter/source/msfilter/eschesdo.cxx.orig	2015-11-25 13:55:38.000000000 +0100
++++ libreoffice-4.4.7.2/filter/source/msfilter/eschesdo.cxx	2016-04-24 01:21:09.251545467 +0200
+@@ -721,8 +721,8 @@
+         if( rObj.GetType() == "drawing.Line" )
+         {
+ //2do: this does not work right
+-            double fDist = hypot( rObj.GetRect().GetWidth(),
+-                                    rObj.GetRect().GetHeight() );
++            double fDist = hypot( (double) rObj.GetRect().GetWidth(),
++                                    (double) rObj.GetRect().GetHeight() );
+             rObj.SetRect( Rectangle( rTextRefPoint,
+                             Point( (sal_Int32)( rTextRefPoint.X() + fDist ), rTextRefPoint.Y() - 1 ) ) );
+ 
+--- libreoffice-4.4.7.2/sd/source/filter/eppt/epptso.cxx.orig	Wed Nov 25 13:55:38 2015
++++ libreoffice-4.4.7.2/sd/source/filter/eppt/epptso.cxx	Sun Apr 24 16:23:13 2016
+@@ -3410,7 +3410,7 @@
+             aPropOpt.AddOpt( ESCHER_Prop_fNoFillHitTest, 0x100000 );
+             if ( mType == "drawing.Line" )
+             {
+-                double fDist = hypot( maRect.GetWidth(), maRect.GetHeight() );
++                double fDist = hypot( (double) maRect.GetWidth(), (double) maRect.GetHeight() );
+                 maRect = Rectangle( Point( aTextRefPoint.X, aTextRefPoint.Y ),
+                                         Point( (sal_Int32)( aTextRefPoint.X + fDist ), aTextRefPoint.Y - 1 ) );
+                 ImplCreateTextShape( aPropOpt, aSolverContainer, false );
