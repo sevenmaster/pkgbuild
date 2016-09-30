@@ -64,6 +64,11 @@ Requires:      %{pnm_requires_SFEopenjpeg}
 BuildRequires: SFEpoppler-data-gpp
 Requires:      SFEpoppler-data-gpp
 
+%if %{openindiana}
+BuildRequires:	SFElibiconv
+Requires:	SFElibiconv
+%endif
+
 #note: Solaris 11 cairo is too old to build more fresh poppler
 %if %{solaris11}
 #can be built with studio or gcc (on gcc_only distros like OIHipster)
@@ -80,26 +85,26 @@ Requires: SUNWgnome-base-libs-devel
 Requires: SFEsigcpp-gpp-devel
 
 %prep
-rm -rf %name-%version
-mkdir %name-%version
-%poppler.prep -d %name-%version
+rm -rf %{name}-%{version}
+mkdir %{name}-%{version}
+%poppler.prep -d %{name}-%{version}
 
 %build
 export CC=gcc
 export CXX=g++
 export CXXFLAGS="%cxx_optflags -std=c++11 -D_STDC_C11_BCI -fpermissive"
-export CFLAGS="%optflags"
+export CFLAGS="%{optflags}"
 export LIBOPENJPEG_CFLAGS=-I/usr/include/openjpeg-1.5
 export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig"
 export PATH=/usr/g++/bin:$PATH
 export LDFLAGS="-L/usr/g++/lib -R/usr/g++/lib -lgmodule-2.0"
 export PERL_PATH=/usr/perl5/bin/perl
 
-%poppler.build -d %name-%version
+%poppler.build -d %{name}-%{version}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%poppler.install -d %name-%version
+%poppler.install -d %{name}-%{version}
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
@@ -117,19 +122,22 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*
-%_libdir/girepository-1.0
+%{_libdir}/girepository-1.0
 
 %files devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
-%_includedir
+%{_includedir}
 %dir %attr (0755, root, sys) %{_datadir}
-%_datadir/gtk-doc
-%_datadir/gir-1.0
+%{_datadir}/gtk-doc
+%{_datadir}/gir-1.0
 
 %changelog
+* Fri Sep 30 2016 - pjama
+- openindiana requires SFElibiconv
+- enclose %vars in {} for readability
 * Sat Apr 23 2016 - Thomas Wagner
 - revert commit 6199 as it broke compile on most osdistro by removing code switching the version based on osdistro
 - merge in only selected changes from commit 6199
