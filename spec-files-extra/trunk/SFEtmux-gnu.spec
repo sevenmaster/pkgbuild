@@ -7,7 +7,7 @@
 #
 
 %include Solaris.inc
-##hold## %define cc_is_gcc 1
+%define cc_is_gcc 1
 %include usr-gnu.inc
 %include base.inc
 
@@ -22,12 +22,11 @@ Summary:        Terminal multiplexer (/usr/gnu)
 #git IPS_Component_Version: 1.9.0.2
 #git %define git_snapshot	df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #git Version:        1.9a.git.df6488
-Version:        2.1
+Version:        2.3
 License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
 Source:		http://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
-#Patch6:         tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -67,25 +66,13 @@ to (display and accept keyboard input from) multiple clients.
 %setup -q -n %{srcname}-%{version}
 #tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #cd %{srcname}-%{srcname}-code-%{git_snapshot}
-#%patch5 -p1
-#%patch6 -p1
-
-
-#"compat/vis.h", line 76: cannot find include file: <sys/cdefs.h>
-#"compat/vis.h", line 78: warning: old-style declaration or incorrect type for: __BEGIN_DECLS
-#"compat/vis.h", line 88: warning: old-style declaration or incorrect type for: __END_DECLS
-gsed -i.bak \
-   -e '/^#include.*sys\/cdefs.h/ d'  \
-   -e '/__BEGIN_DECLS/ d'  \
-   -e '/__END_DECLS/ d'  \
-   compat/vis.h  \
 
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-##hold## CC=gcc
-##hold## CXX=g++
+CC=gcc
+CXX=g++
 
 export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6"
 %if %{cc_is_gcc}
@@ -94,10 +81,11 @@ export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6"
 export CFLAGS="$CFLAGS -xc99"
 %endif 
 
-# Need to supply -lcurses, because otherwise, it tries to link against ncurses,
-# leading to "Undefined Symbol: delterm" error
 # try avoiding core dumps by linking to 0@0.so.1
-export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -lcurses -L/usr/gnu/lib -R/usr/gnu/lib"
+export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
+export LIBNCURSES_CFLAGS="-I/usr/include/ncurses"
+export LIBNCURSES_LIBS="-lncurses"
+
 [ -x autogen.sh ] && bash autogen.sh
 ./configure
 gmake -j$CPUS
@@ -119,12 +107,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (-, root, sys) %_datadir
 %dir %attr (0755, root, other) %dir %_docdir
 %doc CHANGES FAQ TODO
-%doc examples/screen-keys.conf examples/t-williams.conf examples/vim-keys.conf
-%doc examples/h-boetes.conf examples/tmux.vim examples/n-marriott.conf
 %doc %_mandir/man1/tmux.1
 
 
 %changelog
+* Fri Oct  7 2016 - Thomas Wagner
+- bump to 2.3
+- use gcc, remove compile fix for vis.h
+- set LIBNCURSES_CFLAGS LIBNCURSES_LIBS for ncurses
+* Tue Jul 12 2016 - Thomas Wagner
+- bump to 2.2
 * Sun Jan 17 2016 - Thomas Wagner
 - conditional (Build)Requires on SFElibevent2 or library/libevent2 (OIH) duplicate packages!
   workaround until pnm_macro for for libevent2 package is available
