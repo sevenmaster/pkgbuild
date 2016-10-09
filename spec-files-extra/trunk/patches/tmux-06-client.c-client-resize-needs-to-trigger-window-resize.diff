@@ -1,0 +1,24 @@
+If tmux client resizes, then windows do not get signaled to resize too.
+ported forward from older patch tmux-06-client.c-missing-flock-modify-tio-cfmakeraw.diff
+
+
+--- tmux-2.3/client.c.orig	2016-01-21 01:00:28.000000000 +0100
++++ tmux-2.3/client.c	2016-10-09 15:06:39.009687371 +0200
+@@ -314,7 +314,16 @@
+ 	if (client_flags & CLIENT_CONTROLCONTROL) {
+ 		if (tcgetattr(STDIN_FILENO, &saved_tio) != 0)
+ 			fatal("tcgetattr failed");
+-		cfmakeraw(&tio);
++#ifdef HAVE_CFMAKERAW
++               cfmakeraw(&tio);
++#else
++               tio.c_iflag &= ~(IMAXBEL|IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
++               tio.c_oflag &= ~OPOST;
++               tio.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
++               tio.c_cflag &= ~(CSIZE|PARENB);
++               tio.c_cflag |= CS8;
++#endif
++
+ 		tio.c_iflag = ICRNL|IXANY;
+ 		tio.c_oflag = OPOST|ONLCR;
+ #ifdef NOKERNINFO
