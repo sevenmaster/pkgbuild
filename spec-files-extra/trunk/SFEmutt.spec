@@ -12,14 +12,15 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.5.23
+Version:             1.7.1
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
-Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
-Patch1:              mutt-01-makefile.diff
+Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
+#Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
+#Patch1:              mutt-01-makefile.diff
 Patch2:              mutt-02-configure-gssapi-krb5.diff
-Patch3:              mutt-03-configure-unquoted-test.diff
+#Patch3:              mutt-03-configure-unquoted-test.diff
 ##TODO## remove once CVE-2014-9116 included in next version (past 1.5.23)
-Patch4:              mutt-04-CVE-2014-9116-ticket-3716-stable.patch.diff
+#Patch4:              mutt-04-CVE-2014-9116-ticket-3716-stable.patch.diff
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -58,6 +59,14 @@ Requires:      SUNWgss
 #smime_keys wants perl, so pkgdepend finds the actual perl as dependency
 # dependency discovered: runtime/perl-512@5.12.3-0.175.0.0.0.2.537
 
+%description
+
+1.6.0 contains a few new features, along with a slew of bug fixes.
+Please take the time to read the UPDATING file, and review the sample
+gpg.rc and smime.rc files for changed and added options.  We have
+started a wiki page at https://dev.mutt.org/trac/wiki/UpgradingTips
+and encourage the community to contribute tips and suggestions.
+
 
 %package root
 Summary:                 %{summary} - / filesystem
@@ -66,13 +75,52 @@ SUNW_BaseDir:            /
 
 %prep
 %setup -q -n mutt-%version
-%patch1 -p0
+#%patch1 -p0
 %patch2 -p0
-%patch3 -p0
+#%patch3 -p0
 ##TODO## remove once CVE-2014-9116 included in next version (past 1.5.23)
-%patch4 -p1
+#%patch4 -p1
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
+
+# make[2]: Entering directory `/packagepool/sfe/packages/BUILD/mutt-1.6.0'
+# /usr/gcc/4.8/bin/gcc -std=gnu99 -DPKGDATADIR=\"/usr/share/mutt\" -DSYSCONFDIR=\"/etc\" -DBINDIR=\"/usr/bin\" -DMUTTLOCALEDIR=\"/usr/share/locale\" -DHAVE_CONFIG_H=1 -I.  -I. -I. -I./imap  -Iintl -I/usr/include/idn -I/usr/include/sasl -I/usr/sfw/include  -I/usr/include/idn -I/usr/include/sasl -I/usr/sfw/include -I/usr/include/kerberosv5 -I/usr/sfw/include -I/usr/gnu/include -I./intl  -Wall -pedantic -Wno-long-long -O3 -march=i686 -Xlinker -i -fno-omit-frame-pointer -fPIC -DPIC  -I/usr/include/idn -I/usr/include/sasl -I/usr/gnu/include -MT getdomain.o -MD -MP -MF .deps/getdomain.Tpo -c -o getdomain.o getdomain.c
+# In file included from getdomain.c:29:0:
+# mutt.h:86:0: warning: "M_CMD" redefined [enabled by default]
+#  #define  M_CMD     (1<<3) /* do completion on previous word */
+#  ^
+# In file included from /usr/include/netinet/in.h:67:0,
+#                  from /usr/include/netdb.h:77,
+#                  from getdomain.c:25:
+# /usr/include/sys/stream.h:466:0: note: this is the location of the previous definition
+#  #define M_CMD  0x93  /* out-of-band ioctl command */
+#  ^
+# mutt.h:180:3: error: expected identifier before numeric constant
+#    M_READ,
+#    ^
+# make[2]: *** [getdomain.o] Error 1
+# make[2]: Leaving directory `/packagepool/sfe/packages/BUILD/mutt-1.6.0'
+# make[1]: *** [all-recursive] Error 1
+# make[1]: Leaving directory `/packagepool/sfe/packages/BUILD/mutt-1.6.0'
+# gmake: *** [all] Error 2
+# pkgbuild@hipster> p
+# bash: p: command not found
+# pkgbuild@hipster> 
+# pkgbuild@hipster> ggrep -r M_CMD .
+# ./commands.c:  if (mutt_get_field (_("Pipe to command: "), buffer, sizeof (buffer), M_CMD)
+# ./commands.c:  if (mutt_get_field (_("Shell command: "), buf, sizeof (buf), M_CMD) == 0)
+# ./enter.c:  else if (flags & M_CMD)
+# ./enter.c:        if (flags & M_CMD)
+# ./recvattach.c:                           buf, sizeof (buf), M_CMD) != 0 || !buf[0])
+# ./mutt.h:#define  M_CMD     (1<<3) /* do completion on previous word */
+
+# can be removed gsed -i.bak -e '/M_CMD/ s?M_CMD?MUTT_CMD?g' `ggrep -w -l -r M_CMD .`
+
+##TODO## this /M_READ/ should not catch M_READONLY, need better idea to protect it!
+#can be removed gsed -i.bak -e '/M_READONLY/ s?M_READONLY?M_PRESERVED_READONLY?g' \
+#can be removed             -e '/M_READ/ s?M_READ?MUTT_READ?g' \
+#can be removed             -e '/M_PRESERVED_READONLY/ s?M_PRESERVED_READONLY?M_READONLY?g' \
+#can be removed      `ggrep -w -l -r M_READ .`
 
 
 %build
@@ -105,7 +153,7 @@ export CPPFLAGS="$EXTRAINCLUDES -I/usr/sfw/include"
 	    --with-docdir=%{_docdir}/mutt \
 	    --disable-nls \
 	    --with-slang=/usr/lib \
-	    --with-ssl=/usr/sfw \
+	    --with-ssl \
 	    --enable-pop \
 	    --enable-imap \
             --enable-hcache \
@@ -149,6 +197,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sat Oct  8 2016 - Thomas Wagner
+- bump to 1.7.1
+- remove workaround for M_CMD, M_READ
+- rework patch mutt-02-configure-gssapi-krb5.diff
+* Thu Aug 18 2016 - Thomas Wagner
+- bump to 1.7.0
+* Mon Apr  4 2016 - Thomas Wagner
+- bump to 1.6.0
 * Thu Dec 18 2014 - Thomas Wagner
 - add patch4 ticket-3716, CVE-2014-9116, Debian Bug 771125
 * Thu Dec 18 2014 - Thomas Wagner
