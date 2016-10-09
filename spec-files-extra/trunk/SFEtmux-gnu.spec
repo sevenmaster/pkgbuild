@@ -27,6 +27,7 @@ License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
 Source:		http://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
+Patch6:         tmux-06-client.c-client-resize-needs-to-trigger-window-resize.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -67,6 +68,7 @@ to (display and accept keyboard input from) multiple clients.
 #tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #cd %{srcname}-%{srcname}-code-%{git_snapshot}
 
+%patch6 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -111,6 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct  9 2016 - Thomas Wagner
+- re-introduce Patch6 tmux-06-client.c-client-resize-needs-to-trigger-window-resize.diff
 * Fri Oct  7 2016 - Thomas Wagner
 - bump to 2.3
 - use gcc, remove compile fix for vis.h
