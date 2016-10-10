@@ -3,10 +3,12 @@
 #
 
 %include Solaris.inc
-Name:                    SFEbvi
-IPS_Package_Name:	 editor/bvi
+%include usr-gnu.inc
+
+Name:                    SFEbvi-gnu
+IPS_Package_Name:	 sfe/editor/gnu/bvi
 Group:			 Development/Editors
-Summary:                 bvi - display-oriented editor for binary files (vi like)
+Summary:                 bvi - display-oriented editor for binary files (vi like) (/usr/gnu)
 URL:			 http://bvi.sourceforge.net/
 Version:                 1.4.0
 Source:                  %{sf_download}/bvi/bvi-%{version}.src.tar.gz
@@ -62,6 +64,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 10 2016 - Thomas Wagner
+- change IPS_package_name to avoid stupid consolidation/sfw/sfw-incorporation preventing the install
+* Tue Feb 16 2016 - Thomas Wagner
+- relocate to /usr/gnu, OI is in the way
 * Tue Mar  3 2015 - Thomas Wagner
 - add IPS_Package_Name, fix %files
 * Thr Feb 26 2015 - Thomas Wagner
