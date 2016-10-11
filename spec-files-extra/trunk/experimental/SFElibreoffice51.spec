@@ -20,8 +20,8 @@
 # Add IPS equivalent of pre/post scripts. MIME types not recognised till a reboot. See %post and %postun below
 #   google "solaris post install IPS", see http://constantin.glez.de/blog/2010/08/how-add-pre-post-scripts-ips-packages
 #   done - use '%restart_fmri desktop-mime-cache' TBC - nup doesn't work
-#       added %restart_fmri desktop-mime-cache but install restarts fmri svc:/application/desktop-cache/mime-types-cache:default
-#       you can tell by the timestamp on /usr/share/applications/mimeinfo.cache
+#	added %restart_fmri desktop-mime-cache but install restarts fmri svc:/application/desktop-cache/mime-types-cache:default
+#	you can tell by the timestamp on /usr/share/applications/mimeinfo.cache
 #	it'd be nice if desktop-mime-cache was restarted with mediator change.... or I fixed mediated files to work properly
 # redo LO4 with mediation - done
 #	means redoing SFE on line packages!
@@ -48,7 +48,6 @@
 # Review x11/library/libpthread-stubs requirement. It DOES exist on openindiana so why exclude it?
 # Mess with pdfunzip and friends.... and may have broken it such that they don't exist.
 #	needs review w/r gratuitous gsed hacks and compiltry. Note I think compiletry looks in wrong path (prepend workdir)
-# Discuss importlib with tomww. It *should* be included in python 2.7. My importlib package is to backport importlib to python2.6.
 # Tomww to review gsed CPPunit tests for distros he maintains. I found they were only a subset of previous requirements and different for OI151 vs hipster.
 # Tomww to see ToDo Tomww comments :)
 
@@ -59,21 +58,6 @@
 ##TODO## see if harfbuzz could be replaced by a g++/harfbuzz, in that case the dependency on distro icu could vanish
 
 ##TODO## look for the automatic update notification URL to see if we have a new SFE built LibeOffice4
-
-### Set "OS Version" displayed in "About LibreOffice" dialogue
-## ToDo ## fix as it just doesn't seem to work
-%define os_version %( uname -v )
-
-# Make it prettier 
-# For openindiana 
-%if %(expr %{os_version} : 'oi_151.*' )
-	%define with_os_version OpenIndiana %{os_version}
-%endif
-# For hipster
-%if %(expr %{os_version} : 'illumos.*' )
-	%define with_os_version OIHipster %{os_version}
-%endif
-# For other  distros do similar otherwise it will be set to `uname -v`
 
 
 ##TODO## customize vendorstring by a local file not in SVN, so regular users don't get this set.
@@ -182,13 +166,11 @@
 ##TODO## put a top package libreoffice ontop and use mediators to symlink to the locally preferred office
 Name:			SFElibreoffice%{major_version}%{minor_version}
 IPS_Package_Name:	desktop/application/libreoffice%{major_version}%{minor_version}
-Summary:		LibreOffice is a powerful office suite
+Summary:		LibreOffice is a powerful office suite. This is LibreOffice Still, the stable version that has undergone more testing (over a longer time). 
 Version:		%{major_version}.%{minor_version}.%{micro_version}.%{patch_version}
 License:		MPL 2.0
 URL:			http://www.libreoffice.org
 Source:			%{src_url}/%{src_name}-%{version}.tar.xz
-#Patch1:		libreoffice51-01-python-mk.diff
-#Patch2:		libreoffice51-02-config-01-python.diff
 Patch3:			libreoffice-03-config-CPUs.patch
 Patch4:			libreoffice-04-no-symbols-ld-complains.diff
 Patch5:			libreoffice51-05-process.cxx-new-procfs.diff
@@ -287,8 +269,8 @@ BuildRequires:	%{pnm_buildrequires_python_default}
 
 # python module importlib required *IF* we only have latest possible Python version stuck at 2.6. eg OI-151
 # Will also require hacks of configure to make 2.6 work
-#BuildRequires:    %{pnm_buildrequires_library_python_importlib}
-#Requires:         %{pnm_requires_library_python_importlib}
+BuildRequires:    %{pnm_buildrequires_library_python_importlib}
+Requires:         %{pnm_requires_library_python_importlib}
 
 BuildRequires:	%{pnm_buildrequires_SUNWcurl}
 Requires:	%{pnm_requires_SUNWcurl}
@@ -454,6 +436,9 @@ suite on the market: Writer, the word processor, Calc, the spreadsheet applicati
 Impress, the presentation engine, Draw, our drawing and flowcharting application,
 Base, our database and database frontend, and Math for editing mathematics.
 
+LibreOffice Still is the stable version that has undergone more testing (over a longer time).
+It is usually recommended for more conservative use.
+
 Remember to install package libreoffice51-desktop-int to get the
 Links for LibreOffice in your Desktop Menu.
 
@@ -475,15 +460,6 @@ This package integrates desktop menu items and symbolic links /usr/bin/loffice
 %setup -q -c -T -n %name-%version
 xz -dc  %{SOURCE} | tar xf -
 cd %{src_name}-%{version}
-
-# patch external/python3/ExternalPackage_python3.mk for different/unresolvedVAR paths
-# might not need any more now that I've updated hipster to version with later python
-#%patch1 -p1
-
-# Theres something horribly wrong with configure.ac/autogen.sh/aclocal.m4 such that _AM_PYTHON_INTERPRETER_LIST is set to only list python 2.*
-# Here I've set configure to only test for 2.6 but it should test for 3.3 but I can't find where to expand _AM_PYTHON_INTERPRETER_LIST
-# might not need any more now that I've updated hipster to version with later python
-#%patch2 -p1
 
 # Patch configure.ac to have it detect number of CPUs on SunOS to apply to parallelism IF gmake version is > 3.81
 # Mainly needed for OI circa 151a9 and earlier because it only has gmake v3.81 and parallelism is broken in that version
@@ -781,12 +757,6 @@ fi
 # Make bin/unpack-sources executable so it can unpack the likes of dicionaries etc
 chmod ug+x bin/unpack-sources
 
-# Options for OI
-#	--disable-gltf			# because it doesn't compile on OI151a9...yet.. one day
-#	--x-includes=/usr/X11/include	\
-#	--x-libraries=/usr/X11/lib	\
-
-
 # CXXFLAGS="$CXXFLAGS $BOOST_CPPFLAGS $CXXFLAGS_CXX11" inject -std=<...> what makes on S12 boost complain about redefining functions
 
 perl -w -pi.remove_cxxflags_cxx11_from_boost_test -e 's/\$CXXFLAGS_CXX11// if /CXXFLAGS="\$CXXFLAGS \$BOOST_CPPFLAGS \$CXXFLAGS_CXX11"/' \
@@ -794,16 +764,23 @@ perl -w -pi.remove_cxxflags_cxx11_from_boost_test -e 's/\$CXXFLAGS_CXX11// if /C
    configure
 
 %if %{oihipster}
-# Somthing to change in include macros?
+# Something to change in pnm macros?
 %define python_version 2.7
 %endif
 
-#NOTE: python version is contained in the python-2.7.pc file name!
-[ -z ${PKG_CONFIG} ] && PKG_CONFIG="pkg-config"
-echo "PKG_CONFIG: ${PKG_CONFIG}"
+# Set default python to use according to pnm
 export PYTHON=python%{python_version}
+
+# set libs and cflags for python else configure looks for python 3.3, can't find it and runs away screaming.
+%if %( expr %{python_version} '=' 2.6 )
+export PYTHON_LIBS=-lpython2.6
+export PYTHON_CFLAGS=-I/usr/include/python2.6
+%elseif
+[ -z ${PKG_CONFIG} ] && PKG_CONFIG="pkg-config"
+#echo "PKG_CONFIG: ${PKG_CONFIG}"
 export PYTHON_LIBS=`$PKG_CONFIG --libs "python-%{python_version} >= 0.27.1" 2>/dev/null`
 export PYTHON_CFLAGS=`$PKG_CONFIG --cflags "python-%{python_version} >= 0.27.1" 2>/dev/null`
+%endif
 
 
 cp -p configure configure.remove_cxxflags_cxx11_from_boost_test
@@ -882,7 +859,6 @@ export with_install_dirname=libreoffice%{major_version}.%{minor_version}
 	--disable-collada	\
 	--disable-firebird-sdbc	\
 	--disable-postgresql-sdbc	\
-	--enable-python=system	\
 	--with-java=no		\
 	--without-help		\
 	--without-fonts		\
@@ -894,10 +870,11 @@ export with_install_dirname=libreoffice%{major_version}.%{minor_version}
         --with-parallelism=%{_cpus_memory}	\
         --with-tls="openssl"	\
 	--disable-gtk3		\
-	--with-os-version="%{os_version}"	\
 	--with-system-openldap	\
 %if %{openindiana}
 	--enable-python=no	\
+%else
+	--enable-python=system	\
 %endif
 	;
 
@@ -1154,7 +1131,7 @@ for compiletry in 5 4 3 2 1 0
 
  ###pdfunzip
    #don't delete it [ -r `pwd`/workdir/LinkTarget/Executable/pdfunzip ] && rm `pwd`/workdir/LinkTarget/Executable/pdfunzip
-   if [ ! -f `pwd`/LinkTarget/Executable/pdfunzip ] ; 
+   if [ ! -f `pwd`/workdir/LinkTarget/Executable/pdfunzip ] ; 
     then
      echo "====================== compiletry $compiletry"
      echo "recompile pdfunzip ourselves, with added \"-lboost_system\""
@@ -1165,7 +1142,7 @@ for compiletry in 5 4 3 2 1 0
 
  ###pdf2xml
    #don't delete it [ -r`pwd`/workdir/LinkTarget/Executable/pdf2xml ] && rm `pwd`/workdir/LinkTarget/Executable/pdf2xml
-   if [ ! -f `pwd`/LinkTarget/Executable/pdf2xml ] ; 
+   if [ ! -f `pwd`/workdir/LinkTarget/Executable/pdf2xml ] ; 
     then
      echo "====================== compiletry $compiletry"
      echo "recompile pdf2xml ourselves, with added \"-lboost_system\""
@@ -1404,6 +1381,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 11 2016 - pjama
+- Change description a little to reflect "Still" version "Fresh" versions.
+- remove os-version settings: they don't work as intended
+- remove already commented out patch1 and 2. No longer required.
+- remove some redundant comments
+- revert to pnm for importlib selection
+- adjust python FLAGS according to version 2.6 vs 2.7
+- fix(?) path to /workdir/LinkTarget/Executable/pdfunzip and friends
+- remove duplicate --enable-python=system 
 * Sun Jun/Jul/Aug/Sep 2016 - pjama
 - Update/clone from LO4.7 to LO5.1 c/w lotsa associated changes
 - install in /usr/lib/libreoffice%{major_version}.%{minor_version} instead of /usr/lib/libreoffice so can install 5.1 and 5.2
