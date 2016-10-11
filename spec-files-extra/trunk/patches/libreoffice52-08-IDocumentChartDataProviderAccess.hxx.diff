@@ -1,0 +1,11 @@
+--- libreoffice-5.2.1.2/sw/inc/IDocumentChartDataProviderAccess.hxx	2016-08-25 10:26:36.000000000 +1000
++++ libreoffice-5.1.5.2/sw/inc/IDocumentChartDataProviderAccess.hxx	2016-07-27 07:17:25.000000000 +1000
+@@ -20,6 +20,8 @@
+ #ifndef INCLUDED_SW_INC_IDOCUMENTCHARTDATAPROVIDERACCESS_HXX
+ #define INCLUDED_SW_INC_IDOCUMENTCHARTDATAPROVIDERACCESS_HXX
+ 
++#include <com/sun/star/uno/Reference.hxx>
++
+ namespace com { namespace sun { namespace star { namespace frame {
+     class XModel;
+ }}}}
