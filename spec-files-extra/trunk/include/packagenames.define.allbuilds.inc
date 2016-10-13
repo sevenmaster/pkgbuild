@@ -1705,6 +1705,15 @@
 #runtime/perl-512 or library/perl-5/sun-solaris-512
 %define pnm_buildrequires_perl_default runtime/perl-512
 %define pnm_requires_perl_default	runtime/perl-512
+%if %( expr %{osbuild} '>=' 95 )
+%define perl_version 5.22
+%define perl_major_minor_version 5.22
+%define perl_major_minor_micro_version 5.22.1
+#perl is 64-bit
+%define pnm_buildrequires_perl_default runtime/perl-522
+%define pnm_requires_perl_default	runtime/perl-522
+%endif
+#END build >= 95
 %endif
 #END solaris12
 %endif
@@ -1840,16 +1849,26 @@
 %if %{?perl_dir:1}%{!?perl_dir:0}
 #skip this, the perl_dir variable is already defined
 %else
+
 %ifarch sparc
 %define perl_dir sun4-solaris-64int
+
 %else
 %define perl_dir i86pc-solaris-64int 
+
 %if %{omnios}
 %define perl_dir i86pc-solaris-thread-multi-64
 %endif 
 #END omnios
+
+%if %( expr %{solaris12} '>=' 1 '&' %{osbuild} '>=' 95 )
+%define perl_dir i86pc-solaris-thread-multi-64
+%endif
+#END solaris 12 osbuild >= 95
+
 %endif
 #END sparc else i86pc
+
 %endif
 #END ?perl_dir
 
@@ -2001,6 +2020,14 @@
 %endif
 #END %{oihipster}
 
+#pkg://openindiana.org/runtime/python-24@2.4.6-2015.0.2.0:20161003T120954Z    --o
+#pkg://openindiana.org/runtime/python-25@2.5.4-2015.0.2.0:20161003T120954Z    --o
+#pkg://openindiana.org/runtime/python-26@2.6.9-2016.0.1.0:20161003T120954Z    --o
+#pkg://openindiana.org/runtime/python-26/tests@2.6.9-2016.0.1.0:20161003T120955Z --o
+#pkg://openindiana.org/runtime/python-27@2.7.12-2016.0.1.2:20161003T102116Z   ---
+#pkg://openindiana.org/runtime/python-27/tests@2.7.12-2016.0.1.2:20161003T102049Z ---
+#pkg://openindiana.org/runtime/python-34@3.4.5-2016.0.1.1:20160916T143119Z    ---
+
 # lets start (randomly) with python-27 as default in OIHpster >= 2015.0.1.1
 %if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 2015000000010001000000000000.0 )
 #python-27@2.7.10-2015.0.1.0:20150603T172529Z
@@ -2044,27 +2071,101 @@
 #END if osbuild >= 133
 
 
-#solaris12 has default python27 and knows library/python/importlib ---- verify this - NO >= build 86, python-26 removed/obsoleted
-#solaris11 has default python26 and knows library/python/importlib ---- verify this
+#build numbers or other milestones are important to switch python versions at the right time
+##TODO## should create "renamed-to" packages to uninstall our SFEpython26-importlib at the exact version when OSdistro's package appears
+##      
+#solaris12 has default python27 and knows library/python/importlib      - Yes for >= build 86 library/python/importlib
+#          Note: python-26 removed/obsoleted, so we ignore old development build 86 in rules below
+
+#solaris11 has default python26 and  *no* library/python*/importlib*    - Not present for 0.175.0.0.0.0.0 we need SFEpython26-importlib
+#solaris11 has default python26 and knows library/python-2/importlib-26 - Yes for >= 0.175.2.0.0.42.1 there is OSdistro library/python-2/importlib-26
+#solaris11 has default python26 and knows library/python/importlib      - Yes for >= 0.175.3.0.0.16.0 there is OSdistro library/python/importlib
+
+##TODO## define s11 version first delivering importlib for/bundled with python27 ---- verify this
+
+#OIHipster 2015xxxx has default python27 and knows library/python/importlib. verify this 
+#OIHipster 20160421 has default python27 and knows library/python/importlib. Verified
+#OI151a9 has default python26, which requires backported importlib, so requires SFEpython26-importlib
+#r1510016 .. r1510018 and so on - check on public IPS publisher
+#Omnios  has default python26, which requires backported importlib, so requires SFEpython26-importlib - TBC
 #
-##TODO## define s11 version first delivering importlib for python27 ---- verify this
-%if %( echo %{pnm_buildrequires_python_default} | egrep -- "runtime/python-24|runtime/python-26" >/dev/null && echo 1 || echo 0 )
-#s11 build 16
+
+# pkg list -avf "*/importlib*"
+
+#s11 0.175.3.0.0.16.0 has a renamed package
 #library/python-2/importlib-26                     1.0.2-0.175.3.0.0.16.0     --r
-#s11 > 16
+#s11 0.175.3.0.0.24.0 has python 2.7
 #library/python/importlib                          1.0.2-0.175.3.0.0.24.0     ---
-%define pnm_buildrequires_library_python_importlib	library/python/importlib
-%define pnm_requires_library_python_importlib		library/python/importlib
-%else
-#%{solaris12} and others which have python_default > 2.6 - importlib is included
-#I believe there is with python-27 no extra importlib
-#library/python-2/importlib-27
-#%define pnm_buildrequires_library_python_importlib	SFEpython27-importlib
-#%define pnm_requires_library_python_importlib		SFEpython27-importlib
-%define pnm_buildrequires_library_python_importlib	%{pnm_buildrequires_python_default}
+
+#pkg://solaris/library/python-2/importlib@1.0.2,5.11-0.175.2.0.0.42.1:20140623T014749Z ---
+#pkg://solaris/library/python-2/importlib@1.0.2,5.11-0.175.2.6.0.3.0:20141222T165018Z ---
+#pkg://solaris/library/python-2/importlib@1.0.2,5.11-0.175.3.0.0.16.0:20150215T210033Z --r
+#pkg://solaris/library/python-2/importlib-26@1.0.2,5.11-0.175.2.0.0.42.1:20140623T014748Z ---
+#pkg://solaris/library/python-2/importlib-26@1.0.2,5.11-0.175.2.6.0.3.0:20141222T165017Z ---
+#pkg://solaris/library/python-2/importlib-26@1.0.2,5.11-0.175.3.0.0.16.0:20150215T210032Z --r
+#pkg://solaris/library/python/importlib@1.0.2,5.11-0.175.3.0.0.30.0:20150821T170100Z i--
+#pkg://solaris/library/python/importlib-26@1.0.2,5.11-0.175.3.0.0.30.0:20150821T170059Z i--
+
+#pkg://localhostoih/library/python-2/importlib-27@1.0.3-0.0.151.1.8:20160215T002015Z i--
+#pkg://localhostoih/library/python-2/importlib-27@1.0.3-0.0.151.1.8:20150810T214611Z ---
+#pkg://localhostoih/library/python-2/importlib-27/src@1.0.3-0.0.151.1.8:20160215T001935Z ---
+#pkg://localhostoih/library/python-2/importlib-27/src@1.0.3-0.0.151.1.8:20150810T214531Z ---
+
+
+#remember: SFEpython26-importlib needs to get "renamed-to" section installing exactly at the OSdistro release where the
+#OSdistro default python version changes (the case for S11 >= 0.175.3.0.0.16.0)
+
+#for very modern OSdistro we set the default to be the python-27 and newer package, as it bundled importlib
+#t and update later, in case an OSdistro is known to have its own package for importlib
+#assuming here: python-27 and newer has importlib integrated
+%define pnm_buildrequires_library_python_importlib	%{pnm_requires_python_default}
 %define pnm_requires_library_python_importlib		%{pnm_requires_python_default}
+
+
+#solaris12 we use this/and newer python as default
+#runtime/python-27@2.7.10-5.12.0.0.0.88.0
+
+#solaris11 added */importlib-26 on 0.175.2.0.0.42.1
+#solaris11 renamed to */importlib on 0.175.3.0.0.16.0
+#solaris11 changed to default python-27 (importlib included)
+
+#Hipster is set in SFE to default_python being python-27 (or newer) (importlib included)
+
+#OI151 has python-26 and needs SFEpython26-importlib
+
+#now the special cases:
+#Extend if necessary! Start with old OSdistro.
+#Leave modern OSdistro releases with python-27 and up to the default which we define right before)
+
+#below: very old Solaris 11 releases and have python26 and *no* importlib, we use SFEpython26-importlib
+%if %( expr %{solaris11} '=' 1 '&' %{osdistro_entire_padded_number4}.0 '<' 0000017500020000000000420001.0 )
+#   x < 0000017500020000000000420001.0
+#now one exception, if solaris11 is very very old, then we have nothing and need to use SFEpython26-importlib
+%define pnm_buildrequires_library_python_importlib	SFEpython26-importlib
+%define pnm_requires_library_python_importlib		SFEpython26-importlib
 %endif
-#END
+
+#below: old S11 release has python26 and importlib-26 is available, but uses the old name importlib-26
+%if %( expr %{solaris11} '=' 1 '&' %{osdistro_entire_padded_number4}.0 '<' 0000017500030000000000160000.0 )
+#   x >= 0000017500020000000000420001.0 and x < 0000017500030000000000160000.0
+#now one exception, if solaris11 is very old, then use the old name of the package with python-2 and "importlib-26":
+%define pnm_buildrequires_library_python_importlib	library/python-2/importlib-26
+%define pnm_requires_library_python_importlib		library/python-2/importlib-26
+%endif
+
+#OI151 has python 2.6 and needs SFEpython26-importlib       #%if %( expr %{openindiana} '=' 1 '&' %{oihipster} '=' 0 )
+%if %( expr %{openindiana} '=' 1 '|' %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '<' 2015000000010001000000000000.0 )
+%define pnm_buildrequires_library_python_importlib	SFEpython26-importlib
+%define pnm_requires_library_python_importlib		SFEpython26-importlib
+%endif
+
+#OmniOS
+#entire@11-0.151016 -> runtime/python-26@2.6.8-0.151016
+##TODO## which will be the python default for 151018 for instance?
+%if %( expr %{omnios} '=' 1 '&' %{osdistrelnumber} '<=' 151016 )
+%define pnm_buildrequires_library_python_importlib	SFEpython26-importlib
+%define pnm_requires_library_python_importlib		SFEpython26-importlib
+%endif
 
 
 #START setting mysql, defaults  - Part 1 of 3
@@ -2607,7 +2708,7 @@
 
 #START setting apr, changes with specific builds and distros  - Part 2 of 3
 #note: need to add ".0" to avoid integer too lage, use floating point instead
-%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
 #this is a special switch: Our SFE spec file will build a package using the same name as more recent distros do
 %define build_library_apr_renamed_to_osdistro_package      1
 %define apr_version 1.5
@@ -2627,7 +2728,7 @@
 %define pnm_buildrequires_apr_util_default	library/apr-util-15
 %define pnm_requires_apr_util_default		library/apr-util-15
 #on S12 >= 63 and S11 >= entire .12. we need to make sure that apr apr-util comes from the osdistro repository
-%if %( expr %{solaris12} '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%if %( expr %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
 %define pnm_buildrequires_apr_default		pkg://solaris/library/apr-15
 %define pnm_requires_apr_default		pkg://solaris/library/apr-15
 %define pnm_buildrequires_apr_util_default	pkg://solaris/library/apr-util-15
@@ -3096,6 +3197,11 @@
 
 
 %changelog
+* Thu Oct 13 2016 - Thomas Wagner
+- rework python imporlib section based on pjamas work. Note: re-orderd, keep package@version listings for a while
+- rework older "%( expr .... )" to be more readable
+* Sat Aug 20 2016 - Thomas Wagner
+- set perl-522 as new default perl (LP64), add perl-522 and perl_dir i86pc-solaris-thread-multi-64 for (S12 >= 95)
 * Mon May 23 2016 - Thomas Wagner
 - move sane handling from packagenames.define.allbuilds.inc to packagenames.define.initial.inc
 * Fri Apr 29 2016 - Thomas Wagner
