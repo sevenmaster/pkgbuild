@@ -89,6 +89,8 @@
 # iso snapshot date (per http://dlc.openindiana.org/isos/hipster/) or significant update dates between snapshots if needs be.
 # To determine date I'll use the "Packaging Date" of the package consolidation/osnet/osnet-incorporation.
 # Dates of last iso snapshots. eg
+# 20160421 = Iso Snapshot
+# 20151003 = Iso Snapshot
 # 20150330 = Iso Snapshot
 # 20141010 = Iso Snapshot
 # 20140701 = Iso Snapshot
@@ -147,7 +149,9 @@
 %define oih20140701    0
 %define oih20141010    0
 %define oih20150330    0
+%define oih20151003    0
 %define oih20151128    0
+%define oih20160421    0
 
 #OpenIndiana
 # could be oi201009 and oi201100 or something, the first development release and following
@@ -280,7 +284,7 @@
 %define oihipster 1
 # Find date of osnet-incorporation and change to ISO date format
 # Not sure how this will go with pre-iso snapshot updated to post-iso packages
-%define osbuilddate %(pkg info osnet-incorporation | grep 'Packaging Date' | cut -d' ' -f 3,4,5 | date --date=- +%Y%m%d)
+%define osbuilddate %(pkg info osnet-incorporation | grep 'Packaging Date' | cut -d' ' -f 3,4,5 | date +%Y%m%d )
 
 # Post 20140701
 %if %( expr %{osbuilddate} '>=' 20140701 )
@@ -298,10 +302,20 @@
 %define oih20150330    1
 %define osdistrelnumber 20150330
 %endif
+# Post 20151003
+%if %( expr %{osbuilddate} '>=' 20151003 )
+%define oih20151003    1
+%define osdistrelnumber 20151003
+%endif
 # Post 20151128
 %if %( expr %{osbuilddate} '>=' 20151128 )
 %define oih20151128    1
 %define osdistrelnumber 20151128
+%endif
+# Post 20160421
+%if %( expr %{osbuilddate} '>=' 20160421 )
+%define oih20160421    1
+%define osdistrelnumber 20160421
 %endif
 #                                below: subject to change!
 %define osdistrelname   "OIHipster"
@@ -546,8 +560,11 @@
 #release/name 0.151.1.8 
 #entire 2015.0.1.1
 ##TODO## make version detection more robust, entire package might have been uninstalled, which packages to use for version detection in that case?
+## PJAMA *puts hand up as having uninstalled "entire"*
+## perhaps osnet-incorporation is a better option for the moment (or release/name? or the most fresh of both?)
 %if %{oihipster}
-%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+#%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+%define osdistro_entire %( pkg info osnet-incorporation | grep "FMRI:" | sed -e 's/FMRI:.*osnet-incorporation@//' -e s'/.*-//' -e s'/:.*//' )
 %endif
 
 %if %{os2nnn}
@@ -571,6 +588,13 @@
 
 
 %changelog
+* Thu Oct 13 2016 - Thomas Wagner
+- merged in & commit pjama's changes. 1,$s/20160423/20160421/ (OIH)
+* Sat Oct  8 2016 - pjama
+- add later OIHipster snapshots oih20160421 oih20151003
+- use pkg name "osnet-incorporation" instead of "entire" to test for OIHipster version
+* Tue May 24 2016 - Thomas Wagner
+- remove --date from date command (OIH) 
 * Sat Nov 28 2015 - Thomas Wagner
 - add more OIHipster switches
 - fix osdistro_entire_padded_number4 by using entire@version (OIH)

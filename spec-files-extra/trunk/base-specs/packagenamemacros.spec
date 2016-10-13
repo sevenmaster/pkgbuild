@@ -38,6 +38,8 @@ Demo the packagenamemacros.inc use:
 or
    pkgtool --interactive prep base-specs/packagenamemacros.spec
 
+Or ask for another pnm_macro resolving to a package:
+   spectool eval  %{pnm_buildrequires_SUNWsane_backend_devel} base-specs/packagenamemacros.spec
 
 Demo packagenamemacros.inc in your own spec file:
 
@@ -73,30 +75,29 @@ NOTE:                library/security/openssl -> SUNWopenssl or openssl or libra
 
 %prep
 echo "
-\$RPM_SOURCE_DIR		%{_sourcedir}
+\$RPM_SOURCE_DIR	%{_sourcedir}
 \$RPM_BUILD_DIR		%{_builddir}
-buildroot             %{buildroot}
-_arch                 %{_arch}
-_build_arch		%{_build_arch}
+buildroot	%{buildroot}
+_arch		%{_arch}
+_build_arch	%{_build_arch}
 _vendor		%{_vendor}
-_os			%{_os}
-_target_platform	%{_target_platform}
-
-_build                 %{_host}
-_build_alias           %{_host_alias}
-_build_cpu             %{_host_cpu}
-_build_vendor          %{_host_vendor}
-_build_os              %{_host_os}
-_host                  %{_target_platform}
-_host_alias            %{_host_alias}
-_host_cpu              %{_host_cpu}
-_host_vendor           %{_vendor}
-_host_os               %{_os}
-_target                %{_host}
-_target_alias          %{_host_alias}
-_target_cpu            %{_host_cpu}
-_target_vendor         %{_host_vendor}
-_target_os             %{_host_os}
+_os		%{_os}
+_target_platform  %{_target_platform}
+_build		%{_host}
+_build_alias	%{_host_alias}
+_build_cpu	%{_host_cpu}
+_build_vendor	%{_host_vendor}
+_build_os	%{_host_os}
+_host	%{_target_platform}
+_host_alias	%{_host_alias}
+_host_cpu	%{_host_cpu}
+_host_vendor	%{_vendor}
+_host_os	%{_os}
+_target		%{_host}
+_target_alias	%{_host_alias}
+_target_cpu	%{_host_cpu}
+_target_vendor	%{_host_vendor}
+_target_os	%{_host_os}
 
 _totalmemory		%{_totalmemory}
 _cpus			%{_cpus}
@@ -117,6 +118,8 @@ pnm: s11ex201100 		%{s11ex201100} Solaris 11 Express (some following release e.g
 pnm: s11ex201011 		%{s11ex201011} Solaris 11 Express (first release end of 2010)
 pnm: omnios		%{omnios} OmniOS
 pnm: oihipster			%{oihipster} OpenIndiana Hipster yes/no
+pnm: oih20160421		%{oih20160421} OpenIndiana Hipster Snap 20160421 or later
+pnm: oih20151003		%{oih20151003} OpenIndiana Hipster Snap 20151003 or later
 pnm: oih20150330		%{oih20150330} OpenIndiana Hipster Snap 20150330 or later
 pnm: oih20141010		%{oih20141010} OpenIndiana Hipster Snap 20141010 or later
 pnm: oih20140701		%{oih20140701} OpenIndiana Hipster Snap 20140701 or later
@@ -332,10 +335,13 @@ pnm_buildrequires_SFElibgpg_error                                -> %{pnm_buildr
 
 " >/dev/null
 
-#not defined pnm_buildrequires_boost_default                                  -> %{pnm_buildrequires_boost_default}
-
 
 %changelog
+* Thu Oct 13 2016 - Thomas Wagner
+- merge in pjama's changes
+- add another hint how to resolve specific pnm_macro to a real package name
+* Thu Oct 06 2016 - pjama
+- add later OIHipster snapshots oih20160421 oih20151003
 * Sun Nov 29 2015 - Thomas Wagner
 - add pnm_buildrequires_library_python_importlib, SUNWlibgcrypt, SFElibgpg_error
 * Sat Nov 28 2015 - Thomas Wagner
