@@ -23,6 +23,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 
+#Requires: file/gnu-coreutils
+
 %description
 "duff" only finds the identical files and prints them,
 but doesn't change them.
@@ -66,7 +68,17 @@ export LDFLAGS="%_ldflags"
 
 gmake -j$CPUS
 
-sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' join-duplicates.sh
+#use bash
+#use gnu touch
+#use gnu mktemp
+#surround $file with " and as well the output of dirname
+gsed -i \
+  -e 's,#! */bin/sh,#! /usr/bin/bash,' \
+  -e 's,touch,/usr/gnu/bin/touch,' \
+  -e 's,mktemp,/usr/gnu/bin/mktemp,' \
+  -e '/mktemp/ s,\$file,"\$file",' \
+  -e '/mktemp/ s,mktemp -p ,mktemp -p ",' -e '/mktemp/ s,.$,"\`,' \
+  join-duplicates.sh
 
 
 %install
@@ -74,6 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
 mv $RPM_BUILD_ROOT/%{_datadir}/duff/join-duplicates.sh $RPM_BUILD_ROOT/%{_bindir}/
+chmod a+rx $RPM_BUILD_ROOT/%{_bindir}/join-duplicates.sh
 rmdir $RPM_BUILD_ROOT/%{_datadir}/duff
 
 
@@ -96,5 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 23 2016 - Thomas Wagner
+- use /usr/gnu/bin/mktemp and /usr/gnu/bin/touch which knows --reference=<file> option
+- escape names with spaces in join-duplicates.sh, chmod a+rx
 * Sat Oct 22 2016 - Thomas Wagner
 - initial spec version 0.5.2
