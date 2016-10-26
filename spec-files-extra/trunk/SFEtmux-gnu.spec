@@ -27,7 +27,6 @@ License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
 Source:		http://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
-Patch6:         tmux-06-client.c-client-resize-needs-to-trigger-window-resize.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -68,13 +67,15 @@ to (display and accept keyboard input from) multiple clients.
 #tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #cd %{srcname}-%{srcname}-code-%{git_snapshot}
 
-%patch6 -p1
+#%patch6 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+%if %{cc_is_gcc}
 CC=gcc
 CXX=g++
+%endif
 
 export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6"
 %if %{cc_is_gcc}
@@ -84,9 +85,16 @@ export CFLAGS="$CFLAGS -xc99"
 %endif 
 
 # try avoiding core dumps by linking to 0@0.so.1
-export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
+#export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
+export LDFLAGS="%_ldflags"
 export LIBNCURSES_CFLAGS="-I/usr/include/ncurses"
 export LIBNCURSES_LIBS="-lncurses"
+
+export LIBEVENT_CFLAGS="-I/usr/gnu/include"
+export LIBEVENT_LIBS="-R/usr/gnu/lib -L/usr/gnu/lib -levent"
+
+#find our SFElibevent2
+####export PKG_CONFIG_PATH=/usr/gnu/lib/pkgconfig
 
 [ -x autogen.sh ] && bash autogen.sh
 ./configure
@@ -113,6 +121,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 26 2016 - Thomas Wagner
+- tried avoiding terminal-resize being ignored (S11.3). Shorten LDFLAGS (remove 0@0, hope it doesn't core dump now)
+- point to our libevent from /usr/gnu/ (note: not fully tested on hipster where we use osdistro libevent)
+- remove again patch6
 * Sun Oct  9 2016 - Thomas Wagner
 - re-introduce Patch6 tmux-06-client.c-client-resize-needs-to-trigger-window-resize.diff
 * Fri Oct  7 2016 - Thomas Wagner
