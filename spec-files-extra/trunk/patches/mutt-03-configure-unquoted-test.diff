@@ -1,11 +1,11 @@
---- configure.orig	2013-12-31 01:31:10.266593282 +0100
-+++ configure	2013-12-31 01:33:19.947816372 +0100
-@@ -12065,7 +12065,7 @@
- 
+--- configure.orig	Sa. Okt  8 21:40:50 2016
++++ configure	Mi. Okt 26 22:31:32 2016
+@@ -12582,7 +12582,7 @@
+     LIBS="$mutt_save_LIBS"
  
      if test "$with_idn" != auto; then
--      if test $have_stringprep_h = no || test $have_idna_h = no || test $ac_cv_search_STRINGPREP_CHECK_VERSION = no; then
-+      if test "$have_stringprep_h" = no || test "$have_idna_h" = no || test "$ac_cv_search_STRINGPREP_CHECK_VERSION" = no; then
+-      if test $have_stringprep_h = no || test $have_idna_h = no || test $ac_cv_search_stringprep_check_version = no; then
++      if test "$have_stringprep_h" = no || test "$have_idna_h" = no || test "$ac_cv_search_stringprep_check_version" = no; then
  	as_fn_error $? "IDN was requested, but libidn was not usable on this system" "$LINENO" 5
        fi
      fi
