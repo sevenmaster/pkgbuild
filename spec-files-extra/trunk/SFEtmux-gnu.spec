@@ -127,6 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Oct 29 2016 - Thomas Wagner
 - add patch8 tmux-08-tmux.h-enum-larger-INT_MAX.diff - fix dead key codes when compiled with studio
   compiler warning was: "tmux.h", line 128: warning: enumerator value overflows INT_MAX (2147483647)
+- simplify patch8 tmux-08-tmux.h-enum-larger-INT_MAX.diff (another commit)
 * Wed Oct 26 2016 - Thomas Wagner
 - tried avoiding terminal-resize being ignored (S11.3). Shorten LDFLAGS (remove 0@0, hope it doesn't core dump now)
 - point to our libevent from /usr/gnu/ (note: not fully tested on hipster where we use osdistro libevent)
