@@ -154,7 +154,7 @@
 
 %define major_version   5
 %define minor_version   1
-%define micro_version   5
+%define micro_version   6
 %define patch_version   2
 
 
@@ -1381,6 +1381,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 30 2016 - pjama
+- Bump to latest Still version 5.1.6.2. Was 5.1.5.2
 * Tue Oct 11 2016 - pjama
 - Change description a little to reflect "Still" version "Fresh" versions.
 - remove os-version settings: they don't work as intended
