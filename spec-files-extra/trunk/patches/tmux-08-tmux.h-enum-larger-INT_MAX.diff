@@ -1,23 +1,11 @@
---- tmux-2.3/tmux.h.orig	Wed Sep 28 23:31:24 2016
-+++ tmux-2.3/tmux.h	Sat Oct 29 21:59:51 2016
-@@ -89,14 +89,14 @@
- #define BELL_OTHER 3
- 
+--- tmux-2.3/tmux.h.orig	Mi. Sep 28 23:31:24 2016
++++ tmux-2.3/tmux.h	Sa. Okt 29 22:38:58 2016
+@@ -91,7 +91,7 @@
  /* Special key codes. */
--#define KEYC_NONE 0xffff00000000ULL
--#define KEYC_UNKNOWN 0xfffe00000000ULL
+ #define KEYC_NONE 0xffff00000000ULL
+ #define KEYC_UNKNOWN 0xfffe00000000ULL
 -#define KEYC_BASE 0x100000000000ULL
-+#define KEYC_NONE 0xffff0000ULL
-+#define KEYC_UNKNOWN 0xfffe0000ULL
-+#define KEYC_BASE 0x10000000ULL
++#define KEYC_BASE 0x000010000000ULL
  
  /* Key modifier bits. */
--#define KEYC_ESCAPE 0x200000000000ULL
--#define KEYC_CTRL   0x400000000000ULL
--#define KEYC_SHIFT  0x800000000000ULL
-+#define KEYC_ESCAPE 0x20000000ULL
-+#define KEYC_CTRL   0x40000000ULL
-+#define KEYC_SHIFT  0x80000000ULL
- 
- /* Mask to obtain key w/o modifiers. */
- #define KEYC_MASK_MOD (KEYC_ESCAPE|KEYC_CTRL|KEYC_SHIFT)
+ #define KEYC_ESCAPE 0x200000000000ULL
