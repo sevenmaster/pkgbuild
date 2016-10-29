@@ -7,7 +7,7 @@
 #
 
 %include Solaris.inc
-%define cc_is_gcc 1
+#%define cc_is_gcc 1
 %include usr-gnu.inc
 %include base.inc
 
@@ -27,6 +27,9 @@ License:        ISC ; BSD3c ; BSD 2-Clause
 Url:            http://tmux.github.io/
 #git Source:		http://sourceforge.net/code-snapshots/git/t/tm/tmux/tmux-code.git/tmux-tmux-code-%{git_snapshot}.zip
 Source:		http://github.com/tmux/tmux/releases/download/%{version}/tmux-%{version}.tar.gz
+Patch6:         tmux-06-client.c-client-resize-needs-to-trigger-window-resize.diff
+##TODO## send upstream / ask for value for KEYC_BASE lower then INT_MAX (2147483647)
+Patch8:         tmux-08-tmux.h-enum-larger-INT_MAX.diff
 Group:          Applications/System Utilities
 Distribution:   OpenIndiana
 Vendor:         OpenIndiana Community
@@ -67,7 +70,8 @@ to (display and accept keyboard input from) multiple clients.
 #tmux-tmux-code-df6488a47088ec8bcddc6a1cfa85fec1a462c789
 #cd %{srcname}-%{srcname}-code-%{git_snapshot}
 
-#%patch6 -p1
+%patch6 -p1
+%patch8 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -81,12 +85,11 @@ export CFLAGS="%optflags -I/usr/gnu/include -D_XPG6"
 %if %{cc_is_gcc}
 %else
 #studio
-export CFLAGS="$CFLAGS -xc99"
+export CFLAGS="$CFLAGS -xc99 -D_XPG6"
 %endif 
 
 # try avoiding core dumps by linking to 0@0.so.1
-#export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags -L/usr/gnu/lib -R/usr/gnu/lib"
-export LDFLAGS="%_ldflags"
+export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags"
 export LIBNCURSES_CFLAGS="-I/usr/include/ncurses"
 export LIBNCURSES_LIBS="-lncurses"
 
@@ -121,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 29 2016 - Thomas Wagner
+- add patch8 tmux-08-tmux.h-enum-larger-INT_MAX.diff - fix dead key codes when compiled with studio
+  compiler warning was: "tmux.h", line 128: warning: enumerator value overflows INT_MAX (2147483647)
 * Wed Oct 26 2016 - Thomas Wagner
 - tried avoiding terminal-resize being ignored (S11.3). Shorten LDFLAGS (remove 0@0, hope it doesn't core dump now)
 - point to our libevent from /usr/gnu/ (note: not fully tested on hipster where we use osdistro libevent)
