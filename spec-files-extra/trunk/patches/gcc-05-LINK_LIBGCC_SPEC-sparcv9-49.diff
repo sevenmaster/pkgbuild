@@ -15,7 +15,7 @@
 +/* #undef LINK_LIBGCC_SPECIAL_1 */
 +/* #define LINK_LIBGCC_SPECIAL_1=1 */
 +#undef LINK_LIBGCC_SPEC
-+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc/4.8/lib/" ARCH64_SUBDIR ":/usr/gcc/lib/" ARCH64_SUBDIR "%D" "}%{!m64:" "-R /usr/gcc/4.8/lib:/usr/gcc/lib %D" "}"
++#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc/4.8/lib/"ARCH64_SUBDIR":/usr/gcc/lib/"ARCH64_SUBDIR "%D" "}%{!m64:" "-R /usr/gcc/4.8/lib:/usr/gcc/lib %D" "}"
 +
  #undef STARTFILE_ARCH32_SPEC
  #define STARTFILE_ARCH32_SPEC "%{std=c++0x:values-Xc.o%s} \

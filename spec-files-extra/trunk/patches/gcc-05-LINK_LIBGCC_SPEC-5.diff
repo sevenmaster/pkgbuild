@@ -16,7 +16,12 @@ _GCCVERSION_=5.4.0
 _GCCVERSIONPATH_=5    #GCCVERSION=4.9
 _BASEPATH_=/usr/gcc-sfe
 
-gsed -i.bak.LINK_LIBGCC_SPEC -e '/LINK_LIBGCC_SPEC/ s?@@'${_BASEPATH_}'@@?g'  -e '/LINK_LIBGCC_SPEC/ s?@@'${_GCCVERSIONPATH_}'@@?g' gcc-@@${_GCCVERSION_}@@/gcc/config/sol2.h
+##gen-one
+gsed -i.bak.LINK_LIBGCC_SPEC \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_BASEPATH_@@?'${_BASEPATH_}'?g' \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_GCCVERSIONPATH_@@?'${_GCCVERSIONPATH_}'?g' \
+  gcc/config/sol2.h
+
 
 Result:
 #example version 4.9.3
@@ -24,6 +29,25 @@ Result:
 #example version 5.4.0
 #define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib %D" "}"
 
+#gen-two - this adds optional compatibility location: /usr/gcc/lib/ARCH64_SUBDIR and /usr/gcc/lib to have gccruntime found 
+_OLD_COMPAT_LIBDIR_=/usr/gcc/lib
+#                                                         /usr/gcc-sfe /5                  /lib/ARCH64_SUBDIR:/usr/gcc-sfe /lib/ARCH64_SUBDIR:/usr/gcc/lib          /ARCH64_SUBDIR
+#                                                         /usr/gcc-sfe /5                  /lib:/usr/gcc-sfe /lib:/usr/gcc/lib
+#ARCH64_SUBDIR gets replaced by gcc macros
+gsed -i.bak.LINK_LIBGCC_SPEC \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH64_@@?'${_BASEPATH_}/${_GCCVERSIONPATH_}/lib/ARCH64_SUBDIR:${_BASEPATH_}/lib/ARCH64_SUBDIR:${_OLD_COMPAT_LIBDIR_}/ARCH64_SUBDIR'?g' \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH32_@@?'${_BASEPATH_}/${_GCCVERSIONPATH_}/lib:${_BASEPATH_}/lib:${_OLD_COMPAT_LIBDIR_}'?g' \
+  gcc/config/sol2.h
+
+
+#primarily for this use: new SFE binaries compiled with compiler in /usr/gcc-sfe/ search runtime in /usr/gcc-sfe/major.minor/lib and would not find old gccruntime of same version but older runtime package
+#therefore search in /usr/gcc/lib
+@@_LINK_LIBGCC_SPEC_ARCH64_@@ /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR":/usr/gcc/lib/"ARCH64_SUBDIR"
+@@_LINK_LIBGCC_SPEC_ARCH32_@@ /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib:/usr/gcc/lib
+#input:
+#define LINK_LIBGCC_SPEC "%{m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH64_@@" %D" "}%{!m64:" "-R @@_@@_LINK_LIBGCC_SPEC_ARCH32_@@ %D" "}"
+#gets this result after gsed from spec file:
+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR:/usr/gcc/lib/"ARCH64_SUBDIR"" %D" "}%{!m64:" "-R /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib:/usr/gcc/lib %D" "}"
 
 #Reason for this patch
 This patch makes gcc/gcc.c use an extra path where it tries to load the gcc runtime libs.
@@ -79,23 +103,26 @@ the gcc runtime from: /usr/gcc/4.9/lib and /usr/gcc/lib
 (alternate location would be /usr/gcc-sfe/4.9/lib and /usr/gcc-sfe/lib )
 
 
---- /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc-5.4.0/gcc/config/sol2.h.orig	2016-09-03 22:10:47.253574565 +0200
-+++ /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc-5.4.0/gcc/config/sol2.h	2016-09-03 22:34:52.111690440 +0200
-@@ -147,7 +147,7 @@
- 
- #ifndef CROSS_DIRECTORY_STRUCTURE
- #undef MD_EXEC_PREFIX
--#define MD_EXEC_PREFIX "/usr/ccs/bin/"
-+#define MD_EXEC_PREFIX "/usr/bin/"
- #endif
- 
- #undef STARTFILE_ARCH_SPEC
-@@ -198,6 +198,9 @@
+##@@ -147,7 +147,7 @@
+## 
+## #ifndef CROSS_DIRECTORY_STRUCTURE
+## #undef MD_EXEC_PREFIX
+##-#define MD_EXEC_PREFIX "/usr/ccs/bin/"
+##+#define MD_EXEC_PREFIX "/usr/bin/"
+## #endif
+## 
+## #undef STARTFILE_ARCH_SPEC
+
+
+--- gcc-5.4.0/gcc/config/sol2.h.orig	2016-09-03 22:10:47.253574565 +0200
++++ gcc-5.4.0/gcc/config/sol2.h	2016-10-02 18:01:00.000000000 +0200
+@@ -198,6 +198,10 @@
     %{!YP,*:%{p|pg:-Y P,%R/usr/lib/libp%R/lib:%R/usr/lib} \
  	   %{!p:%{!pg:-Y P,%R/lib:%R/usr/lib}}}"
  
 +#undef LINK_LIBGCC_SPEC
-+#define LINK_LIBGCC_SPEC "%{m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib/"ARCH64_SUBDIR":@@_BASEPATH_@@/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib:@@_BASEPATH_@@/lib %D" "}"
++/* #define LINK_LIBGCC_SPEC "%{m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib/"ARCH64_SUBDIR":@@_BASEPATH_@@/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib:@@_BASEPATH_@@/lib %D" "}" */
++#define LINK_LIBGCC_SPEC "%{m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH64_@@ %D" "}%{!m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH32_@@ %D" "}"
 +
  #undef LINK_ARCH32_SPEC
  #define LINK_ARCH32_SPEC LINK_ARCH32_SPEC_BASE

@@ -1,3 +1,88 @@
+#gcc4.9.4 !!
+#
+# diff -r -u libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc
+# --- libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc     Thu Jan  2 14:30:10 2014
+# +++ libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc     Thu Dec 10 07:40:27 2015
+# @@ -20,9 +20,10 @@
+#  // { dg-do compile }
+#  // { dg-add-options no_pch }
+# 
+# -// { dg-xfail-if "" { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[0-9]* hppa*-*-hpux* *-*-mingw* } || { uclibc || newlib } } { "*" } { "" } }
+# -// { dg-excess-errors "" { target { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[0-9]* hppa*-*-hpux* *-*-mingw* } || { uclibc || newlib } } } }
+# +// { dg-xfail-if "" { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[01]* hppa*-*-hpux* *-*-mingw* *-*-aix* } || { uclibc || newlib } } { "*" } { "" } }
+# +// { dg-excess-errors "" { target { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[01]* hppa*-*-hpux* *-*-mingw* *-*-aix* } || { uclibc || newlib } } } }
+# 
+# +
+#  #include <math.h>
+# 
+#  void fpclassify() { }
+# 
+# "patches/gcc49-027-cmath_c99.patch" line 1272 of 1448 --87%-- col 2
+# 
+
+#sudo pkgrepo remove -s /var/pkglocal sfe/developer/gcc@5.4.0 system/library/gcc-runtime@5.4.0
+
+ 
+# 20:25 < richlowe> I'm trying to keep myself in the state where he's convinced me it's right.
+# 20:25 < richlowe> otherwise I'll start doubting it again :)
+# 20:28 < pmooney> richlowe: Would it make sense to include a little test program which exercise this?
+# 20:30 < jeffpc> richlowe: btw, I haven't noticed any badness with your latest aslr changes
+# 20:30 < jeffpc> latest = month or so old
+# 20:46 < richlowe> pmooney: all I could do is what the problem app is doing, and I'm not sure there's any real chance 
+#                   at re-breaking.
+# 20:46 < pmooney> richlowe: roger that
+# 20:46 < pmooney> I'm checking one last thing...
+# 20:48 < richlowe> pmooney: if you can think of ways that'll have some variance?
+# 20:48 < pmooney> richlowe: No, how gcc behaves in the face of AVX.  The newer psABI doc makes reference to 32-byte 
+#                  alignment for that.
+# 20:53 < nbjoerg> gcc since around 4.6 can finally properly realign the stcak on demand
+# 20:53 < nbjoerg> so all the excuses for breaking the sysv abi as done by linux are just that, excuses
+# 21:00 < pmooney> richlowe: I'm satisfied.  Ship it.
+# 21:09 < richlowe> nbjoerg: 5.x with SSE ops in init functions sure does crash unless you align the stack 
+#                   sufficiently on entry for it.
+# 21:15 < richlowe> nbjoerg: though the alignment reqs don't _break_ the ABI exactly, they're back compatible but not 
+#                   forward
+# 21:23 < richlowe> jeffpc: that's next, unless something else breaks in the interim.
+# 21:38 < alanc> I thought rainer was fixing that in 5.3 or 5.4
+# 21:40 < leoric> I tested with 5.3
+# 21:40 < richlowe> the other test was 5.4
+# 21:41 < richlowe> though I suppose that was of the init_array stuff.
+# 21:55 < richlowe> alanc: and it's not obvious when his fix got backported, but yeah, he seems to have somehow fixed 
+#                   it only for Solaris 9 in the past.
+# 21:55 < richlowe> and then realized it was a generic problem.
+# 22:05 < daleg> I thought you were referring to SunOS versions there for a second
+# 22:08 < anniz> wasnt 5.3 kinda rare? iirc people didnt really start switching over from sunos 4 until 5.4-5.5
+# 22:09 < alanc> gcc 5.3, not SunOS 5.3
+# 22:10 < alanc> ah, found the mail from him after I hacked userland to do -mincoming-stack-boundary=2
+# 22:10 < alanc> he said "The fix (effectively defaulting to -mstackrealign on 32-bit Solaris/x86)
+# 22:10 < alanc> Ihttps://gcc.gnu.org/ml/gcc-patches/2016-03/msg00461.html
+# 22:10 < alanc> went into GCC 4.9.4 (not yet released), 5.4 (released a few days ago)
+# 22:10 < alanc> and 6.1.  Either cherry-picking that fix or upgrading GCC could be
+# 22:10 < alanc> options."
+# 22:11 < alanc> and the gcc upstream bug was https://gcc.gnu.org/bugzilla/show_bug.cgi?id=62281
+# 22:16 < alanc> fortunately, now that gcc is doing annual major releases, the odds of ever seeing gcc 5.11 are slim
+# 22:16 < richlowe> "fortunately, now that gcc is doing annual major releases"
+# 22:17  * alanc starts humming "Always look on the bright side of life, doo doo..."
+# 22:17 < richlowe> wash your mouth out.
+# 22:17 < alanc> lol
+# 
+# 
+# 
+# 
+# 
+# 
+# https://gcc.gnu.org/ml/gcc-patches/2016-03/msg00461.html
+# 
+# 
+# Only assume 4-byte stack alignment on 32-bit Solaris/x86 (PR target/62281)
+# 
+# 
+
+
+
+
+
+
 # updating? e.g. with pfexec pkg update  -v "pkg://localhostoih/*gcc*"
 
 
@@ -192,7 +277,7 @@
 # To set a specific gcc version to be build, do this from *outside*
 # pkgtool build SFEgcc --define 'gcc_version 4.7.2'
 
-%if %{!?gcc_version:1}
+%if 0%{!?gcc_version:1}
 #make version bump *here* - this is the default version being built
 %define version %{default_version}
 %else
@@ -205,24 +290,76 @@
 #%define major_minor %( echo %{version} | sed -e 's/\([0-9]*\)\.\([0-9]*\)\..*/\1.\2/' )
 #below is a workaround for pkgbuild 1.3.104 failing to parse the escaped \( and \)
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
+# make 4.9.3 -> 4
+# make 5.4.0 -> 5
+%define major_version %( echo %{version} |  sed -e 's/\..*$//' )
 
 #for package or path names we need the version number _without_ the dots:
 #transform dottet version number to non-dotted:  4.6 -> 46
 %define majorminornumber %( echo %{major_minor} | sed -e 's/\.//g' )
-%define _prefix /usr/gcc/%major_minor
-%define _infodir %{_prefix}/info
+
+# new filesystem location /usr/gcc-sfe/ for SFEgcc.spec is now *on* by default, 
+# you may choose to switch this back # to the previous location: /usr/gcc/
+# example: pkgtool --with-old-path-usr-gcc
+# note: creation is automatic for compatibility symlinks from /usr/gcc/lib and /usr/gcc/bin to /usr/gcc-sfe/lib and /usr/gcc-sfe/bin
+%define old_path_usr_gcc %{?_with_old_path_usr_gcc:1}%{?!_with_old_path_usr_gcc:0}
+
+
+%if %( expr %{major_minor} '<' 4.8 '|' %{major_minor} '>=' 5.0)
+#gcc is too old or is at gcc 5.0 or higher
+%define old_path_usr_gcc 0
+%if %{?_with_old_path_usr_gcc:1}
+%define old_path_usr_gcc 1
+%endif
+%else
+#build with old_path_usr_gcc directory /usr/gcc/lib 
+%define old_path_usr_gcc 1
+%if 0%{?_without_old_path_usr_gcc:1}
+%define old_path_usr_gcc 0
+%endif
+%endif
+
+
+%define _prefix_original %{_basedir}
+
+##TODO## make new gcc home configurable from the command line!
+
+%if %( expr %{major_minor} '<=' 4.7 )
+#OLD path
+%define gccdir gcc
+%define _prefix_usr_gcc %{_basedir}/gcc
+%else
+#NEW path, this is the default
+%define gccdir gcc-sfe
+%define _prefix_usr_gcc %{_basedir}/gcc-sfe
+%endif
+#END old_path_usr_gcc 
+
+
+%if %( expr %{major_minor} '>=' 5.0 )
+#NEW with gcc 5.x the only remaining version strong in directory path is: major (e.g. "5")
+%define _prefix_usr_gcc_version %{_prefix_usr_gcc}/%{major_version}
+%else
+#OLD with gcc 4.x have longer version numbers in in directory path: major_minor (e.g. "4.9")
+%define _prefix_usr_gcc_version %{_prefix_usr_gcc}/%{major_minor}
+%endif
+#END
+
+%define _prefix		%{_prefix_usr_gcc_version}
+%define _infodir	%{_prefix}/info
 
 # Supported languages are: c,c,c++,fortran,go,java,lto,objc,obj-c++
 %define gcc_enable_languages c,c++,fortran,objc
 
-#enable java compiler --with-gcj
-#is default on with majorminor > 4.9
-%define gcj %{?_with_gcj:1}%{?!_with_gcj:0}
-
 #enable compiling java gcj
-%if %( expr %{major_minor} '>=' 4.9 )
+##TODO## see if this works also for gcc 5.x
+%if %( expr %{major_minor} '=' 4.9 )
 %define gcj 1
 %endif
+
+#enable java compiler --with-gcj or disable --without-gcj
+#is default on with majorminor > 4.9
+%define gcj %{?_with_gcj:1}%{?!_with_gcj:0}
 
 %if %{gcj}
 #%define ecj_jar_abs_path  %{topdir}/gcc-%{version}/ecj.jar
@@ -289,16 +426,19 @@
 #gcc variant, but we get only whole machine defaults)
 
 Name:		SFEgcc
+#https://gcc.gnu.org/develop.html#num_scheme
 IPS_package_name:	sfe/developer/gcc
-Summary:	GNU gcc compiler - metapackage with symbolic links to version %{major_minor} compiler files available in %{gccsymlinks}
+Summary:	GNU gcc compiler (%{_prefix}) - metapackage with symbolic links to version %{major_minor} compiler files available in %{gccsymlinks}
 #Version:	see above, %{version} is set elsewhere
 Version:	%{version}
 License:             GPLv3+
 Group:		Development/C
+SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright:      gcc.copyright
 Source:              ftp://ftp.gnu.org/pub/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
 #%define version_ecj  -latest
 %define version_ecj  %{major_minor}
+%define version_ecj  4.9
 Source2:             ftp://sourceware.org/pub/java/ecj-%{version_ecj}.jar
 Patch1:              gcc-01-libtool-rpath.diff
 
@@ -308,24 +448,33 @@ Patch2:              gcc-02-handle_pragma_pack_push_pop.diff
 %endif
 
 ##TODO## temporarily paused for >=4.9
-%if %( expr %{major_minor} '>=' 4.7 '&' '<=' 4.8 )
+%if %( expr %{major_minor} '>=' 4.7 '&' %{major_minor} '<=' 4.8 )
 Patch3:              gcc-03-gnulib-47.diff
 %else
 Patch3:              gcc-03-gnulib.diff
 %endif
 
-#changes in version -> see %prep as well
-%if  %( expr %{major_minor} '<=' 4.9 )
+#changes in version -> see %prep as well for re-editing of the sol2.h file
+%if  %( expr %{major_minor} '>=' 4.8 '&' %{major_minor} '<' 5.0 )
+#                    ^^^^^
 #LINK_LIBGCC_SPEC
-#gcc-05 could be reworked to know both, amd64 and sparcv9
-%ifarch i386 amd64
+#gcc-05 in reworked version now supports both, AMD64 and SPARC from the same patch
+#NOTE: once sol2.h changes too much, we might need to rework the patch
 Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
+#                                                   ^^^^^^^^^^^ e.g. 49
 %endif
-%ifarch sparcv9
-Patch5:              gcc-05-LINK_LIBGCC_SPEC-sparcv9-%{majorminornumber}.diff
+#END %{major_minor} >= 4.8 & %{major_minor} < 5.0 
+
+#changes in version -> see %prep as well for re-editing of the sol2.h file
+%if  %( expr %{major_minor} '>=' 5.0 )
+#                    ^^^^^
+#LINK_LIBGCC_SPEC
+#gcc-05 now supports both, AMD64 and SPARC from the same patch
+#NOTE: once sol2.h changes too much, we might need to rework the patch
+Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{major_version}.diff
+#                                                    ^^^^^^^
 %endif
-%endif
-#END %{major_minor} <= 4.9
+#END %{major_minor} >= 5.0
 
 # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=49347
 # if clause to apply only on specific gcc versions, see %prep
@@ -384,13 +533,25 @@ Patch227: gcc49-027-cmath_c99.patch
 #END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
 %endif
 
+#patches thanks to solaris userland gate
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '>=' 5.3 )
+Patch301: gcc53-001-multilib-sparc.patch
+Patch302: gcc53-002-libc-values.patch
+Patch303: gcc53-003-cilk-sparc.patch
+Patch304: gcc53-004-alignment.patch
+Patch306: gcc53-006-fixincludes.patch
+%if %( %{major_minor} '<' 5.4 )
+Patch308: gcc53-008-c99_classification_macros_c++0x.cc.patch
+%endif
+#END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
+%endif
+
 ##TODO## temporary fix, probably needs rework. With java we get boehm-gc/os_dep.c complain about procfs.h not large file aware so we #undef _FILE_OFFSET_BITS
 #        and hope, that is only uses procfs stuff where this doesn't matter.
 Patch501: gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff
 
 
 
-SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
@@ -485,7 +646,7 @@ Requires: SUNWpostrun
 
 %package -n SFEgcc-%{majorminornumber}
 IPS_package_name:        sfe/developer/gcc-%{majorminornumber}
-Summary:                 GNU gcc compiler - version %{major_minor} compiler files
+Summary:                 GNU gcc compiler (%{_prefix}) - version %{major_minor} compiler files
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
@@ -493,7 +654,7 @@ Requires: %{name}runtime-%{majorminornumber}
 
 %package -n SFEgccruntime
 IPS_package_name:        sfe/system/library/gcc-runtime
-Summary:                 GNU gcc runtime libraries for applications - metapackage with symbolic links to version %{major_minor} runtime available in %{gccsymlinks}
+Summary:                 GNU gcc runtime libraries for applications (%{_prefix}) - metapackage with symbolic links to version %{major_minor} runtime available in %{gccsymlinks}
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
@@ -501,7 +662,7 @@ Requires: %{name}runtime-%{majorminornumber}
 
 %package -n SFEgccruntime-%{majorminornumber}
 IPS_package_name:        sfe/system/library/gcc-%{majorminornumber}-runtime        
-Summary:                 GNU gcc runtime libraries for applications - version %{version} runtime library files
+Summary:                 GNU gcc runtime libraries for applications (%{_prefix}) - version %{version} runtime library files
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
@@ -534,13 +695,19 @@ Requires: SFElibmpc
 %if %build_l10n
 %package -n SFEgcc-l10n
 IPS_package_name: sfe/developer/gcc-%{majorminornumber}/locale
-Summary:                 %{summary} - l10n files
+Summary:                 %{summary} (%{_prefix}) - l10n files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires:                %{name}
 %endif
 
 %prep
+
+echo "Info:
+version:	%{version}
+major_minor:	%{major_minor}
+major_version:	%{major_version}
+"
 
 %if %{compat_link_usr_gnu_bin_cc}
 export BAILOUTMESSAGE="\n
@@ -593,12 +760,15 @@ cd gcc-%{version}
 %patch2 -p1
 %endif
 
-%if %( expr %{major_minor} '>=' 4.7 '&' '<=' 4.8 )
+%if %( expr %{major_minor} '>=' 4.7 '&' %{major_minor} '<=' 4.8 )
 %patch3 -p1
 %endif
 
-#note: up to gcc 4.8 we apply patch5 here, with gcc 4.9 we apply patch5 *after* the large batch of solaris userland patches (see below!)
-%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.9 )
+#note: up to gcc 4.7 we apply patch5 here, for higher version we apply patch5 *after* the large batch of solaris userland patches (see below!)
+#gcc 4.8, 4.9, 5 is handled after applying userland gate patches below
+#we have patch5 in separate patchfiles for each 4.x version
+#here: userland patches not yet applied
+%if %( expr %{major_minor} '>=' 4.4 '&' %{major_minor} '<' 4.8 )
 %patch5 -p1
 %endif
 
@@ -661,11 +831,95 @@ cd gcc-%{version}
 #%{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9
 %endif
 
-#note: up to gcc 4.8 we apply patch5 before the large userland batch, with gcc 4.9 we apply patch5 right *after* the large batch of solaris userland patches (which is *here*)
-%if %( expr %{major_minor} '>=' 4.9 )
-%patch5 -p1
+
+
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 5.3 )
+%patch301 -p0
+%patch302 -p0
+%patch303 -p0
+%patch304 -p0
+%patch306 -p0
+%patch308 -p0
+#%{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 5.3
+%endif
+
+#note: up to gcc 4.8 we apply patch5 before the large userland batch, with gcc 4.9 we apply patch5 right *after* the large batch of solaris userland patches
+#here: userland patches already applied
+
+#%if %( expr %{major_minor} '>=' 4.9 )
+%if %( expr %{major_minor} '>=' 4.9 '&'  %{major_minor} '<' 5.0 )
+# gcc-4.9.3/boehm-gc/os_dep.c 2013-03-06 16:08:58.000000000 +0100
 %patch501 -p1
 %endif
+
+##TODO## make a switch for pkgtool kommand line to override _OLD_COMPAT_LIBDIR_ to be enabled or disabled
+
+#adding old compatibility search path to LINK_LIBGCC_SPEC *if* we are below gcc 5.x. 
+#By default we have changerd _prefix to /usr/gcc-sfe/ for the compiler+runtime, old binaries use gccruntime in /usr/gcc/lib/
+#only if compiler is lower then 5.x, then add the old compat path /usr/gcc/lib to LINK_LIBGCC_SPEC (appears in RPATH / RUNPATH)
+#for gcc 4.x the compat switch is by default on, then we get /usr/gcc/lib added to libpath, so new binaries compiled by rebuilt compiler 4.8 or 4.9 so search gcc-runtime in /usr/gcc/lib as well. This rebuilt compiler is stored in /usr/gcc-sfe/lib. Think of a binary compiled on one machine with rebuild gcc in /usr/gcc-sfe/ but target machine has older gccruntime package with gccruntime libs linked from /usr/gcc/lib to /usr/gcc/major.minor/lib and not in /usr/gcc-sfe/lib.
+#variable only used if compiler is 4,8, 4.9 or 5.x an later)
+#KKKFFJJSSLL
+##remove## %if %( expr %{major_minor} '>=' 5.0 )
+%if !%{old_path_usr_gcc}
+#gcc5 has no old installs, so no compat gcc runtime libdir is necessary _OLD_COMPAT_LIBDIR_="" as gcc5runtime package is necessary
+#and all SFE-gcc 5.x will live in /usr/gcc-sfe/ since first appearance, therefore we can't use old gcc runtime files anyways (all below version 5.x)
+%define old_compat_libdir 
+#_OLD_COMPAT_LIBDIR_=""
+%else
+#help new binaries built by new/relocated /usr/gcc-sfe/major.minor/bin/gcc of version 4.8 or gcc 4.9 on old target system find old gccruntime 4.8 or 4.9
+%define old_compat_libdir :/usr/gcc/lib
+#_OLD_COMPAT_LIBDIR_=":/usr/gcc/lib"
+%endif
+#END KKKFFJJSSLL
+
+
+#ABABABSGSGSGSHSH
+%if %( expr %{major_minor} '>=' 4.8 )
+#4.8, 4.9, 5.x has now patch5 reworked to new patching method. 
+#we have one patch for AMD64 and SPARC and which adds prepared placeholders for LINK_LIBGCC_SPEC. This is now replaced with locations with gccruntime libdirs.
+%patch5 -p1
+
+#                                                         /usr/gcc-sfe /5                /lib/ARCH64_SUBDIR    :/usr/gcc-sfe /lib/ARCH64_SUBDIR    :/usr/gcc/lib            /ARCH64_SUBDIR
+#                                                         /usr/gcc-sfe /5                /lib:/usr/gcc-sfe/lib :/usr/gcc/lib
+#ARCH64_SUBDIR gets replaced by gcc macros
+
+##TODO## colon                                                                                                 : -->> is now in the variable _OLD_COMPAT_LIBDIR_
+  # -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH64_@@?'%{_prefix}/${_GCCVERSIONPATH_}'/lib/" ARCH64_SUBDIR ":'%{_prefix}'/lib/" ARCH64_SUBDIR "'${_OLD_COMPAT_LIBDIR_}'/" ARCH64_SUBDIR "?g' \
+  # -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH32_@@?'%{_prefix}/${_GCCVERSIONPATH_}'/lib:'%{_prefix}'/lib'${_OLD_COMPAT_LIBDIR_}'?g' \
+#      [7]  FINI            0xdf020   
+#      [8]  SONAME          0x3c930   libstdc++.so.6
+#      [9]  RUNPATH         0x3c9da   /usr/4.9/lib:/lib:/usr/gcc/lib
+#     [10]  RPATH           0x3c9da   /usr/4.9/lib:/lib:/usr/gcc/lib
+
+echo "prefix/lib		%{_prefix}/lib/"
+echo "_prefix_usr_gcc/lib	%{_prefix_usr_gcc}/lib/"
+echo "old_compat_libdir		%{old_compat_libdir}"
+echo "old_path_usr_gcc		%{old_path_usr_gcc}"
+
+
+gsed -i.bak.LINK_LIBGCC_SPEC \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH64_@@?%{_prefix}/lib/" ARCH64_SUBDIR ":%{_prefix_usr_gcc}/lib/" ARCH64_SUBDIR "'\
+%if %{old_path_usr_gcc}
+'%{old_compat_libdir}/" ARCH64_SUBDIR "?g'\
+%else
+'?g'\
+%endif
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH32_@@?%{_prefix}/lib:%{_prefix_usr_gcc}/lib%{old_compat_libdir}?g' \
+  -e '/define MD_EXEC_PREFIX/ s?/usr/ccs/bin?/usr/bin?' \
+  gcc/config/sol2.h
+
+
+
+
+echo "==="
+echo "diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h"
+( diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h ; true )
+echo "==="
+
+
+%endif
+#END ABABABSGSGSGSHSH
 
 
 %build
@@ -679,16 +933,22 @@ echo "debug CPUS: $CPUS"
 
 cd gcc
 
+##TODO## fix NLS
+%if %( expr %{major_minor} '>=' 5.4 )
+%define build_l10n 0
+%endif
+
 %if %build_l10n
-nlsopt='--with-libiconv-prefix=/usr/gnu -enable-nls'
+nlsopt='--with-libiconv-prefix=/usr/gnu --enable-nls'
 %else
-nlsopt=-disable-nls
+#nlsopt='--disable-nls --without-host-libiconv'
+nlsopt='--disable-nls --with-libiconv-prefix=/usr/gnu'
 %endif
 
 #%define build_gcc_with_gnu_ld 0
 #saw problems. 134 did compile, OI147 stopped with probably linker errors
 ##TODO## research which osbuild started to fail, adjust the number below
-#%if %(expr %{osbuild} '>=' 1517)
+#%if %( expr %{osbuild} '>=' 1517)
 #paused#, use individual setting %define build_gcc_with_gnu_ld 0
 
 ##TODO## if ld-wapper is not found ($LD is empty), add one temporarily and specify 
@@ -747,9 +1007,18 @@ unset CPP
 #OmniOS
 %endif
 
+#S11, gcc 3.4.3 is not able to do libiconv for static libstdc++.a
+##TODO## try with newer gcc
+%if %( expr %{major_minor} '>=' 5.0 )
+export CC=gcc
+export CXX=g++
+unset CPP
+#%{major_minor} '>=' 5.0
+%endif
+
 #set the bootstrap compiler optionally on the command line
 #is 1 if variable is set
-%if %{?gcc_boot_cc:1}
+%if 0%{?gcc_boot_cc:1}
 #yes
 export CC=%{gcc_boot_cc}
 %if %{!?gcc_boot_cxx:1}
@@ -790,6 +1059,7 @@ export CFLAGS_FOR_TARGET="-zinterpose -O2 %gcc_picflags"
 export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 %endif
 
+##TODO## fix this to be an optional switch: add extra fallback runpath to find gcc_runtime
 export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
 export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
@@ -878,7 +1148,10 @@ LD_FOR_TARGET: ${LD_FOR_TARGET}
         --with-build-time-tools=/usr/gnu/i386-pc-solaris2.11/bin \
         --disable-bootstrap                       \
 %endif
-	$nlsopt
+%if %( expr %{major_minor} '>=' 5.0 )
+        --disable-bootstrap                       \
+%endif
+	$nlsopt                                   \
 
         #--enable-libstdcxx-visibility            \
         #--target=x86_64-pc-solaris2.1x           \
@@ -899,7 +1172,28 @@ echo "
 "
 
 
-%if %{omnios}
+#on S11, gcc 5.4.0 we run into 
+#std::basic_istream<char, std::char_traits<char> >::ignore(int) /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.a(istream.o)
+#std::basic_istream<wchar_t, std::char_traits<wchar_t> >::ignore(int) /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.a(istream.o)
+#try without bootstrap
+#try without OSDistro gcc 3.4.3!
+
+#pkgbuild@hipster> LD_LIBRARY_PATH=/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs LD_DEBUG=files /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/./prev-gcc/xg++ -zinterpose -B/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/./prev-gcc/ -B/usr/gcc-sfe/5/i386-pc-solaris2.11/bin/ -nostdinc++ -B/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs -B/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/libsupc++/.libs  -I/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/include/i386-pc-solaris2.11  -I/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/include  -I/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc-5.4.0/libstdc++-v3/libsupc++ -L/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs -L/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/libsupc++/.libs   -Os -fPIC -DPIC -L/usr/gnu/lib -R/usr/gnu/lib -DIN_GCC    -fno-exceptions -fno-rtti -fasynchronous-unwind-tables -W -Wall -Wno-narrowing -Wwrite-strings -Wcast-qual -Wmissing-format-attribute -Woverloaded-virtual -pedantic -Wno-long-long -Wno-variadic-macros -Wno-overlength-strings   -DHAVE_CONFIG_H -static-libstdc++ -static-libgcc -zinterpose   -Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect  -R/usr/gcc-sfe/5/lib -L/usr/gnu/lib -R/usr/gnu/lib -o cc1 c/c-lang.o c-family/stub-objc.o attribs.o c/c-errors.o c/c-decl.o c/c-typeck.o c/c-convert.o c/c-aux-info.o c/c-objc-common.o c/c-parser.o c/c-array-notation.o c-family/c-common.o c-family/c-cppbuiltin.o c-family/c-dump.o c-family/c-format.o c-family/c-gimplify.o c-family/c-lex.o c-family/c-omp.o c-family/c-opts.o c-family/c-pch.o c-family/c-ppoutput.o c-family/c-pragma.o c-family/c-pretty-print.o c-family/c-semantics.o c-family/c-ada-spec.o c-family/c-cilkplus.o c-family/array-notation-common.o c-family/cilk.o c-family/c-ubsan.o i386-c.o sol2-c.o default-c.o   cc1-checksum.o libbackend.a main.o  libcommon-target.a libcommon.a ../libcpp/libcpp.a ../libdecnumber/libdecnumber.a libcommon.a ../libcpp/libcpp.a  /usr/gnu/lib/libiconv.so -R/usr/gnu/lib ../libbacktrace/.libs/libbacktrace.a ../libiberty/libiberty.a ../libdecnumber/libdecnumber.a   -L/usr/gnu/lib -L/usr/gnu/lib -L/usr/gnu/lib -lmpc -lmpfr -lgmp   -L../zlib -lz 2>&1 | grep libstd".*"\.so                                                                
+#12241: file=libstdc++.so.6;  needed by /packagepool/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-gcc/xg++
+#12241: file=/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6  [ ELF ]; generating link map
+#12241: file=/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6;  analyzing  [ RTLD_LAZY RTLD_GLOBAL RTLD_WORLD RTLD_NODELETE ]
+#12241: file=libgcc_s.so.1;  needed by /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6
+#12241: file=libc.so.1;  needed by /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6
+#12243: file=libstdc++.so.6;  needed by /packagepool/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-gcc/collect2
+#12243: file=/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6  [ ELF ]; generating link map
+#12243: file=/localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6;  analyzing  [ RTLD_LAZY RTLD_GLOBAL RTLD_WORLD RTLD_NODELETE ]
+#12243: file=libgcc_s.so.1;  needed by /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6
+#12243: file=libc.so.1;  needed by /localhomes/sfe/packages/BUILD/SFEgcc-5.4.0/gcc/prev-i386-pc-solaris2.11/libstdc++-v3/src/.libs/libstdc++.so.6
+#pkgbuild@hipster> echo $?
+#0
+
+# %if %(expr %{omnios} )
+%if %(expr %{omnios} '|'  %{major_minor} '>=' 5.0 )
 gmake -j$CPUS           \
 %else
 gmake -j$CPUS bootstrap \
@@ -956,7 +1250,7 @@ do
   # gcc_symlinks_pattern includes bin/ and lib/ and directory matched by pattern
   for filepath in %{gcc_symlinks_pattern} lib/libgcc_s.so.1 lib/libgcc_s.so lib/libgfortran.so.3 lib/libgfortran.so lib/libgomp.so.1 lib/libgomp.so lib/libobjc_gc.so.2 lib/libobjc_gc.so lib/libobjc.so.2 lib/libobjc.so lib/libssp.so.0 lib/libssp.so lib/libstdc++.so.6 lib/libstdc++.so lib/libquadmath.so lib/libquadmath.so.0
   do
-  [ -r $OFFSET/gcc/%major_minor/$filepath ] && ln -s $OFFSET/gcc/%major_minor/$filepath
+  [ -r $OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -973,7 +1267,7 @@ do
   for filepath in %{gcc_symlinks_pattern_arch64} lib/%{_arch64}/libgcc_s.so.1 lib/%{_arch64}/libgcc_s.so lib/%{_arch64}/libgfortran.so.3 lib/%{_arch64}/libgfortran.so lib/%{_arch64}/libgomp.so.1 lib/%{_arch64}/libgomp.so lib/%{_arch64}/libobjc.so.2 lib/%{_arch64}/libobjc.so lib/%{_arch64}/libssp.so.0 lib/%{_arch64}/libssp.so lib/%{_arch64}/libstdc++.so.6 lib/%{_arch64}/libstdc++.so lib/%{_arch64}/libquadmath.so lib/%{_arch64}/libquadmath.so.0
   do
   #note add one ../ for %{_arch64}
-  [ -r $OFFSET/../gcc/%major_minor/$filepath ] && ln -s $OFFSET/../gcc/%major_minor/$filepath
+  [ -r $OFFSET/../%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/../%{gccdir}/%major_minor/$filepath
   done #for file
 done #for SYMLINKTARGET
 %endif
@@ -988,7 +1282,7 @@ do
 # leave out sfw gcc 3.x.x uses this name already ln -s ../../gcc/%major_minor/bin/cpp
   for filepath in bin/c++ bin/g++ bin/gcc bin/cpp bin/gcov bin/gfortran
   do
-  [ -r $OFFSET/gcc/%major_minor/$filepath ] && ln -s $OFFSET/gcc/%major_minor/$filepath
+  [ -r $OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -1053,6 +1347,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gcc-%{version}/python/libstdcxx/v6/printers.py
 %{_datadir}/gcc-%{version}/python/libstdcxx/v6/__init__.py
 %{_datadir}/gcc-%{version}/python/libstdcxx/__init__.py
+#%if %( test -f RPM_BUILD_ROOT/%{_datadir}/gcc-%{version}/python/libstdcxx/v6/xmethods.py && echo 1 || echo 0 )
+##TODO## which version brought us the file xmethods.py
+%if %( expr %{major_minor} '>=' 5.0 )
+%{_datadir}/gcc-%{version}/python/libstdcxx/v6/xmethods.py
+%endif
+
 
 
 %files -n SFEgccruntime-%{majorminornumber}
@@ -1135,6 +1435,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Oct 21 2016 - Thomas Wagner
+- integrate for gcc 5 series
+- relocate compiler to /usr/gcc-sfe/ and provide backwards compatible symlinks only in /usr/gcc/lib and /usr/gcc/bin
+- only gcc 4.9 has ecj / gcj
 * Fri Apr 22 2016 - Thomas Wagner
 - rework patch 007-userlandgate-gcc-sol2.h.patch.modified.diff to no longer interfere with patch5 gcc-05-LINK_LIBGCC_SPEC-4.8.diff
 - re-enable patch5 LINK_LIBGCC_SPEC to lookup libgcc_s.so and libstdc++.so.6 in /usr/gcc/<major.minor>/lib first
