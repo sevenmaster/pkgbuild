@@ -7,6 +7,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 %include usr-g++.inc
 %define cc_is_gcc 1
 
@@ -33,8 +34,8 @@ License:                 %{gdkpixbuf.license}
 
 %include default-depend.inc
 BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
-BuildRequires:	SFEglib2
-Requires:	SFEglib2
+BuildRequires:	SFEglib2-gpp
+Requires:	SFEglib2-gpp
 
 %package devel
 Summary:		 %{summary} - development files
@@ -175,6 +176,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug  8 2016 - Thomas Wagner
+- add missing %include packagenamemacros.inc
+- change (Build)Requires to SFEglib2-gpp
 * Fri Apr 29 2016 - Thomas Wagner
 - change (Build)Requires %{pnm_buildrequires_SFEautomake_115}
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>

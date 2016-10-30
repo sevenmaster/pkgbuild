@@ -21,19 +21,22 @@ BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 SUNW_BaseDir:		%{_prefix}
 %include default-depend.inc
 
-Requires: SUNWlibms
-Requires: SUNWzlib
-Requires: SUNWlexpt
-BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
-Requires:      %{pnm_requires_SUNWopenssl_libraries}
-BuildRequires: %{pnm_buildrequires_SUNWsfwhea}
+
+BuildRequires:	%{pnm_buildrequires_SUNWlibms_devel}
+Requires:	%{pnm_requires_SUNWlibms}
+BuildRequires:	%{pnm_buildrequires_SUNWzlib}
+Requires:	%{pnm_requires_SUNWzlib}
+BuildRequires:	%{pnm_buildrequires_SUNWlexpt}
+Requires:	%{pnm_requires_SUNWlexpt}
+BuildRequires:	%{pnm_buildrequires_SUNWopenssl_include}
+Requires:	%{pnm_requires_SUNWopenssl_libraries}
+BuildRequires:	%{pnm_buildrequires_SUNWsfwhea}
 
 %package devel
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires:                %{name}
-Requires:                SUNWbash
 
 %if %build_l10n
 %package l10n
@@ -132,6 +135,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jan 18 2015 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SUNWlibms_devel}, SUNWzlib, SUNWlexpt SUNWlexpt
 * Thu Apr 10 2014 - Thomas Wagner
 - change (Build)Requires %{pnm_buildrequires_SUNWopenssl_include}
 * Fri Jun 29 2012 - Thomas Wagner

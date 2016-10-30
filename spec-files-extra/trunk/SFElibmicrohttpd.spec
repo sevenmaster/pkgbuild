@@ -7,7 +7,7 @@
 
 Name:		SFElibmicrohttpd
 IPS_package_name:  library/libmicrohttpd
-Version:	0.9.36
+Version:	0.9.52
 Summary:	Small Embeddable HTTP Server Library
 License:	GNU LGPL v2.1
 Group:		Development/Libraries
@@ -60,7 +60,7 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%{optflags} -pthreads"
-export LDFLAGS="%{_ldflags} -pthreads  -lnsl"
+export LDFLAGS="%{_ldflags} -pthreads  -lnsl -lsocket"
 export LD=ld-wrapper
 
 #aclocal
@@ -109,6 +109,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sun Oct 30 2016 - Thomas Wagner
+- bump to 0.9.52
+* Tue Jul 29 2014 - Thomas Wagner
+- add to LDFLAGS -lsocket (in6addr_loopback)
 * Mon May 26 2014 - Thomas Wagner
 - bump to 0.9.36
 * Tue Dec 24 2013 - Thomas Wagner

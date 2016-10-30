@@ -12,8 +12,9 @@
 
 
 Name:                SFElibidn
-Summary:             GNU IDN conversion library
-Version:             1.19
+IPS_package_name:    library/gnu/libidn
+Summary:             GNU IDN conversion library (/usr/gnu)
+Version:             1.33
 Source:              http://ftp.gnu.org/gnu/libidn/libidn-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -92,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
 
-#/usr/gnu/share/locale is group "bin" sometimes
+#/usr/gnu/share/locale group changes with OS releasechanges with OS releases
 %if %{_share_locale_group_changed}
 %dir %attr (0755, root, %{_share_locale_group}) %{_datadir}/locale
 %defattr (-, root, %{_share_locale_group})
@@ -133,6 +134,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Oct 30 2016 - Thomas Wagner
+- Bump to 1.33
+* Tue Dec 31 2013 - Thomas Wagner
+- Bump to 1.27 (need stringprep_check_version)
 * Sun Jul  8 2012 - Thomas Wagner
 - Bump to 1.19
 - move to /usr/gnu, including info dir

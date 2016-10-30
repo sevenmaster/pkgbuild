@@ -7,6 +7,8 @@
 %include usr-gnu.inc
 %include osdistro.inc
 
+%define _use_internal_dependency_generator 0
+
 ##TODO## need propper integration of arch64.inc
 %ifarch amd64
 %define opt_amd64 1
@@ -194,6 +196,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Mon Aug  3 2015 - Thomas Wagner
+- disable _use_internal_dependency_generator or stumble over osdistro's gmp
 * Sat Feb  7 2015 - Thomas Wagner
 - exclude SUNWpostrun on IPS based systems
 * Thu Jun 26 2013 - Thomas Wagner

@@ -14,13 +14,14 @@
 Name:                SFEbinutils-gpp
 IPS_package_name:    developer/g++/gnu-binutils
 Summary:             GNU binutils (/usr/g++)
-Version:             2.23.2
+Version:             2.25
 Source:              http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
-Patch1:              binutils-01-bug-2495.diff
+#paused https://sourceware.org/bugzilla/show_bug.cgi?id=2495
+#Patch1:              binutils-01-bug-2495.diff
 #Patch2:              binutils-02-ld-m-elf_i386.diff
 #Patch3:              binutils-03-lib-amd64-ld-so-1.diff
 Patch4:              binutils-04-non-constant_initializer_op.diff
-Patch5:              binutils-05-lm.diff
+#Patch5:              binutils-05-lm.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -32,6 +33,11 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %else
 BuildRequires: SUNWpostrun
 Requires: SUNWpostrun
+%endif
+
+%if %{omnios}
+BuildRequires: developer/gcc48
+#Requires:      runtime, installed anyways on omnios
 %endif
 
 %package devel
@@ -52,10 +58,11 @@ Requires:                %{name}
 %setup -q -c -n %name-%version
 cd binutils-%{version}
 %ifarch amd64
-%patch1 -p1 -b .patch01
+#paused https://sourceware.org/bugzilla/show_bug.cgi?id=2495
+#%patch1 -p1 -b .patch01
 %endif
 %patch4 -p1 -b .patch04
-%patch5 -p1 -b .patch05
+#%patch5 -p1 -b .patch05
 cd ..
 %ifarch i386 amd64
 cd binutils-%{version}
@@ -77,6 +84,11 @@ fi
 nlsopt=-enable-nls
 %else
 nlsopt=-disable-nls
+%endif
+
+%if %{omnios}
+#just take one of those osdistro gcc versions
+export PATH=`ls -1d /opt/gcc-4* |tail -1`/bin:$PATH
 %endif
 
 export CC=gcc
@@ -113,7 +125,7 @@ gsed -i.bak -e 's/-Werror//g' gold/configure
 
 gsed -i.bak -e 's/-Werror//g' gold/configure
 
-make -j$CPUS
+gmake -j$CPUS
 cd ..
 %endif
 
@@ -132,7 +144,7 @@ export LDFLAGS="$LDFLAGS32"
 	    --disable-static			\
 	    $nlsopt
 
-make -j$CPUS
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -170,7 +182,7 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/%{_arch64}
 
 # Clashes with autoconf
 #rm $RPM_BUILD_ROOT%{_std_datadir}/info/standards.info
-rm $RPM_BUILD_ROOT%{_datadir}/info/standards.info
+[ -f $RPM_BUILD_ROOT%{_datadir}/info/standards.info ] && rm $RPM_BUILD_ROOT%{_datadir}/info/standards.info
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -230,8 +242,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Sep 22 2015 - Thomas Wagner
+- use gmake as "make -j$CPUS" doesn't work on all osdistro
 * Sat Feb  7 2015 - Thomas Wagner
 - exclude SUNWpostrun on IPS 
+- bump to 2.25
 * Sun Nov 10 2013 - Milan Jurik
 - bump to 2.23.2
 - fix IPS name

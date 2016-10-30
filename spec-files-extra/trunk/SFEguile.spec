@@ -6,24 +6,43 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%if %( expr %{omnios} '=' 0 )
-echo "Only to be used on OmniOS, other OS-distro use distro provided guile"
-exit 1
+# To set a specific guile version to be build, do this from *outside*
+# pkgtool build SFEguile --define 'guile_version 4.7.2'
+%define default_version 1.8.8
+
+%if %{!?guile_version:1}
+#make version bump *here* - this is the default version being built
+%define version %{default_version}
+%else
+#guile version is already defined from *outside*, from the pkgtool command line
+%define version %{guile_version}
 %endif
+#special handling of version / guile_version
+
+%ifarch amd64 sparcv9
+%include arch64.inc
+%use guile_64 = guile.spec
+%endif
+
+%include base.inc
+%use guile = guile.spec
+
 
 Name:                SFEguile
 IPS_Package_Name:	library/guile
 URL:                 http://www.gnu.org/software/guile/
 Summary:             Embeddable Scheme implementation written in C
-Version:             1.8.8
+Version:             %{version}
 Source:              http://ftp.gnu.org/pub/gnu/guile/guile-%{version}.tar.gz
-Patch1:              guile-01-autoconf.diff
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
 BuildRequires: SFEgmp
-Requires: SFEgmp
+Requires:      SFEgmp
+#not in version 1.8.8 BuildRequires: SFElibunistring
+#not in version 1.8.8 Requires:      SFElibunistring
+BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
 BuildRequires: %{pnm_buildrequires_SUNWlibtool_devel}
 Requires:      %{pnm_requires_SUNWlibtool}
 BuildRequires: %{pnm_buildrequires_SUNWltdl_devel}
@@ -38,72 +57,56 @@ SUNW_BaseDir:            %{_basedir}
 Requires:      %{name}
 
 %prep
-%setup -q -n guile-%version
-%patch1 -p1
+rm -rf %{name}-%{version}
+
+%ifarch amd64 sparcv9
+mkdir -p %{name}-%{version}/%_arch64
+%guile_64.prep -d %{name}-%{version}/%_arch64
+%endif
+
+mkdir -p %{name}-%{version}/%base_isa
+%guile.prep -d %{name}-%{version}/%base_isa
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
 
-export CFLAGS="%optflags -I%{gnu_inc}"
-export LDFLAGS="%_ldflags %{gnu_lib_path}"
-export ACLOCAL_FLAGS="-I . -I m4"
+%ifarch amd64 sparcv9
+%guile_64.build -d %{name}-%{version}/%_arch64
+%endif
 
-#libtoolize --copy --force
-#aclocal $ACLOCAL_FLAGS
-#autoheader
-#automake -a -c -f
-#autoconf
-./configure --prefix=%{_prefix}  \
-            --mandir=%{_mandir} \
-            --infodir=%{_datadir}/info \
-            --enable-static=no
-
-make -j$CPUS
+%guile.build -d %{name}-%{version}/%{base_isa}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
 
-find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
-find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
-[ -d ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+%ifarch amd64 sparcv9
+%guile_64.install -d %{name}-%{version}/%_arch64
+%endif
 
-#create site folder
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/guile/site
+%guile.install -d %{name}-%{version}/%{base_isa}
+
+#mkdir -p %{buildroot}/%{_bindir}/%{base_isa}
+#No ISAEXEC please. Directly call /usr/bin/guile for 32-bit or /usr/bin/amd64/guile or /usr/bin/sparc*/guile
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'gawk gawkinet' ;
-  echo '"';
-  echo 'retval=0';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} %{_infodir}/$info || retval=1';
-  echo 'done';
-  echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
-
-%preun
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'gawk gawkinet' ;
-  echo '"';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} --delete %{_infodir}/$info';
-  echo 'done';
-  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
 
 %files
 %defattr (-, root, bin)
-%dir %attr (0755, root, bin) %{_bindir}
+%ifarch amd64 sparcv9
+#%{_bindir}/%{base_isa}/*
+%{_bindir}/guile*
+%{_bindir}/%{_arch64}/*
+%else
 %{_bindir}/*
+%endif
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%{_libdir}/%{_arch64}/lib*.so*
+%endif
+
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/*
@@ -125,8 +128,23 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_libdir}
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%{_libdir}/%{_arch64}/pkgconfig/*
+%endif
+
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- make it 32/64 bit for autogen
+* Tue May 24 2016 - Thomas Wagner
+- add patch2 guile-02-1.8.8-dd_fd-d_fd.diff (OIH)
+* Fri Apr 29 2016 - Thomas Wagner
+- change (Build)Requires %{pnm_buildrequires_SFEautomake_115}
+* Wed Apr 13 2016 - Thomas Wagner
+- Bump to 2.0.11
+- build on S11 and OmniOS
 * Wed Jan 13 2016 - Thomas Wagner
 - Bump to 1.8.8
 - change back to SFEgmp (OM)

@@ -9,7 +9,7 @@
 
 Name:		filezilla
 Summary:	FileZilla FTP client
-Version:	3.5.3
+Version:	3.14.1
 License:	GPL
 URL:		http://filezilla.sourceforge.net/
 Source:         %{sf_download}/filezilla/FileZilla_Client/%{version}/FileZilla_%{version}_src.tar.bz2
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 16 2016 - Thomas Wagner
+- bump to 3.14.1
+- requires -std=c++14 features, for transitioning requires SFEgcc-49 and SFEgccruntime-49, set CC CXX CPP variables to exact path
 * Fri Jun 29 2012 - Thomas Wagner
 - bump to 3.5.3
 - new source URL

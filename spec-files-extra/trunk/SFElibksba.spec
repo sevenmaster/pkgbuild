@@ -8,12 +8,12 @@
 
 Name:                SFElibksba
 IPS_Package_Name:	system/library/security/libksba
-Summary:             A library to make X.509 certificates as well as the CMS
+Summary:             A library to make X.509 certificates as well as the CMS (/usr/gnu)
 License:             GPLv3
 Group:		System/Libraries
 SUNW_Copyright:	     libksba.copyright
 URL:                 http://www.gnupg.org/related_software/libksba/index.en.html
-Version:             1.2.0
+Version:             1.3.4
 Source:              ftp://ftp.gnupg.org/gcrypt/libksba/libksba-%{version}.tar.bz2
 
 SUNW_BaseDir:        %{_basedir}
@@ -81,14 +81,17 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*.h
 %dir %attr (0755, root, sys) %{_datadir}
-#thats with prefix=/usr %dir %attr (0755, root, other) %{_datadir}/aclocal
-#we need now root:bin if prefix=/usr/gnu
-%dir %attr (0755, root, bin) %{_datadir}/aclocal
+%dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/*
 %dir %attr(0755, root, bin) %{_datadir}/info
 %{_datadir}/info/*
 
 %changelog
+* Sun Oct 30 2016 - Thomas Wagner
+- bump to 1.3.4
+* Wed Oct  2 2013 - Thomas Wagner
+- bump to 1.3.0
+- fix %files
 * Wed May 16 2012 - Thomas Wagner
 - move to usr-gnu
 * Wed Jul 20 2011 - Alex Viskovatoff

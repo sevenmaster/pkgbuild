@@ -24,7 +24,7 @@
 
 Name:                SFEnettle-gnu
 IPS_Package_Name:    library/gnu/nettle
-Summary:             Nettle is a cryptographic library
+Summary:             Nettle is a cryptographic library (/usr/gnu)
 Version:             %{nettle.version}
 SUNW_BaseDir:        %{_prefix}
 %define _infodir %{_datadir}/info

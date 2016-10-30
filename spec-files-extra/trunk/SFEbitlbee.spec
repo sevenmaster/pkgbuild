@@ -24,10 +24,16 @@
 Name:                    SFEbitlbee
 IPS_Package_Name:	 network/chat/bitlbee
 Group:                   Utility
-%define bzr_revision	1011
-Version:                 3.2.1.0.%{bzr_revision}
-%define download_version %{bzr_revision}
-Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
+#%define bzr_revision	1064
+#Version:                 3.2.2.0.%{bzr_revision}
+#%define download_version %{bzr_revision}
+#Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
+#use release this time %define bzr_revision	1064
+Version:                 3.4.2
+#use release this time %define download_version %{bzr_revision}
+%define download_version %{version}
+#use release this time Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
+Summary:                 BitlBee - An IRC to other chat networks gateway (release version)
 URL:		         http://www.bitlbee.org
 #Source:		         http://get.bitlbee.org/src/bitlbee-%{download_version}.tar.gz
 Source:		         http://code.bitlbee.org/lh/bitlbee/tarball/%{download_version}/bitlbee-develsnapshot-%{download_version}.tar.gz
@@ -210,6 +216,11 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 %class(renamenew) /etc/bitlbee/*
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- bump to 3.4.2 release version, keep the bzr_revision variables in the spec file for later
+* Sun Nov 30 2014 - Thomas Wagner
+- bump to 1064 (development version 1064, tarball download from bzr scm)
+- appromate version number to 3.2.1.0.1064
 * Sun Feb 16 2014 - Thomas Wagner
 - bump to 1011 (development version 1011, tarball download from bzr scm)
 - appromate version number to 3.2.1.0.1011

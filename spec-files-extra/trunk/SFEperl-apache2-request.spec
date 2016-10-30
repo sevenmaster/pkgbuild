@@ -54,6 +54,8 @@ BuildRequires:  SFEperl-extutils-makemaker
 Requires:       SFEperl-extutils-makemaker
 BuildRequires:  SFEperl-extutils-xsbuilder
 Requires:       SFEperl-extutils-xsbuilder
+BuildRequires:  SFEperl-parse-recdescent
+Requires:       SFEperl-parse-recdescent
 
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
@@ -182,5 +184,7 @@ rm -rf $RPM_BUILD_ROOT
         #/usr/apache2/2.2/libexec
 
 %changelog
+* Mon Aug  8 2016 - Thomas Wagner
+- add missing (Build)Requires SFEperl-parse-recdescent
 * Mon Jun  6 2016 - Thomas Wagner
 - initial spec - note: non-standard build and install (this is no not the default spec file produced by make_perl_cpan_settings.pl)

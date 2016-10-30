@@ -1,3 +1,6 @@
+##TODO## see if it can be made work on OmniOS - missing pangocairo
+
+
 #
 # spec file for package: SFEperl-alien-rrdtool
 #
@@ -8,6 +11,10 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
+
+%if %{omnios}
+/bin/false
+%endif
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
@@ -80,6 +87,9 @@ else
     --install_path libdoc=%{_mandir}/man3 \
     --destdir $RPM_BUILD_ROOT
 
+#Build.PL above doesn't honour --destdir
+export DESTDIR=$RPM_BUILD_ROOT
+
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
 
@@ -88,7 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 if test -f Makefile.PL
    then
    # style "Makefile.PL"
-   make install
+   make install DESTDIR=$RPM_BUILD_ROOT
 else
    # style "Build.PL"
    %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
@@ -114,5 +124,6 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+- set env var export DESTDIR=$RPM_BUILD_ROOT or it tries installing into live system /usr/perl5/...
 * Thu Mar 10 2016 - Thomas Wagner
 - initial spec
