@@ -15,6 +15,21 @@
 %define pnm_buildrequires_libexif		SFElibexif-gnu
 %define pnm_requires_libexif			SFElibexif-gnu
 
+#OmniOS has  automake 115 1.15
+%define pnm_buildrequires_SFEautomake_115	developer/build/automake
+%define pnm_requires_SFEautomake_115		developer/build/automake
+
+##TODO## #OmniOS has autoconf 2.69
+
+#OmniOS has no guile, use SFEguile
+%define pnm_buildrequires_library_guile		SFEguile
+%define pnm_requires_library_guile		SFEguile
+%define pnm_buildrequires_SUNWguile_devel	SFEguile
+%define pnm_buildrequires_SUNWguile		SFEguile
+%define pnm_requires_SUNWguile			SFEguile
+%define pnm_buildrequires_guile			SFEguile
+%define pnm_requires_guile			SFEguile
+
 
 #not defined on OmniOS >= r151006, so we must use our own libpopt
 
@@ -30,6 +45,10 @@
 
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- use for pnm_buildrequires_SFEautomake_115 Omnios' package developer/build/automake @ 1.15 (OM)
+- use for pnm_buildrequires_library_guile SFEguile (OM)
+- use for pnm_buildrequires_library_guile SFEguile (OM)
 * Thu Jul 25 2015 - Thomas Wagner
 - use SFElibpopt (OM >= 151006)
 * Wed Mar  4 2015 - Thomas Wagner

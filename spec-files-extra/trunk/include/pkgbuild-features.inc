@@ -106,12 +106,17 @@
 
 #bailout, we weren't able to detect the pkgbuild version!
 %if %(expr %{pkgbuild_ver_numeric} '=' 0 )
+echo not able to detect supported pkgbuild version. fix include/pkgbuild-features.inc
+echo do not remove these lines from file include/pkgbuild-features.inc
 not able to detect supported pkgbuild version. fix include/pkgbuild-features.inc
 do not remove these lines from file include/pkgbuild-features.inc
+exit 1
 %endif
 #END not %{pkgbuild_ver_numeric}
 
 %changelog
+* Mon Jan 18 2016 - Thomas Wagner
+- bail out in case pkgbuild_ver_numeric is 0
 * Fri Jan  2 2015 - Thomas Wagner
 - add more versions 1.3.105 .. 1.3.109
 * Tue Oct  8 2013 - Thomas Wagner
