@@ -1,22 +1,129 @@
---- gcc-4.9.3/gcc/config/sol2.h.orig	2016-01-03 22:26:20.788647330 +0100
-+++ gcc-4.9.3/gcc/config/sol2.h	2016-01-03 22:30:52.914042712 +0100
-@@ -194,12 +194,17 @@
+Note1:
+
+AMD64 and SPARC share the same patch
+
+Note2:
+
+Your configure step *needs* to edit the resulting file *again* and replace the
+placeholder with the actual *directory-path* of the gcc runtime storage location.
+*Remember* to test your compiler: LD_DEBUG=files,libs usertestbinary does load the
+libgcc_s.so and libstdc++.so.5 from the specified private location.
+Remember: Default found gcc runtime libs can/will fool you if they work by occation.
+Then the solution is *not* complete.
+
+Example for editing:
+_GCCVERSION_=5.4.0
+_GCCVERSIONPATH_=5    #GCCVERSION=4.9
+_BASEPATH_=/usr/gcc-sfe
+
+##gen-one
+gsed -i.bak.LINK_LIBGCC_SPEC \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_BASEPATH_@@?'${_BASEPATH_}'?g' \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_GCCVERSIONPATH_@@?'${_GCCVERSIONPATH_}'?g' \
+  gcc/config/sol2.h
+
+
+Result:
+#example version 4.9.3
+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc-sfe/4.9/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R /usr/gcc-sfe/4.9/lib:/usr/gcc-sfe/lib %D" "}"
+#example version 5.4.0
+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib %D" "}"
+
+#gen-two - this adds optional compatibility location: /usr/gcc/lib/ARCH64_SUBDIR and /usr/gcc/lib to have gccruntime found 
+_OLD_COMPAT_LIBDIR_=/usr/gcc/lib
+#                                                         /usr/gcc-sfe /5                  /lib/ARCH64_SUBDIR:/usr/gcc-sfe /lib/ARCH64_SUBDIR:/usr/gcc/lib          /ARCH64_SUBDIR
+#                                                         /usr/gcc-sfe /5                  /lib:/usr/gcc-sfe /lib:/usr/gcc/lib
+#ARCH64_SUBDIR gets replaced by gcc macros
+gsed -i.bak.LINK_LIBGCC_SPEC \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH64_@@?'${_BASEPATH_}/${_GCCVERSIONPATH_}/lib/ARCH64_SUBDIR:${_BASEPATH_}/lib/ARCH64_SUBDIR:${_OLD_COMPAT_LIBDIR_}/ARCH64_SUBDIR'?g' \
+  -e '/LINK_LIBGCC_SPEC/ s?@@_LINK_LIBGCC_SPEC_ARCH32_@@?'${_BASEPATH_}/${_GCCVERSIONPATH_}/lib:${_BASEPATH_}/lib:${_OLD_COMPAT_LIBDIR_}'?g' \
+  gcc/config/sol2.h
+
+
+#primarily for this use: new SFE binaries compiled with compiler in /usr/gcc-sfe/ search runtime in /usr/gcc-sfe/major.minor/lib and would not find old gccruntime of same version but older runtime package
+#therefore search in /usr/gcc/lib
+@@_LINK_LIBGCC_SPEC_ARCH64_@@ /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR":/usr/gcc/lib/"ARCH64_SUBDIR"
+@@_LINK_LIBGCC_SPEC_ARCH32_@@ /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib:/usr/gcc/lib
+#input:
+#define LINK_LIBGCC_SPEC "%{m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH64_@@" %D" "}%{!m64:" "-R @@_@@_LINK_LIBGCC_SPEC_ARCH32_@@ %D" "}"
+#gets this result after gsed from spec file:
+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc-sfe/5/lib/"ARCH64_SUBDIR":/usr/gcc-sfe/lib/"ARCH64_SUBDIR:/usr/gcc/lib/"ARCH64_SUBDIR"" %D" "}%{!m64:" "-R /usr/gcc-sfe/5/lib:/usr/gcc-sfe/lib:/usr/gcc/lib %D" "}"
+
+#Reason for this patch
+This patch makes gcc/gcc.c use an extra path where it tries to load the gcc runtime libs.
+it is done to (at least) try to catch the version of gcc runtime that the resulting binary
+has been compiled with. Mixing gcc runtime versions is a bad idea and is not reliable,
+even if promised. If you test mixed runtimes with success, you're just in luck.
+
+Main purpose of this patch is to load a gcc runtime that is new enough and not a likely
+outdated gcc runtime lib which is povided by other sources. Other sources can be for instance
+the OSdistro or a user supplied gcc runtime lib in a publicly searchable directory as 
+/usr/lib or /lib.
+
+#Distributions for other machines:
+Your binaries copy the gcc runtime files libgcc_s.so* and libstdc++.so.6* into one of 
+these directories /usr/gcc/%major_gcc_version_number/lib/ or into /usr/gcc/lib/
+
+Variants, just see paths as specified in the Note2 above:
+/usr/gcc/4.9/lib/
+/usr/gcc/5/lib/
+/usr/gcc-sfe/4.9/lib
+/usr/gcc-sfe/5/lib
+
+
+Other uses:
+This patch is also one part of the other SFE provided solution to avoid C++ exception
+handling falling into OSdistro /usr/lib/libc.so for handling C++ exceptions, and this
+dumps cores for your binaries.
+Software "filezilla" is a prominent test case which needs to disable "LAZY_LOAD" of
+gcc runtime libs. So functions need to be bound very early in program load process
+to avoid having those functions bound to the OSdistor /usr/lib/libc.so
+
+Reference: Part two of the solution is setting -zinterpose to disable LAZY_LOAD in
+the gcc runtime libs, so the linking at runtime makes sure that it does not show the
+flag LAZY right before every line of libgcc_s.so and libstdc++.so.6:
+
+   elfdump -d my_binary    # watch out the lines before libgcc_s.so, libstdc++.so.6 - there
+                           # needs to be everything else then the flag LAZY printed
+
+Example: elfdump -d filezilla
+[...]
+     [25]  NEEDED          0x4e9f1    libsocket.so.1
+     [26]  NEEDED          0x4ea1b    libstdc++.so.6     # you can see: *no* LAZY the line before
+     [27]  POSFLAG_1       0x1        [ LAZY ]
+     [28]  NEEDED          0x4ea89    libm.so.2
+     [29]  NEEDED          0x4ea93    libgcc_s.so.1      # you can see: *no* LAZY the line before
+     [30]  NEEDED          0x4eaa9    libc.so.1
+[...]
+     [33]  RUNPATH         0x4ebc9    /usr/gcc/4.9/lib:/usr/gcc/lib:/usr/g++/lib:/usr/lib
+     [34]  RPATH           0x4ebc9    /usr/gcc/4.9/lib:/usr/gcc/lib:/usr/g++/lib:/usr/lib
+
+You can see as well, that RUNPATH contains the two private directories where is tries to load
+the gcc runtime from: /usr/gcc/4.9/lib and /usr/gcc/lib
+(alternate location would be /usr/gcc-sfe/4.9/lib and /usr/gcc-sfe/lib )
+
+
+##@@ -147,7 +147,7 @@
+## 
+## #ifndef CROSS_DIRECTORY_STRUCTURE
+## #undef MD_EXEC_PREFIX
+##-#define MD_EXEC_PREFIX "/usr/ccs/bin/"
+##+#define MD_EXEC_PREFIX "/usr/bin/"
+## #endif
+## 
+## #undef STARTFILE_ARCH_SPEC
+
+
+--- gcc-4.9.4/gcc/config/sol2.h.orig	2016-10-03 00:00:00.000000000 +0200
++++ gcc-4.9.4/gcc/config/sol2.h	2016-10-21 00:00:00.000000000 +0200
+@@ -157,6 +157,10 @@
+    %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/lib:%R/usr/lib} \
+ 	   %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/lib:%R/usr/lib}}}"
  
- #ifndef CROSS_DIRECTORY_STRUCTURE
- #undef MD_EXEC_PREFIX
--#define MD_EXEC_PREFIX "/usr/ccs/bin/"
-+#define MD_EXEC_PREFIX "/usr/bin/"
- 
- #undef MD_STARTFILE_PREFIX
--#define MD_STARTFILE_PREFIX "/usr/ccs/lib/"
-+#define MD_STARTFILE_PREFIX "/usr/lib/"
- #endif
- 
-+/* #undef LINK_LIBGCC_SPECIAL_1 */
-+/* #define LINK_LIBGCC_SPECIAL_1=1 */
 +#undef LINK_LIBGCC_SPEC
-+#define LINK_LIBGCC_SPEC "%{m64:" "-R /usr/gcc/4.8/lib/"ARCH64_SUBDIR":/usr/gcc/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R /usr/gcc/4.8/lib:/usr/gcc/lib %D" "}"
++/* #define LINK_LIBGCC_SPEC "%{m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib/"ARCH64_SUBDIR":@@_BASEPATH_@@/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib:@@_BASEPATH_@@/lib %D" "}" */
++#define LINK_LIBGCC_SPEC "%{m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH64_@@ %D" "}%{!m64:" "-R @@_LINK_LIBGCC_SPEC_ARCH32_@@ %D" "}"
 +
- #undef STARTFILE_ARCH32_SPEC
- #define STARTFILE_ARCH32_SPEC "%{std=c++0x:values-Xc.o%s} \
-   %{std=c++0x:values-xpg6.o%s} \
+ #undef LINK_ARCH32_SPEC
+ #define LINK_ARCH32_SPEC LINK_ARCH32_SPEC_BASE
+ 
