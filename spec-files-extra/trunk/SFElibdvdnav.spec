@@ -15,7 +15,6 @@ License:                 GPLv2+
 SUNW_Copyright:	         libdvdnav.copyright
 URL:                     http://videolan.org
 Source:		         http://download.videolan.org/pub/videolan/libdvdnav/%{version}/libdvdnav-%{version}.tar.bz2
-Patch1:                  libdvdnav-01-Wall.diff
 SUNW_BaseDir:            %{_basedir}
 buildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -30,7 +29,6 @@ BuildRequires: SFElibdvdread-devel
 
 %prep
 %setup -q -n libdvdnav-%version
-%patch1 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -80,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Mon Aug  8 2016 - Thomas Wagner
+- remove patch1, we use gcc which understands -Wall
 * Sat Apr  2 2016 - Thomas Wagner
 - bump to 5.0.3
 - new download URL

@@ -24,7 +24,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:  SUNWgnome-common-devel
 Buildrequires:  SUNWgnu-readline
 BuildRequires:  %pnm_buildrequires_perl_default
-Requires:       SUNWgnuplot
+Requires:       %{pnm_requires_SUNWgnuplot}
 Requires:       SUNWgnu-readline
 Requires:       %pnm_requires_perl_default
 
@@ -343,6 +343,8 @@ user ftpuser=false gcos-field="Amanda Reserved UID" username="%{amanda_user}" pa
 %{_libdir}/amanda/amdumpd
 
 %changelog
+* Mon Jan 28 2013 - Thomas Wagner
+- change Requires to %{pnm_requires_SUNWgnuplot}
 * Sun Jan 27 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.3.3
 * Sat Jan 26 2013 - Ken Mays <kmays2000@gmail.com>

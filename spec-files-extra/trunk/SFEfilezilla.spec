@@ -1,3 +1,23 @@
+#checking for wxWidgets version >= 3.0.2 (--unicode=yes --universal=no)... no (version 2.8.12 is not new enough)
+#configure: error: 
+#    The requested wxWidgets build couldn't be found.
+#    
+#    The configuration you asked for FileZilla requires a wxWidgets
+#    build with the following settings:
+#        --unicode=yes --universal=no
+#    but such build is not available.
+#
+#    To see the wxWidgets builds available on this system, please use
+#    'wx-config --list' command. To use the default build, returned by
+#    'wx-config --selected-config', use the options with their 'auto'
+#    default values.
+#
+#    If you still get this error, then check that 'wx-config' is
+#    in path, the directory where wxWidgets libraries are installed
+#    (returned by 'wx-config --libs' command) is in LD_LIBRARY_PATH
+#    or equivalent variable and wxWidgets version is 3.0.2 or above.
+
+
 #
 # spec file for package SFEfilezilla
 #
@@ -26,6 +46,11 @@ SUNW_BaseDir:       %{_basedir}
 BuildRoot:          %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
+
+#fresh filezilla requires -std=c++14 features
+BuildRequires: SFEgcc-49
+BuildRequires: SFEgccruntime-49
+
 Requires: SUNWgnome-libs
 Requires: SUNWgnome-base-libs
 Requires: SUNWgnome-vfs
@@ -60,8 +85,9 @@ mkdir -p %name-%version
 
 %build
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
-export CC=gcc
-export CXX=g++
+export CC=/usr/gcc/4.9/bin/gcc
+export CXX=/usr/gcc/4.9/bin/g++
+export CPP=/usr/gcc/4.9/bin/cpp
 export CPPFLAGS="-I/usr/g++/include -I%{_includedir}/idn"
 export CFLAGS="%optflags"
 export CXXFLAGS="%cxx_optflags -fpermissive -L/usr/g++/lib -R/usr/g++/lib"
@@ -73,6 +99,10 @@ export PATH=/usr/g++/bin:$PATH
 %install
 rm -rf $RPM_BUILD_ROOT
 %filezilla.install -d %name-%version
+
+#temporary until SFEgcc defaults to a -std=c++14 gcc compiler
+RUNPATHFILEZILLA="/usr/gcc/4.9/lib:/usr/gcc/lib:/usr/g++/lib:/usr/lib"
+/usr/bin/elfedit -e 'dyn:runpath '$RUNPATHFILEZILLA'' $RPM_BUILD_ROOT/%{_bindir}/filezilla
 
 %if %build_l10n
 %else
@@ -112,8 +142,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 17 2016 - Thomas Wagner
+- bump to 3.14.1
+- set BuildRequires to SFEgcc-4.9 and set CC/CXX/CPP for -std=c++14 compiler
+- elfedit to find libstdc++.so.6.0.20 in /usr/gcc/4.9/lib
 * Fri Oct 25 2013 - Thomas Wagner
 - change to (Build)Requires to %{pnm_buildrequires_SUNEgnu_idn}, %include packagenamacros.inc
+- requires -std=c++14 features, for transitioning requires SFEgcc-49 and SFEgccruntime-49, set CC CXX CPP variables to exact path
 * Fri Jun 29 2012 - Thomas Wagner
 - change (Build)Requires to SFEwxwidgets-gpp(-devel) (g++)
 - adapt to new usr-g++.inc -> CPPFLAGS change g++ include location,

@@ -19,7 +19,7 @@ Name:                    SFEsamba44
 IPS_package_name:	 sfe/service/network/samba44
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.4.5
+Version:                 4.4.7
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -56,7 +56,12 @@ BuildRequires: SFEopenldap-gnu
 Requires:      SFEopenldap-gnu
 
 #to build certificates for an AD Domain:
+BuildRequires:  SFEgnutls
 Requires:       SFEgnutls
+
+#https://wiki.samba.org/index.php/Operating_system_requirements/Dependencies_-_Libraries_and_programs
+BuildRequires: SFEpython%{python_version_package_string}-crypto
+Requires:      SFEpython%{python_version_package_string}-crypto
 
 %include default-depend.inc
 
@@ -434,6 +439,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 30 2016 - Thomas Wagner
+- bump to 4.4.7
+* Sun Jul 31 2016 - Thomas Wagner
+- add missing (Build)Requires SFEgnutls
 * Sat Jul 16 2016 - Thomas Wagner
 - bump to 4.4.5 - CVE-2016-2119 Client side SMB2/3 required signing can be downgraded
 * Wed Apr 13 2016 - Thomas Wagner

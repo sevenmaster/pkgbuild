@@ -5,6 +5,7 @@
 # bugdb: http://sourceforge.net/tracker/index.php?func=detail&group_id=28255&atid=392813&aid=
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:           SFEcheck
 IPS_Package_Name:	developer/check
@@ -16,7 +17,7 @@ SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 Requires:       SUNWlibC
-BuildRequires:	SUNWgsed
+BuildRequires:	%{pnm_buildrequires_SUNWgsed}
 
 %package devel
 Summary:       %{summary} - development files
@@ -83,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Tue Jun 24 2014 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgsed}, %include packagenamemacros.inc
 * Fri Jul 09 2010 - Milan Jurik
 - fix build deps
 * Mon Oct 19 2009 - brian.cameron@sun.com

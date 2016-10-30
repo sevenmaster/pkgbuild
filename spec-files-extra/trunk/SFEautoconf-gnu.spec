@@ -1,9 +1,10 @@
-#
+#, include packagenamemacros.inc
 # spec file for package SFEautoconf
 #
 # includes module(s): GNU autoconf
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 %include usr-gnu.inc
 
 %define _infodir           %{_datadir}/info
@@ -25,16 +26,15 @@ Source:			 http://ftp.gnu.org/gnu/autoconf/autoconf-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-%if %(pkginfo -q SUNWgm4 && echo 1 || echo 0)
-Requires: SUNWgm4
+
+BuildRequires: %{pnm_buildrequires_SUNWgm4}
+Requires: %{pnm_buildrequires_SUNWgm4}
+%if %{omnios}
+#we have no texinfo
 %else
-Requires: SFEm4
+BuildRequires:      %{pnm_buildrequires_SUNWtexi}
+Requires:      %{pnm_buildrequires_SUNWtexi}
 %endif
-Requires: SUNWpostrun
-Requires: SUNWtexi
-##TODO## check if we need SFEemacs
-#update description
-#Requires: SFEemacs
 
 
 %description
@@ -66,33 +66,13 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm $RPM_BUILD_ROOT%{_datadir}/info/dir
+/bin/rm -rf $RPM_BUILD_ROOT%{_datadir}/info/dir
 /bin/rm -rf %{buildroot}/%{_infodir}
 /bin/rm -rf %{buildroot}/%{_datadir}/doc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'autoconf.info standards.info' ;
-  echo '"';
-  echo 'retval=0';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} %{_infodir}/$info || retval=1';
-  echo 'done';
-  echo 'exit $retval' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
-
-%preun
-( echo 'PATH=/usr/bin:/usr/sfw/bin; export PATH' ;
-  echo 'infos="';
-  echo 'autoconf.info standards.info' ;
-  echo '"';
-  echo 'for info in $infos; do';
-  echo '  install-info --info-dir=%{_infodir} --delete %{_infodir}/$info';
-  echo 'done';
-  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -b -c SFE
 
 %files
 %defattr (-, root, bin)
@@ -110,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgm4}, %{pnm_buildrequires_SUNWtexi}, include packagenamemacros.inc
+- remove dependency on SFEpostrun (don't care about info files for SVR4 packages)
 * Tue Dev 24 2013 - Thomas Wagner
 - remove %{_datadir}/info from %files for the moment
 * Thu Dec  5 2013 - Thomas Wagner

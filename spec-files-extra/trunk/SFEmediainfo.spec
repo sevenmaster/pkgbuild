@@ -27,19 +27,21 @@ URL:            http://MediaArea.net/MediaInfo
 Packager:       MediaArea.net SARL <info@mediaarea.net>
 Source0:	%download_loc%srcname/%version/%{srcname}_%version.tar.bz2
 
-BuildRequires:	SFElibmediainfo
+BuildRequires:	SFElibmediainfo-devel
+Requires:	SFElibmediainfo
 BuildRequires:	SFEwxwidgets-gpp-devel
+Requires:	SFEwxwidgets-gpp
 
 %description
 MediaInfo is a convenient unified display of the most relevant technical
 and tag data for video and audio files.
 
 What information can I get from MediaInfo?
-• General: title, author, director, album, track number, date, duration...
-• Video: codec, aspect, fps, bitrate...
-• Audio: codec, sample rate, channels, language, bitrate...
-• Text: language of subtitle
-• Chapters: number of chapters, list of chapters
+ * General: title, author, director, album, track number, date, duration...
+ * Video: codec, aspect, fps, bitrate...
+ * Audio: codec, sample rate, channels, language, bitrate...
+ * Text: language of subtitle
+ * Chapters: number of chapters, list of chapters
 
 DivX, XviD, H263, H.263, H264, x264, ASP, AVC, iTunes, MPEG-1,
 MPEG1, MPEG-2, MPEG2, MPEG-4, MPEG4, MP4, M4A, M4V, QuickTime,
@@ -47,11 +49,11 @@ RealVideo, RealAudio, RA, RM, MSMPEG4v1, MSMPEG4v2, MSMPEG4v3,
 VOB, DVD, WMA, VMW, ASF, 3GP, 3GPP, 3GP2
 
 What format (container) does MediaInfo support?
-• Video: MKV, OGM, AVI, DivX, WMV, QuickTime, Real, MPEG-1,
+ * Video: MKV, OGM, AVI, DivX, WMV, QuickTime, Real, MPEG-1,
   MPEG-2, MPEG-4, DVD (VOB) (Codecs: DivX, XviD, MSMPEG4, ASP,
   H.264, AVC...)
-• Audio: OGG, MP3, WAV, RA, AC3, DTS, AAC, M4A, AU, AIFF
-• Subtitles: SRT, SSA, ASS, SAMI
+ * Audio: OGG, MP3, WAV, RA, AC3, DTS, AAC, M4A, AU, AIFF
+ * Subtitles: SRT, SSA, ASS, SAMI
 
 
 %prep
@@ -123,8 +125,12 @@ rm -rf %buildroot
 %_datadir/pixmaps/MediaInfo.png
 
 %changelog
+* Fri Aug  5 2016 - Thomas Wagner
+- go back for SFE wxwidgets to have exception handling. If OS-distro wxwidgets is really desired, need a switch as local preferences. Default: don't depend on (OIH)'s wxwidgets
 * Wed Dec 23 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 0.7.80; build GUI
+* Sun Mar 23 2014 - Thomas Wagner
+- remove unusual bullet char from %description
 * Mon Feb 10 2014 - Alex Viskovatoff
 - import spec into SFE
 * Tue Jan 01 2009 MediaArea.net SARL <info@mediaarea.net> - 0.7.67
