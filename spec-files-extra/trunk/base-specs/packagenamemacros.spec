@@ -123,6 +123,7 @@ pnm: oih20151003		%{oih20151003} OpenIndiana Hipster Snap 20151003 or later
 pnm: oih20150330		%{oih20150330} OpenIndiana Hipster Snap 20150330 or later
 pnm: oih20141010		%{oih20141010} OpenIndiana Hipster Snap 20141010 or later
 pnm: oih20140701		%{oih20140701} OpenIndiana Hipster Snap 20140701 or later
+pnm: oih20160926		%{oih20160926} OpenIndiana Hipster Snap 20160926 or later
 pnm: openindiana		%{openindiana} OpenIndiana yes/no
 pnm: oi201100 		%{oi201100} OpenIndiana 151, experimental reworked
 pnm: oi201009 		%{oi201009} OpenIndiana 147/148, experimental reworked
@@ -337,6 +338,8 @@ pnm_buildrequires_SFElibgpg_error                                -> %{pnm_buildr
 
 
 %changelog
+* Mon Oct 31 2016 - Thomas Wagner
+- add oih20160926 OpenIndiana Hipster Snap 20160926 or later
 * Thu Oct 13 2016 - Thomas Wagner
 - merge in pjama's changes
 - add another hint how to resolve specific pnm_macro to a real package name

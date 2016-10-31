@@ -152,6 +152,7 @@
 %define oih20151003    0
 %define oih20151128    0
 %define oih20160421    0
+%define oih20160926    0
 
 #OpenIndiana
 # could be oi201009 and oi201100 or something, the first development release and following
@@ -247,6 +248,22 @@
 # cat /etc/release | grep OmniOS
 #  OmniOS v11 r151012
 
+#OpenIndiana Hipster 2015
+#/etc/release 
+#             OpenIndiana Development oi_151.1.8 X86 (powered by illumos)
+#        Copyright 2011 Oracle and/or its affiliates. All rights reserved.
+#                        Use is subject to license terms.
+#                           Assembled 19 February 2013
+
+#when it switched to name Hipster is not known
+#OpenIndiana Hipster 2016.04
+#/etc/release
+#             OpenIndiana Hipster 2016.04 (powered by illumos)
+#        OpenIndiana Project, part of The Illumos Foundation (C) 2010-2016
+#                        Use is subject to license terms.
+#                           Assembled 17 August 
+
+
 
 ##START build 151 006 and 008 and up , OmniOS
 %if %{osdet299999}
@@ -275,7 +292,7 @@
 # but still flags ealier versions although not dealt with as such.
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 151 )
-%if %( egrep 'OpenIndiana Development' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
 # Detect if hipsterish
 %if %( uname -v | egrep '^illumos-' > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
@@ -284,6 +301,8 @@
 %define oihipster 1
 # Find date of osnet-incorporation and change to ISO date format
 # Not sure how this will go with pre-iso snapshot updated to post-iso packages
+##TODO## check if this can hardened against situation with same content but (re-)packaged at a newer date, that would more secure detection
+##       the price of supporting a development OS, being a moving target.
 %define osbuilddate %(pkg info osnet-incorporation | grep 'Packaging Date' | cut -d' ' -f 3,4,5 | date +%Y%m%d )
 
 # Post 20140701
@@ -317,6 +336,11 @@
 %define oih20160421    1
 %define osdistrelnumber 20160421
 %endif
+# Post 20160926
+%if %( expr %{osbuilddate} '>=' 20160926 )
+%define oih20160926    1
+%define osdistrelnumber 20160926
+%endif
 #                                below: subject to change!
 %define osdistrelname   "OIHipster"
 #this was the last check, skip all others
@@ -337,7 +361,7 @@
 # in consuming spec file!
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 151 )
-%if %( egrep 'OpenIndiana Development' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
@@ -588,6 +612,8 @@
 
 
 %changelog
+* Mon Oct 31 2016 - Thomas Wagner
+- add / detect oih20160926 with changed name in /etc/release: OpenIndiana Hipster 2016.04 / Assembled 17 August 2016 pkg info osnet-incorporation -> 2016.0.1.15945:20161028T005445Z
 * Thu Oct 13 2016 - Thomas Wagner
 - merged in & commit pjama's changes. 1,$s/20160423/20160421/ (OIH)
 * Sat Oct  8 2016 - pjama
