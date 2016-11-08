@@ -8,6 +8,7 @@
 # upgrade to SunStudio 12.2 or SolStudio 12.3 
 
 %include Solaris.inc
+%include usr-gnu.inc
 %include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
@@ -28,9 +29,9 @@
 %define src_name orc
 
 Name:		%{orc.name}
-IPS_Package_Name:	system/library/orc 
+IPS_Package_Name:	system/library/orc
 Version:	%{orc.version}
-Summary:	%{orc.summary}
+Summary:	%{orc.summary} (/usr/gnu)
 
 Group:		%{orc.group}
 License:	%{orc.license}
@@ -42,9 +43,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: %{pnm_buildrequires_library_desktop_gtk2}
 Requires:      %{pnm_requires_library_desktop_gtk2}
-BuildRequires: %{pnm_buildrequires_data_docbook}
 BuildRequires: %{pnm_buildrequires_developer_gnome_gettext}
-BuildRequires: %{pnm_buildrequires_developer_documentation_tool_gtk_doc}
+#paused BuildRequires: %{pnm_buildrequires_data_docbook}
+#paused BuildRequires: %{pnm_buildrequires_developer_documentation_tool_gtk_doc}
 
 
 %description
@@ -159,6 +160,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/aclocal/orc.m4
 
 %changelog
+* Tue Nov  8 2015 - Thomas Wagner
+- relocate to /usr/gnu (S12)
+- bump to 0.4.26
+* Sun Nov 29 2015 - Thomas Wagner
+- bump to 0.4.23
+- new source URL
+- --with-pic
+- disable doc building, error in XML
 * Mon Nov 21 2011 - Thomas Wagner
 - use packagenamemacros to shorten the (Build)Requires
 * Mon Oct 17 2011 - Milan Jurik
