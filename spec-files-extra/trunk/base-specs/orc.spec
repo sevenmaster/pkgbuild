@@ -1,18 +1,21 @@
 %define src_name orc
 
 Name:		SFEorc
-Version:	0.4.18
+Version:	0.4.26
 Summary:	The Oil Run-time Compiler
 
 Group:		System Environment/Libraries
 License:	BSD
 URL:		http://code.entropywave.com/projects/orc/
-Source:		http://code.entropywave.com/download/orc/orc-%{version}.tar.gz
+Source:         http://gstreamer.freedesktop.org/src/orc/orc-%{version}.tar.xz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 
 %prep
-%setup -q -n %{src_name}-%{version}
+#don't unpack please
+%setup -q -c -T -n %{src_name}-%version
+xz -dc %SOURCE0 | (cd ..; tar xf -)
+
 perl -i.orig -lpe 'if ($. == 1){s/^.*$/#!\/bin\/bash/}' configure
 
 %build
@@ -27,7 +30,10 @@ fi
 ./configure --prefix=%{_prefix}			\
             --libdir=%{_libdir}                 \
             --datadir=%{_datadir}               \
-            --disable-static --enable-gtk-doc
+            --with-pic                          \
+            --disable-gtk-doc                   \
+            --disable-static
+# --enable-gtk-doc
 
 make -j$CPUS
 
@@ -45,6 +51,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov  8 2016 - Thomas Wagner
+- bump to 0.4.26
+* Sun Nov 29 2015 - Thomas Wagner
+- bump to 0.4.23
+- new source URL
+- --with-pic
+- disable doc building, error in XML
 * Mon Oct 17 2011 - Milan Jurik
 - bump to 0.4.16
 * Tue Jul 26 2011 - Alex Viskovatoff
