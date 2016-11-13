@@ -8,6 +8,7 @@
 #
 
 %include Solaris.inc
+%include usr-gnu.inc
 %include osdistro.inc
 
 # No sparcv9 target
@@ -22,11 +23,11 @@
 
 Name:		SFElibvpx
 IPS_Package_Name:	library/video/libvpx
-Summary:	The VP8 Codec SDK
+Summary:	The VP8 Codec SDK (/usr/gnu)
 Group:		System/Multimedia Libraries
 Version:	%{libvpx.version}
 #give the IPS version number a slight advance to stay ahead of the OpenIndiana Hipster delivered libvpx
-%if %{oihipster}
+%if %( expr %{oihipster} '|' %{solaris12} )
 IPS_Component_Version: %{version}.0.1
 %endif
 URL:            http://www.webmproject.org/code/
@@ -95,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Nov  9 2016 - Thomas Wagner
+- relocate to /usr/gnu (S12, all)
+- bump to 1.4.0.0.1 to better distinguish from OSDistro libpx (S12 and OIH only)
 * Sun Apr 24 2016 - Thomas Wagner
 - fix osdistro detection (OIH)
 * Wed Mar 16 2016 - Thomas Wagner
