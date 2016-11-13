@@ -17,10 +17,10 @@
 Name:                SFEstunnel
 IPS_Package_Name:    sfe/service/security/stunnel
 Summary:             An SSL client/server encryption wrapper
-Version:             5.36
+Version:             5.37
 #remove leading "0"s. 5.09 -> 5.9
 IPS_Component_Version: $( echo %{version} | sed -e 's?\.0*?.?g' )
-Source:              http://www.stunnel.org/downloads/stunnel-%{version}.tar.gz
+Source:              http://www.usenix.org.uk/mirrors/stunnel/archive/5.x/stunnel-%{version}.tar.gz
 Source2:             stunnel.xml
 
 SUNW_BaseDir:        %{_basedir}
@@ -119,6 +119,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr(0755, stunnel, other) /var/lib/stunnel
 
 %changelog
+* Sun Nov 13 2016 - Thomas Wagner
+- bump to 5.37
+- fix download URL to read vom permanent location /archive/
 * Sun Oct 30 2016 - Thomas Wagner
 - fix download URL
 - bump to 5.36
