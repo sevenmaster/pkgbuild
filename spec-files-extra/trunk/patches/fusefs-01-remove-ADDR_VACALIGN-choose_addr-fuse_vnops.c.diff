@@ -1,0 +1,19 @@
+
+Only on Hipster is defined:
+
+./sys/vmsystm.h:#define ADDR_VACALIGN   1
+
+
+Solaris 11 and Solaris 12 have only 5 args instead of 6 args on Hipster
+
+--- illumos-fusefs-Version-1.3.1/kernel/fuse_vnops.c.orig	2016-05-04 21:06:32.000000000 +0200
++++ illumos-fusefs-Version-1.3.1/kernel/fuse_vnops.c	2016-11-12 22:11:08.878009658 +0100
+@@ -4275,7 +4275,7 @@
+ 	 */
+ 
+ 	as_rangelock(as);
+-	error = choose_addr(as, addrp, len, off, ADDR_VACALIGN, flags);
++	error = choose_addr(as, addrp, len, off, flags);
+ 	if (error != 0) {
+ 		as_rangeunlock(as);
+ 		goto out;

@@ -13,15 +13,13 @@
 Name:                    SFEntfs-3g
 IPS_Package_Name:	system/file-system/ntfs-3g
 Summary:                 NTFS-3G Stable Read/Write Driver
-Version:	2012.1.15AR.8
-IPS_Component_Version:	2012.1.15.0.8
+#ntfs-3g_ntfsprogs-2016.2.22.tgz
+Version:	2016.2.22
+IPS_Component_Version:	2016.2.22
 License:                 GPLv2
-Source:		http://jp-andre.pagesperso-orange.fr/ntfs-3g_ntfsprogs-%{version}.tgz
-#Source:			 http://www.tuxera.com/opensource/ntfs-3g-%{version}.tgz
-#temporary download location (tuxera does not keep old versions):
-#Source:                  http://pkgs.fedoraproject.org/repo/pkgs/ntfs-3g/ntfs-3g-2011.1.15.tgz/15a5cf5752012269fa168c24191f00e2/ntfs-3g-2011.1.15.tgz
-Url:                     http://www.tuxera.com/community/ntfs-3g-download/
-Group:		System/File System
+#Source:		http://jp-andre.pagesperso-orange.fr/ntfs-3g_ntfsprogs-%{version}.tgz
+Source:			http://tuxera.com/opensource/ntfs-3g_ntfsprogs-%{version}.tgz
+Group:			System/File System
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -49,6 +47,7 @@ Requires:	SFElibfuse
 %prep
 %setup -q -n ntfs-3g_ntfsprogs-%version
 
+
 cat <<_EOF > fstyp
 #!/bin/sh
 while [ -n "\$1" ];  do
@@ -72,7 +71,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-export CC=/usr/sfw/bin/gcc
+export CC=gcc
 export CFLAGS="%optflags -I%{gnu_inc} %{gnu_lib_path}"
 export FUSE_MODULE_CFLAGS="$CFLAGS %{gnu_lib_path} -D_FILE_OFFSET_BITS=64 -I/usr/gnu/include/fuse"
 export FUSE_MODULE_LIBS="%{gnu_lib_path} -pthread -lfuse"
@@ -86,6 +85,7 @@ export FUSE_MODULE_LIBS="%{gnu_lib_path} -pthread -lfuse"
             --sbindir=%{_sbindir}               \
             --includedir=%{_includedir}         \
             --exec-prefix=%{_execprefix}	\
+            --enable-mount-helper		\
 	    --with-fuse=external
 
 gmake -j $CPUS
@@ -94,13 +94,15 @@ gmake -j $CPUS
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
-rm -f $RPM_BUILD_ROOT%{_sbindir}/*
+#rm -f $RPM_BUILD_ROOT%{_sbindir}/*
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g
 cp fstyp $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/fstyp
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/fstyp
 ln -s %{_bindir}/ntfs-3g $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/mount
 
-mv $RPM_BUILD_ROOT/sbin/mkfs.ntfs $RPM_BUILD_ROOT%{_sbindir}
+mv $RPM_BUILD_ROOT/sbin/mkfs.*ntfs* $RPM_BUILD_ROOT%{_sbindir}/
+mv $RPM_BUILD_ROOT/sbin/mount.*ntfs* $RPM_BUILD_ROOT%{_sbindir}/
+
 rmdir $RPM_BUILD_ROOT/sbin
 ln -s %{_sbindir}/mkfs.ntfs $RPM_BUILD_ROOT%{_libdir}/fs/ntfs-3g/mkfs
 
@@ -110,6 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %{_bindir}
+%{_sbindir}/*
 %{_libdir}/libntfs-3g.so*
 %dir %attr (0755, root, sys) %{_libdir}/fs
 %dir %attr (0755, root, sys) %{_libdir}/fs/ntfs-3g
@@ -120,7 +123,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/*
-%{_sbindir}
 
 %files devel
 %defattr (-, root, bin)
@@ -131,6 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 12 2016 - Thomas Wagner
+- bump to 2016.2.22 (2016.2.22 on IPS)
+- download source from tuxera
 * Fri Jan 04 2013 - Milan Jurik
 - bump to 2012.1.15AR.8
 * Sat Mar 31 2012 - Pavel Heimlich

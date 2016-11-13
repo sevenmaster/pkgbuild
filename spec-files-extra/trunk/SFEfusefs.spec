@@ -7,23 +7,22 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define src_name fusefs
-%define src_url http://sfe.opencsw.org/files
-%define tarball_version	20100615
+%define _use_internal_dependency_generator 0
 
 %define usr_kernel /usr/kernel
 %define drv_base %{usr_kernel}/drv
 
 Name:		SFEfusefs
 IPS_Package_Name:	system/file-system/fusefs
-Summary:	File system in User Space (/usr/gnu)
-Version:	0.%{tarball_version}.2
-License:	CDDL and BSD
+Summary:	Kernel midules for File system in User Space
+Version:	1.3.1
+%define src_name illumos-fusefs-Version-%{version}
+License:	CDDL
 Group:		System/File System
 SUNW_Copyright:	fusefs.copyright
-#is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
-Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
-Patch1:		fuse-01-jean-pierre.diff
+URL: http://jp-andre.pagesperso-orange.fr/openindiana-ntfs-3g.html
+Source:		 http://github.com/jurikm/illumos-fusefs/archive/Version-%{version}.tar.gz
+Patch1:		fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -36,9 +35,18 @@ interface to allow implementation of a fully functional file system
 in user-space.  FUSE originates from the Linux community and is
 included in the Linux kernel (2.6.14+).
 
+This is the kernel module.
+
 %prep
+#illumos-fusefs-Version-1.3.1
 %setup -q -n %{src_name}
+
+#only Solaris 12 wants 5 arguments, Hipster, Solaris 11 wants 6 arguments including int vacalign
+#/usr/include/sys/vmsystm.h:#define ADDR_VACALIGN   1
+%if %( %{solaris12} '>=' 1 )
+#expect only 5 argmuments to choose_addr
 %patch1 -p1
+%endif
 
 %build
 export PATH=/opt/onbld/bin/`uname -p`:$PATH
@@ -84,6 +92,13 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Sat Nov 12 2016 - Thomas Wagner
+- bump to 1.3.1
+- load source from new URL on github
+- add patch1 for S12 to only expect 5 arguments to /usr/include/sys/vmsystm.h: choose_addr
+* Sun Apr 17 2016 - Thomas Wagner
+- update to source tarball from Jean-Pierre 
+- bump to 1.2AR.7
 * Wed Jan 30 2014 - Thomas Wagner
 - change to (Build)Requires: %{pnm_buildrequires_SUNWonbld}, #include packagenamemacros.inc
 * Thu Jun 20 2013 - Thomas Wagner

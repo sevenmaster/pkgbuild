@@ -112,8 +112,6 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, sys)
 %if %{etc_security_directorylayout}
-%dir %attr (0755, root, other) %{_std_sysconfdir}/security/exec_attr.d
-%dir %attr (0755, root, other) %{_std_sysconfdir}/security/prof_attr.d
 %{_std_sysconfdir}/security/exec_attr.d/libfuse
 %{_std_sysconfdir}/security/prof_attr.d/libfuse
 %else
@@ -122,6 +120,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 12 2016 - Thomas Wagner
+- fix %files group for /security/exec_attr.d /security/prof_attr.d by removing them from manifest
 * Thu Jun 20 2013 - Thomas Wagner
 - new download url
 - prepared for switching old/new layout in /etc/security/<$1|$1.d/>,
