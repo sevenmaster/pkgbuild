@@ -18,7 +18,7 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.3.6
+Version:	2.3.13
 #https://openvpn.net/index.php/open-source/downloads.html
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
 Patch1:         openvpn-01-get_default_gateway.diff
@@ -29,7 +29,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires: SFElzo
 Requires: SFElzo
 #note: if you build in a non-global-zone, you might not necessarily have the tun package succeed
-#but, you stuff like /usr/include/net/if_tun.h which comes from SFEtun
+#but you need stuff like /usr/include/net/if_tun.h which comes from SFEtun
 BuildRequires: SFEtun
 Requires: SFEtun
 BuildRequires: %{pnm_buildrequires_SUNWopenssl}
@@ -85,6 +85,10 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Sun Nov 13 2016 - Thomas Wagner
+- bump to 2.3.13
+* Thu Oct 27 2016 - Thomas Wagner
+- bump to 2.3.12
 * Sat Apr  4 2015 - Thomas Wagner
 - bump to 2.3.6
 - add patch1 openvpn-01-get_default_gateway.diff (credits leoric)
