@@ -14,8 +14,9 @@ Name:                    SFEntfs-3g
 IPS_Package_Name:	system/file-system/ntfs-3g
 Summary:                 NTFS-3G Stable Read/Write Driver
 #ntfs-3g_ntfsprogs-2016.2.22.tgz
-Version:	2016.2.22
-IPS_Component_Version:	2016.2.22
+#2016.2.22AR.2
+Version:	2016.2.22AR.2
+IPS_Component_Version:	2016.2.22.0.2
 License:                 GPLv2
 #Source:		http://jp-andre.pagesperso-orange.fr/ntfs-3g_ntfsprogs-%{version}.tgz
 Source:			http://tuxera.com/opensource/ntfs-3g_ntfsprogs-%{version}.tgz
@@ -133,6 +134,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 14 2016 - Thomas Wagner
+- bump to 2016.2.22AR.2 (2016.2.22.0.2 on IPS)
 * Sat Nov 12 2016 - Thomas Wagner
 - bump to 2016.2.22 (2016.2.22 on IPS)
 - download source from tuxera
