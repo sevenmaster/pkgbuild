@@ -149,8 +149,8 @@
 
 %define major_version   5
 %define minor_version   2
-%define micro_version   2
-%define patch_version   2
+%define micro_version   3
+%define patch_version   3
 
 
 
@@ -1350,6 +1350,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 10 2016 - pjama
+- Bump from version 5.2.2.2 to 5.2.3.3
 * Wed Oct 12 2016 - pjama
 - first release
 * Sun Jun/Jul/Aug/Sep 2016 - pjama
