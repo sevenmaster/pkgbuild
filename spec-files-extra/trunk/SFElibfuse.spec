@@ -14,7 +14,9 @@ IPS_Package_Name:	 system/file-system/libfuse
 Summary:	Library for FUSE (/usr/gnu)
 License:	LGPLv2
 SUNW_Copyright:	libfuse.copyright
-Version:	0.%{tarball_version}
+#Version:	0.%{tarball_version}
+# 0.1 to indicate it is patched first round. increment for next added or changed patch
+Version:	2.7.6.0.1
 Group:		System/File System
 #is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
 Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
@@ -23,7 +25,12 @@ Source2:	libfuse.prof_attr
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%name-%version
 %include default-depend.inc
-Patch0:		fuse-2.7.6-update.diff
+#Patch0:		fuse-2.7.6-update.diff
+Patch1:		libfuse-01-fuse-2.7.6-update.diff
+Patch3:		libfuse-03-mount_util.c.diff
+Patch4:		libfuse-04-utimensat-fuse.c.diff
+Patch5:		libfuse-05-cflags.diff
+Patch6:		libfuse-06-fuse_lowlevel.c.diff
 Requires:	%{name}-root
 Requires:	SFEfusefs
 BuildRequires:	SFEfusefs
@@ -52,9 +59,18 @@ This package contains root files for libfuse.
 
 %prep
 %setup -q -n %{src_name}
-%patch0 -p0
+%patch1 -p1
+%patch3 -p0
+%patch4 -p0
+%patch5 -p1
+%patch6 -p1
 
-gsed -i -e 's?/usr/lib?/usr/gnu/lib?' -e 's?/usr/bin?/usr/gnu/bin?' -e 's?/usr/include?/usr/gnu/include?' fusermount sparcv9/Makefile amd64/Makefile Makefile Makefile.com
+gsed -i.bak1 -e 's?/usr/lib?/usr/gnu/lib?' -e 's?/usr/bin?/usr/gnu/bin?' -e 's?/usr/include?/usr/gnu/include?' fusermount sparcv9/Makefile amd64/Makefile Makefile Makefile.com
+
+%if !%{cc_is_gcc}
+#studio
+gsed -i.bak2 -e 's?-std=c99?-xc99?' Makefile.com
+%endif
 
 %build
 export MAKE=/usr/ccs/bin/make
@@ -120,6 +136,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 16 2016 - Thomas Wagner
+- go with the version number from libfuse.so.2.7.6 library name. Add/increment (IPS) nano-version to indicate every new extra patch
+- merge & rework patches from Pierre and OI
 * Sat Nov 12 2016 - Thomas Wagner
 - fix %files group for /security/exec_attr.d /security/prof_attr.d by removing them from manifest
 * Thu Jun 20 2013 - Thomas Wagner
