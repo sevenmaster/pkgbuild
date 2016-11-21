@@ -30,7 +30,7 @@ IPS_package_name:	sfe/library/gnu/openldap
 Group:			System/Services
 Summary:                 OpenLDAP - LDAP Server, Tools and Libraries (/usr/gnu)
 URL:                     http://www.openldap.org
-Version:                 2.4.40
+Version:                 2.4.44
 Source:                  http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-%{version}.tgz
 Source2:		ldap-olslapd.xml
 Source3:		openldap-exec_attr
@@ -308,6 +308,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Mon Nov 21 2016 - Thomas Wagner
+- bump to 2.4.44
 * Tue Sep 20 2016 - pjama
 - hard set _sysconfdir to /etc/gnu because base.inc run after usr-gnu.inc overwrites _sysconfdir to be /etc and breaks %files paths
 * Sun Aug 16 2015 - Thomas Wagner
