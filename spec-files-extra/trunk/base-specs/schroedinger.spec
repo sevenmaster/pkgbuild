@@ -22,11 +22,13 @@ export LDFLAGS="%_ldflags -lm"
 
 #find SFEorc orc-0.4.pc
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
-  export PKG_CONFIG_PATH="/usr/g++/lib/%{_arch64}/pkgconfig:/usr/gnu/lib/%{_arch64}/pkgconfig"
+#                              orc
+  export PKG_CONFIG_PATH="/usr/gnu/lib/%{_arch64}/pkgconfig"
   export LDFLAGS="${LDFLAGS} -m64"
 else
-#                              libass                 orc
-  export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig"
+#                              orc
+  export PKG_CONFIG_PATH="/usr/gnu/lib/pkgconfig"
+echo
 fi
 
 
@@ -50,7 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Nov 23 2016 - Thomas Wagner
-- set PKG_CONFIG_PATH=/usr/g++/lib/<%{arch64}|>pkgconfig:/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc and SFEharfbuzz-gpp
+- set PKG_CONFIG_PATH=/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc
 - add "-m64" to LDFLAGS if building 64-bit
 * Sun Nov 29 2015 - Thomas Wagner
 - remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files

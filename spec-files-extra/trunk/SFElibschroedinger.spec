@@ -41,7 +41,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-build
 BuildRequires:  %{pnm_buildrequires_SFEorc_devel}
 Requires:       %{pnm_requires_SFEorc}
 BuildRequires:  %{pnm_buildrequires_SUNWgtk_doc}
-BuildRequires:  %{pnm_buildrequires_SUNWliboil}
 BuildRequires:  %{pnm_buildrequires_SUNWgnome_media_devel}
 
 %package devel
@@ -145,6 +144,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Nov 23 2016 - Thomas Wagner
 - set PKG_CONFIG_PATH=/usr/g++/lib/<%{arch64}|>pkgconfig:/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc and SFEharfbuzz-gpp
 - add "-m64" to LDFLAGS if building 64-bit
+- remove BuildRequires:  %{pnm_buildrequires_SUNWliboil}
 * Sun Nov 29 2015 - Thomas Wagner
 - remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files
 * Sun Nov 29 2015 - Thomas Wagner
