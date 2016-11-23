@@ -13,6 +13,8 @@
 %define cc_is_gcc 1
 %include base.inc
 
+%include packagenamemacros.inc
+
 %ifarch amd64 sparcv9
 %include arch64.inc
 %use glib_64 = glib2.spec
@@ -28,7 +30,7 @@ Name:                    SFEglib2-gpp
 IPS_package_name:        library/g++/glib2
 #Meta(info.classification): %{classification_prefix}:Desktop (GNOME)/Libraries
 Group:			 Desktop (GNOME)/Libraries
-Summary:                 GNOME core libraries
+Summary:                 GNOME core libraries (/usr/g++)
 Version:                 %{glib.version}
 License:                 %{glib.license}
 #Source:                  %{name}-manpages-0.1.tar.gz
@@ -36,35 +38,34 @@ SUNW_BaseDir:            %{_basedir}
 #SUNW_Copyright:          %{name}.copyright
 
 %include default-depend.inc
-Requires: system/library/math
-Requires: library/zlib
-Requires: runtime/python-26
-BuildRequires: runtime/perl-512
-BuildRequires: system/library/math
-BuildRequires: runtime/python-26
-BuildRequires: developer/documentation-tool/gtk-doc
-BuildRequires: developer/gnome/gettext
+Requires:      %{pnm_requires_system_library_math}
+Requires:      %{pnm_requires_SUNWzlib}
+Requires:      %{pnm_requires_python_default}
+
+BuildRequires: %{pnm_buildrequires_perl_default}
+BuildRequires: %{pnm_buildrequires_system_library_math}
+BuildRequires: %{pnm_buildrequires_python_default}
+BuildRequires: %{pnm_buildrequires_developer_documentation_tool_gtk_doc}
+BuildRequires: %{pnm_buildrequires_SUNWgnu_gettext_devel}
+#looks like only present on S11 and OpenIndiana, not on older OS-distro
+#but they have different names
 BuildRequires: data/sgml-common
 BuildRequires: data/xml-common
 BuildRequires: data/docbook/docbook-style-dsssl
 BuildRequires: data/docbook/docbook-style-xsl
 BuildRequires: data/docbook/docbook-dtds
 # required for including X11/extensions/Xtsol.h in gio-rbac.diff
-BuildRequires: x11/trusted/libxtsol
-
-%if %(/bin/test -e /usr/sfw/include/glib.h && echo 1 || echo 0)
-BuildConflicts: SUNWGlib
-%endif
+#not present on every OS-distro BuildRequires: x11/trusted/libxtsol
 
 %package devel		
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
-Requires: SFEglib2
+Requires: SFEglib2-gpp
 
 %package l10n
 Summary:                 %{summary} - l10n content
-Requires: SFEglib2
+Requires: SFEglib2-gpp
 
 %prep
 rm -rf %name-%version
@@ -228,6 +229,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr (-, root, other) %{_datadir}/locale
 
 %changelog
+* Sun May 29 2016 - Thomas Wagner
+- remove dependency on SUNWGlib
+- fix dependency on itself for -devel and -l10n
+- change (Build)Requires to pnm_macros, include packagenamemacros.inc
+##TODO##
+- needs more fresh automake
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Import spec from Solaris desktop repository
 * Sat Sep 15 2012 - brian.cameron@oracle.com
