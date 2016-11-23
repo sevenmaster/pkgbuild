@@ -71,7 +71,9 @@ runtime functionality as an event loop, threads, dynamic laoding, and an
 object system
 
 %prep
-%setup -q -n glib-%{version}
+%setup -q -c -T -n glib-%version
+xz -dc %SOURCE0 | (cd ..; tar xf -)
+
 # Don't pass --fuzz=0 to patch
 %define _patch_options --unified
 %patch1 -p1
@@ -91,11 +93,20 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 export SED="/usr/gnu/bin/sed"
-aclocal -I m4macros
 libtoolize --force --copy
 gtkdocize
 autoheader
+%if %{solaris11}
+#easy fix, needs to be improved (S11 might not be fixed to this exact automake version...)
+#needs requirement on the package
+#there is a mediator as well
+aclocal-1.15 -I m4macros
+automake-1.15 -a -c -f
+%else
+#use what we can find
+aclocal -I m4macros
 automake -a -c -f
+%endif
 autoconf
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lsocket -lsecdb -lnsl"
@@ -154,6 +165,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Sun May 29 2016 - Thomas Wagner
+- remove dependency on SUNWGlib
+- fix dependency on itself for -devel and -l10n
+- change (Build)Requires to pnm_macros, include packagenamemacros.inc
+##TODO##
+- needs more fresh automake
 * Sat Jan  2 2016 - Alex Viskovatoff <herzen@imap.cc>
 - Import spec from Solaris desktop repository
 * Sat Sep 15 2012 - brian.cameron@oracle.com
