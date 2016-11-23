@@ -18,7 +18,7 @@ perl -i.orig -lpe 'if ($. == 1){s/^.*$/#!\/bin\/bash/}' configure
 
 %build
 export CFLAGS="%optflags"
-export LDFLAGS="%_ldflags -lm"
+export LDFLAGS="%_ldflags -lm %{gnu_lib_path}"
 
 #find SFEorc orc-0.4.pc
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
@@ -54,6 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Nov 23 2016 - Thomas Wagner
 - set PKG_CONFIG_PATH=/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc
 - add "-m64" to LDFLAGS if building 64-bit
+- add RPATH to find now relocated liborc-0.4.so in /usr/gnu/lib
 * Sun Nov 29 2015 - Thomas Wagner
 - remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files
 * Tue Jan 24 2012 - Milan Jurik
