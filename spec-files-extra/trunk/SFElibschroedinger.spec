@@ -142,9 +142,10 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 ##TODO## find new download URL
 * Wed Nov 23 2016 - Thomas Wagner
-- set PKG_CONFIG_PATH=/usr/g++/lib/<%{arch64}|>pkgconfig:/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc and SFEharfbuzz-gpp
+- set PKG_CONFIG_PATH=/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc
 - add "-m64" to LDFLAGS if building 64-bit
 - remove BuildRequires:  %{pnm_buildrequires_SUNWliboil}
+- add RPATH to find now relocated liborc-0.4.so in /usr/gnu/lib
 * Sun Nov 29 2015 - Thomas Wagner
 - remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files
 * Sun Nov 29 2015 - Thomas Wagner
