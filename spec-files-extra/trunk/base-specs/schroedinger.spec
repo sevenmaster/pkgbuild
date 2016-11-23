@@ -4,6 +4,7 @@ Summary:        Library for decoding and encoding video in the Dirac format
 Group:          Applications/Multimedia
 License:        LGPL/MIT/MPL
 URL:            http://diracvideo.org/
+#Source:         http://diracvideo.org/download/schroedinger/schroedinger-%{version}.tar.gz
 Source:         http://diracvideo.org/download/schroedinger/schroedinger-%{version}.tar.gz
 Patch1:		schroedinger-01-return.diff
 Patch2:		schroedinger-02-testsuite.diff
@@ -18,6 +19,16 @@ perl -i.orig -lpe 'if ($. == 1){s/^.*$/#!\/bin\/bash/}' configure
 %build
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lm"
+
+#find SFEorc orc-0.4.pc
+if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
+  export PKG_CONFIG_PATH="/usr/g++/lib/%{_arch64}/pkgconfig:/usr/gnu/lib/%{_arch64}/pkgconfig"
+  export LDFLAGS="${LDFLAGS} -m64"
+else
+#                              libass                 orc
+  export PKG_CONFIG_PATH="/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig"
+fi
+
 
 ./configure --prefix=%{_prefix}                 \
             --libdir=%{_libdir}                 \
@@ -38,6 +49,11 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer-0.10/*.{a,la}
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Wed Nov 23 2016 - Thomas Wagner
+- set PKG_CONFIG_PATH=/usr/g++/lib/<%{arch64}|>pkgconfig:/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc and SFEharfbuzz-gpp
+- add "-m64" to LDFLAGS if building 64-bit
+* Sun Nov 29 2015 - Thomas Wagner
+- remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files
 * Tue Jan 24 2012 - Milan Jurik
 - bump to 1.0.11
 * Mon Oct 17 2011 - Milan Jurik
