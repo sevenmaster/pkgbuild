@@ -141,7 +141,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc/html/schroedinger
 
 %changelog
-* Nov 29 2015 - Thomas Wagner
+##TODO## find new download URL
+* Wed Nov 23 2016 - Thomas Wagner
+- set PKG_CONFIG_PATH=/usr/g++/lib/<%{arch64}|>pkgconfig:/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc and SFEharfbuzz-gpp
+- add "-m64" to LDFLAGS if building 64-bit
+* Sun Nov 29 2015 - Thomas Wagner
+- remove export PKG_CONFIG_PATH as it doesn't work for 64 bit, try default setting from nclude/*inc files
+* Sun Nov 29 2015 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SFEorc_devel}
 * Sat Apr 28 2012 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgtk_doc}
