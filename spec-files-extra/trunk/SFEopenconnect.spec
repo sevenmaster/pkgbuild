@@ -17,18 +17,32 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	7.06
-IPS_Component_Version: 7.6
+Version:	7.07
+IPS_Component_Version: 7.7
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source:		ftp://ftp.infradead.org/pub/%{src_name}/%{src_name}-%{version}.tar.gz
+#vpnc-script ... no controlled version, just fetch the very latest one from http://git.infradead.org/users/dwmw2/vpnc-scripts.git/tree
+##TODO## Problem: That way, we *never* get the script updated once it exists in out local $SOURCE directory...
+Source1:        http://git.infradead.org/users/dwmw2/vpnc-scripts.git/blob_plain/HEAD:/vpnc-script
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires:	SFEtun
 Requires:	SFEtun
+
+BuildRequires:  %{pnm_buildrequires_SUNWzlib}
+Requires:       %{pnm_requires_SUNWzlib}
+
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+#S11 S12 need zlib.pc
+BuildRequires:  SFEzlib-pkgconfig 
+#for pkgtool's dependency resoultion
+Requires:       SFEzlib-pkgconfig 
+%endif
+
 
 %description
 This package provides a client for Cisco's AnyConnect VPN, which uses
@@ -58,14 +72,17 @@ Requires:	%{name}
 %prep
 %setup -q -n %{src_name}-%{version}
 
+cp -p %{SOURCE1} .
+
 %build
 
 #note: all variables are on the same line with the "configure" call
 #therefore *no* export
+#replaced by package carrying zlib.pc ZLIB_CFLAGS="-I/usr/include" ZLIB_LIBS=-lz \
+
 CC=gcc \
 LD=`which ld-wrapper` \
 CFLAGS="%{optflags} -D__sun__" LDFLAGS="%{_ldflags}" \
-ZLIB_CFLAGS="-I/usr/include" ZLIB_LIBS=-lz \
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
 	--docdir=%{_docdir}/openconnect \
 	--disable-static \
@@ -86,6 +103,10 @@ done
 mkdir -p %{buildroot}/%{_mandir}/man1m
 mv %{buildroot}/%{_mandir}/man8/openconnect.8 %{buildroot}/%{_mandir}/man1m/openconnect.1m
 rmdir %{buildroot}/%{_mandir}/man8
+
+VPNCSCRIPT=$( basename ${SOURCE1} )
+cp -p ${VPNCSCRIPT} $RPM_BUILD_ROOT/%{_bindir}/
+chmod a+rx $RPM_BUILD_ROOT/%{_bindir}/${VPNCSCRIPT}
 
 %if %build_l10n
 %else
@@ -121,6 +142,13 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Nov 24 2016 - Thomas Wagner
+- bump to 7.07 (IPS 7.7)
+* Sat Mar 12 2016 - Thomas Wagner
+- add vpnc-script (no controlled verison, just fetch the latest one), copy to %{_bindir}
+##TODO## Problem: That way, we *never* get the script updated once it exists in out local $SOURCE directory...
+* Thu Aug 20 2015 - Thomas Wagner
+- add BuildRequires SFEzlib-pkgconfig, remove variables pointing to ZLIB
 * Mon Aug 10 2015 - Thomas Wagner
 - bump to 7.06 (IPS 7.6)
 * Tue Mar  4 2015 - Thomas Wagner
