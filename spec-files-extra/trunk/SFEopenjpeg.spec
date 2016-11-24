@@ -9,9 +9,11 @@
 %include Solaris.inc
 
 %define	src_name openjpeg
-%define	src_url	http://www.openjpeg.org
+#%define	src_url	http://www.openjpeg.org
+#%define	src_url http://github.com/uclouvain/openjpeg/archive/version.1.5.2.tar.gz
+%define	src_url http://github.com/uclouvain/openjpeg/archive
 
-%define version 1.5.1
+%define version 1.5.2
 %define major_minor_version 1.5
 
 %ifarch amd64 sparcv9
@@ -28,7 +30,6 @@ Group:		System/Libraries
 Summary:                 %{openjpeg.summary}
 Version:                 %{openjpeg.version}
 URL:		http://www.openjpeg.org/
-Source:		http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
 License:	BSD
 SUNW_Copyright:	openjpeg.copyright
 SUNW_BaseDir:	%{_basedir}
@@ -54,37 +55,48 @@ SUNW_BaseDir:    %{_basedir}
 Requires: %name
 
 %prep
-rm -rf %{name}-%{version}
-mkdir %name-%version
+#rm -rf %{name}-%{version}
+#mkdir %name-%version
+rm -rf %{name}-version.%{version}
+mkdir %name-version.%version
 
 %ifarch amd64 sparcv9
-mkdir -p %{name}-%{version}/%_arch64
-%openjpeg_64.prep -d %{name}-%{version}/%_arch64
+#mkdir -p %{name}-%{version}/%_arch64
+#%openjpeg_64.prep -d %{name}-%{version}/%_arch64
+mkdir -p %{name}-version.%{version}/%_arch64
+%openjpeg_64.prep -d %{name}-version.%{version}/%_arch64
 %endif
 
-mkdir -p %{name}-%{version}/%base_arch
-%openjpeg.prep -d %{name}-%{version}/%base_arch
+
+#mkdir -p %{name}-%{version}/%base_arch
+#%openjpeg.prep -d %{name}-%{version}/%base_arch
+mkdir -p %{name}-version.%{version}/%base_arch
+%openjpeg.prep -d %{name}-version.%{version}/%base_arch
 
 
 %build
 %ifarch amd64 sparcv9
-%openjpeg_64.build -d %{name}-%{version}/%_arch64
+#%openjpeg_64.build -d %{name}-%{version}/%_arch64
+%openjpeg_64.build -d %{name}-version.%{version}/%_arch64
 %endif
 
-%openjpeg.build -d %{name}-%{version}/%{base_arch}
+#%openjpeg.build -d %{name}-%{version}/%{base_arch}
+%openjpeg.build -d %{name}-version.%{version}/%{base_arch}
 
 
 %install
 rm -rf %{buildroot}
 %ifarch amd64 sparcv9
-%openjpeg_64.install -d %{name}-%{version}/%_arch64
+#%openjpeg_64.install -d %{name}-%{version}/%_arch64
+%openjpeg_64.install -d %{name}-version.%{version}/%_arch64
 #1.5.0 #install does not honour OPENJPEG_INSTALL_BIN_DIR:PATH
 #1.5.0 mkdir %{buildroot}%{_bindir}/%_arch64
 #1.5.0 mv %{buildroot}%{_bindir}/j* %{buildroot}/%{_bindir}/%_arch64/
 #1.5.0 mv %{buildroot}%{_bindir}/i* %{buildroot}/%{_bindir}/%_arch64/
 %endif
 
-%openjpeg.install -d %{name}-%{version}/%{base_arch}
+#%openjpeg.install -d %{name}-%{version}/%{base_arch}
+%openjpeg.install -d %{name}-version.%{version}/%{base_arch}
 
 #create isaexec layout (move i86 binaries to i86/, create symbolic links to isaexec)
 mkdir -p %{buildroot}/%{_bindir}/%{base_isa}
@@ -143,6 +155,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Nov 21 2014 - Thomas Wagner
+- bump to 1.5.2
+- make download-file contain the source name (stupid github setup! "version.1.5.2.tar.gz" is not a valid download-filename!)
+* Sun Nov 29 2015 - Thomas Wagner
+- fix double Source URL for pkgbuild
 * Sat May 22 2015 - pjama
 - update download URL
 * Sat Mar 22 2014 - Thomas Wagner
