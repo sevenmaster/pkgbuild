@@ -4,6 +4,8 @@
 # includes module(s): FFmpeg
 #
 
+##TODO## make a 64-bit binary and libs
+
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
@@ -191,6 +193,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 24 2016 - Thomas Wagner
+- fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig (harfbuzz and relocated orc)
+- remove -mincoming-stack-boundary=2 from CFLAGS (from include/*inc). This leads to: (__asm__ -- error: 'asm' operand has impossible constraints)
+- add to LDFLAGS -R/usr/gnu/lib -L/usr/gnu/lib
+* Sat Oct  8 2016 - Thomas Wagner
+- fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig
 * Fri Feb 26 2016 - Thomas Wagner
 - add standard $PKG_CONFIG_PATH to make it find SFElibass
 * Sat Jan 16 2016 - Thomas Wagner
