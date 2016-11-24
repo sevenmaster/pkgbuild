@@ -4,12 +4,15 @@
 
 Summary:	Open Source multimedia framework
 Version:	%{version}
-Source:         http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
+#Source:         http://openjpeg.googlecode.com/files/openjpeg-%{version}.tar.gz
+Source:         %{src_url}/version.%{version}.tar.gz?openjpeg-%{version}.tar.gz
 
 
 
 %prep
-%setup -q -n %{src_name}-%{version}
+#openjpeg-version.1.5.2/
+#%setup -q -n %{src_name}-%{version}
+%setup -q -n %{src_name}-version.%{version}
 
 
 %build
@@ -64,6 +67,9 @@ mkdir -p ${RPM_BUILD_ROOT}%{_pkg_config_path}
 
 
 %changelog
+* Mon Nov 21 2014 - Thomas Wagner
+- bump to 1.5.2
+- make download-file contain the source name (stupid github setup! "version.1.5.2.tar.gz" is not a valid download-filename!)
 * Sun Jan 03 2016 - reneelg
 - align Source definition with SFEopenjpeg.spec to prevent build error of SFEopenjpeg
 * Sat May 22 2015 - pjama
