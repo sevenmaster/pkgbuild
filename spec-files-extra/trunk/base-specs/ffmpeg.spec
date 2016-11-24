@@ -36,8 +36,21 @@ export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -fno-rename-r
 %else
 export CFLAGS="%optflags -Os %{extra_gcc_flags} -I/usr/g++/include -I%{xorg_inc} -I%{_includedir}"
 %endif
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:${PKG_CONFIG_PATH}
-export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib %{xorg_lib_path}"
+
+# -mpreferred-stack-boundary=2 doesn't work, leads to:
+#/localhomes/sfe/packages/BUILD/SFEffmpeg-2.8.5/pentium_pro+mmx/ffmpeg-2.8.5
+#gcc ...
+#libswscale/x86/rgb2rgb_template.c: In function 'rgb24toyv12_mmx':
+#libswscale/x86/rgb2rgb_template.c:1720:9: error: 'asm' operand has impossible constraints
+#         __asm__ volatile(
+#         ^
+export CFLAGS=$( echo $CFLAGS | sed -e 's? -mincoming-stack-boundary=2??' )
+
+export PKG_CONFIG_PATH=%{_libdir}/pkgconfig:%{_basedir}/g++/lib/pkgconfig:%{_basedir}/gnu/lib/pkgconfig:%{_basedir}/lib/pkgconfig
+#remove /usr/lib/pkgconfig only if it is at the very beginning - else might catch fontconfig vom OSdistro which may be too old
+export PKG_CONFIG_PATH=$( echo $PKG_CONFIG_PATH | sed -e 's?^%{_basedir}/lib/pkgconfig:??' )
+echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+export LDFLAGS="%_ldflags -R/usr/g++/lib -L/usr/g++/lib -R/usr/gnu/lib -L/usr/gnu/lib %{xorg_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
         export LDFLAGS="$LDFLAGS -m64"
 fi
@@ -126,6 +139,12 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Nov 24 2016 - Thomas Wagner
+- fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig (harfbuzz and relocated orc)
+- remove -mincoming-stack-boundary=2 from CFLAGS (from include/*inc). This leads to: (__asm__ -- error: 'asm' operand has impossible constraints)
+- add to LDFLAGS -R/usr/gnu/lib -L/usr/gnu/lib
+* Sat Oct  8 2016 - Thomas Wagner
+- fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig
 * Fri Feb 26 2016 - Thomas Wagner
 - add standard $PKG_CONFIG_PATH to make it find SFElibass
 * Sat Jan 16 2016 - Thomas Wagner
