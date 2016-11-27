@@ -102,6 +102,8 @@ BuildRequires: SFEopenal-devel
 Requires: SFEopenal
 BuildRequires: SFElibvpx-devel
 Requires: SFElibvpx
+BuildRequires: SFElibiconv
+Requires: SFElibiconv
 
 %package devel
 Summary:                 %{summary} - development files
@@ -193,6 +195,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 27 2016 - Thomas Wagner
+- add missing BuildRequires: SFElibiconv (thx Sjaak)
 * Thu Nov 24 2016 - Thomas Wagner
 - fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig (harfbuzz and relocated orc)
 - remove -mincoming-stack-boundary=2 from CFLAGS (from include/*inc). This leads to: (__asm__ -- error: 'asm' operand has impossible constraints)
