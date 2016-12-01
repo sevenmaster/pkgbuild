@@ -1,0 +1,11 @@
+--- dovecot-2.2.26.0/src/lib-ldap/ldap-compare.c.orig	2016-12-01 23:35:49.955085916 +0100
++++ dovecot-2.2.26.0/src/lib-ldap/ldap-compare.c	2016-12-01 23:35:41.794000275 +0100
+@@ -109,7 +109,7 @@
+ 	req->send_request_cb = ldap_compare_send;
+ 	req->timeout_secs = input->timeout_secs;
+ 
+-	return ldap_connection_queue_request(conn, req);
++	ldap_connection_queue_request(conn, req);
+ }
+ 
+ bool ldap_compare_result(struct ldap_result *result)

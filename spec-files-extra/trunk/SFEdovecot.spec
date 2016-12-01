@@ -51,6 +51,8 @@ SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
 Source2:	dovecot.xml
 
+Patch1:		dovecot-01-raise-soft-fd-limit.patch
+Patch2:		dovecot-02-void-cannot-return-value-ldap-compare.c.diff
 
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -96,6 +98,8 @@ See the wiki page for SFEdovecot.spec for installation guidance:
 %setup -q -n %{src_name}-%version
 cp -p %{SOURCE2} dovecot.xml
 
+%patch1 -p1
+%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -103,13 +107,16 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
-%if %{with_clucene}
+%if %{cc_is_gcc}
 export CC=gcc
 export CXX=g++
 %endif
-export CFLAGS="%optflags -D__EXTENSIONS__"
-export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%_ldflags"
+
+export CFLAGS="%optflags -I/usr/gnu/include -I/usr/include/kerberosv5 -D__EXTENSIONS__"
+#find SFE openldap in /usr/gnu/include/ldap
+export CXXFLAGS="%cxx_optflags-I/usr/gnu/include -I/usr/include/kerberosv5 "
+#gnu_lib_path to find SFE openldap
+export LDFLAGS="%_ldflags %{gnu_lib_path}"
 %if %{with_clucene}
 export CXXFLAGS="$CXXFLAGS -I/usr/g++/include"
 export LDFLAGS="$LDFLAGS -L/usr/g++/lib -R/usr/g++/lib"
@@ -151,7 +158,7 @@ bash ./configure --prefix=%{_prefix}		\
 
 
 
-gmake -j $CPUS
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -236,6 +243,10 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Thu Dec  1 2016 - Thomas Wagner
+- add patch dovecot-01-raise-soft-fd-limit.patch
+- add to CFLAGS / LDFLAGS to find SFEopenldap in /usr/gnu (OM)
+- rework logic with_clucene and cc_is_gcc
 * Sun Nov 13 2016 - Thomas Wagner
 - bump to 2.2.26.0 (this is the second version of 2.2.26 see website)
 * Thu Jan  7 2016 - Thomas Wagner
