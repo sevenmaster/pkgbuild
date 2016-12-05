@@ -12,7 +12,7 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.7.1
+Version:             1.7.2
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
@@ -44,8 +44,8 @@ Requires:      %{pnm_requires_SUNWgnu_idn}
 
 #headers for sasl in SUNWhea/
 #  dependency discovered: system/library/security/libsasl@0.5.11-0.175.0.0.0.2.1
-BuildRequires: SUNWlibsasl
-Requires:      SUNWlibsasl
+BuildRequires: %{pnm_buildrequires_SUNWlibsasl_devel} 
+Requires:      %{pnm_requires_SUNWlibsasl}
 
 #  dependency discovered: library/security/openssl@1.0.0.5-0.175.0.0.0.2.537
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_devel}
@@ -160,11 +160,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Mon Dec  5 2016 - Thomas Wagner
+- bump to 1.7.2
 * Sat Oct  8 2016 - Thomas Wagner
 - bump to 1.7.1
 - remove workaround for M_CMD, M_READ
 - rework patch mutt-02-configure-gssapi-krb5.diff, mutt-03-configure-unquoted-test.diff
 - remove patch1 and replace it with a dummy file which gets removed after make install and doesn't get packaged
+- change (Build)Requires to %{pnm_ibuildrequires_SUNWlibsasl_devel}
 * Thu Aug 18 2016 - Thomas Wagner
 - bump to 1.7.0
 * Mon Apr  4 2016 - Thomas Wagner
