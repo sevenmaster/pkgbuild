@@ -31,6 +31,10 @@
 
 %define _use_internal_dependency_generator 0
 
+#don't want phonon, then use pkgtool --without-phonon  (or pkgbuild)
+%define without_phonon %{?_without_phonon:1}%{?!_without_phonon:0}
+#want QT built with new gtk3 and new glib2 in /usr/g++/, then use pkgtool --with-gtk3-glib2  (or pkgbuild)
+%define with_gtk3_glib2 %{?_with_gtk3_glib2:1}%{?!_with_gtk3_glib2:0}
 
 Name:                SFEqt-gpp
 IPS_Package_Name:	library/desktop/g++/qt
@@ -73,18 +77,17 @@ SUNW_Copyright:	     qt.copyright
 SUNW_BaseDir:        %_basedir
 %include default-depend.inc
 
-%if %( expr %{solaris12} '|' %{oihipster} )
-#assume that use gcc 4.8.x
 BuildRequires:		SFEgcc
 Requires:		SFEgccruntime
-%else
-BuildRequires:		SFEgcc-46
-Requires:		SFEgccruntime-46
-%endif
 
 # Guarantee X/freetype environment concisely (hopefully):
-BuildRequires: SFEgtk2-gpp-devel
-Requires:      SFEgtk2-gpp
+%if %{with_gtk3_glib2}
+BuildRequires: SFEgtk3-gpp-devel
+Requires:      SFEgtk3-gpp
+%else
+BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
+Requires:      %{pnm_requires_SUNWgtk2}
+%endif
 BuildRequires: %{pnm_buildrequires_SUNWxwplt}
 Requires:      %{pnm_requires_SUNWxwplt}
 # The above bring in many things, including SUNWxwice and SUNWzlib
@@ -94,10 +97,15 @@ Requires:      %{pnm_requires_SUNWxwxft}
 # This package only provides libraries
 BuildRequires: %{pnm_buildrequires_mysql_default}
 Requires:      %{pnm_requires_mysql_default}
-BuildRequires: database/sqlite-3
-Requires:      database/sqlite-3
+BuildRequires:     %{pnm_buildrequires_SUNWsqlite3}
+Requires:          %{pnm_requires_SUNWsqlite3}
+
 BuildRequires: %{pnm_buildrequires_SUNWdbus_devel}
 Requires:      %{pnm_requires_SUNWdbus}
+
+#loaded at runtime by dlopen, so can't detect by ldd/elfdump/pkgdepend
+BuildRequires: SFEicu-gpp
+Requires:      SFEicu-gpp
 
 # Follow example of developer/icu for IPS package name
 %package devel
@@ -126,7 +134,11 @@ tar xzf %{SOURCE1}
 %define _patch_options --unified
 %patch1 -p1
 %patch3
-#%patch6 -p1
+%if %(expr %{solaris11} '+' %{solaris12} '>=' 1)
+#has different/updated system provided header files
+%else
+%patch6 -p1
+%endif
 %patch9
 %patch10 -p1
 %patch11 -p1
@@ -162,7 +174,9 @@ export CFLAGS="%optflags -fPIC"
 export CXXFLAGS="%cxx_optflags -pthreads"
 
 #/usr/gcc/bin/gcc -v 2>&1| egrep "gcc version 4\."
-$CC -v -v 2>&1| egrep "gcc version 4\.[7-]" && export CFLAGS="$CFLAGS -std=gnu++11" && export CXXFLAGS="$CXXFLAGS -std=gnu++11"
+$CC -v -v 2>&1| egrep "gcc version 4\.7\." && export CFLAGS="$CFLAGS -std=gnu++11" && export CXXFLAGS="$CXXFLAGS -std=gnu++11"
+#$CC -v -v 2>&1| egrep "gcc version 4\.[8-9]" && export CFLAGS="$CFLAGS -std=c++11" && export CXXFLAGS="$CXXFLAGS -std=c++11"
+#$CC -v -v 2>&1| egrep "gcc version 5\.[0-9]" && export CFLAGS="$CFLAGS -std=c++11" && export CXXFLAGS="$CXXFLAGS -std=c++11"
 
 export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthreads -fPIC"
 
@@ -194,7 +208,9 @@ export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib %{gnu_lib_path} -pthre
 	   -system-sqlite \
            -plugin-sql-mysql \
            -no-3dnow \
+%if %without_phonon
 	   -no-phonon \
+%endif
            -no-ssse3 -no-sse4.1 -no-sse4.2 -no-avx \
            %extra_includes \
            %extra_libs
@@ -286,6 +302,17 @@ rm -rf %buildroot
 
 
 %changelog
+* Thu Dec  8 2016 - Thomas Wagner
+- add (Build)Requires: SFEicu-gpp as it uses dlopen (no auto-detection of this dependency)
+* Sun Feb 28 2016 - Thomas Wagner
+- change (Build)Requires to  %{pnm_buildrequires_SUNWsqlite3}
+- use current SFEgcc default version (should be 4.8.x on all OSDISTRO)
+- enable -no-phonon again but disable with pkgtool --without_phonon
+- disable use of gtk3 and glib2 but enable with pkgtool --with_gtk3_glib2 (glib2 = SFE new glib2 version in /usr/g++/)
+  use new SFEgtk3-gpp.spec
+- set -std=gnu++11 for gcc 4.7.x, set -std=c++1 for gcc 4.8++ and upcoming gcc 5.x
+- from previous commit:
+- don't use Patch6 qt-gpp-06-isnan.diff on (S11, S12) - has fixed headers
 * Fri Jan  1 2016 - Alex Viskovatoff <herzen@imap.cc>
 - make build find our glib2's header files; disable phonon; use system sqlite
 * Thu Aug 27 2015 - Alex Viskovatoff <herzen@imap.cc>
