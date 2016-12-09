@@ -10,10 +10,10 @@ Name:                    SFElibdvbpsi
 IPS_Package_Name:	 library/video/libdvbpsi 
 Summary:                 A simple library designed for decoding and generation of MPEG TS and DVB PSI tables
 URL:                     http://www.videolan.org/developers/libdvbpsi.html
-Version:                 0.2.2
+Version:                 1.3.0
 License:	LGPL2.1
-Source:                  http://download.videolan.org/pub/%srcname/%version/%srcname-%version.tar.bz2
-Patch1:			 libdvbpsi-01-configure.diff
+Source:                  http://download.videolan.org/pub/libdvbpsi/%{version}/libdvbpsi-%{version}.tar.bz2
+#Patch1:			 libdvbpsi-01-configure.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -25,8 +25,8 @@ SUNW_BaseDir:            %{_basedir}
 Requires: %name
 
 %prep
-%setup -q -n %srcname-%version
-%patch1 -p1
+%setup -q -n libdvbpsi-%version
+#%patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -34,7 +34,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 export CFLAGS="%optflags"
-export LIBS=-lxnet
+export LDFLAGS="%{_ldflags} -lsocket -lnsl"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
 export MSGFMT="/usr/bin/msgfmt"
 
@@ -58,6 +58,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*.pc
 
 %files devel
 %defattr (-, root, bin)
@@ -70,6 +72,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- bump to 1.3.0
+* Tue Aug 21 2012 - Thomas Wagner
+- new source URL filename
+- add LDFLAGS with -lsocket -lnsl
 * Sat Aug 18 2012 - Milan Jurik
 - bump to 0.2.2
 * Wed Feb 02 2011 - Alex Viskovatoff

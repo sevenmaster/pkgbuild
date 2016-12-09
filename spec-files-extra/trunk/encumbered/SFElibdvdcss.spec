@@ -12,7 +12,7 @@ Group:		System/Multimedia Libraries
 URL:		http://www.videolan.org/developers/libdvdcss.html
 License:	GPLv2
 SUNW_copyright:	libdvdcss.copyright
-Version:	1.2.11
+Version:	1.4.0
 Source:		http://download.videolan.org/pub/libdvdcss/%{version}/libdvdcss-%{version}.tar.bz2
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -65,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sat Apr  2 2016 - Thomas Wagner
+- bump to 1.4.0
 * Sun Nov 20 2011 - Milan Jurik
 - bump to 1.2.11
 * Mon Oct 10 2011 - Milan Jurik

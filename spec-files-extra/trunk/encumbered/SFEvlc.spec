@@ -104,11 +104,44 @@
 #
 
 %define debug_build 1
+%define vlc_debug_flags -gdwarf-2
 
 ##TODO## re-enable and test taglib later
 %define enable_taglib 0
 %define enable_matroska 1
 %define enable_libumem 1
+%define enable_0at0_so_1 0
+
+%define enable_vdpau 1
+
+# SFE NEEDS TO ADD A helper-package containing vdpau.h / vdpau_x11.h / libvpdau.so
+#Nvidia stopped packaging the vdpau.h and vdpau_x11.h
+#http://www.nvidia.com/object/linux-display-ia32-260.19.04-driver
+# Stopped packaging and installing OpenGL, VDPAU, CUDA, and OpenCL header files with the driver. Those interested in these files can get them from their Linux distributions' packages, where available, or upstream from:
+# 
+#     OpenGL header files (gl.h, glext.h glx.h, glxext.h):
+#     http://www.opengl.org/registry/
+# 
+#     VDPAU header files (vdpau.h and vdpau_x11.h):
+#     http://freedesktop.org/wiki/Software/VDPAU
+# 
+#     CUDA and OpenCL header files (cuda.h, cudaGL.h, cudaVDPAU.h,
+#     cl.h, cl_gl.h, cl_platform.h):
+#     http://developer.nvidia.com/object/gpucomputing.html
+# 
+# 
+# Note that while libvdpau.so is still included in 260.xx drivers, it will be removed from a future release series in early 2011. Distributors are encouraged to package libvdpau.so from http://freedesktop.org/wiki/Software/VDPAU
+ 
+%if %( ls -1d /usr/X11/include/NVIDIA/vdpau/vdpau.h 2>/dev/null 1>/dev/null && echo 0 || echo 1 )
+#there is no vdpau header file present.
+%define enable_vdpau 0
+%endif 
+
+#default is enable_vdpau 1, but can be disabled:
+#have no nvidia driver on the system, don't want vdpau, then set pkgtool --without-vdpau
+%if 0%{?_without_vdpau:1}
+%define enable_vdpau 0
+%endif
 
 ##NOTE## If you run into compile problems and "vlc-cache-gen" core dumps,
 #        then you *first* uninstall the old copy of vlc and re-try. 
@@ -225,8 +258,6 @@ Name:                   SFEvlc
 Summary:                vlc - multimedia player and streaming server
 Version:                2.1.5
 Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.xz
-#Patch3:                 vlc-03-1141-oss.diff
-#Patch3:                vlc-03-208-oss.diff
 Patch3:                vlc-03-211-oss.diff
 
 ## reminder: review if patches 4 .. 18 still valid/needed,
@@ -294,8 +325,8 @@ Requires:       SFElibmpcdec
 BuildRequires:  SFElibmatroska-gpp
 Requires:       SFElibmatroska-gpp
 %endif
-BuildRequires:  SUNWogg-vorbis-devel
-Requires:       SUNWogg-vorbis
+BuildRequires:  %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:       %{pnm_requires_SUNWogg_vorbis}
 BuildRequires:  SFElibdvbpsi-devel
 Requires:       SFElibdvbpsi
 BuildRequires:  SFElibdvdnav-devel
@@ -362,12 +393,9 @@ Requires:      %{pnm_requires_pulseaudio}
 BuildRequires: %{pnm_buildrequires_SUNWltdl}
 Requires: %{pnm_requires_SUNWltdl}
 
-##TODO## make this a pnm macro
-#%if %{os2nnn}
-#BuildRequires: driver/graphics/nvidia
-#%else
-#BuildRequires: NVDAgraphics
-#%endif
+%if %{enable_vdpau}
+BuildRequires: %{pnm_buildrequires_driver_graphics_nvidia}
+%endif
 
 ##TODO## eventually can be omitted, or patched out of Makefile
 ##BuildRequires: SUNWgit
@@ -462,13 +490,13 @@ export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DO_DIRECTORY=0x1000000"
 #solaris 12 has tdestroy in libs.so and in /usr/include/search.h
 #export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DHAVE_TDESTROY=0"
 # doesn't find luaL_register
-export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
+export LUA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
 %endif
 
 export CFLAGS="${CFLAGS} ${EXTRA_CFLAGS}"
 
 export CFLAGS="${CFLAGS} -mmmx"
-export CPPFLAGS="${CPPFLAGS} -mmmx"
+export CXXFLAGS="${CXXFLAGS} -mmmx"
 
 #on S11 errors in modules/video_output/opencl.c
 #discovered with vlc-2.1.1
@@ -479,9 +507,13 @@ export CFLAGS="${CFLAGS} -DGL_GLEXT_PROTOTYPES"
 
 %if %{debug_build}
 ##TODO## might need to filter out "-O<n>" flags to switch off optimization and help switch on debuging
-export CFLAGS="$CFLAGS -g"
+export CFLAGS="$CFLAGS %{vlc_debug_flags}"
+export CXXLAGS="$CXXFLAGS %{vlc_debug_flags}"
+export CFLAGS_plugin="-gdwarf-2"
+export CXXLAGS_plugin="-gdwarf-2"
 %else
 export CFLAGS="$CFLAGS -O4"
+export CXXLAGS="$CXXLAGS -O4"
 %endif
 
 export LD=/opt/dtbld/bin/ld-wrapper
@@ -495,7 +527,9 @@ export PATH=`pwd`/localbin:$PATH
 [ -s localbin/grep ] || ln -s /usr/gnu/bin/grep localbin/grep
 [ -s localbin/ar ] || ln -s /usr/bin/ar localbin/ar
 
+%if %{enable_0at0_so_1}
 export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags"
+%endif
 
 ##TODO## clean this up once we are at vlc 2.1.x (can use newer libavcodec, ...)
 #we can't use ffmpeg too new in older vlc versions (before 2.1.x)
@@ -534,24 +568,22 @@ fi
 # vdpau.pc is missing from driver/graphics/nvidia
 # C compiler flags for VDPAU, overriding pkg-config
 # linker flags for VDPAU, overriding pkg-config
-export VDPAU_CFLAGS="-I %{_includedir}"
+%if %{enable_vdpau}
+export VDPAU_CFLAGS="-I %{_includedir} %{vlc_debug_flags}"
 export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
+%endif
 
 %if %{oihipster}
 #try find symbol luaL_openlib
 #export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA -L/usr/lib -R/usr/lib"
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
+export LDFLAGS_plugin="-z ignore -z combreloc -Bdirect -z rescan"
 export CFLAGS="$CFLAGS"
 export CXXFLAGS="$CXXFLAGS"
-#export LD="/opt/dtbld/bin/ld-wrapper"
-#export LD_ALTEXEC="/bin/ld"
-#export LDFLAGS_plugin="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
-#export LDFLAGS_vlc="-Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect -zinterpose -z rescan"
-#export LDFLAGS_plugin="--Wl,-zignore -Wl,-zcombreloc -Wl,-Bdirect"
-export LDFLAGS_plugin="-z ignore -z combreloc -Bdirect -z rescan"
-export LUA_LIBS="-z ignore -z combreloc -Bdirect -z rescan -llua"
+#export LUA_LIBS="-z ignore -z combreloc -Bdirect -z rescan -llua"
+export LUA_LIBS="-z ignore -z combreloc -Bdirect -llua"
 export LD=/bin/ld
-export EXTRA_CFLAGS="${EXTRA_CFLAGS} -DLUA_COMPAT_ALL=1"
+export LUA_CFLAGS="-DLUA_COMPAT_ALL=1"
 %endif
 
 export LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"
@@ -599,6 +631,9 @@ echo "CPPFLAGS $CPPFLAGS"
 echo "LDFLAGS $LDFLAGS"
 echo "LD      $LD"
 echo "LD_ALTEXEC $LD_ALTEXEC"
+echo "debugbuild $LD_ALTEXEC"
+echo "debug_build %{debug_build}    (on=1 off=0)"
+echo "vlc_debug_flags %{vlc_debug_flags}"
 
 #for patch29 autoconf.ac libavcodec
 #needs autoconf >2.65
@@ -654,6 +689,11 @@ autoconf
 %endif
 %if %debug_build
 	    --enable-debug=yes			\
+%endif
+%if %{enable_vdpau}
+            --enable-vdpau                       \
+%else
+            --disable-vdpau                      \
 %endif
             --disable-libva                   \
 	    $nlsopt
@@ -770,9 +810,18 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Dec 16 2016 - Thomas Wagner
+- make linking with /usr/lib/0@0.so.1 a configurable in the spec file, defaults to "don't link it"
+- make vdpau an automatic switch for now, as newer Nvidia drivers stop bundling header and lib files -> will be separate package
+  BuildRequire nvidia only if vdpau is not disabled
+- move LUA -DLUA_COMPAT_ALL=1 to LUA_CFLAGS only
+- remove -z rescan from LUA_LIBS
+- set -mmmx in CXXFLAGS not in CPPFLAGS
+- add switch for debugging symbols -gdwarf-2
+- set LDFLAGS_plugin 
+- change (Build)Requires to SUNWogg_vorbis_devel (S12)
 * Nov 29 2015 - Thomas Wagner
-- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel} SUNWdbus_devel, SUNWavahi_bridge_dsd_devel, SUNWlibgpg_error_devel, SUNWlibrsvg, SUNWlibgcrypt
-  , %include packagenamacros.inc
+- change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel} SUNWdbus_devel, SUNWavahi_bridge_dsd_devel, SUNWlibgpg_error_devel, SUNWlibrsvg, SUNWlibgcrypt, SUNWogg_vorbis_devel, %include packagenamacros.inc
 * Mon Aug 10 2015 - Thomas Wagner
 - relax Requires: SFEgccruntime (w/o version)
 * Sat Aug  9 2014 - Thomas Wagner
