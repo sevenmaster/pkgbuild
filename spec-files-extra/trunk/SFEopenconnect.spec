@@ -12,6 +12,7 @@
 %include Solaris.inc
 %define cc_is_gcc 1
 %include base.inc
+%include packagenamemacros.inc
 
 %define src_name	openconnect
 
@@ -38,9 +39,9 @@ Requires:       %{pnm_requires_SUNWzlib}
 
 %if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
 #S11 S12 need zlib.pc
-BuildRequires:  SFEzlib-pkgconfig 
+BuildRequires:  %{pnm_buildrequires_SFEzlib-pkgconfig}
 #for pkgtool's dependency resoultion
-Requires:       SFEzlib-pkgconfig 
+Requires:       %{pnm_requires_SFEzlib-pkgconfig}
 %endif
 
 
@@ -142,6 +143,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Dec  9 2016 - Thomas Wagner
+- add missing %include packagenamemacros.inc
+- change (Build)Requires to pnm_buildrequires_SFEzlib-pkgconfig
 * Thu Nov 24 2016 - Thomas Wagner
 - bump to 7.07 (IPS 7.7)
 * Sat Mar 12 2016 - Thomas Wagner
