@@ -62,23 +62,23 @@ the H.264/MPEG-4 AVC format.
 
 Encoder features:
 
-    • 8x8 and 4x4 adaptive spatial transform
-    • Adaptive B-frame placement
-    • B-frames as references / arbitrary frame order
-    • CAVLC/CABAC entropy coding
-    • Custom quantization matrices
-    • Intra: all macroblock types (16x16, 8x8, 4x4, and PCM with all predictions)
-    • Inter P: all partitions (from 16x16 down to 4x4)
-    • Inter B: partitions from 16x16 down to 8x8 (including skip/direct)
-    • Interlacing (MBAFF)
-    • Multiple reference frames
-    • Ratecontrol: constant quantizer, constant quality, single or multipass ABR, optional VBV
-    • Scenecut detection
-    • Spatial and temporal direct mode in B-frames, adaptive mode selection
-    • Parallel encoding on multiple CPUs
-    • Predictive lossless mode
-    • Psy optimizations for detail retention (adaptive quantization, psy-RD, psy-trellis)
-    • Zones for arbitrarily adjusting bitrate distribution
+    8x8 and 4x4 adaptive spatial transform
+    Adaptive B-frame placement
+    B-frames as references / arbitrary frame order
+    CAVLC/CABAC entropy coding
+    Custom quantization matrices
+    Intra: all macroblock types (16x16, 8x8, 4x4, and PCM with all predictions)
+    Inter P: all partitions (from 16x16 down to 4x4)
+    Inter B: partitions from 16x16 down to 8x8 (including skip/direct)
+    Interlacing (MBAFF)
+    Multiple reference frames
+    Ratecontrol: constant quantizer, constant quality, single or multipass ABR, optional VBV
+    Scenecut detection
+    Spatial and temporal direct mode in B-frames, adaptive mode selection
+    Parallel encoding on multiple CPUs
+    Predictive lossless mode
+    Psy optimizations for detail retention (adaptive quantization, psy-RD, psy-trellis)
+    Zones for arbitrarily adjusting bitrate distribution
 
 
 %package devel
@@ -157,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr  2 2016 - Thomas Wagner
+- bump to x264-snapshot-20160401-2245
+* Sat Jan 30 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 20160129, updating x264_build to 148
 * Sun Nov 10 2013 - Alex Viskovatoff
 - add missing dependency on SFEgcc, which pulls in SFEmpfr
 - fix build (definition of with_gpac was removed but reference to it was kept)

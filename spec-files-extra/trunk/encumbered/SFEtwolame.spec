@@ -41,11 +41,14 @@ gsed -i.bak -e 's?-lsndfile?-R/usr/gnu/lib -L/usr/gnu/lib -lsndfile?' configure
 
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-    CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+
+%if %{cc_is_gcc}
+export CFLAGS="%optflags -I%{gnu_inc}"
+%else
 export CFLAGS="%optflags -I%{gnu_inc} -xcrossfile=1"
+%endif
+
 export LDFLAGS="%{gnu_lib_path} %_ldflags"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal -I ."
 
@@ -88,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Nov 29 2015 - Thomas Wagner
+- if cc_is_gcc, then remove CFLAG -xcrossfile=1
 - Mon May 25 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SUNWgnome_common_devel
 * Sun Dec  1 2013 - Thomas Wagner
