@@ -81,8 +81,8 @@ BuildRequires: SFEfaac-gpp-devel
 Requires: SFEfaac-gpp
 BuildRequires: SFElame-devel
 Requires: SFElame
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:      %{pnm_requires_SUNWogg_vorbis}
 BuildRequires: SUNWlibtheora-devel
 Requires: SUNWlibtheora
 BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
@@ -195,6 +195,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dev 11 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWogg_vorbis_devel (S12)
 * Sun Nov 27 2016 - Thomas Wagner
 - add missing BuildRequires: SFElibiconv (thx Sjaak)
 * Thu Nov 24 2016 - Thomas Wagner
