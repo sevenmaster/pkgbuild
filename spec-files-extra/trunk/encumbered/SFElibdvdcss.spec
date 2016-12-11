@@ -56,6 +56,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/*
 
 %files devel
 %defattr (-, root, bin)
@@ -65,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Dec  9 2016 - Thomas Wagner
+- add to %files %{_docdir}/*
 * Sat Apr  2 2016 - Thomas Wagner
 - bump to 1.4.0
 * Sun Nov 20 2011 - Milan Jurik

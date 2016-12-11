@@ -16,7 +16,6 @@
 %include base.inc
 %use libsndfile = libsndfile.spec
 
-%define SFEogg_vorbis    %(/usr/bin/pkginfo -q SFEogg-vorbis && echo 1 || echo 0)
 
 Name:                    SFElibsndfile
 IPS_Package_Name:	 library/gnu/libsndfile
@@ -25,16 +24,12 @@ Version:                 %{libsndfile.version}
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-%if %SFEogg_vorbis
-%ifarch amd64 sparcv9
-BuildRequires: SFEogg-vorbis-devel
-%endif
-%endif
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:      %{pnm_requires_SUNWogg_vorbis}
 BuildRequires: %{pnm_buildrequires_SUNWflac_devel}
 Requires:      %{pnm_requires_SUNWflac}
-Requires: SUNWlibms
+BuildRequires: %{pnm_buildrequires_SUNWlibms_devel}
+Requires:      %{pnm_requires_SUNWlibms}
 BuildRequires: %{pnm_buildrequires_SUNWaudh}
 
 %package devel
@@ -180,6 +175,8 @@ depend fmri=library/libsndfile type=optional
 
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWogg_vorbis_devel, pnm_buildrequires_SUNWlibms_devel (S12)
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWflac_devel} SUNWaudh (OIH), %include packagenamemacros.inc
 - don't set -features=extensions if cc_is_gcc / g++
