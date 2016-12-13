@@ -17,7 +17,7 @@
 %define can_isaexec 1
 %define gtk_doc_option --disable-gtk-doc
 
-%define arch_ldadd -L%{_libdir} -R%{_libdir}
+%define arch_ldadd -m64 -L%{_libdir} -R%{_libdir}
 
 %ifarch amd64
 %define opt_amd64 1
@@ -55,12 +55,12 @@
 
 %ifarch sparc
 %define suncc_optflags64           -i %_cc64_opt_level -xstrconst -xarch=v9a -xcode=pic32 -mr
-%define suncc_cxx_optflags64       -i %_cxx64_opt_level -xarch=v9a -xcode=pic32 -mr -norunpath
+%define suncc_cxx_optflags64       -i %_cxx64_opt_level -xarch=v9a -xcode=pic32 -mr
 %endif
 
 %ifarch i386
 %define suncc_optflags64           -i %_cc64_opt_level -xstrconst -m64 -Kpic -xregs=no%%frameptr
-%define suncc_cxx_optflags64       -i %_cxx64_opt_level -m64 -Kpic -mr -norunpath -xregs=no%%frameptr
+%define suncc_cxx_optflags64       -i %_cxx64_opt_level -m64 -Kpic -mr -xregs=no%%frameptr
 %endif
 
 %if %cc_is_gcc
@@ -112,6 +112,10 @@
 %define xorg_lib_path   -L%{xorg_lib} -R%{xorg_lib}
 
 %changelog
+* Mon Dex 13 2016 - Thomas Wagner
+- arch_ldadd -m64 (to be consistent with 32-bit include file)
+* Sun Dec 11 2016 - Thomas Wagner
+- remove vom c++ "-norunpath" or run with developerstudio into e.g. "ld.so.1: conftest: fatal: libstatomic.so.1: open failed: No such file or directory" (S12/SunCC 5.14)
 * Sun Okt 11 2015 - Thomas Wagner
 - add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
 - still try to keep changes to this include files to a minumum please

@@ -16,7 +16,7 @@
 # default: build gtk-doc API docs
 %define gtk_doc_option %{?!_without_gtk_doc:--enable-gtk-doc}%{?_without_gtk_doc:--disable-gtk-doc}
 
-%define arch_ldadd
+%define arch_ldadd -m32
 
 %if %debug_build
 %define pkgbuild_postprocess /bin/true
@@ -32,17 +32,17 @@
 %endif
 
 %ifarch sparc
-%define gcc_optflags           %_gcc_opt_level -mv8plus -Xlinker -i
-%define gcc_cxx_optflags       %_gxx_opt_level -mv8plus -Xlinker -i
-%define suncc_optflags         %_cc_opt_level  -xarch=v8plusa -i -mr
-%define suncc_cxx_optflags     %_cxx_opt_level -xarch=v8plusa -i -mr -norunpath
+%define gcc_optflags           %_gcc_opt_level -m32 -mv8plus -Xlinker -i
+%define gcc_cxx_optflags       %_gxx_opt_level -m32 -mv8plus -Xlinker -i
+%define suncc_optflags         %_cc_opt_level  -m32 -xarch=v8plusa -i -mr
+%define suncc_cxx_optflags     %_cxx_opt_level -m32 -xarch=v8plusa -i -mr
 %endif
 
 %ifarch i386
-%define gcc_optflags           %_gcc_opt_level -march=i686 -Xlinker -i -fno-omit-frame-pointer
-%define gcc_cxx_optflags       %_gxx_opt_level -march=i686 -Xlinker -i -fno-omit-frame-pointer
-%define suncc_optflags         %_cc_opt_level  -xarch=pentium_pro -i -mr -xregs=no%%frameptr
-%define suncc_cxx_optflags     %_cxx_opt_level -xarch=pentium_pro -i -mr -norunpath -xregs=no%%frameptr
+%define gcc_optflags           %_gcc_opt_level -m32 -march=i686 -Xlinker -i -fno-omit-frame-pointer -mincoming-stack-boundary=2
+%define gcc_cxx_optflags       %_gxx_opt_level -m32 -march=i686 -Xlinker -i -fno-omit-frame-pointer -mincoming-stack-boundary=2
+%define suncc_optflags         %_cc_opt_level  -m32 -xarch=pentium_pro -i -mr -xregs=no%%frameptr
+%define suncc_cxx_optflags     %_cxx_opt_level -m32 -xarch=pentium_pro -i -mr -xregs=no%%frameptr
 %endif
 
 %if %cc_is_gcc
@@ -91,6 +91,13 @@
 %define xorg_lib_path	-L%{xorg_lib} -R%{xorg_lib}
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- remove vom c++ "-norunpath" or run with developerstudio into e.g. "ld.so.1: conftest: fatal: libstatomic.so.1: open failed: No such file or directory" (S12/SunCC 5.14)
+- LDFLAGS -> set arch_ldadd -m32 to get ld invoked correctly in 32-bit with brand new compilers (or get wrong ELFCLASS when linking)
+* Sun Dec 11 2016 - Thomas Wagner
+- compilers start to default to -m64, so explicitly require -m32 for all non-64-bit compile runs (base.inc, x86_sse2.inc
+* Thu Oct  6 2016 - Thomas Wagner
+- add to gcc_optflags/cxx_optflags "-mincoming-stack-boundary=2" (needed for gcc 4.8 on x86 for 32-bit targets to avoid segfaults with -O3)
 * Sun Okt 11 2015 - Thomas Wagner
 - add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
 - still try to keep changes to this include files to a minumum please

@@ -13,9 +13,9 @@
 %define gtk_doc_option --disable-gtk-doc
 
 %if %cc_is_gcc
-%define arch_ldadd           -L%{_libdir} -R%{_libdir}
+%define arch_ldadd           -m32 -L%{_libdir} -R%{_libdir}
 %else
-%define arch_ldadd           -xarch=sse2 -L%{_libdir} -R%{_libdir}
+%define arch_ldadd           -m32 -xarch=sse2 -L%{_libdir} -R%{_libdir}
 %endif
 
 %if %debug_build
@@ -34,11 +34,11 @@
 %endif
 %endif
 
-%define gcc_optflags           %_gcc_opt_level -march=pentiumpro -mtune=pentiumpro -msse2 -mfpmath=sse -Xlinker -i -fno-omit-frame-pointer %gcc_picflags
-%define gcc_cxx_optflags       %_gxx_opt_level -march=pentiumpro -mtune=pentiumpro -msse2 -mfpmath=sse -Xlinker -i -fno-omit-frame-pointer %gcc_picflags
+%define gcc_optflags           %_gcc_opt_level -m32 -march=pentiumpro -mtune=pentiumpro -msse2 -mfpmath=sse -Xlinker -i -fno-omit-frame-pointer -mincoming-stack-boundary=2 %gcc_picflags
+%define gcc_cxx_optflags       %_gxx_opt_level -m32 -march=pentiumpro -mtune=pentiumpro -msse2 -mfpmath=sse -Xlinker -i -fno-omit-frame-pointer -mincoming-stack-boundary=2 %gcc_picflags
 
-%define suncc_optflags           -i %_cc_opt_level -xstrconst -xarch=sse2 -mr -xregs=no%%frameptr
-%define suncc_cxx_optflags       -i %_cxx_opt_level -xarch=sse2 -mr -norunpath -xregs=no%%frameptr
+%define suncc_optflags           -i %_cc_opt_level -m32 -xstrconst -xarch=sse2 -mr -xregs=no%%frameptr
+%define suncc_cxx_optflags       -i %_cxx_opt_level -m32 -xarch=sse2 -mr -xregs=no%%frameptr
 
 %if %cc_is_gcc
 
@@ -84,6 +84,13 @@
 %define xorg_lib_path	-L%xorg_lib -L/usr/X11/lib -R%xorg_lib -R/usr/X11/lib
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- remove vom c++ "-norunpath" or run with developerstudio into e.g. "ld.so.1: conftest: fatal: libstatomic.so.1: open failed: No such file or directory" (S12/SunCC 5.14)
+- LDFLAGS -> set arch_ldadd -m32 to get ld invoked correctly in 32-bit with brand new compilers (or get wrong ELFCLASS when linking)
+* Sun Dec 11 2016 - Thomas Wagner
+- compilers start to default to -m64, so explicitly require -m32 for all non-64-bit compile runs
+* Thu Oct  6 2016 - Thomas Wagner
+- add to gcc_optflags/cxx_optflags "-mincoming-stack-boundary=2" (needed for gcc 4.8 on x86 for 32-bit targets to avoid segfaults with -O3)
 * Sun Okt 11 2015 - Thomas Wagner
 - add gpp_lib to base.inc, arch64.inc and x86_sse2.inc
 - still try to keep changes to this include files to a minumum please
