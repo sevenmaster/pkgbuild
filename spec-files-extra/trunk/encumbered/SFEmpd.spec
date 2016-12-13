@@ -38,9 +38,9 @@ BuildRequires: %{pnm_buildrequires_system_header_header_audio}
 BuildRequires: %{pnm_buildrequires_SFExz_gnu}
 BuildRequires: SFElibao-devel
 BuildRequires: SFElibsamplerate-devel
-BuildRequires: SUNWogg-vorbis-devel
-BuildRequires: SUNWgnome-audio-devel
-BuildRequires: SUNWflac-devel
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+BuildRequires: %{pnm_buildrequires_gnome_gnome_audio} 
+BuildRequires: %{pnm_buildrequires_SUNWflac_devel}
 BuildRequires: SFEopus-devel
 BuildRequires: SFEwavpack-devel
 BuildRequires: SFElibmms-devel
@@ -49,18 +49,18 @@ BuildRequires: SFElibcdio
 BuildRequires: SFElibmpdclient-devel
 BuildRequires: %{pnm_buildrequires_SUNWsqlite3}
 BuildRequires: %{pnm_buildrequires_SFElibsndfile_devel}
-BuildRequires: SUNWglib2
+BuildRequires: %{pnm_buildrequires_SUNWglib2_devel}
 BuildRequires: %{pnm_buildrequires_SUNWcurl_devel}
-BuildRequires: SUNWlibsoup-devel
+BuildRequires: %{pnm_buildrequires_SUNWlibsoup_devel}
 #TODO# BuildRequires: SFElibpulse-devel
-BuildRequires: SUNWavahi-bridge-dsd-devel
+BuildRequires: %{pnm_buildrequires_SUNWavahi-bridge-dsd-devel
 ## MPD INSTALL file says AO "should be used only if there is no native plugin
 ## available or if the native plugin doesn't work."
 Requires: SFElibao
 Requires: SFElibsamplerate
-Requires: SUNWogg-vorbis
-Requires: SUNWgnome-audio
-Requires: SUNWflac
+Requires: %{pnm_requires_SUNWogg_vorbis}
+Requires: %{pnm_requires_gnome_gnome_audio}
+Requires: %{pnm_requires_SUNWflac}
 Requires: SFEopus
 Requires: SFEwavpack
 Requires: SFElibmms
@@ -69,11 +69,11 @@ Requires: SFElibcdio
 Requires: SFElibmpdclient
 Requires: %{pnm_requires_SUNWsqlite3}
 Requires: %{pnm_requires_SFElibsndfile}
-Requires: SUNWglib2
+Requires: %{pnm_requires_SUNWglib2}
 Requires: %{pnm_requires_SUNWcurl}
-Requires: SUNWlibsoup
+Requires: %{pnm_requires_SUNWlibsoup}
 #TODO# Requires: SFElibpulse
-Requires: SUNWavahi-bridge-dsd
+Requires: %{pnm_buildrequires_SUNWavahi_bridge_dsd_devel}
 %if %build_encumbered
 BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibmpcdec-devel
@@ -153,7 +153,8 @@ export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -D_XOPEN_SOURCE -D_XOPEN_SOU
 export CXXFLAGS="%cxx_optflags  -D_POSIX_PTHREAD_SEMANTICS"
 # Without -R, icu libs are not found (RPATH does not get added to SOs)
 export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -L/usr/g++/lib -Wl,-znodeferred"
-export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig
+#                                             SFEorc orc-0.4.pc
+export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 
 sed -i -e 's,#! */bin/sh,#! /usr/bin/bash,' configure 
 
@@ -211,9 +212,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Sun Nov 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}, SUNWglib2, SUNWgnome-audio, SUNWflac, SUNWlibsoup, SUNWavahi-bridge-dsd
+* Wed Nov 23 2016 - Thomas Wagner
+- add to PKG_CONFIG_PATH to find SFEorc in /usr/gnu/
 * Fri Jun 11 2016 - Thomas Wagner
 - bump to 0.19.15
-- add (Build)Reqires SFEwildmidi SFExz-gnu SFEorc SFElibschroedinger SUNWlibtheora SFElibvpx SFEfaac-gpp SFElibgsm SFEopencore-amr SFErtmpdump SFElibx264 SFExvid
+- add (Build)Requires SFEwildmidi SFExz-gnu SFEorc SFElibschroedinger SUNWlibtheora SFElibvpx SFEfaac-gpp SFElibgsm SFEopencore-amr SFErtmpdump SFElibx264 SFExvid
   (play audio from video files, e.g. music videos)
 * Fri Jun 10 2016 - Thomas Wagner
 - add to FLAGS -D_POSIX_PTHREAD_SEMANTICS to fix compile on S11.3 with getting wrong number of arguments to getpwnam_r (see documentation in /usr/include/pwd.h)

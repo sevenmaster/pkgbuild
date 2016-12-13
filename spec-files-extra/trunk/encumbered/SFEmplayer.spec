@@ -1,58 +1,3 @@
-#verify 
-#verify   dependency discovered: audio/faac@1.28-0.0.175.0.0.0.2.0
-#verify   dependency discovered: audio/faad2@2.7-0.0.175.0.0.0.2.0
-#verify   dependency discovered: audio/lame@3.99.5-0.0.175.0.0.0.2.0
-#verify   dependency discovered: audio/mpg123@1.13.4-0.0.175.0.0.0.2.0
-#verify   dependency discovered: audio/twolame@0.3.13-0.0.175.0.0.0.2.0
-#verify   dependency discovered: codec/libtheora@1.1.1-0.175.0.0.0.0.0
-#verify   dependency discovered: codec/opencore-amr@0.1.3-0.0.175.0.0.0.2.0
-#verify   dependency discovered: codec/speex@1.2-0.175.0.0.0.0.0
-#verify   dependency discovered: compress/bzip2@1.0.6-0.175.0.0.0.2.537
-#verify   dependency discovered: driver/graphics/nvidia@0.280.13.0-0.175.0.0.0.0.0
-#verify   dependency discovered: image/library/giflib@4.1.6-0.0.175.0.0.0.2.0
-#verify   dependency discovered: image/library/libjpeg@6.0.2-0.175.0.0.0.0.0
-#verify   dependency discovered: image/library/libpng@1.4.8-0.175.0.0.0.0.0
-#verify   dependency discovered: library/aalib@1.4.5-0.175.0.0.0.2.537
-#verify   dependency discovered: library/audio/liba52@0.7.4-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/audio/libcdio@0.82-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/audio/libdca@0.0.5-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/audio/libgsm@1.0.13-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/audio/libmad@0.15.1.2-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/audio/openal@1.15.1-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/desktop/gtk2@2.20.1-0.175.0.0.0.1.0
-#verify   dependency discovered: library/fribidi@0.19.2-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/glib2@2.28.6-0.175.0.0.0.0.0
-#verify   dependency discovered: library/graphics/libmng@1.0.10-0.175.0.0.0.2.537
-#verify   dependency discovered: library/lzo@2.6-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/samba/libsmbclient@3.5.8-0.175.0.0.0.2.537
-#verify   dependency discovered: library/sdl@1.2.14-0.175.0.0.0.0.0
-#verify   dependency discovered: library/video/libass@0.10.1-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/libdvdnav@4.2.0-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/libdvdread@4.2.0-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/libschroedinger@1.0.11-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/libvpx@1.2.0-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/livemedia@2014.12.17-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/x264@0.140.0.20140129-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/video/xvid@1.3.2-0.0.175.0.0.0.2.0
-#verify   dependency discovered: library/zlib@1.2.3-0.175.0.0.0.2.537
-#verify   dependency discovered: sfe/system/library/gcc-46-runtime@4.6.4-0.0.175.0.0.0.2.0
-#verify   dependency discovered: sfe/system/library/gcc-runtime@4.6.4-0.0.175.0.0.0.2.0
-#verify   dependency discovered: system/library/fontconfig@2.8.0-0.175.0.0.0.0.1215
-#verify   dependency discovered: system/library/freetype-2@2.4.6-0.175.0.0.0.0.1215
-#verify   dependency discovered: system/library/gcc-3-runtime@3.4.3-0.175.0.0.0.2.537
-#verify   dependency discovered: system/library/math@0.5.11-0.174.0.0.0.0.0
-#verify   dependency discovered: system/library@0.5.11-0.175.0.0.0.2.1
-#verify   dependency discovered: video/rtmpdump@2.4-0.0.175.0.0.0.2.0
-#verify   dependency discovered: x11/library/libx11@1.4.4-0.175.0.0.0.0.1215
-#verify   dependency discovered: x11/library/libxext@1.3.0-0.175.0.0.0.0.1215
-#verify   dependency discovered: x11/library/libxinerama@1.1.1-0.175.0.0.0.0.1215
-#verify   dependency discovered: x11/library/libxscrnsaver@1.2.1-0.175.0.0.0.0.1215
-#verify   dependency discovered: x11/library/libxv@1.0.6-0.175.0.0.0.0.1215
-#verify   dependency discovered: x11/library/libxxf86vm@1.1.1-0.175.0.0.0.0.1215
-#verify WARNING: omitting SUNWxorg-clientlibs from the IPS manifest
-#verify Calling script /localhomes/sfe/packages/PKGMAPS/scripts/media%2Fmplayer_ips.sh
-
-
 #
 # spec file for package SFEmplayer
 #
@@ -97,28 +42,29 @@ BuildRequires: SFEyasm
 BuildRequires: %{pnm_buildrequires_SUNWsmba}
 ##TODO## check if it is sufficient to install "libsmb" or something on a recent build to get the smbclient features
 Requires: %{pnm_requires_SUNWsmba}
-Requires: SUNWgnome-audio
-BuildRequires: SUNWgnome-audio-devel
+BuildRequires:  %{pnm_buildrequires_gnome_gnome_audio} 
+Requires:       %{pnm_requires_gnome_gnome_audio}
 Requires: SUNWxorg-clientlibs
-Requires: SUNWfontconfig
 BuildRequires:  %{pnm_buildrequires_SUNWfreetype2}
 Requires:       %{pnm_requires_SUNWfreetype2}
 BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
 Requires:      %{pnm_requires_SUNWspeex}
-Requires: SUNWjpg
-Requires: SUNWpng
-Requires: SUNWogg-vorbis
-Requires: SUNWlibtheora
+Requires: 	%{pnm_buildrequires_SUNWjpg_devel}
+Requires:	%{pnm_requires_SUNWjpg}
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: 	%{pnm_requires_SUNWogg_vorbis}
+BuildRequires: 	%{pnm_buildrequires_SUNWlibtheora_devel}
+Requires: 	%{pnm_requires_SUNWlibtheora}
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
 BuildRequires: %{pnm_buildrequires_SUNWgnome_base_libs}
 Requires: %{pnm_requires_SUNWgnome_base_libs}
 BuildRequires: %{pnm_buildrequires_SUNWfontconfig}
 Requires: %{pnm_requires_SUNWfontconfig}
-BuildRequires: SUNWxwrtl
-Requires: SUNWxwrtl
-BuildRequires: SUNWxorg-mesa
-Requires: SUNWxorg-mesa
+BuildRequires: %{pnm_buildrequires_SUNWxwrtl}
+Requires:      %{pnm_requires_SUNWxwrtl}
+BuildRequires: %{pnm_buildrequires_SUNWxorg_mesa_devel}
+Requires:      %{pnm_requires_SUNWxorg_mesa}
 BuildRequires: %{pnm_buildrequires_SUNWaalib_devel}
 Requires:      %{pnm_buildrequires_SUNWaalib}
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
@@ -319,8 +265,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/256x256/apps/*
 
 %changelog
+* Sun Dec 13 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}, gnome_gnome_audio, SUNWjpg, SUNWlibtheora, SUNWxwrtl, SUNWxorg_mesa
 * Tue Mar 22 2016 - Thomas Wagner
 - rework patch11 mplayer-11-1.2.1-cpudetect.diff
+- pnm_macros to get dependencies right on OIH (missing legacy package names)
 * Tue Mar 15 2016 - Thomas Wagner
 - --disable-ffmpeg_a or get missing symbol gcry_control (libavformat.a -> gnutls)
 * Mon Mar 14 2016 - Thomas Wagner

@@ -26,11 +26,12 @@ Requires:      %{pnm_requires_SUNWlibsdl}
 %ifarch i386 amd64
 BuildRequires: SUNWxorg-mesa
 %endif
-BuildRequires: SUNWogg-vorbis-devel
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: %{pnm_requires_SUNWogg_vorbis}
+
 # SUNWspeex is missing speex_preprocess_*
 #BuildRequires: SUNWspeex-devel
 BuildRequires: SFEopenal-devel
-Requires: SUNWogg-vorbis
 # SUNWspeex is missing speex_preprocess_*
 #Requires: SUNWspeex
 Requires: SUNWcurl
@@ -109,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ioquake3
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}, %include packagenamacros.inc
 * Sun May 16 2010 - Milan Jurik

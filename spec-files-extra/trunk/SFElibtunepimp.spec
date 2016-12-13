@@ -28,7 +28,7 @@ BuildRequires: SFEtaglib-devel
 Requires:      SFElibiconv
 BuildRequires: SFElibiconv-devel
 BuildRequires: SFElibmad-devel
-BuildRequires: SUNWogg-vorbis-devel
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
 BuildRequires: SUNWflac-devel
 BuildRequires: %{pnm_buildrequires_SUNWmusicbrainz_devel}
 Requires:      %{pnm_requires_SUNWmusicbrainz}
@@ -36,6 +36,8 @@ Requires:      SUNWlexpt
 Requires:      SUNWcurl
 Requires:      SUNWzlib
 Requires:      SFElibofa
+Requires:      %{pnm_requires_SUNWogg_vorbis}
+
 
 %package devel
 Summary:       %{summary} - development files
@@ -110,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/tunepimp/plugins/wma.tpp
 
 %changelog
+* Sat Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Sat Dec 15 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_library_readline}
 * Thu Dec 13 2012 - Thomas Wagner

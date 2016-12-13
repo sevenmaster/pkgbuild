@@ -41,6 +41,7 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 export CPPFLAGS="-D__inline=inline"
 export CFLAGS="%optflags"
+export CXXFLAGS="%cxx_optflags"
 
 %if %cc_is_gcc
 #or get: configure: error: No signed 16 bit type found on this platform.
@@ -58,6 +59,7 @@ gsed -i.bak_remove_KPIC_cc_is_gcc -e '/^CFLAGS.*CFLAGS.*KPIC/ s?-KPIC??' configu
 #AC_PROG_CXX
 #AM_PROG_LIBTOOL
 
+%if !%{solaris12}
 gsed -i.bak -e '/^AM_PROG_LIBTOOL/ i\
 dnl add missing C++ support - see https://autotools.io/forwardporting/libtool.html\
 AC_PROG_CXX
@@ -65,6 +67,7 @@ AC_PROG_CXX
 
 libtoolize --force --copy
 autoconf -f
+%endif
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
@@ -93,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- add missing CXXFLAGS="%cxx_optflags" to get in -m32 when $CC/$CXX defaults now to 64-bit (S12) (developerstudio 5.14)
+- don't libtoolize / autoconf on (S12)
 * Fri Jun 10 2016 - Thomas Wagner
 - add missing AC_PROG_CXX to configure.ac or get: Makefile with non-replaced macro "@am__fastdepCXX" (S11)
   (too old macros)

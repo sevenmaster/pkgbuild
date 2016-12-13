@@ -156,7 +156,11 @@ cp -p %SOURCE1 src/3rdparty/webkit/Source/JavaScriptCore/wtf/StackBounds.cpp
 
 
 %build
-CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+CPUS=%{_cpus_memory}
+
+echo "debug _totalmemory: %{_totalmemory}"
+echo "debug CPUS: $CPUS"
+
 
 #temprary fix until our mysql uses /usr/mysql/5.x/lib instead of /usr/mysql/5.x/lib/mysql
 %if %{solaris12}
@@ -302,6 +306,8 @@ rm -rf %buildroot
 
 
 %changelog
+* Fri Dec  9 2016 - Thomas Wagner
+- use CPUS=%{_cpus_memory} to fix build on low-mem but many-cpu-cores machines
 * Thu Dec  8 2016 - Thomas Wagner
 - add (Build)Requires: SFEicu-gpp as it uses dlopen (no auto-detection of this dependency)
 * Sun Feb 28 2016 - Thomas Wagner

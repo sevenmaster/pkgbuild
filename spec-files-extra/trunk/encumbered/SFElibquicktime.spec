@@ -28,7 +28,7 @@ Requires: SFEffmpeg
 BuildRequires:	%{pnm_buildrequires_SUNWgnome_base_libs_devel}
 %ifarch amd64 sparcv9
 BuildRequires:	%{pnm_buildrequires_SUNWogg_vorbis_devel}
-Requires:	%{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:	%{pnm_requires_SUNWogg_vorbis}
 %endif
 BuildRequires: %{pnm_buildrequires_SFElibschroedinger}
 Requires:      %{pnm_requires_SFElibschroedinger}
@@ -135,6 +135,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+- Sun Dec 11 2016 - Thomas Wagner
+- use correct pnm_macro for SUNWogg-vorbis
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFElibschroedinger to use (OIH) libschroedinger
 * Mon May 25 2015 - pjama

@@ -13,7 +13,7 @@
 
 #change version number only here.
 #%define ffmpeg_version 2.2
-%define ffmpeg_version 2.8.5
+%define ffmpeg_version 2.8.10
 
 #older ffmpeg version can't use every patch
 %define enable_patch13 1
@@ -83,8 +83,8 @@ BuildRequires: SFElame-devel
 Requires: SFElame
 BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
 Requires:      %{pnm_requires_SUNWogg_vorbis}
-BuildRequires: SUNWlibtheora-devel
-Requires: SUNWlibtheora
+BuildRequires: %{pnm_buildrequires_SUNWlibtheora_devel}
+Requires:      %{pnm_requires_SUNWlibtheora}
 BuildRequires: %{pnm_buildrequires_SUNWspeex_devel}
 Requires:      %{pnm_requires_SUNWspeex}
 BuildRequires: SFEopencore-amr-devel
@@ -148,11 +148,14 @@ cd $RPM_BUILD_ROOT%{_bindir} && ln -s ../lib/isaexec ffplay
 mv $RPM_BUILD_ROOT%{_bindir}/ffmpeg $RPM_BUILD_ROOT%{_bindir}/%{base_isa}/
 cd $RPM_BUILD_ROOT%{_bindir} && ln -s ../lib/isaexec ffmpeg
 
+#directory dummy as on S12 it started to spit out more html docs
+mkdir -p $RPM_BUILD_ROOT/%{_docdir}/ffmpeg
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%define _pkg_docdir %_docdir/ffmpeg
+#%define _pkg_docdir %_docdir/ffmpeg
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %if %can_isaexec
@@ -177,6 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/ffmpeg
 %{_mandir}
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/*
+
 
 %files devel
 %defattr (-, root, bin)
@@ -195,7 +201,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Dev 11 2016 - Thomas Wagner
+* Tue Dec 13 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWlibtheora
+- create (empty) docdir
+* Mon Dec 12 2016 - Thomas Wagner
+- bump to 2.8.10
+* Sun Dec 11 2016 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SUNWogg_vorbis_devel (S12)
 * Sun Nov 27 2016 - Thomas Wagner
 - add missing BuildRequires: SFElibiconv (thx Sjaak)

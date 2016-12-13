@@ -34,8 +34,9 @@ BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
 Requires:      %{pnm_requires_SUNWlibsdl}
 BuildRequires:  %{pnm_buildrequires_SUNWlibmikmod_devel}
 Requires:       %{pnm_requires_SUNWlibmikmod}
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: %{pnm_requires_SUNWogg_vorbis}
+
 BuildRequires: SUNWflac-devel
 Requires: SUNWflac
 
@@ -128,6 +129,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Mon Jul 30 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibmikmod_devel}
 * Sun Jun 24 2012 - Thomas Wagner

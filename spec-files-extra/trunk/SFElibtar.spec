@@ -54,7 +54,10 @@ autoconf -f -I autoconf
 	    --disable-static		\
 	    --enable-shared
 
-make -j$CPUS
+#Add ${LDFLAGS} to linking libtar.so to get "-m32" effective
+gsed -i.bak_LDFLAGS '/\$(CC) -G -o libtar.so/ s?-o libtar.so?\${LDFLAGS} -o libtar.so?' lib/Makefile
+
+gmake V=2 -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -77,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+- Mon Dec 12 2016 - Thomas Wagner
+- Makefile should use LDFLAGS to get in "-m32" with new developerstudio defaulting to -m64
 * Sun Nov 29 2015 - Thomas Wager
 - fix removal of -KPIC in case cc_is_gcc
 * Thu Aug 13 2015 - Thomas Wagner
