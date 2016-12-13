@@ -141,6 +141,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 ##TODO## find new download URL
+* Mon Dec 12 2016 - Thomas Wagner
+- developerstudio complains you can't have both -library=Crun and -std=c++03, hope this doesn't break older studio compile runs
+- LDFLAGS -32 and -64 moved out into include/<base|x86_sse2|arch64>.inc
 * Wed Nov 23 2016 - Thomas Wagner
 - set PKG_CONFIG_PATH=/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc
 - add "-m64" to LDFLAGS if building 64-bit

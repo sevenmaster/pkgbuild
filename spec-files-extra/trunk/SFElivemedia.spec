@@ -21,7 +21,8 @@
 #%define src_version 2014.12.17
 #pjama tested this version:
 #%define src_version 2015.05.12
-%define src_version 2015.08.07
+#%define src_version 2015.08.07
+%define src_version 2016.11.28
 %endif
 
 #remove leading zero(s) from version-string for IPS compat
@@ -67,7 +68,9 @@ ln -s config.solaris-32bit config.solaris
 %patch2 -p1
 #newer liveMedia does no longer set -lgroupsock (around/before 2014.12.17)
 chmod +w config.solaris-*
-gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L${RPM_BUILD_DIR}/live/groupsock?' config.solaris-32bit
+gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L${RPM_BUILD_DIR}/live/groupsock?' \
+            -e '/^COMPILE_OPTS/ s?$? -m32?' -e '/^LINK_OPTS/ s?$? -m32?' \
+      config.solaris-32bit
 gsed -ibak  -e '/^LINK_OPTS.*\/usr\/lib\/live\/groupsock/ s?$? -L${RPM_BUILD_DIR}/live/groupsock?' config.solaris-64bit
 
 %build
@@ -85,6 +88,7 @@ echo "creating symlinks from  $CC  to bin/cc and  $CXX  to bin/c++"
 ln -s $CC bin/cc
 ln -s $CXX bin/c++
 %endif
+
 
 ./genMakefiles solaris
 gsed -i.bak -n '/cd.*LIVEMEDIA_DIR.*MAKE/{h;n;G};p' Makefile 
@@ -105,6 +109,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- add CFLAGS and CXXFLAGS to get "-m32" for new developerstudio which defaults to 64-bit (S12)
+- add just "-m32" to link opts (not yet using _ldopts with arch_ldadd)
+- bump to version 2016.11.28
 * Fri Aug 14 2015 - Thomas Wagner
 - bump to version 2015.08.07
 * Thu Aug 13 2015 - Thomas Wagner

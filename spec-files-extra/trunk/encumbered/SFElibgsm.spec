@@ -125,7 +125,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3
 
 %changelog
-* Thr Aug 13 2015 - Thomas Wagner
+* Mon Dec 12 2016 - Thomas Wagner
+- LDFLAGS -m64 is moved out into include/arch64.inc
+* Thu Aug 13 2015 - Thomas Wagner
 - remove PICFLAG="-KPIC" for gcc, needs testing with studio compiler (OIH)
 * Sun Oct 23 2011 - Milan Jurik
 - fix multiarch

@@ -4,6 +4,9 @@
 # includes module(s): libdvbpsi
 #
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
+
 %define srcname libdvbpsi
 
 Name:                    SFElibdvbpsi
@@ -33,10 +36,25 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
+
+export CC=gcc
+export CXX=g++
+
 export CFLAGS="%optflags"
 export LDFLAGS="%{_ldflags} -lsocket -lnsl"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
 export MSGFMT="/usr/bin/msgfmt"
+
+%if %cc_is_gcc
+#gcc options
+%else
+gsed -i.bak.gnu99.Wall \
+   -e '/std=gnu99/ s?-std=gnu99??g' \
+   -e '/-Wall/ s?-Wall??g' \
+   configure.ac
+autoreconf -f
+autoconf -f
+%endif
 
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
@@ -72,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 12 2016 - Thomas Wagner
+- build with gcc, troubles with studio compiles (too much gcc'isms)
 * Sun Nov 29 2015 - Thomas Wagner
 - bump to 1.3.0
 * Tue Aug 21 2012 - Thomas Wagner

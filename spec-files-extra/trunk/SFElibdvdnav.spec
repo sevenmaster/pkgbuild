@@ -40,11 +40,11 @@ export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/share/pkgconfig:%{_libdir}/pkgco
 export PATH="$PATH:%{_bindir}"
 
 
-libtoolize --copy --force
-aclocal $ACLOCAL_FLAGS
-autoheader
-automake -a -c -f 
-autoconf
+##libtoolize --copy --force
+##aclocal $ACLOCAL_FLAGS
+##autoheader
+##automake -a -c -f 
+##autoconf
 ./configure --prefix=%{_prefix} --mandir=%{_mandir} \
             --libdir=%{_libdir}              \
             --libexecdir=%{_libexecdir}      \
@@ -64,20 +64,27 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/lib*.so*
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/*
+
 
 %files devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
-%dir %attr (0755, root, bin) %{_bindir}
-%{_bindir}/dvdnav-config
+# %dir %attr (0755, root, bin) %{_bindir}
+# %{_bindir}/dvdnav-config
 %dir %attr (0755, root, sys) %{_datadir}
-%dir %attr (0755, root, other) %{_datadir}/aclocal
-%{_datadir}/aclocal/*
+# %dir %attr (0755, root, other) %{_datadir}/aclocal
+# %{_datadir}/aclocal/*
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 
+
 %changelog
+* Tue Dec 13 2016 - Thomas Wagner
+- pause libtoolize / * / autoconf (tested on S12 only)
+- fix %files %{_docdir} / aclocal / bindir
 * Mon Aug  8 2016 - Thomas Wagner
 - remove patch1, we use gcc which understands -Wall
 * Sat Apr  2 2016 - Thomas Wagner

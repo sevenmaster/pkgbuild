@@ -139,6 +139,15 @@ EOM
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Dec 13 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWlibtheora
+- create (empty) docdir
+* Mon Dec 12 2016 - Thomas Wagner
+- bump to 2.8.10
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SUNWogg_vorbis_devel (S12)
+* Sun Nov 27 2016 - Thomas Wagner
+- add missing BuildRequires: SFElibiconv (thx Sjaak)
 * Thu Nov 24 2016 - Thomas Wagner
 - fix PKG_CONFIG_PATH to contain /usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig (harfbuzz and relocated orc)
 - remove -mincoming-stack-boundary=2 from CFLAGS (from include/*inc). This leads to: (__asm__ -- error: 'asm' operand has impossible constraints)

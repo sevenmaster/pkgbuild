@@ -24,7 +24,6 @@ export LDFLAGS="%_ldflags -lm %{gnu_lib_path}"
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
 #                              orc
   export PKG_CONFIG_PATH="/usr/gnu/lib/%{_arch64}/pkgconfig"
-  export LDFLAGS="${LDFLAGS} -m64"
 else
 #                              orc
   export PKG_CONFIG_PATH="/usr/gnu/lib/pkgconfig"
@@ -40,7 +39,13 @@ fi
             --enable-shared                     \
             --disable-static
 
-make
+# developerstudio 5.14
+# CC: -library=Crun cannot be used with -std=c++03. To use this library you need to switch to -std=sun03
+# CC: -library=Cstd cannot be used with -std=c++03. To use this library you need to switch to -std=sun03
+#let the compiler decide
+gsed -i.bak.Cstd.Crun -e '/^postdeps.*-library=Cstd -library=Crun/ s?-library=Cstd -library=Crun??' libtool
+
+gmake V=2 -j$CPUS
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -51,6 +56,10 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer-0.10/*.{a,la}
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+##TODO## find new download URL
+* Mon Dec 12 2016 - Thomas Wagner
+- developerstudio complains you can't have both -library=Crun and -std=c++03, hope this doesn't break older studio compile runs
+- LDFLAGS -32 and -64 moved out into include/<base|x86_sse2|arch64>.inc
 * Wed Nov 23 2016 - Thomas Wagner
 - set PKG_CONFIG_PATH=/usr/gnu/lib/<%{arch64}|>pkgconfig to find relocated SFEorc
 - add "-m64" to LDFLAGS if building 64-bit

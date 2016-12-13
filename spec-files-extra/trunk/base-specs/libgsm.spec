@@ -34,9 +34,10 @@ export OPTFLAGS="%optflags"
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
-if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
-        export LDFLAGS="$LDFLAGS -m64"
-fi
+#moved into include/arch64.inc
+#if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
+        #export LDFLAGS="$LDFLAGS -m64"
+#fi
 
 mkdir -p $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man{1,3},%{_includedir}/gsm,%{_libdir}}
 make install DESTDIR=$RPM_BUILD_ROOT INSTALL_ROOT=%{_prefix}
@@ -64,7 +65,9 @@ fi
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Thr Aug 13 2015 - Thomas Wagner
+* Mon Dec 12 2016 - Thomas Wagner
+- LDFLAGS -m64 is moved out into include/arch64.inc
+* Thu Aug 13 2015 - Thomas Wagner
 - remove PICFLAG="-KPIC" for gcc, needs testing with studio compiler (OIH)
 * Sat Apr 28 2012 - Thomas Wagner
 - rework rm and symlink of libgsm.so* files

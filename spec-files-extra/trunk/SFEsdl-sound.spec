@@ -31,8 +31,9 @@ BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: %{pnm_buildrequires_SUNWlibsdl_devel}
 Requires:      %{pnm_requires_SUNWlibsdl}
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: %{pnm_requires_SUNWogg_vorbis}
+
 BuildRequires:  %{pnm_buildrequires_SUNWlibmikmod_devel}
 Requires:       %{pnm_requires_SUNWlibmikmod}
 BuildRequires: SUNWflac-devel
@@ -120,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/SDL/
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Mon Jul 30 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibmikmod_devel}, %include packagenamemacros.inc
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl_devel}

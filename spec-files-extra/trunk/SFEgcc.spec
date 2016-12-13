@@ -1194,6 +1194,10 @@ echo "
 
 # %if %(expr %{omnios} )
 %if %(expr %{omnios} '|'  %{major_minor} '>=' 5.0 )
+#libgfortran accidentially detects mkostemp and this doesn't exist - gcc 5.4.x
+#####mkostemp muss auf gcc/i**/libgfortran/config.h auf 0 gesetzt werden
+#####alternativ heruaspatchen aus unix.c
+export       CFLAGS_FOR_TARGET="-DHAVE_MKOSTEMP=0 $CFLAGS_FOR_TARGET"
 gmake -j$CPUS           \
 %else
 gmake -j$CPUS bootstrap \
@@ -1435,6 +1439,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec  1 2016 - Thomas Wagner
+- fix build libfortran my removing mis-detected HAVE_MKOSTEMP (we have none) (OM)
 * Fri Oct 21 2016 - Thomas Wagner
 - integrate for gcc 5 series
 - relocate compiler to /usr/gcc-sfe/ and provide backwards compatible symlinks only in /usr/gcc/lib and /usr/gcc/bin

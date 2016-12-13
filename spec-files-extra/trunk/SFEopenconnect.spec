@@ -39,9 +39,9 @@ Requires:       %{pnm_requires_SUNWzlib}
 
 %if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
 #S11 S12 need zlib.pc
-BuildRequires:  %{pnm_buildrequires_SFEzlib-pkgconfig}
+BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig}
 #for pkgtool's dependency resoultion
-Requires:       %{pnm_requires_SFEzlib-pkgconfig}
+Requires:       %{pnm_requires_SFEzlib_pkgconfig}
 %endif
 
 
@@ -105,7 +105,8 @@ mkdir -p %{buildroot}/%{_mandir}/man1m
 mv %{buildroot}/%{_mandir}/man8/openconnect.8 %{buildroot}/%{_mandir}/man1m/openconnect.1m
 rmdir %{buildroot}/%{_mandir}/man8
 
-VPNCSCRIPT=$( basename ${SOURCE1} )
+VPNCSCRIPT=$( basename %{SOURCE1} )
+mkdir -p $RPM_BUILD_ROOT/%{_bindir}/
 cp -p ${VPNCSCRIPT} $RPM_BUILD_ROOT/%{_bindir}/
 chmod a+rx $RPM_BUILD_ROOT/%{_bindir}/${VPNCSCRIPT}
 
@@ -122,6 +123,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, bin)
+%{_bindir}/vpnc-script
 %{_sbindir}/openconnect
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
@@ -143,9 +145,11 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Dec 13 2016 - Thomas Wagner
+- propperly deliver vpnc-script file
 * Fri Dec  9 2016 - Thomas Wagner
 - add missing %include packagenamemacros.inc
-- change (Build)Requires to pnm_buildrequires_SFEzlib-pkgconfig
+- change (Build)Requires to pnm_buildrequires_SFEzlib_pkgconfig
 * Thu Nov 24 2016 - Thomas Wagner
 - bump to 7.07 (IPS 7.7)
 * Sat Mar 12 2016 - Thomas Wagner

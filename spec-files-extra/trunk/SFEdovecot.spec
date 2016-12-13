@@ -117,10 +117,10 @@ export CFLAGS="%optflags -I/usr/gnu/include -I/usr/include/kerberosv5 -D__EXTENS
 export CXXFLAGS="%cxx_optflags-I/usr/gnu/include -I/usr/include/kerberosv5 "
 #gnu_lib_path to find SFE openldap
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
-%if %{with_clucene}
+#g++_lib_path to find our icu first and not the osdistro provided in /usr/lib. Needs gcc5-runtime on S12
+export CFLAGS="-I/usr/g++/include $CFLAGS"
 export CXXFLAGS="$CXXFLAGS -I/usr/g++/include"
 export LDFLAGS="$LDFLAGS -L/usr/g++/lib -R/usr/g++/lib"
-%endif
 
 #needs bash (for parsing krb5-config call)
 bash ./configure --prefix=%{_prefix}		\
@@ -243,6 +243,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- link to SFEicu-gpp in any case
 * Thu Dec  1 2016 - Thomas Wagner
 - add patch dovecot-01-raise-soft-fd-limit.patch
 - add to CFLAGS / LDFLAGS to find SFEopenldap in /usr/gnu (OM)

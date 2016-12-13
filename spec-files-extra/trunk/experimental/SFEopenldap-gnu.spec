@@ -11,7 +11,7 @@
 # for now:  32-bit *only*, 32/64-bit can be added on request
 
 %include Solaris.inc
-
+%include osdistro.inc
 %define cc_is_gcc 1
 
 #avoid ovelapping with SUNWhea and SUNWman
@@ -211,11 +211,28 @@ export RUNDIR="%{_std_localstatedir}/run/%{src_name}"
 #                          both]
 #  --with-tags[=TAGS]      include additional configurations [automatic]
 
+#adjust, if younger distrelnumber can't run gsoelim
+#NPOTE This appears in %build and in %install
+%if %( expr %{omnios} '=' 1 '&' %{distrelnumber} '<=' 151014 )
+#gsoelim can't find its libstdc++.so.6, as omnios doesn't carry it (only lib-files with full version in the filename)
+#try using our runtime. Might break if out gcc version <= omnios gcc version
+export LD_LIBRARY_PATH=/usr/gcc-sfe/lib:/usr/gcc/lib
+%endif
+
 
 gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+#adjust, if younger distrelnumber can't run gsoelim
+#NPOTE This appears in %build and in %install
+%if %( expr %{omnios} '=' 1 '&' %{distrelnumber} '<=' 151014 )
+#gsoelim can't find its libstdc++.so.6, as omnios doesn't carry it (only lib-files with full version in the filename)
+#try using our runtime. Might break if out gcc version <= omnios gcc version
+export LD_LIBRARY_PATH=/usr/gcc-sfe/lib:/usr/gcc/lib
+%endif
+
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
 [ -d $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name} ] || mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}
@@ -308,6 +325,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Thu Dec  1 2016 - Thomas Wagner
+- add workaround to find gcc runtime for "gsoelim" (called in %install by gmake install) (OM <= 151014)
 * Mon Nov 21 2016 - Thomas Wagner
 - bump to 2.4.44
 * Tue Sep 20 2016 - pjama

@@ -831,24 +831,28 @@
 #pre/including 130: SFEgnupg2 -> past 130 replacement is SUNWgnupg
 #note: oihipster see sections below, needs to set IPS name (knows no legacy name any more)
 %if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
+#pkg://solaris/crypto/gnupg@2.0.30-5.12.0.0.0.113.1:20161127T235134Z          ---
 #sunw
-%define pnm_buildrequires_SUNWgnupg_devel	SUNWgnupg
-%define pnm_buildrequires_SUNWgnupg		SUNWgnupg
-%define pnm_requires_SUNWgnupg			SUNWgnupg
-%define pnm_buildrequires_crypto_gnupg	    	SUNWgnupg
-%define pnm_requires_crypto_gnupg		SUNWgnupg
+%define pnm_buildrequires_SUNWgnupg_devel	crypto/gnupg
+%define pnm_buildrequires_SUNWgnupg		crypto/gnupg
+%define pnm_requires_SUNWgnupg			crypto/gnupg
+%define pnm_buildrequires_crypto_gnupg	    	crypto/gnupg
+%define pnm_requires_crypto_gnupg		crypto/gnupg
 #sfe
-%define pnm_buildrequires_SFEgnupg2_devel	SUNWgnupg
-%define pnm_buildrequires_SFEgnupg2		SUNWgnupg
-%define pnm_requires_SFEgnupg2			SUNWgnupg
-%define pnm_buildrequires_sfe_crypto_gnupg	SUNWgnupg
-%define pnm_requires_sfe_crypto_gnupg		SUNWgnupg
+%define pnm_buildrequires_SFEgnupg2_devel	crypto/gnupg
+%define pnm_buildrequires_SFEgnupg2		crypto/gnupg
+%define pnm_requires_SFEgnupg2			crypto/gnupg
+%define pnm_buildrequires_sfe_crypto_gnupg	crypto/gnupg
+%define pnm_requires_sfe_crypto_gnupg		crypto/gnupg
+
+#pkg://solaris/system/library/security/libgcrypt@1.7.3-5.12.0.0.0.113.1:20161128T023501Z ---
 #sunw
-%define pnm_buildrequires_SUNWlibgcrypt_devel	SUNWlibgcrypt-devel
-%define pnm_buildrequires_SUNWlibgcrypt		SUNWlibgcrypt-devel
-%define pnm_requires_SUNWlibgcrypt		SUNWlibgcrypt
-%define pnm_buildrequires_system_library_security_libgcrypt	SUNWlibgcrypt-devel
-%define pnm_requires_system_library_security_libgcrypt		SUNWlibgcrypt
+%define pnm_buildrequires_SUNWlibgcrypt_devel		system/library/security/libgcrypt
+%define pnm_buildrequires_SUNWlibgcrypt			system/library/security/libgcrypt
+%define pnm_requires_SUNWlibgcrypt			system/library/security/libgcrypt
+%define pnm_buildrequires_system_library_security_libgcrypt		system/library/security/libgcrypt
+%define pnm_requires_system_library_security_libgcrypt			system/library/security/libgcrypt
+
 #sfe
 #note: SUNWlibgcrypt(-devel) is in Solaris since a while (which osbuild number?)
 #not set %define pnm_buildrequires_SUNWlibgcrypt_devel	SUNWlibgcrypt-devel
@@ -856,18 +860,20 @@
 #not set %define pnm_requires_SUNWlibgcrypt		SUNWlibgcrypt
 #not set %define pnm_buildrequires_system_library_security_libgcrypt	SUNWlibgcrypt-devel
 #not set %define pnm_requires_system_library_security_libgcrypt		SUNWlibgcrypt
+
+#pkg://solaris/library/security/libgpg-error@1.24-5.12.0.0.0.113.1:20161128T021722Z ---
 #sunw
-%define pnm_buildrequires_SUNWlibgpg_error_devel	SUNWlibgpg-error-devel
-%define pnm_buildrequires_SUNWlibgpg_error		SUNWlibgpg-error-devel
-%define pnm_requires_SUNWlibgpg_error			SUNWlibgpg-error
-%define pnm_buildrequires_library_security_libgpg_error	SUNWlibgpg-error-devel
-%define pnm_requires_library_security_libgpg_error	SUNWlibgpg-error
+%define pnm_buildrequires_SUNWlibgpg_error_devel	library/security/libgpg-error
+%define pnm_buildrequires_SUNWlibgpg_error		library/security/libgpg-error
+%define pnm_requires_SUNWlibgpg_error			library/security/libgpg-error
+%define pnm_buildrequires_library_security_libgpg_error	library/security/libgpg-error
+%define pnm_requires_library_security_libgpg_error	library/security/libgpg-error
 #sfe
-%define pnm_buildrequires_SFElibgpg_error_devel	SUNWlibgpg-error-devel
-%define pnm_buildrequires_SFElibgpg_error		SUNWlibgpg-error-devel
-%define pnm_requires_SFElibgpg_error			SUNWlibgpg-error
-%define pnm_buildrequires_sfe_library_security_libgpg_error	SFElibgpg-error-devel
-%define pnm_requires_sfe_library_security_libgpg_error	SUNWlibgpg-error
+%define pnm_buildrequires_SFElibgpg_error_devel			library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error			library/security/libgpg-error
+%define pnm_requires_SFElibgpg_error				library/security/libgpg-error
+%define pnm_buildrequires_sfe_library_security_libgpg_error	library/security/libgpg-error
+%define pnm_requires_sfe_library_security_libgpg_error		library/security/libgpg-error
 %endif
 #END >=130
 
@@ -1277,6 +1283,7 @@
 %define pnm_requires_SFEfreeglut		x11/library/freeglut
 %define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
 %define pnm_requires_x11_library_freeglut	x11/library/freeglut
+
 #starting with: developer/documentation-tool/asciidoc@8.6.8,5.12-5.12.0.0.0.34.0
 %if %( expr %{osbuild} '>=' 34 )
 %define pnm_buildrequires_SFEasciidoc   	developer/documentation-tool/asciidoc
@@ -1592,7 +1599,18 @@
 #END solaris11
 
 
-#START Solaris 12
+#START Solaris 12 - generic/(almost)all builds - more details below
+#
+#
+#  Warning: as compiling and running builds older then a few weeks old doesn't make
+#           much sense, we do not keep exact build numbers when things change.
+#
+#           example: Build 103 and following brought us Gnome3, but we anyways start
+#                    setting rules here for *all* S12 builds, yes that may break
+#                    compiling on older builds. Don't you want upgrading more often?
+#
+#           good style is to make a comment with which build the change happened,
+#           so one gets a chance to make a workaround in case you can't upgrade the os today
 #
 %if %{solaris12}
 %define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
@@ -1644,8 +1662,56 @@
 %define pnm_buildrequires_SFExmlto				developer/documentation-tool/xmlto
 %define pnm_requires_SFExmlto					developer/documentation-tool/xmlto
 
+#with around build 103 gnome3 starts, gnome-audio obsoleted in build 112 (probably)
+#we replace it with something very generic
+%define pnm_buildrequires_gnome_gnome_audio	system/core-os
+%define pnm_requires_gnome_gnome_audio		system/core-os
+%define pnm_buildrequires_SUNWgnome_audio_devel	system/core-os
+%define pnm_buildrequires_SUNWgnome_audio	system/core-os
+%define pnm_requires_SUNWgnome_audio		system/core-os
+%define pnm_buildrequires_gnome_audio		system/core-os
+%define pnm_requires_gnome_audio		system/core-os
+
+#historic:
+# pkg contents -r -m SUNWgnome-common-devel@0.5.11,5.11-0.175
+#set name=pkg.fmri value=pkg://solaris/SUNWgnome-common-devel@0.5.11,5.11-0.175.0.0.0.0.0:20110927T073138Z
+#set name=pkg.renamed value=true
+#depend fmri=developer/gnome/gettext@0.5.11-0.133 type=require
+#depend fmri=consolidation/desktop/gnome-incorporation type=require
+
+# IF you want gettext, then you may choose pnm_buildrequires_SUNWgnu_gettext
+
+#mostly needed for "gettext" developer/gnome/gettext
+#library/gnome/gnome-common pulls in developer/gnome/gettext
+# and developer/gnome/gettext has been renamed to text/gnu-gettext
+%define pnm_buildrequires_SUNWgnome_common_devel 	library/gnome/gnome-common
+%define pnm_requires_SUNWgnome_common_devel 		library/gnome/gnome-common
+%define pnm_buildrequires_gnome_common_devel 		library/gnome/gnome-common
+%define pnm_requires_gnome_common_devel 		library/gnome/gnome-common
+
+%define pnm_buildrequires_SUNWgnu_gettext_devel		text/gnu-gettext
+%define pnm_buildrequires_SUNWgnu_gettext		text/gnu-gettext
+%define pnm_requires_SUNWgnu_gettext			text/gnu-gettext
+%define pnm_buildrequires_developer_gnome_gettext	text/gnu-gettext
+%define pnm_requires_developer_gnome_gettext		text/gnu-gettext
+%define pnm_buildrequires_text_gnu_gettext		text/gnu-gettext
+%define pnm_requires_text_gnu_gettext			text/gnu-gettext
+%define pnm_buildrequires_gnu_gettext			text/gnu-gettext
+%define pnm_requires_gnu_gettext			text/gnu-gettext
+
+#below may be redundant...check later
+%define pnm_buildrequires_text_gnu_gettext text/gnu-gettext
+%define pnm_requires_text_gnu_gettext text/gnu-gettext
+%define pnm_buildrequires_SUNWgnu_gettext_devel text/gnu-gettext
+%define pnm_buildrequires_SUNWgnu_gettext text/gnu-gettext
+%define pnm_requires_SUNWgnu_gettext text/gnu-gettext
+%define pnm_buildrequires_gnu_gettext text/gnu-gettext
+%define pnm_requires_gnu_gettext text/gnu-gettext
+
+#START solaris 12 - special build versions below >= 87
 %endif
-#END solaris12
+#END solaris12 - generic/(almost)all builds - more details below
+
 
 %if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000000870000.1 )
 #many osdistro do not deliver the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
@@ -1654,6 +1720,21 @@
 %define pnm_requires_SFEzlib_pkgconfig          library/zlib
 %endif
 #END solaris12 special build version 87 and newer
+
+
+#START solaris 12 - special build versions below >= 108
+%if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000001080000.1 )
+#Package codec/ogg-vorbis was renamed to pkg:/codec/libvorbis pkg:/codec/libogg
+#pkg://solaris/codec/libogg@1.2.2-5.12.0.0.0.108.1:20160919T062323Z           ---
+%define pnm_buildrequires_codec_ogg_vorbis	codec/libogg
+%define pnm_requires_codec_ogg_vorbis		codec/libogg
+%define pnm_buildrequires_SUNWogg_vorbis_devel	codec/libogg
+%define pnm_buildrequires_SUNWogg_vorbis	codec/libogg
+%define pnm_requires_SUNWogg_vorbis		codec/libogg
+%define pnm_buildrequires_ogg_vorbis		codec/libogg
+%define pnm_requires_ogg_vorbis			codec/libogg
+%endif
+#END solaris12 special build version 108 and newer
 
 
 #START setting perl5, defaults  - Part 1 of 3
@@ -2951,10 +3032,10 @@
 ##not defined %define icu_gpp_major_minor_micro_version 55.1
 
 #on SVR4 SFEboost-gpp-devel ?
-%define pnm_buildrequires_boost_gpp_default	SFEboost-gpp
+%define pnm_buildrequires_boost_gpp_default	SFEboost-gpp-devel
 %define pnm_requires_boost_gpp_default		SFEboost-gpp
 
-%define pnm_buildrequires_icu_gpp_default	SFEicu-gpp
+%define pnm_buildrequires_icu_gpp_default	SFEicu-gpp-devel
 %define pnm_requires_icu_gpp_default		SFEicu-gpp
 
 #END setting boost, and icu defaults  - Part 1 of 3 END
@@ -3195,8 +3276,18 @@
 #S12 lost the legacy name SUNWslang
 
 
-
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- use OSDistro libgcrypt / libgpg / libgpg-error on (S12)
+- add gnome audio pnm_macros for new name system/core-os on (S12)
+- add gnome common devel pnm_macros for new name library/gnome/gnome-common on (S12)
+- set SUNWgnu_gettext / developer_gnome_gettext  pnm_macros to text/gnu-gettext (S12)
+- add SUNWogg_vorbis pnm_macros for new name codec/libogg (S12)
+- minor change to boost_gpp_default and icu_gpp -> -devel (all)
+* Thu Dec  8 2016 - Thomas Wagner
+- for gnome3 replace package pnm_buildrequires_gnome_gnome_audio with generic system/core-os (S12)
+* Mon Oct 31 2016 - Thomas Wagner
+- request SFEboost-gpp-devel and SFEicu-gpp-devel package in pnm_buildrequires_boost_gpp_default pnm_buildrequires_icu_gpp_default
 * Thu Oct 13 2016 - Thomas Wagner
 - rework python imporlib section based on pjamas work. Note: re-orderd, keep package@version listings for a while
 - rework older "%( expr .... )" to be more readable
