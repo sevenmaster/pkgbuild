@@ -1,0 +1,17 @@
+
+#SFElibx264.spec https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=230249
+# -> bug problem of gcc with -fstack-check https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67265
+#https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=230249
+
+
+--- gcc-4.8.5/gcc/config/i386/i386.c.orig	2015-06-10 11:34:21.000000000 +0200
++++ gcc-4.8.5/gcc/config/i386/i386.c	2016-12-15 20:30:15.757195303 +0100
+@@ -9870,8 +9870,6 @@
+       release_scratch_register_on_entry (&sr);
+     }
+ 
+-  gcc_assert (cfun->machine->fs.cfa_reg != stack_pointer_rtx);
+-
+   /* Even if the stack pointer isn't the CFA register, we need to correctly
+      describe the adjustments made to it, in particular differentiate the
+      frame-related ones from the frame-unrelated ones.  */

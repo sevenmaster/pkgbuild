@@ -480,6 +480,16 @@ Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{major_version}.diff
 # if clause to apply only on specific gcc versions, see %prep
 Patch10:	gcc-10-spawn.diff
 
+#SFElibx264.spec https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=230249
+# -> bug problem of gcc with -fstack-check https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67265
+#https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=230249
+Patch11: gcc-11-remove-obsolete-assertion-on-the-CFA-register-_ported_to_4.8.x_gcc_bug_230249.diff
+
+#For gcc 4.8.5 on Solaris 11 and Solaris 12 (already have updated/fixed header files)
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8 )
+Patch12: gcc-12-fixinc.in.patch
+%endif
+
 ##TODO## enhance: use padded numbers eventually - same in %prep
 %if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8 )
 #Patch100: 000-userlandgate-gcc-Makefile.in.patch
@@ -778,6 +788,16 @@ cd gcc-%{version}
 %patch10 -p1
 %endif
 
+#only 4.8.5 - gcc-11-remove-obsolete-assertion-on-the-CFA-register-_ported_to_4.8.x_gcc_bug_230249.diff
+%if %( expr %{major_minor} '=' 4.8 )
+%patch11 -p1
+%endif
+
+#For gcc 4.8.5 on Solaris 11 and Solaris 12 (already have updated/fixed header files)
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8 )
+%patch12 -p1
+%endif
+
 ##get rid of these options to (Solaris) LD
 #gsed -i.bak -e 's/-fno-exceptions//g' -e 's/-fno-rtti//g' -e 's/-fasynchronous-unwind-tables//g' configure.ac configure
 
@@ -914,7 +934,7 @@ gsed -i.bak.LINK_LIBGCC_SPEC \
 
 echo "==="
 echo "diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h"
-( diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h ; true )
+diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h || true
 echo "==="
 
 
@@ -1044,7 +1064,6 @@ export BOOT_CFLAGS="$BOOT_CFLAGS"
 export BOOT_CFLAGS="$BOOT_CFLAGS -Xlinker -i"
 %endif
 
-
 #related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59788
 #Bug 59788 - Mixing libc and libgcc_s unwinders on 64-bit Solaris 10+/x86 breaks EH (exception handling)
 export BOOT_LDFLAGS="-zinterpose %_ldflags -R%{_prefix}/lib %gnu_lib_path"
@@ -1069,6 +1088,14 @@ export LD_FOR_TARGET=/usr/bin/ld
 
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
+
+echo "cleanup **CFLAGS/GXXFLAGS/LDFLAGS from -m32 and -m64 switches"
+#this came in with include/base.inc changed in case a compiler defaults to creating 64-bit objects
+#to fix 32-bit builds, we've added to regular optflags and ldflags "-m32"
+export CFLAGS_FOR_TARGET=$(  echo ${CFLAGS_FOR_TARGET}  | sed -e 's/-m32//g' -e 's/-m64//g' )
+export LDFLAGS_FOR_TARGET=$( echo ${LDFLAGS_FOR_TARGET} | sed -e 's/-m32//g' -e 's/-m64//g' )
+export BOOT_CFLAGS=$(  echo ${BOOT_CFLAGS}  | sed -e 's/-m32//g' -e 's/-m64//g' )
+export BOOT_LDFLAGS=$( echo ${BOOT_LDFLAGS} | sed -e 's/-m32//g' -e 's/-m64//g' )
 
 ##%if %{omnios}
 ###disable checks for -fvisibility, as they may fail on KVMed OmniOS guest
@@ -1439,6 +1466,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Dec 16 2016 - Thomas Wagner
+- fix build of libgomp in 64-bit as change to include/base.inc brought in "-m32" through CFLAGS/LDFLAGS
+  filter out any -m32 or -m64 from *FLAGS
+* Thu Dec 15 2016 - Thomas Wagner
+- add backported fix to 4.8.5 patch11 gcc-11-remove-obsolete-assertion-on-the-CFA-register-_ported_to_4.8.x_gcc_bug_230249.diff
+  fixes SFElibx264.spec e.g. version 0.148.0.20160529 -> ./common/osdep.h:261:13: error: 'asm' operand has impossible constraints #define asm __asm__
+- add patch12 gcc-12-fixinc.in.patch to stop fixing system headers on S11 and S12 only
 * Thu Dec  1 2016 - Thomas Wagner
 - fix build libfortran my removing mis-detected HAVE_MKOSTEMP (we have none) (OM)
 * Fri Oct 21 2016 - Thomas Wagner
