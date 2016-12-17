@@ -157,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 16 2016 - Thomas Wagner
+- remove -mincoming-stack-boundary= from CFLAGS which came in by include/base.inc or get asm constraint error
+* Sun May 29 2016 - Alex Viskovatoff <herzen@imap.cc>
+- bump to 20160529
 * Sat Apr  2 2016 - Thomas Wagner
 - bump to x264-snapshot-20160401-2245
 * Sat Jan 30 2016 - Alex Viskovatoff <herzen@imap.cc>
