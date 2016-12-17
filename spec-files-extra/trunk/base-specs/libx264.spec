@@ -35,6 +35,9 @@ export CC=gcc
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lm"
 
+export CFLAGS=$(  echo ${CFLAGS}  | sed -e 's/-mincoming-stack-boundary=[0-9]*//g' )
+
+
 if $( echo "%_libdir" | /usr/xpg4/bin/grep -q %_arch64 ) ; then
         export LDFLAGS="$LDFLAGS -m64"
 	if [ `uname -p` == "i386" ]; then
@@ -74,8 +77,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Dec 16 2016 - Thomas Wagner
+- remove -mincoming-stack-boundary= from CFLAGS which came in by include/base.inc or get asm constraint error
 * Sun May 29 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 20160529
+* Sat Apr  2 2016 - Thomas Wagner
+- bump to x264-snapshot-20160401-2245
 * Sat Jan 30 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 20160129, updating x264_build to 148
 * Thu Jan 30 2014 - Alex Viskovatoff
