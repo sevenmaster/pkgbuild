@@ -65,7 +65,19 @@ This package contains root files for libfuse.
 %patch5 -p1
 %patch6 -p1
 
-gsed -i.bak1 -e 's?/usr/lib?/usr/gnu/lib?' -e 's?/usr/bin?/usr/gnu/bin?' -e 's?/usr/include?/usr/gnu/include?' fusermount sparcv9/Makefile amd64/Makefile Makefile Makefile.com
+gsed -i.bak1.gnu.include -e 's?/usr/lib?/usr/gnu/lib?' -e 's?/usr/bin?/usr/gnu/bin?' -e 's?/usr/include?/usr/gnu/include?' fusermount sparcv9/Makefile amd64/Makefile Makefile Makefile.com
+
+#new compilers default to 64-bit, so we need to get the i386 build back to 32-bit with -m32
+#add default extra CFLAGS_32 above
+#append CFLAGS_32
+gsed -i.bak.cflags_32 \
+                      -e '/^CCFLAGS/ iCFLAGS_32 =' \
+                      -e '/^CCFLAGS/ s?\(= \$(CFLAGS)\)?\1 $(CFLAGS_32) ?' \
+                      Makefile.com 
+#add default extra CFLAGS_32 -m32 below
+gsed -i.bak.i386.cflags_32.-m32 \
+                      -e '/^include/ aCFLAGS_32 = -m32' \
+                      i386/Makefile 
 
 %if !%{cc_is_gcc}
 #studio
@@ -136,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 17 2016 - Thomas Wagner
+- fix build with compiler defaulting to -m64 (S12/developerstudio)
 * Wed Nov 16 2016 - Thomas Wagner
 - go with the version number from libfuse.so.2.7.6 library name. Add/increment (IPS) nano-version to indicate every new extra patch
 - merge & rework patches from Pierre and OI
