@@ -14,7 +14,7 @@
 
 Name:		SFEfusefs
 IPS_Package_Name:	system/file-system/fusefs
-Summary:	Kernel midules for File system in User Space
+Summary:	Kernel modules for File system in User Space
 Version:	1.3.1
 %define src_name illumos-fusefs-Version-%{version}
 License:	CDDL
@@ -23,13 +23,44 @@ SUNW_Copyright:	fusefs.copyright
 URL: http://jp-andre.pagesperso-orange.fr/openindiana-ntfs-3g.html
 Source:		 http://github.com/jurikm/illumos-fusefs/archive/Version-%{version}.tar.gz
 Patch1:		fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff
+Patch2:		fusefs-02-s12-rctl_action__donts_cache_attributes.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:	%{pnm_buildrequires_SUNWonbld}
 
+#pseudo code, as it is not really clear if pkgtool can handle this propperly down to the build number
+#might need an extra IPS tag added
+%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000001000001.0 )
+#build 100 and higher, rctl private interface has changed quite a bit
+#idee: anderes Paket das mit build 100 hinzugekommen war und immer installiert ist anfordern
+#idee: anderes Paket das mit build 100 hinzugekommen war und immer installiert ist anfordern
+#depend fmri=pkg:/system/kernel@5.12-5.12.0.0.0.100 type=require
+
+%endif
+
+
+%if %{solaris12}
 %description
+
+WARNING: This fusefs module is *not* extensively tested for Solaris 12. You may risk your data.
+You may risk your data. Yes, you may risk your data.
+
+The code for the kernel module had to be changed and attribute caching is switched off.
+
+You may report your test cases and which setup worked for your and what did not.
+
+Compile-Option -DDONT_CACHE_ATTRIBUTES is set, so this may have an performance impact
+
+Call for code-review! Please if you can read and improve kernel code, then please make a
+code review of the code found in package fusefs/src .
+
+
+%endif
+
+%description
+
 FUSE stands for 'File system in User Space'. It provides a simple
 interface to allow implementation of a fully functional file system
 in user-space.  FUSE originates from the Linux community and is
@@ -37,25 +68,41 @@ included in the Linux kernel (2.6.14+).
 
 This is the kernel module.
 
+
 %prep
 #illumos-fusefs-Version-1.3.1
 %setup -q -n %{src_name}
 
 #only Solaris 12 wants 5 arguments, Hipster, Solaris 11 wants 6 arguments including int vacalign
 #/usr/include/sys/vmsystm.h:#define ADDR_VACALIGN   1
-%if %( %{solaris12} '>=' 1 )
-#expect only 5 argmuments to choose_addr
+%if %( expr %{solaris12} '>=' 1 )
+#expect only 5 arguments to choose_addr
 %patch1 -p1
+%endif
+
+%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000001000001.0 )
+#build 100 and higher, rctl private interface has changed quite a bit
+#permanent patch for rctl, but temporary patch for disabling attribute caches
+%patch2 -p1
 %endif
 
 %build
 export PATH=/opt/onbld/bin/`uname -p`:$PATH
+
 cd kernel
+
+%if %{solaris12}
+  #64-bit only
+  #rm i386/Makefile
+  #rm sparc/Makefile
+%endif
+
 /usr/ccs/bin/make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 cd kernel
+
 /usr/ccs/bin/make install
 
 cp -r proto/ $RPM_BUILD_ROOT
@@ -84,14 +131,19 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{usr_kernel}
 %dir %attr (0755, root, sys) %{drv_base}
-%{drv_base}/fuse
-%{drv_base}/fuse.conf
+%{drv_base}/fuse*
+#%{drv_base}/fuse
+#%{drv_base}/fuse.conf
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, sys) %{drv_base}/%{_arch64}
 %{drv_base}/%{_arch64}/fuse
 %endif
 
 %changelog
+* Sat Nov 26 2016 - Thomas Wagner
+- add patch2 (permanent patch for rctl, but temporary patch for disabling attribute caches) only for (S12)
+* Wed Nov 16 2016 - Thomas Wagner
+- fix missing expr to detect S12 for patch1
 * Sat Nov 12 2016 - Thomas Wagner
 - bump to 1.3.1
 - load source from new URL on github
