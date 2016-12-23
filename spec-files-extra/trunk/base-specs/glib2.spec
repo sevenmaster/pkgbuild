@@ -111,17 +111,6 @@ autoconf
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lsocket -lsecdb -lnsl"
 
-#find our SFElibffi in /usr/gnu/ if it is present
-#Solaris 11 has older libffi
-%if %{solaris11}
-#gnu_inc
-                                               FFI_INCLUDEPATH="-I%{gnu_inc}"
-#gnu_lib
-test -f %{gnu_lib}/libffi-3.*/include/ffi.h && FFI_INCLUDEPATH="-I`echo %{gnu_lib}/libffi-3.*/include`"
-export LIBFFI_CFLAGS="$FFI_INCLUDEPATH"
-export LIBFFI_LIBS="%{gnu_lib_path} -lffi"
-%endif
-
 
 ./configure --prefix=%{_prefix} \
             --mandir=%{_mandir} \
@@ -135,12 +124,12 @@ export LIBFFI_LIBS="%{gnu_lib_path} -lffi"
 	    $GLIB_EXTRA_CONFIG_OPTIONS \
 	    %{gtk_doc_option}
 
-make -j $CPUS
+gmake V=2 -j$CPUS
 
 %install
 export SED="/usr/gnu/bin/sed"
 
-make DESTDIR=$RPM_BUILD_ROOT install
+gmake DESTDIR=$RPM_BUILD_ROOT install
 #Copy zh_HK from zh_TW
 #Fixes bug 4930405
 install -d $RPM_BUILD_ROOT%{_datadir}/locale/zh_HK/LC_MESSAGES
@@ -178,8 +167,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Dec 23 2016 - Thomas Wagner
-- add (Build)Requires SFElibffi-devel on Solaris 11 with older libffi (SFElibffi is in /usr/gnu/) (S11)
-- on Solaris 11 with older libffi load instead SFElibffi from /usr/gnu/ (S11)
+- add (Build)Requires SFElibffi-gpp-devel on Solaris 11 with older libffi (SFElibffi-gpp is in /usr/g++/) (S11)
+- on Solaris 11 with older libffi load instead SFElibffi-gpp from /usr/g++/ (S11)
 * Sun May 29 2016 - Thomas Wagner
 - remove dependency on SUNWGlib
 - fix dependency on itself for -devel and -l10n

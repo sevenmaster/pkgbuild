@@ -58,8 +58,8 @@ BuildRequires: data/docbook/docbook-dtds
 #not present on every OS-distro BuildRequires: x11/trusted/libxtsol
 
 %if %{solaris11}
-BuildRequires: SFElibffi-devel
-Requires:      SFElibffi
+BuildRequires: SFElibffi-gpp-devel
+Requires:      SFElibffi-gpp
 %endif
 
 %package devel		
@@ -235,8 +235,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Dec 23 2016 - Thomas Wagner
-- add (Build)Requires SFElibffi-devel on Solaris 11 with older libffi (SFElibffi is in /usr/gnu/) (S11)
-- on Solaris 11 with older libffi load instead SFElibffi from /usr/gnu/ (S11)
+- add (Build)Requires SFElibffi-gpp-devel on Solaris 11 with older libffi (SFElibffi-gpp is in /usr/g++/) (S11)
+- on Solaris 11 with older libffi load instead SFElibffi-gpp from /usr/g++/ (S11)
 * Sun May 29 2016 - Thomas Wagner
 - remove dependency on SUNWGlib
 - fix dependency on itself for -devel and -l10n

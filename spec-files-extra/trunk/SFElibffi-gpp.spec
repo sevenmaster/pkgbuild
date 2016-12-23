@@ -9,7 +9,7 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
-%include usr-gnu.inc
+%include usr-g++.inc
 %include base.inc
 
 %ifarch amd64 sparcv9
@@ -20,9 +20,9 @@
 %include base.inc
 %use libffi = libffi.spec
 
-Name:		SFElibffi
-IPS_Package_Name:	library/gnu/libffi
-Summary:	 (/usr/gnu)
+Name:		SFElibffi-gpp
+IPS_Package_Name:	library/g++/libffi
+Summary:	A Portable Foreign Function Interface Library (/usr/g++)
 Group:		System/Multimedia Libraries
 Version:	%{libffi.version}
 URL:		https://sourceware.org/libffi/
@@ -100,3 +100,4 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Dec 23 2016 - Thomas Wagner
 - initial spec version 3.2.1
+- relocate to /usr/g++ to make it easier for SFEglib2-gpp to propperly set RUNPATH and have libtool copy files to correct $(libdir)
