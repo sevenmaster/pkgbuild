@@ -68,6 +68,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %libffi.install -d %name-%version/%{base_arch}
 
+rm -r $RPM_BUILD_ROOT/%{_datadir}/info
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -78,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %_libdir/%_arch64/libffi.so*
 %endif
 %dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/info/*
+#%{_datadir}/info/*
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
@@ -98,63 +100,3 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Dec 23 2016 - Thomas Wagner
 - initial spec version 3.2.1
-
-
-
-COMPONENT_TEST_DIR =    $(@D)/testsuite
-
-# The 32 test suite is trying various ABI (fastcall, thiscall, stdcall).
-# We don't support those on Solaris.
-COMPONENT_TEST_TRANSFORMS += \
-        '-e "s|^Test Run By.*$$|XXX_REMOVE_XXX|g" ' \
-        '-e "s|^Native configuration is.*$$|XXX_REMOVE_XXX|g" ' \
-        '-e "s|^make.*: Leaving directory.*$$|XXX_REMOVE_XXX|g" ' \
-        '-e "s|^make.*: Entering directory.*$$|XXX_REMOVE_XXX|g" ' \
-        '-e "/^XXX_REMOVE_XXX$$/d" '
-
-CFLAGS += -DFFI_MMAP_EXEC_WRIT=1
-
-CONFIGURE_OPTIONS += --disable-raw-api
-
-REQUIRED_PACKAGES += system/library/gcc/gcc-c-runtime
-
-
-# Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved.
-#
-
-<transform file path=usr.*/man/.+ -> default mangler.man.stability uncommitted>
-set name=pkg.fmri \
-    value=pkg:/library/libffi@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
-set name=pkg.summary value="Foreign Function Interface Library"
-set name=pkg.description \
-    value="The libffi library provides a portable, high level programming interface to various calling conventions."
-set name=com.oracle.info.description value="Foreign Function Interface Library"
-set name=com.oracle.info.tpno value=$(TPNO)
-set name=info.classification \
-    value=org.opensolaris.category.2008:System/Libraries
-set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
-set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
-set name=org.opensolaris.arc-caseid value=PSARC/2008/542
-set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
-file path=usr/lib/$(MACH64)/libffi-$(COMPONENT_VERSION)/include/ffi.h
-file path=usr/lib/$(MACH64)/libffi-$(COMPONENT_VERSION)/include/ffitarget.h
-link path=usr/lib/$(MACH64)/libffi.so target=libffi.so.6.0.4
-link path=usr/lib/$(MACH64)/libffi.so.5 target=libffi.so.6
-link path=usr/lib/$(MACH64)/libffi.so.5.0.10 target=libffi.so.6.0.4
-link path=usr/lib/$(MACH64)/libffi.so.6 target=libffi.so.6.0.4
-file path=usr/lib/$(MACH64)/libffi.so.6.0.4
-file path=usr/lib/$(MACH64)/pkgconfig/libffi.pc
-file path=usr/lib/libffi-$(COMPONENT_VERSION)/include/ffi.h
-file path=usr/lib/libffi-$(COMPONENT_VERSION)/include/ffitarget.h
-link path=usr/lib/libffi.so target=libffi.so.6.0.4
-link path=usr/lib/libffi.so.5 target=libffi.so.6
-link path=usr/lib/libffi.so.5.0.10 target=libffi.so.6.0.4
-link path=usr/lib/libffi.so.6 target=libffi.so.6.0.4
-file path=usr/lib/libffi.so.6.0.4
-file path=usr/lib/pkgconfig/libffi.pc
-file path=usr/share/man/man3/ffi.3
-file path=usr/share/man/man3/ffi_call.3
-file path=usr/share/man/man3/ffi_prep_cif.3
-file path=usr/share/man/man3/ffi_prep_cif_var.3
-license LICENSE license=MIT
-~                                                                        

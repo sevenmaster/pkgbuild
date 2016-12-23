@@ -111,6 +111,18 @@ autoconf
 export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags -lsocket -lsecdb -lnsl"
 
+#find our SFElibffi in /usr/gnu/ if it is present
+#Solaris 11 has older libffi
+%if %{solaris11}
+#gnu_inc
+                                               FFI_INCLUDEPATH="-I%{gnu_inc}"
+#gnu_lib
+test -f %{gnu_lib}/libffi-3.*/include/ffi.h && FFI_INCLUDEPATH="-I`echo %{gnu_lib}/libffi-3.*/include`"
+export LIBFFI_CFLAGS="$FFI_INCLUDEPATH"
+export LIBFFI_LIBS="%{gnu_lib_path} -lffi"
+%endif
+
+
 ./configure --prefix=%{_prefix} \
             --mandir=%{_mandir} \
             --datadir=%{_datadir} \
@@ -165,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Fri Dec 23 2016 - Thomas Wagner
+- add (Build)Requires SFElibffi-devel on Solaris 11 with older libffi (SFElibffi is in /usr/gnu/) (S11)
+- on Solaris 11 with older libffi load instead SFElibffi from /usr/gnu/ (S11)
 * Sun May 29 2016 - Thomas Wagner
 - remove dependency on SUNWGlib
 - fix dependency on itself for -devel and -l10n

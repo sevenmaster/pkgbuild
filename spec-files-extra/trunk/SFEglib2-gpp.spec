@@ -57,6 +57,11 @@ BuildRequires: data/docbook/docbook-dtds
 # required for including X11/extensions/Xtsol.h in gio-rbac.diff
 #not present on every OS-distro BuildRequires: x11/trusted/libxtsol
 
+%if %{solaris11}
+BuildRequires: SFElibffi-devel
+Requires:      SFElibffi
+%endif
+
 %package devel		
 Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
@@ -229,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr (-, root, other) %{_datadir}/locale
 
 %changelog
+* Fri Dec 23 2016 - Thomas Wagner
+- add (Build)Requires SFElibffi-devel on Solaris 11 with older libffi (SFElibffi is in /usr/gnu/) (S11)
+- on Solaris 11 with older libffi load instead SFElibffi from /usr/gnu/ (S11)
 * Sun May 29 2016 - Thomas Wagner
 - remove dependency on SUNWGlib
 - fix dependency on itself for -devel and -l10n
