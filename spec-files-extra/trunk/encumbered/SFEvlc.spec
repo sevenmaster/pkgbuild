@@ -223,7 +223,7 @@ BuildRequires:	%{pnm_buildrequires_SUNWgsed}
 
 #we have new X-org with x11-xcb CR 6667057
 ##TODO## check if other solarish OS do have same x11-xcb integrated with build 153
-%if %( expr %{osbuild} '>=' 153 '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11} '&' %{osbuild} '>=' 153 '|' %{solaris12} '>=' 1 )
 %define enable_x11_xcb 1
 # more fresh builds all use IPS long package names
 BuildRequires: x11/library/libxcb
@@ -384,6 +384,13 @@ BuildRequires: SFElibdvdcss-devel
 Requires: SFElibdvdcss
 BuildRequires: SFElivemedia
 Requires: SFElivemedia
+%if %{solaris11}
+#to get updated libffi that is used by glib2-gpp
+#vlc-cache-gen would do a blurry core dump with too old libffi
+#LD_DEBUG=files shows glib2 having problems with libffi
+BuildRequires: SFEglib2-gpp
+Requires: SFEglib2-gpp
+%endif
 
 %if %{enable_pulseaudio}
 BuildRequires: %{pnm_buildrequires_pulseaudio}
@@ -810,6 +817,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Fri Dec 23 2016 - Thomas Wagner
+- add (Build)Requires SFEglib2-gpp to get updated SFElibffi-gpp for S11
 * Fri Dec 16 2016 - Thomas Wagner
 - make linking with /usr/lib/0@0.so.1 a configurable in the spec file, defaults to "don't link it"
 - make vdpau an automatic switch for now, as newer Nvidia drivers stop bundling header and lib files -> will be separate package
