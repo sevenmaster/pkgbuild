@@ -110,7 +110,7 @@
 %define enable_taglib 0
 %define enable_matroska 1
 %define enable_libumem 1
-%define enable_0at0_so_1 0
+%define enable_0at0_so_1 1
 
 %define enable_vdpau 1
 
@@ -545,12 +545,12 @@ export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags"
 
 #extend EXTRA_LDFLAGS with more library locations for special libraries
 %if %{enable_matroska}
-export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} $X11LIB $GNULIB -lsocket -lxnet"
-export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/lib/live/liveMedia -L/usr/lib/live/groupsock -L/usr/lib/live/UsageEnvironment"
-export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -R/usr/lib/live/liveMedia -R/usr/lib/live/groupsock -R/usr/lib/live/UsageEnvironment"
 #to find matroska it is sufficient to add -L and -R/usr/g++/lib
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/g++/lib"
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -R/usr/g++/lib"
+export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} $X11LIB $GNULIB -lsocket -lxnet"
+export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/lib/live/liveMedia -L/usr/lib/live/groupsock -L/usr/lib/live/UsageEnvironment"
+export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -R/usr/lib/live/liveMedia -R/usr/lib/live/groupsock -R/usr/lib/live/UsageEnvironment"
 %else
 %endif
 
@@ -819,6 +819,8 @@ test -x $BASEDIR/lib/postrun || exit 0
 %changelog
 * Fri Dec 23 2016 - Thomas Wagner
 - add (Build)Requires SFEglib2-gpp to get updated SFElibffi-gpp for S11
+- change order of library directory to search /usr/g++ earlier
+- and I thought people would have learned to avoid null pointer access. re-enabling enable_0at0_so_1 1
 * Fri Dec 16 2016 - Thomas Wagner
 - make linking with /usr/lib/0@0.so.1 a configurable in the spec file, defaults to "don't link it"
 - make vdpau an automatic switch for now, as newer Nvidia drivers stop bundling header and lib files -> will be separate package
