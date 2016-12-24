@@ -58,13 +58,9 @@ Requires:	%{pnm_requires_system_library_math_header_math}
 BuildRequires:  %{pnm_buildrequires_SUNWzlib}
 Requires:       %{pnm_requires_SUNWzlib}
 
-%if %( expr %{solaris11} '+' %{solaris12}  '+' %{openindiana} '>=' 1 )
-#S11 S12 openindiana need zlib.pc (should not bother oihipster, which probably already has a propper zlib.pc)
-# Confirmed: hipster circa 201605 has /usr/lib/amd64/pkgconfig/zlib.pc
-BuildRequires:  SFEzlib-pkgconfig 
-#for pkgtool's dependency resoultion
-Requires:       SFEzlib-pkgconfig 
-%endif
+#resolves to zlib on Hipster
+BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig} 
+Requires:       %{pnm_buildrequires_SFEzlib_pkgconfig} 
 
 BuildRequires:  %{pnm_buildrequires_SFExz_gnu}
 
@@ -103,7 +99,7 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CFLAGS="%{optflags} -I/usr/g++/include"
-export CXXFLAGS="%{cxx_optflags} -pthreads -I/usr/g++/include"
+export CXXFLAGS="%{cxx_optflags} -pthreads -I/usr/g++/include -D_GLIBCXX_USE_C99_MATH"
 export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib"
 
 export PKG_CONFIG_PATH=%{gpp_lib}/pkgconfig:%{gnu_lib}/pkgconfig
@@ -161,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 24 2016 - Thomas Wagner
+- change (Build)Requires to pnm_buildrequires_SFEzlib_pkgconfig
+- add to CXXFLAGS -D_GLIBCXX_USE_C99_MATH to avoid std::isnan and isnan conflicting (S11 S12)
 * 19 Sep 2016 - pjama
 - Initial spec of liborcus-011 because API has changed. New version with version name in file names. Clone and hack of SFEliborcus.spec. 
 - remove all python config and requirements because ixion >= 0.11.1 requires python 3 and we don't have such fancy pants versions around these parts. disabling python with --disable-python.
