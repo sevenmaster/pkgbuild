@@ -206,7 +206,11 @@ export CXX=g++
 
 #get PATH_MAX with __EXTENSIONS__
 export CFLAGS="-std=gnu99 -D__EXTENSIONS__ -I/usr/include -I%{xorg_inc} -I%{gnu_inc} -I%{sfw_inc} -Xlinker -pthread"
-export LDFLAGS="%{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
+#try this: https://bugs.winehq.org/show_bug.cgi?id=40783
+#they talk about success with 3D graphips.
+#but they run it with options and with preload like this:
+#LD_PRELOAD=libumem.so UMEM_OPTIONS=backend=mmap wine FurMark.exe
+export LDFLAGS="-lumem %{xorg_lib_path} %{gnu_lib_path} %{sfw_lib_path}"
 #try gnuld
 #export LD=/usr/gnu/bin/ld
 
@@ -364,6 +368,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Dec 19 2016 - Thomas Wagner
+- link with libumem (try if 3D graphics works)
 * Wed May 25 2016 - Thomas Wagner
 - re-enable icons, winetricks, wisotool, gecko engine msi files
 * Mon May 23 2016 - Thomas Wagner
