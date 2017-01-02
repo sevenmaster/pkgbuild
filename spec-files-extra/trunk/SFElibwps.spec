@@ -83,6 +83,10 @@ export CXX=g++
 export CFLAGS="%{optflags} -I/usr/g++/include"
 export CXXFLAGS="%{cxx_optflags} -I/usr/g++/include"
 export LDFLAGS="%{_ldflags} -L/usr/g++/lib -R/usr/g++/lib"
+%if %{solaris12}
+#symbol not found:  boost::system::system_category boost::system::generic_category
+export LDFLAGS="$LDFLAGS -lboost_system"
+%endif
 
 export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 
@@ -90,6 +94,8 @@ export PKG_CONFIG_PATH=/usr/g++/lib/pkgconfig:/usr/gnu/lib/pkgconfig
 	--prefix=%_prefix	\
 	--disable-werror	\
 	;
+
+#        --disable-weffc         \
 
 make -j$CPUS
 
@@ -128,6 +134,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 17 2015 - Thomas Wagner
+- fix linking by adding -lboost_system because  boost::system::system_category boost::system::generic_category not found  (S12)
 * Thu Sep 29 2016 - pjama
 - remove links to version 0.3 because it was a dumb idea
 * Fri May 20 2016 - pjama
