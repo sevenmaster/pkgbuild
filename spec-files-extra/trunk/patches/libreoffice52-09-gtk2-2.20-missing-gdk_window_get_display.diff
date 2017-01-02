@@ -1,0 +1,18 @@
+inspired by:
+https://mail.gnome.org/archives/commits-list/2012-August/msg06184.html
+
+--- libreoffice-5.2.3.3/vcl/unx/gtk/gtksalframe.cxx.orig	2017-01-01 01:32:12.966155166 +0100
++++ libreoffice-5.2.3.3/vcl/unx/gtk/gtksalframe.cxx	2017-01-01 01:31:57.751899735 +0100
+@@ -461,7 +461,12 @@
+                                    const gchar *name,
+                                    const gchar *value)
+ {
++  // from https://mail.gnome.org/archives/commits-list/2012-August/msg06184.html
++#if GTK_CHECK_VERSION (2,24,0)
+   GdkDisplay* display = gdk_window_get_display (window);
++#else
++  GdkDisplay* display = gdk_drawable_get_display (GDK_DRAWABLE (window));
++#endif
+ 
+   if (value != nullptr)
+     {

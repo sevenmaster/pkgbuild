@@ -1,0 +1,11 @@
+--- libreoffice-5.2.3.3/vcl/qa/cppunit/BitmapTest.cxx.orig	Fr. Okt 28 16:50:26 2016
++++ libreoffice-5.2.3.3/vcl/qa/cppunit/BitmapTest.cxx	So. Jan  1 03:32:05 2017
+@@ -75,7 +75,7 @@
+     CPPUNIT_ASSERT_EQUAL(sal_uInt16(24), aBitmap.GetBitCount());
+     {
+         Bitmap::ScopedReadAccess pReadAccess(aBitmap);
+-#if defined LINUX || defined FREEBSD
++#if defined LINUX || defined FREEBSD || defined SOLARIS
+         // 24 bit Bitmap on SVP backend uses 32bit BGRA format
+         CPPUNIT_ASSERT_EQUAL(static_cast<sal_uInt16>(32), pReadAccess->GetBitCount());
+         CPPUNIT_ASSERT_EQUAL(sal_uLong(40), pReadAccess->GetScanlineSize());

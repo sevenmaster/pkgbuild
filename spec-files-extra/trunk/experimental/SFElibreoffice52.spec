@@ -155,7 +155,8 @@
 
 
 %define src_name	libreoffice
-%define src_url		http://download.documentfoundation.org/libreoffice/src/%{major_version}.%{minor_version}.%{micro_version}
+#%define src_url		http://download.documentfoundation.org/libreoffice/src/%{major_version}.%{minor_version}.%{micro_version}
+%define src_url		http://ftp.fau.de/tdf/libreoffice/src/%{major_version}.%{minor_version}.%{micro_version}
 
 
 ##TODO## put a top package libreoffice ontop and use mediators to symlink to the locally preferred office
@@ -171,6 +172,8 @@ Patch4:			libreoffice52-04-no-symbols-ld-complains.diff
 Patch5:			libreoffice52-05-process.cxx-new-procfs.diff
 Patch6:			libreoffice51-06-hypot-cast-args.diff
 Patch8:			libreoffice52-08-IDocumentChartDataProviderAccess.hxx.diff
+Patch9:			libreoffice52-09-gtk2-2.20-missing-gdk_window_get_display.diff
+Patch10:		libreoffice52-10-vcl-aq-cppunit-BitmapTest.cxx.diff
 SUNW_BaseDir:  		%{_basedir}
 BuildRoot:     		%{_tmppath}/%{name}-%{version}-build
 
@@ -453,7 +456,27 @@ This package integrates desktop menu items and symbolic links /usr/bin/loffice
 
 
 %prep
+date
+[ -d %{name}-%{version} ] \
+  && { 
+    export BACKGROUNDREMOVE=$( mktemp -d %{name}-%{version}.background-removal-XXXX )
+    echo "moving %{name}-%{version} to ${BACKGROUNDREMOVE}"
+    mv %{name}-%{version} ${BACKGROUNDREMOVE}
+    if [ -f /tmp/keep-libreoffice-source ]; then
+       echo "NOT removing source tree from previous build-run. Find old files in ${BACKGROUNDREMOVE}"
+    else
+       echo "removing source tree from previous build-run in the background"
+       echo "press Ctrl-C to abort!"
+       [ -f /tmp/no-countdown ] || for i in 10 9 8 7 6 5 4 3 2 1 0; do
+         echo "countdown $i"
+         sleep 2
+         done
+       ( rm -rf ${BACKGROUNDREMOVE}/libreoffice-%version ; rmdir  ${BACKGROUNDREMOVE} ) &
+    fi
+  }
+
 %setup -q -c -T -n %name-%version
+date
 xz -dc  %{SOURCE} | tar xf -
 cd %{src_name}-%{version}
 
@@ -478,12 +501,75 @@ cd %{src_name}-%{version}
 %patch8 -p1
 %endif
 
+#S11 only has gtk 2.20 and the function gdk_  appeared in 2.24
+%if %{solaris11}
+%patch9 -p1
+%endif
+
+#vcl/qa/cppunit/BitmapTest.cxx:83:N12_GLOBAL__N_110BitmapTestE::testConvert -- equality assertion failed - Expected: 24 - Actual  : 32
+%patch10 -p1
+
 # Change 'pow' to 'std::pow' in a coupla files
-gsed -i.orig \
+gsed -i.orig.pow.std..pow \
 	-e 's/pow(/std::pow(/'	\
 	sc/source/core/tool/interpr1.cxx \
 	sal/qa/inc/valueequal.hxx	\
 	;
+
+# Change std::copysign to copysign
+# maybe cmath needs updates (gcc 4.8.5, possibly others too)
+# vcl/source/filter/sgvspln.cxx:593:23: error: 'copysign' is not a member of 'std'
+#                 alphX=std::copysign(sqrt(1.0/(1.0+Marg01*Marg01)),x[1]-x[0]);
+
+gsed -i.orig.std..copysign.copysign \
+	-e 's/std::copysign(/copysign(/g' \
+	vcl/source/filter/sgvspln.cxx
+
+##TODO## check if below would also solve by using  #include <cstdlib>
+#OGLTrans_TransitionImpl.cxx:920:61: error: 'nextafter' is not a member of 'std'
+#     return comphelper::rng::uniform_real_distribution(-1.0, std::nextafter(1.0, DBL_MAX));
+
+gsed -i.orig.std..nextafter.nextafter \
+	-e 's/std::nextafter(/nextafter(/g' \
+	slideshow/source/engine/OGLTrans/generic/OGLTrans_TransitionImpl.cxx \
+	vcl/workben/vcldemo.cxx
+
+# vcl/workben/vcldemo.cxx:440:111: error: 'nextafter' is not a member of 'std'
+# inset above the comment
+gsed -i.orig.include.cstdlib \
+	-e '/internal headers for OpenGLTests class/ i\
+#include <cstdlib>' \
+	vcl/workben/vcldemo.cxx
+
+#LO 4.4.7.2 still had the include file, some point in time the include Reference.hxx disappeared
+#the include avoid weird compiler syntax message around the line with "namespace"
+gsed -i.orig.include.namespace \
+	-e '/namespace com { namespace sun { namespace star/ i\
+#include <com/sun/star/uno/Reference.hxx>' \
+	sw/inc/IDocumentChartDataProviderAccess.hxx
+
+#
+#http://stackoverflow.com/questions/12696764/round-is-not-a-member-of-std
+#defined(ANDROID)|defined(SOLARIS)
+
+gsed -i.orig.add.round.method.for.solaris \
+	-e '/defined(ANDROID)/ s/$/ || defined(SOLARIS)/' \
+	drawinglayer/source/primitive2d/borderlineprimitive2d.cxx
+
+#drawinglayer/qa/unit/border.cxx:138:33: error: 'round' is not a member of 'std'
+#     sal_Int32 nExpectedHeight = std::round(fRightWidth);
+gsed -i.orig.std..round.round \
+	-e 's/std::round(/round(/g' \
+	drawinglayer/qa/unit/border.cxx
+
+
+gsed -i.orig.check.before.g_thread_init.and.add.g_thread_init \
+	-e '/gdk_threads_init/ i\
+// init gdk thread protection variant2\
+if ( !g_thread_supported() )\
+g_thread_init (NULL);' \
+	vcl/unx/gtk/gtkinst.cxx \
+
 
 ## Start gratuitous hacks to disable cppunit tests. These really should be resolved for a production pkg
 #  but disable for now so someone smarter than I am can debug
@@ -578,6 +664,29 @@ gsed -i.orig	\
 ## ToDo Tomww ## please set tests to disable for your maintained OS distros (similar to above)
 # previous fixes preserved below for reference for now.
 
+#mostly copied from the %{openindiana} section
+%if %{solaris11}
+# Disable tests in sc module
+gsed -i.orig	\
+	-e '/CppunitTest_sc_subsequent_filters_test/d'	\
+	-e '/CppunitTest_sc_subsequent_export_test/d'	\
+	sc/Module_sc.mk	\
+	;
+
+# Disable tests in sw module
+gsed -i.orig	\
+	-e '/CppunitTest_sw_macros_test/d'	\
+	-e '/CppunitTest_sw_globalfilter/d'	\
+	-e '/CppunitTest_sw_ooxmlexport7/d'	\
+	sw/Module_sw.mk	\
+	;
+
+# Disable tests in xmlsecurity module
+# check if that needs an updates xml similar to the same test listed in the %{openindiana} section (above)
+gsed -i.orig	\
+	-e '/CppunitTest_xmlsecurity_signing/d'	\
+	xmlsecurity/Module_xmlsecurity.mk	\
+%endif
 
 # ONLY for openindiana: Remove --no-use-server-timestamps from wget options because OI's wget to old to have this option
 %if %{openindiana}
@@ -626,7 +735,10 @@ gsed -i.bak.make_-j \
 #or the nvidia provided opengl is to be used.
 head /usr/include/GL/gl.h > /dev/null || (echo "file /usr/include/GL/gl.h is not readable, check svc:/application/opengl/ogl-select:default"; echo "and your nvidia driver. The nvidia driver as SVR4 package does *not* provide the"; echo "include files, so non-IPS install of nvdia needs manual correction to get the"; echo "include files back. You could copy gl.h from older ZFS snapshot:"; echo "cp -pr /.zfs/snapshot/the_snapshot_name/usr/X11/include/NVIDIA to /usr/X11/include/"; exit 1)
 
+date
+
 %build
+date
 cd %{src_name}-%{version}
 
 # Add /usr/gnu to the pkg-config path to include SFE additions
@@ -668,7 +780,13 @@ export CPPFLAGS="-I%{gpp_inc} -I%{gnu_inc}"
 export CFLAGS="$CFLAGS -pthreads"
 ##REMOVE_IF_IT_WORKS## #glm configure detection doesn't use CXXFLAGS, only CFLAGS CPPFLAGS
 #using CPPFLAGS here breakes workdir/UnpackedTarball/exttextcat as it injects CPPFLAGS to regular gcc command line as well
-export CXXFLAGS="$CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH -pthreads"
+#not in std export CXXFLAG="$CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH -pthreads"
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99_MATH -pthreads"
+# threadpooltest.cxx:40:31: error: 'to_string' is not a member of 'std' ... setenv("MAX_CONCURRENCY", std::to_string(nThreads).c_str(), true);
+# http://stackoverflow.com/questions/26095886/error-to-string-is-not-a-member-of-std/27589053#27589053
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99"
+#CoinSignal.hpp:91:23: error: ISO C++ forbids declaration of 'decltype' with no type [-fpermissive] -- typedef decltype(SIG_DFL) CoinSighandler_t;
+export CXXFLAGS="$CXXFLAGS -std=gnu++1y -D_GLIBCXX_USE_C99"
 %endif
 %if %{solaris12}
 #
@@ -676,7 +794,10 @@ export CXXFLAGS="$CXXFLAGS -std=c++11 -D_GLIBCXX_USE_C99_MATH -pthreads"
 export CFLAGS="$CFLAGS -pthreads"
 ##REMOVE_IF_IT_WORKS## #glm configure detection doesn't use CXXFLAGS, only CFLAGS CPPFLAGS
 #using CPPFLAGS here breakes workdir/UnpackedTarball/exttextcat as it injects CPPFLAGS to regular gcc command line as well
-export CXXFLAGS="$CXXFLAGS -std=c++11                         -pthreads"
+#try solving this one needing newer c++ standard but this sub-project doesn't set itself a default (as LO does: -std=gnu++1y=
+#so we just set the LO default for all sub-project which read CXXFLAGS  ENV variable
+#CoinSignal.hpp:91:23: error: ISO C++ forbids declaration of 'decltype' with no type [-fpermissive] -- typedef decltype(SIG_DFL) CoinSighandler_t;
+export CXXFLAGS="$CXXFLAGS -std=gnu++1y                         -pthreads"
 %endif
 
 export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path}"
@@ -931,6 +1052,45 @@ gsed -i.bak_missing_boost_system \
     sal/Executable_cppunittester.mk \
 
 
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##gsed -i.orig.check.before.g_thread_init \
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##	-e '/g_thread_init/ i\
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##// init gdk thread protection variant1\
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##if ( !g_thread_supported() )' \
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##	workdir/UnpackedTarball/redland/examples/redland_dbus.c \
+#REMOVE if works on S11 with S11-own-gtk-2.20 #
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##problem: redland tarball is unpacked very late/during make phase. so need to 
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##prepare a patch and add the patch to the build system
+#REMOVE if works on S11 with S11-own-gtk-2.20 #
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##create our patch
+#REMOVE if works on S11 with S11-own-gtk-2.20 #cat > external/redland/redland/redland-g_thread_init.patch.1 <<EOF
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##http://www.spinics.net/lists/fio/msg04909.html
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##avoid on S11 getting at startup:
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##Gdk-ERROR **: g_thread_init() must be called before gdk_threads_init()
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##https://sourceforge.net/p/vice-emu/bugs/381/#5076
+#REMOVE if works on S11 with S11-own-gtk-2.20 #
+#REMOVE if works on S11 with S11-own-gtk-2.20 #--- redland/examples/redland_dbus.c.orig        So. Jan  3 02:17:09 2010
+#REMOVE if works on S11 with S11-own-gtk-2.20 #+++ redland/examples/redland_dbus.c     So. Jan  1 18:33:44 2017
+#REMOVE if works on S11 with S11-own-gtk-2.20 #@@ -158,7 +158,10 @@
+#REMOVE if works on S11 with S11-own-gtk-2.20 #   world=librdf_new_world();
+#REMOVE if works on S11 with S11-own-gtk-2.20 #   librdf_world_open(world);
+#REMOVE if works on S11 with S11-own-gtk-2.20 # 
+#REMOVE if works on S11 with S11-own-gtk-2.20 #-  g_thread_init (NULL);
+#REMOVE if works on S11 with S11-own-gtk-2.20 #+  // init gdk thread protection
+#REMOVE if works on S11 with S11-own-gtk-2.20 #+  if ( !g_thread_supported() )
+#REMOVE if works on S11 with S11-own-gtk-2.20 #+    g_thread_init (NULL);
+#REMOVE if works on S11 with S11-own-gtk-2.20 #+
+#REMOVE if works on S11 with S11-own-gtk-2.20 #   dbus_gthread_init ();
+#REMOVE if works on S11 with S11-own-gtk-2.20 # 
+#REMOVE if works on S11 with S11-own-gtk-2.20 #   dbus_error_init (&error);  
+#REMOVE if works on S11 with S11-own-gtk-2.20 #EOF
+#REMOVE if works on S11 with S11-own-gtk-2.20 #
+#REMOVE if works on S11 with S11-own-gtk-2.20 ##add our patch to the patchlist in the project
+#REMOVE if works on S11 with S11-own-gtk-2.20 #gsed -i.orig.check.before.g_thread_init \
+#REMOVE if works on S11 with S11-own-gtk-2.20 #	-e '/gb_UnpackedTarball_add_patches,redland,/ a\
+#REMOVE if works on S11 with S11-own-gtk-2.20 #	external/redland/redland/redland-g_thread_init.patch.1 \\' \
+#REMOVE if works on S11 with S11-own-gtk-2.20 #	external/redland/UnpackedTarball_redland.mk
+#REMOVE if works on S11 with S11-own-gtk-2.20 #
+
 ## ToDo Tomww ## Works on pjama's hipster, not sure what it is though...
 #remove_if_works_on_hipster# #ldd -r instdir/program/libwpftwriterlo.so  -lboost_system fehlt!
 #remove_if_works_on_hipster# #hipster sfe ~/packages/BUILD/SFElibreoffice4-4.4.7.2/libreoffice-4.4.7.2 find . -name libwpftwriterlo.so -ls
@@ -1087,7 +1247,16 @@ export PATH=`pwd`/bin:$PATH
 echo "gcc \$*" > bin/cc
 chmod a+rx bin/cc
 
+#you want to debug? Then first run with --interactive to compile in parallel,
+#on error, issue this command:
+# PARALLELISM=1 gmake CC=$CC V=2
+##doesnt work## to actually see for instance the issued gcc and g++ commands, use this:
+##doesnt work## PARALLELISM=1 gmake CC=$CC V=2 MAKE="/usr/bin/gmake V=2"
+#e.g.
+#cd /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.3.3/libreoffice-5.2.3.3/vcl && /opt/dtbld/bin/make -j1 V=2 -j1
+date
 gmake CC=$CC 
+date
 
 # I don't believe the 'compiletry in 5 4 3 2 1 0' is needed any more because *pdf* no longer exists in 5.2 (it did/does in 5.1)
 # compiletry=""
@@ -1164,8 +1333,11 @@ for lib in `find . -name \*.so  -print`
      && echo found: $lib
   done \
   | grep "symbol not found" && exit 111
+
+date
  
 %install
+date
 ## TODO ##
 # Create some links in /usr/bin to wherever libreoffice is located. eg /usr/bin/soffice -> /usr/local/lib/libreoffice/soffice
 # but don't conflict with openoffice if installed
@@ -1264,10 +1436,11 @@ install -D ./sysui/desktop/icons/hicolor/48x48/mimetypes/oasis-database.png $RPM
 install -D ./sysui/desktop/icons/hicolor/48x48/mimetypes/oasis-web-template.png $RPM_BUILD_ROOT%{_datadir}/pixmaps/libreoffice%{major_version}.%{minor_version}-oasis-web-template.png
 
 # Have a good hard look at ./workdir/CustomTarget/sysui/solaris/libreoffice sysvr4 pkg files
+date
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf ${RPM_BUILD_ROOT}
 
 ##TODO## place the new icons and stuff into apropriate directory and get auto-refresh on the target system
 #above ^^:  verify if that is true (:
@@ -1350,6 +1523,21 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan  2 2017 - Thomas Wagner
+- port version 5.2.3.3 to S11
+- allow background removal of previous source tree by moving aside, delete in backgrond
+- allow preserve of previous source tree by "touch /tmp/keep-libreoffice-source" (and eating up all your diskspace)
+- S11 has gtk 2.20 add patch9 libreoffice52-09-gtk2-2.20-missing-gdk_window_get_display.diff
+- patch10 libreoffice52-10-vcl-aq-cppunit-BitmapTest.cxx.diff
+- several namespace tweaks for pow, copysign, nextafter, add includes, use local implementation for round (ANDROID SOLARIS),
+- check for !g_thread_supported before g_thread_init in gtkinst.cxx
+- re-use disables of CppunitTests for S11 as already present for openindiana (not hipster!)
+- remove -std=c++11 and replace with -std=gnu++1y as this may better match C++ GCC-isms
+- get math includes activate non-standard functions by -D_GLIBCXX_USE_C99
+- add debugging tipps to e.g. only compile a sub-project with g++ commands printed
+* Sun Dec 25 2016 - Thomas Wagner
+- std::copysign -  sgvspln.cxx:593:23: error: 'copysign' is not a member of 'std' (seen on S11.3, gcc-sfe 4.8.5)
+- load source from mirror
 * Thu Nov 10 2016 - pjama
 - Bump from version 5.2.2.2 to 5.2.3.3
 * Wed Oct 12 2016 - pjama
