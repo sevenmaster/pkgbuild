@@ -5,6 +5,12 @@
 
 # NOTE: READ THE WIKI page for SFEdovecot.spec : http://pkgbuild.wiki.sourceforge.net/SFEdovecot.spec
 
+
+##TODO## move this to pnm_macros in include/packagenamemacros.inc
+##Note: this will be automaticly overruled once it appears in packagenamemacros.inc and below
+%define pnm_buildrequires_openldap_default SFEopenldap-gnu
+%define pnm_requires_openldap_default SFEopenldap-gnu
+
 #defaults to _off_ . use pkgtool --with-clucene to get 
 #the nice server side search extension
 #note: needs boost, libstemmer, libtextcat, switches to gcc/g++
@@ -45,7 +51,7 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion 22 above
-Version:	2.2.26.0
+Version:	2.2.27
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -61,6 +67,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:      SFEgcc
 Requires:           SFEgccruntime
 %endif
+BuildRequires: %{pnm_buildrequires_openldap_default}
+Requires:      %{pnm_requires_openldap_default}
+BuildRequires: %{pnm_buildrequires_SUNWbzip}
 BuildRequires: %{pnm_buildrequires_SUNWzlib}
 Requires:      %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_SUNWbzip}
@@ -243,6 +252,11 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Wed Jan  4 2017 - Thomas Wagner
+- bump to 2.2.27
+* Sat Dec 17 2016 - Thomas Wagner
+- add temporary definition for an pnm_requires_openldap_default
+- add (Build)Requires pnm_buildrequires_openldap_default
 * Sun Dec 11 2016 - Thomas Wagner
 - link to SFEicu-gpp in any case
 * Thu Dec  1 2016 - Thomas Wagner
