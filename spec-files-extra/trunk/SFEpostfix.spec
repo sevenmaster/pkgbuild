@@ -131,7 +131,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.1.3
+Version:                 3.1.4
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1050,6 +1050,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Jan  4 2017 - Thomas Wagner
+- bump to 3.1.4
 * Sun Nov 13 2016 - Thomas Wagner
 - bump to 3.1.3
 * Mon May 16 2016 - Thomas Wagner
