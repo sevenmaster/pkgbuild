@@ -19,7 +19,7 @@ Name:                    SFEsamba44
 IPS_package_name:	 sfe/service/network/samba44
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.4.7
+Version:                 4.4.9
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -439,6 +439,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan  6 2017 - Thomas Wagner
+- bump to 4.4.9
 * Sun Oct 30 2016 - Thomas Wagner
 - bump to 4.4.7
 * Sun Jul 31 2016 - Thomas Wagner
