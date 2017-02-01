@@ -1,0 +1,12 @@
+diff -urN alpine-2.20/imap/src/osdep/unix/Makefile alpine-2.20.mod/imap/src/osdep/unix/Makefile
+--- alpine-2.20/imap/src/osdep/unix/Makefile	2015-01-12 00:12:25.505178442 -0500
++++ alpine-2.20.mod/imap/src/osdep/unix/Makefile	2017-01-12 17:51:25.379884427 -0500
+@@ -737,7 +737,7 @@
+ 	 RSHPATH=/usr/bin/rsh \
+ 	 BASECFLAGS="-g -O -w" \
+ 	 BASELDFLAGS="-lsocket -lnsl -lgen -R/usr/local/ssl/lib" \
+-	 RANLIB=true CC=/opt/SUNWspro/bin/cc
++	 RANLIB=true CC=${CC}
+ 
+ 
+ # Note: It is a long and disgusting story about why cc is set to ucbcc.  You
