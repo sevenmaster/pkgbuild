@@ -37,7 +37,7 @@
 
 Name:		SFEnginx
 IPS_Package_Name:	web/server/nginx
-Version:	1.9.15
+Version:	1.10.3
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -141,7 +141,7 @@ export LDFLAGS="%{_ldflags}"
 %else
 # Sun Studio
 export LDFLAGS="%{_ldflags}"
-# export CFLAGS="%{optflags}"
+export CFLAGS="%{optflags}"
 
 %endif # _with_gcc
 
@@ -227,6 +227,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 02 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.10.3
+* Wed Jan 25 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.10.2
 * Sat Apr 23 2016 - Thomas Wagner
 - bump to 1.9.15
 * Tue Oct 20 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
