@@ -102,6 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 #%_libdir/cmake/FindGLM.cmake
 %_libdir/cmake/glm/glmConfig.cmake
 %_libdir/cmake/glm/glmVersion.cmake
+%_libdir/cmake/glm/glmTargets.cmake
 
 #%dir %attr (0755, root, other) %_datadir/doc
 #%_datadir/doc/%src_name
@@ -110,8 +111,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %_includedir
 %_includedir/%src_name
+/usr/lib/cmake/glm/glmTargets.cmake
 
 %changelog
+* Mon Oct 31 2016 - Thomas Wagner
+- add to %files /usr/lib/cmake/glm/glmTargets.cmake
 * Sun Feb 14 2016 - Thomas Wagner
 - fix patch1: remove CR at end of line
 * Wed Jan 13 2016 - Rene Elgaard

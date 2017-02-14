@@ -7,7 +7,8 @@
 Name:           libtorrent
 Summary:        BitTorrent library written in C++
 URL:            http://libtorrent.rakshasa.no/
-Version:        0.12.2
+#Version:        0.12.2
+Version:        0.13.4
 Source:         http://libtorrent.rakshasa.no/downloads/%{name}-%{version}.tar.gz
 Patch1:         rlibtorrent-01-madvise.diff
 Patch2:         rlibtorrent-02-event-ports.diff

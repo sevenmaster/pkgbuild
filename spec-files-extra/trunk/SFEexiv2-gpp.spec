@@ -11,9 +11,10 @@
 %include base.inc
 
 Name:                SFEexiv2-gpp
+IPS_Package_Name: image/library/gpp/exiv2
 License:             GPL
 Summary:             A C++ library and CLI utility to manage image metadata.
-Version:             0.20
+Version:             0.23
 URL:                 http://www.exiv2.org/
 Source:              http://www.exiv2.org/exiv2-%{version}.tar.gz
 Patch1:              exiv2-01-makefile.diff
@@ -127,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat May 25 2013 - Thomas Wagner
+- bump to 0.23
+- add IPS_Package_Name
 * Sat Jun 19 2010 - Milan Jurik
 - update to 0.20
 * Mon May 10 2010 - Milan Jurik

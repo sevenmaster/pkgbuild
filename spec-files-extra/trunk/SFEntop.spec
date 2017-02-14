@@ -48,8 +48,8 @@ BuildRequires: SUNWgd2
 Requires: SUNWlibpcap
 Requires: %{pnm_requires_SUNWgnu_dbm}
 Requires: SUNWgd2
-BuildRequires: SFElibevent
-Requires: SFElibevent
+BuildRequires: SFElibevent-gnu
+Requires: SFElibevent-gnu
 BuildRequires: SUNWopenssl-include
 Requires: SUNWopenssl-libraries
 Requires: %name-root
@@ -139,7 +139,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/*
 
 %changelog
-* Thr Mar 17 2011 - Thomas Wagner
+* Thu Nov 12 2015 - Thomas Wagner
+- change BuildRequires to SFElibevent-gnu
+* Thu Mar 17 2011 - Thomas Wagner
 - change BuildRequires to %{pnm_buildrequires_SUNWgnu_dbm}
 - open TODO entry to remove goeip from SFEntop.spec, add dummy (Build)Conflicts: SFEgeoip
 * Tue Jan 11 2011 - Thomas Wagner

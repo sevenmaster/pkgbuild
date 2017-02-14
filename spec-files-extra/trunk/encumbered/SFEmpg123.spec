@@ -12,7 +12,8 @@
 Name:           SFEmpg123
 IPS_package_name: audio/mpg123
 Summary:        Fast console MPEG Audio Player and decoder library
-Version:        1.23.4
+#Version:        1.23.4
+Version:        1.13.4
 URL:            http://www.mpg123.org/
 Source:         %{sf_download}/mpg123/mpg123/%{version}/mpg123-%{version}.tar.bz2
 License:        LGPL,GPL
@@ -107,19 +108,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}
 %{_mandir}
 %dir %attr (0755, root, sys) %{_datadir}
-%{_libdir}/libmpg123.so*
-%{_libdir}/libout123.so*
+%{_libdir}/lib*123.so*
 %{_libdir}/mpg123/output_*.so
 
 
 %files devel
 %defattr (-, root, bin)
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
-%{_libdir}/pkgconfig/libmpg123.pc
-%{_libdir}/pkgconfig/libout123.pc
+%{_libdir}/pkgconfig/lib*123.pc
 %{_includedir}
 
 %changelog
+* Mon Jul  4 2016 - Thomas Wagner
+- back to version 1.13.4, "mpd" can't use the new 1.23.4 version
 * Fri Jun 10 2016 - Thomas Wagner
 - fix assembler syntax error in tabinit_mmx.S line 48 : Illegal mnemonic / Syntax error
 - set -xc99 -D_XPG6 -D__EXTENSIONS__ for studio compiler

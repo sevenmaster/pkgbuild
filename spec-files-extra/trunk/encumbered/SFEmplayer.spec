@@ -21,7 +21,7 @@ Name:		SFEmplayer
 IPS_Package_Name:	media/mplayer
 Summary:	mplayer - The Movie Player
 #for ffmpeg 2.8 -> mplayer 1.2.1
-Version:	1.2.1
+Version:	1.3.0
 %define tarball_version %{version}
 URL:		http://www.mplayerhq.hu/
 Source:         http://www.mplayerhq.hu/MPlayer/releases/MPlayer-%{tarball_version}.tar.xz
@@ -39,9 +39,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{tarball_version}-build
 
 %include default-depend.inc
 BuildRequires: SFEyasm
-BuildRequires: %{pnm_buildrequires_SUNWsmba}
+%if %{solaris11}%{solaris12}
 ##TODO## check if it is sufficient to install "libsmb" or something on a recent build to get the smbclient features
+##TODO## what to do on OIH/older and OM
+BuildRequires: %{pnm_buildrequires_library_samba_libsmbclient}
+Requires:      %{pnm_requires_library_samba_libsmbclient}
+%else
+BuildRequires: %{pnm_buildrequires_SUNWsmba}
 Requires: %{pnm_requires_SUNWsmba}
+%endif
 BuildRequires:  %{pnm_buildrequires_gnome_gnome_audio} 
 Requires:       %{pnm_requires_gnome_gnome_audio}
 Requires: SUNWxorg-clientlibs
@@ -177,6 +183,9 @@ dbgflag=--disable-debug
 export CFLAGS="${CFLAGS} -O3 -fomit-frame-pointer -D__hidden=\"\" -std=gnu99"
 %endif
 
+export CFLAGS=$(  echo ${CFLAGS}  | sed -e 's/-mincoming-stack-boundary=[0-9]*//g' )
+export CXXLAGS=$(  echo ${CXXFLAGS}  | sed -e 's/-mincoming-stack-boundary=[0-9]*//g' )
+
 
 export LDFLAGS="%{_ldflags} -L%{x11}/lib -L/usr/gnu/lib -R/usr/gnu/lib -L/usr/sfw/lib -R/usr/sfw/lib -L%{_libdir} -R%{_libdir} -liconv"
 export CC=gcc
@@ -265,6 +274,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/256x256/apps/*
 
 %changelog
+* Sat Dec 17 2016 - Thomas Wagner
+- change (Build)Requires to /library/samba/libsmbclient on only S11 and S12
 * Sun Dec 13 2016 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}, gnome_gnome_audio, SUNWjpg, SUNWlibtheora, SUNWxwrtl, SUNWxorg_mesa
 * Tue Mar 22 2016 - Thomas Wagner

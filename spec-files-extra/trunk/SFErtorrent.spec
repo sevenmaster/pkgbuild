@@ -9,6 +9,7 @@
 #%define cc_is_gcc 1
 
 %include base.inc
+%include packagenamemacros.inc
 
 %use rtorrent = rtorrent.spec
 %use rlibtorrent = rlibtorrent.spec
@@ -28,9 +29,9 @@ BuildRequires: SUNWsigcpp-devel
 %endif
 Requires: SFExmlrpc-c
 BuildRequires: SFExmlrpc-c-devel
-Requires: SUNWcurl
-Requires: SUNWncurses
-BuildRequires: SUNWncurses-devel
+Requires:      %{pnm_requires_SUNWcurl}
+BuildRequires: %{pnm_buildrequires_SUNWncurses_devel}
+Requires:      %{pnm_requires_SUNWncurses}
 
 %prep
 rm -rf %name-%version
@@ -84,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rtorrent.1
 
 %changelog
+* Thu Jan  1 2015 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel}, %{pnm_requires_SUNWncurses}, %include packagenamacros.inc
 * Fri Jul 04 2008 - trisk@acm.jhu.edu
 - Fix gcc compilation
 * Tue Jun 24 2008 - trisk@acm.jhu.edu

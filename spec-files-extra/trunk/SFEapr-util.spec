@@ -1,3 +1,7 @@
+#No matching version of library/apr-15 can be installed:
+#  Reject:  pkg://localhosts12/library/apr-15@1.5.1-0.5.12.0.0.0.79.1
+#  Grund:  Diese Version wird durch die installierte Inkorporation consolidation/userland/userland-incorporation@5.12-5.12.0.0.0.95.0 ausgeschlossen
+
 #
 # spec file for package SFElibapr
 #
@@ -16,6 +20,14 @@
 %include base.inc
 
 %include packagenamemacros.inc
+
+%if %{solaris12}
+exit 1
+%endif
+%if %{solaris11}
+exit 1
+%endif
+
 
 Name:			SFEapr-util
 License:		Apache,LGPL,BSD
@@ -158,6 +170,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Apr 29 2016 - Thomas Wagner
+- make spec file exit 1 on Solaris 11 and 12
 * Mon Feb 16 2015 - Thomas Wagner
 - make CFLAGS work
 * Sun Jan 18 2015 - Thomas Wagner

@@ -16,7 +16,9 @@ Source:              %{sf_download}/tcllib/BWidget-%{version}.tar.bz2
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWTk
+
+BuildRequires:  %{pnm_buildrequires_SUNWTk_devel}
+Requires:       %{pnm_requires_SUNWTk}
 
 %prep
 %setup -q -n BWidget-%version
@@ -53,5 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- change (Build)Requires to  %{pnm_buildrequires_SUNWTk_devel}
 * Sun Feb 03 2008 - moinak.ghosh@sun.com
 - Initial spec.

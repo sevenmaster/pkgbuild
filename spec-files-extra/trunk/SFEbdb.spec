@@ -19,7 +19,7 @@
 
 Name:		SFEbdb
 IPS_Package_Name:	sfe/database/bdb
-Summary:	%{bdb.summary}
+Summary:	%{bdb.summary} (/usr/gnu)
 Group:		%{bdb.group}
 Version:	%{bdb.version}
 License:        %{bdb.license}

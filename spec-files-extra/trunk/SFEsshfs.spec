@@ -12,7 +12,7 @@
 Name:                    SFEsshfs
 IPS_package_name: system/file-system/fuse-sshfs
 Summary:                 sshfs - filesystem access over SSH
-Version:                 2.3
+Version:                 2.8
 IPS_package_name:	system/file-system/sshfs
 License:                 GPLv2
 Source:			 %{sf_download}/fuse/%{src_name}-%{version}.tar.gz
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 15 2016 - Thomas Wagner
+- bump to 2.8
 * Sat Sep 28 2013 - Milan Jurik
 - bump to 2.3
 * Sat May 29 2010 - Albert Lee <trisk@opensolaris.org>

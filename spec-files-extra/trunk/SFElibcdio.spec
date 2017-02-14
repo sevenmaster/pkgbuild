@@ -15,7 +15,10 @@
 # we suggest you applying the patch above.
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %include packagenamemacros.inc
+
 
 %define with_hal %(pkginfo -q SUNWhal && echo 1 || echo 0)
 
@@ -66,6 +69,9 @@ mkdir %name-%version
 %libcdio.prep -d %name-%version
 
 %build
+export CC=gcc
+export CXX=g++
+
 export CFLAGS="%optflags -I/usr/gnu/include -I/usr/gnu/include/ncurses"
 %if %with_hal
 export CFLAGS="$CFLAGS -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include"
@@ -97,11 +103,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_mandir}
-%dir %attr (0755, root, bin) %{_mandir}/man1
-%{_mandir}/man1/*
-%dir %attr (0755, root, bin) %{_mandir}/jp
-%dir %attr (0755, root, bin) %{_mandir}/jp/man1
-%{_mandir}/jp/man1/*
+%{_mandir}/*
+#%dir %attr (0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
+#%dir %attr (0755, root, bin) %{_mandir}/jp
+#%dir %attr (0755, root, bin) %{_mandir}/jp/man1
+#%{_mandir}/jp/man1/*
 %dir %attr (0755, root, bin) %{_infodir}
 %{_infodir}/*
 
@@ -114,7 +121,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/cdio
 
 %changelog
-* Fir Oct 23 2015 - Thomas Wagner
+* Wed Feb  1 2017 - Thomas Wagner
+- bump to 0.92
+- change to cc_is_gcc 1
+* Fri Oct 23 2015 - Thomas Wagner
 - merge with pjama's changes
 * Sat May 23 2013 - pjama
 - more packagenamemacros to make hipster compatable

@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - uses ogg123 and points it to MPD's shoutstream - usefull if listening from remote via internet and control playlist with gmpc remotely
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -45,6 +46,8 @@ http://gmpc.wikia.com/wiki/GMPC_PLUGIN_SHOUT
 %attr (-, root, other) %{_datadir}/locale
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Wed Apr 25 2012 - Thomas Wagner
 - fix %files
 * Wed Apr 25 2012 - Thomas Wagner

@@ -8,6 +8,10 @@
 %include base.inc
 %define srcname fontconfig
 
+#we don't want OS's gcc runtime as a dependency listed!
+%define _use_internal_dependency_generator 0
+
+
 Name:		SFEfontconfig-gpp
 IPS_Package_Name: system/library/g++/fontconfig
 Summary:	Library for configuring and customizing font access
@@ -15,10 +19,12 @@ URL:		http://www.freedesktop.org/wiki/Software/fontconfig/
 License:	GPLv2
 SUNW_Copyright:	GPLv2.copyright
 Group:		System/Libraries
-Version:	2.11.1
+Version:	2.12.1
 Source:		http://www.freedesktop.org/software/%srcname/release/%srcname-%version.tar.bz2
 %include	default-depend.inc
 
+BuildRequires:	SFEgcc-runtime
+Requires:	SFEgcc
 
 %prep
 %setup -q -n %srcname-%version
@@ -61,5 +67,8 @@ rm -rf %buildroot
 %_datadir/xml
 
 %changelog
+* Thu Jan  6 2016 - Thomas Wagner
+- bump to 2.12.1 - get new symbols  FcWeightFromOpenType FcWeightToOpenType  
+- disable _use_internal_dependency_generator 0 - we don't want OS's gcc runtime listed as a dependency
 * Tue Dec 29 2015 - Alex Viskovatoff <herzen@imap.cc>
 - Initial spec

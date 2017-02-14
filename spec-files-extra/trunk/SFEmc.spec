@@ -6,7 +6,10 @@
 %include Solaris.inc
 
 Name:                SFEmc
+IPS_Package_Name:    sfe/file/mc
 Summary:             Clone of the Norton Commander file manager
+#mc-4.8.18.tar.xz/
+#http://pkgs.fedoraproject.org/repo/pkgs/mc/mc-4.8.18.tar.xz/85ff9279f912c5482fe9f110f8892c96/mc-4.8.18.tar.xz
 Version:             2007-06-23-14
 IPS_component_version: 0.2007062314
 #Source:              http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/snapshots/mc-%{version}.tar.gz

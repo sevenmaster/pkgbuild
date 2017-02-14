@@ -7,14 +7,15 @@
 %include Solaris.inc
 Name:                    SFEsynergy
 Summary:                 Mouse and keyboard sharing utility
-Version:                 1.3.1
-Release:                 1
+Version:                 1.7.6
 Source:                  %{sf_download}/synergy2/synergy-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
 Buildroot:               %{_tmppath}/%{name}-%{version}-build
 Patch1:                  synergy-01-suncc-compilation.diff
 %include default-depend.inc
-Requires: SUNWxwrtl
+
+BuildRequires: %{pnm_buildrequires_SUNWxwrtl_devel}
+Requires:      %{pnm_requires_SUNWxwrtl}
 
 %description
 Synergy lets you easily share a single mouse and keyboard between
@@ -33,13 +34,16 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
+export CFLAGS="%_optflags"
 export CXXFLAGS="%cxx_optflags"
+export LDFLAGS="%_ldflags"
+
 ./configure --prefix=/usr
-make -j$CPUS
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
 # FIXME: install a default configuration file
 #mkdir -p $RPM_BUILD_ROOT/etc
 #cp -p examples/synergy.conf $RPM_BUILD_ROOT%{_sysconfdir}/synergy.conf
@@ -57,6 +61,8 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %attr (0755, root, root) %{_sysconfdir}/synergy.conf
 
 %changelog
+* Wed Jul 13 2016 - Thomas Wagner
+- bump to 1.7.6
 * Wed Mar 19 2008 Doualot Nicolas <nicolas@slubman.info>
 - export CXXFLAGS before calling configure script
 * Wed Mar 19 2008 Doualot Nicolas <nicolas@slubman.info>

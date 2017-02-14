@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - integrate Multmedia Keys - plugin for gmpc
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -35,6 +36,8 @@ Requires: SFEgmpc
 
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Wed Apr 25 2012 - Thomas Wagner
 - add (Build)Requires: SUNWgcc(runtime)
 * Tue Apr 24 2012 - Thomas Wagner

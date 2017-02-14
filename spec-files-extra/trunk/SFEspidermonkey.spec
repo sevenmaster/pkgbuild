@@ -66,7 +66,7 @@ SUNW_BaseDir: %{_basedir}
 %patch7 -p1
 
 %build
-#libnspr4.sp in /usr/lib/mps
+#libnspr4.so in /usr/lib/mps
 export LDFLAGS="-B direct -z ignore -R/usr/lib/mps -L/usr/lib/mps"
 export CFLAGS="-xlibmopt"
 export OS_DEFINES="-D__USE_LEGACY_PROTOTYPES__"

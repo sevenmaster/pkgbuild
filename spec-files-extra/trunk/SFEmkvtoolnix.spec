@@ -2,7 +2,8 @@
 # spec file for package SFEmkvtoolnix
 #
 
-# Don't try to get GUIs to build.
+# Don't try to get GUIs to build = 0 or build gui = 1.
+##TODO## is the gui useful? then see if it can be enabled again
 %define enable_gui 0
 
 %include Solaris.inc
@@ -26,13 +27,20 @@ Patch7:	mkvtoolnix-07-hevc-variable-types.patch
 SUNW_BaseDir:	%_basedir
 %include default-depend.inc
 
+#needs gcc 4.8 or newer
+BuildRequires: SFEgcc
+Requires:      SFEgcc-runtime
+##TODO## this can't be used on other platforms, try pnm_macros
 BuildRequires: runtime/ruby-21
 BuildRequires: SFElibmatroska-gpp-devel
 BuildRequires: SFEboost-gpp-devel
+##TODO## pnm_macro?
 BuildRequires: SUNWlexpt
-BuildRequires: library/zlib
+##TODO## make this a pnm_macro or default to the SFE lzo version
 BuildRequires: library/lzo
-BuildRequires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires:      %{pnm_requires_SUNWogg_vorbis}
+
 BuildRequires: SUNWflac
 %if %enable_gui
 BuildRequires: SFEwxwidgets-gpp-devel
@@ -42,6 +50,17 @@ BuildRequires: text/gnu-gettext
 # adding its path to CXXFLAGS keeps other things from being found
 # so: TODO: make configure find libmagick (in file/file)
 #BuildRequires: file/file
+
+BuildRequires:  %{pnm_buildrequires_SUNWzlib}
+Requires:       %{pnm_requires_SUNWzlib}
+
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 )
+#S11 S12 need zlib.pc
+BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig} 
+#for pkgtool's dependency resoultion
+Requires:       %{pnm_buildrequires_SFEzlib_pkgconfig}
+%endif
+
 
 %description
 MKVToolNix is a set of tools to create, alter and inspect Matroska files under
@@ -68,13 +87,12 @@ Requires:       %name
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-# gcc 4.6 is too old to build this.  It builds with 4.8.2.
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
+#the compiler should be gcc 4.8, the version 4.6 seems to be to old
+export CC=gcc
+export CXX=g++
 export USER_CXXFLAGS="%cxx_optflags -fpermissive -D_POSIX_PTHREAD_SEMANTICS -D_GLIBCXX_USE_C99_MATH_TR1"
 export USER_LDFLAGS="%_ldflags -L/usr/g++/lib -R/usr/g++/lib"
-export ZLIB_CFLAGS="-I/usr/include"
-export ZLIB_LIBS=-lz
+
 %if %enable_gui
 export PATH=/usr/g++/bin:$PATH
 %endif
@@ -134,6 +152,11 @@ rm -rf %buildroot
 
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
+* Sun Sep 20 2015 - Thomas Wagner
+- merge with local changes
+- add BuildRequires on SFEzlib-pkgconfig to get zlib.pc
 * Fri Aug 28 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 8.3.0; disable GUIs; build with system gcc (SFEgcc is too old)
 * Sun Feb  9 2014 - Alex Viskovatoff <herzen@imap.cc>

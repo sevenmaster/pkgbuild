@@ -14,6 +14,8 @@
 # http://savannah.nongnu.org/patch/?6858
 
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %include packagenamemacros.inc
 %define srcname weechat
 %define rubyversion 2.1.0
@@ -27,6 +29,7 @@ Summary:	Lightweight console IRC client
 URL:		http://www.weechat.org/
 Vendor:		Sebastien Helleu <flashcode@flashtux.org>
 Version:	1.1.1
+#Version:	1.4
 License:	GPLv3+
 Source:		http://www.weechat.org/files/src/%srcname-%version.tar.bz2
 #Patch5:		weechat-05-remove-xopen-source-override.diff
@@ -87,7 +90,7 @@ mv foo CMakeLists.txt
 cd build
 
 cmake -DPREFIX=/usr \
-	-DCMAKE_C_FLAGS="%{gcc_optflags} -std=c99 -D_XOPEN_SOURCE=600 -D__EXTENSIONS__ -D_XPG6 -I/usr/include/ncurses -I%{gnu_inc}" \
+	-DCMAKE_C_FLAGS="%{_optflags} -std=c99 -D_XOPEN_SOURCE=600 -D__EXTENSIONS__ -D_XPG6 -I/usr/include/ncurses -I%{gnu_inc}" \
 	-DCMAKE_EXE_LINKER_FLAGS="%{_ldflags} -liconv -lnsl -lsocket -lxnet -lruby -llua %{gnu_lib_path}" \
 	-DRUBY_LIBRARY="/usr/lib/libruby.so.1" \
 	-DRUBY_EXECUTABLE="/usr/bin/ruby" \

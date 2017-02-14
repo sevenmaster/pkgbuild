@@ -7,7 +7,8 @@
 Name:           rtorrent
 Summary:        ncurses BitTorrent client
 URL:            http://libtorrent.rakshasa.no/
-Version:        0.8.2
+#Version:        0.8.2
+Version:        0.9.4
 Source:         http://libtorrent.rakshasa.no/downloads/%{name}-%{version}.tar.gz
 Patch1:         rtorrent-01-solaris.diff
 Patch2:         rtorrent-02-event-ports.diff

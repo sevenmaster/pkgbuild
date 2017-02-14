@@ -8,12 +8,10 @@
 
 Name:         HandBrake
 License:      GPL
-Version:      0.9.5
-Release:      1
-Distribution: Java Desktop System
-Vendor:       Sun Microsystems, Inc.
+Version:      0.10.5
 Summary:      handbrake - multiplatform, multithreaded video transcoder
-Source:       http://downloads.sourceforge.net/project/handbrake/%{version}/HandBrake-%{version}.tar.bz2
+#Source:       http://downloads.sourceforge.net/project/handbrake/%{version}/HandBrake-%{version}.tar.bz2
+Source:       http://download.handbrake.fr/releases/%{version}/HandBrake-%{version}.tar.bz2
 Patch1:       handbrake-01-ffmpeg.diff
 Patch2:       handbrake-02-fontconfig.diff
 Patch3:       handbrake-03-downloads.diff
@@ -124,6 +122,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 21 2016 - Thomas Wagner
+- bump to 0.10.5
+* Thu Aug 20 2015 - Thomas Wagner
+- bump to 0.10.2
+* Sat Jul 20 2013 - Thomas Wagner
+- bump to 0.9.9
 * Sun Oct 23 2011 - Milan Jurik
 - fix build
 * Wed Dec 16 2010 - jchoi42@pha.jhu.edu

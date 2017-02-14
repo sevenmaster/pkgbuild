@@ -5,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include usr-gnu.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -91,6 +92,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 13 2012 - Thomas Wagner
+- move to /usr/gnu by %include usr-gnu.inc
 * Aug 01 2009 - Gilles Dauphin
 - lcms-devel equiv to lcms.
 * Sat Mar 22 2008 - Thomas Wagner

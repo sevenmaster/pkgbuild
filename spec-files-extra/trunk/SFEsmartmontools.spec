@@ -7,7 +7,11 @@
 %define src_url		%{sf_download}/%{src_name}
 
 Name:                   SFEsmartmontools
+%if %{oihipster}
+IPS_Package_Name:	storage/gnu/smartmontools
+%else
 IPS_Package_Name:	storage/smartmontools
+%endif
 Summary:                S.M.A.R.T. monitoring tools
 Version:                6.2
 Group:                  Applications/System Utilities
@@ -82,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 16 2016 - Thomas Wagner
+- change IPS_Package_Name on OI but don't change the install location
 * Mon Jan 20 2014 - Alex Viskovatoff
 - update to 6.2
 * Sun Oct 30 2011 - Milan Jurik

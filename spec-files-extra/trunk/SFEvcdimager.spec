@@ -12,6 +12,10 @@ Name:                SFEvcdimager
 IPS_Package_Name:	 media/vcdimager 
 Summary:             VCD mastering suite
 Version:             0.7.24
+%if %{oihipster}
+#need to stay above the OI provided version
+IPS_Component_Version: %{version}.0.1
+%endif
 Source:              %{src_url}/vcdimager-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -118,6 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Feb  1 2017 - Thomas Wagner
+- need to stay above the OI provided version - add .0.1 to IPS_component_version
 * Sun Nov 29 2015 - Thomas Wagner 
 - change (Build)Requires to %{pnm_buildrequires_SUNWzlib} (OIH)
 * Thu Jul 11 2013 - Thomas Wagner

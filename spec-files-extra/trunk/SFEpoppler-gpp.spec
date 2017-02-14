@@ -1,4 +1,7 @@
 
+openjpeg 1 oder 2?
+
+
 #Building poppler with support for:
 #  font configuration: fontconfig
 #  splash output:      yes
@@ -49,8 +52,11 @@ Version:                 %{poppler.version}
 SUNW_BaseDir:            %{_basedir}
 
 %include default-depend.inc
-BuildRequires: SUNWgnome-base-libs-devel
-Requires:      SUNWgnome-base-libs
+#need a research what popplers dependency on gnome is
+%if !%{oihipster}
+BuildRequires: %{pnm_buildrequires_SUNWgnome_base_libs_devel}
+Requires:      %{pnm_requires_SUNWgnome_base_libs}
+%endif
 BuildRequires: %{pnm_buildrequires_SUNWgtk2_devel}
 Requires:      %{pnm_requires_SUNWgtk2}
 BuildRequires: %{pnm_buildrequires_SFExz_gnu}
@@ -81,7 +87,9 @@ Summary:                 %{summary} - development files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %name
+%if !%{oihipster}
 Requires: SUNWgnome-base-libs-devel
+%endif
 Requires: SFEsigcpp-gpp-devel
 
 %prep
@@ -135,6 +143,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0
 
 %changelog
+* Tue Nov  1 2016 - Thomas Wagner
+- re-enable SFEpoppler-gpp 0.32.0 on OIH 2016, as GCC5 runtime libs are not matching when building LO4
+* Tue Nov  1 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWgnome_base_libs_devel} (OIH)
 * Fri Sep 30 2016 - pjama
 - openindiana requires SFElibiconv
 - enclose %vars in {} for readability
