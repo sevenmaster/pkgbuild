@@ -1,3 +1,19 @@
+#/s12pool/sfe/packages/BUILD/SFElibreoffice52-5.2.3.3/libreoffice-5.2.3.3/solenv/bin/gdb-core-bt.sh
+
+# you should provide a large enough /tmp filesystem
+# free space lower then 300MB or 500MB seems to be not enough
+# using 1.5GB for /tmp now (may need a reboot if you try changing that online)
+
+#config_host.mk
+# export GLEW_LIBS=$(gb_SPACE) -lGLEW -lGLU -lGL
+# maybe on S12 change to
+# export GLEW_LIBS=$(gb_SPACE) -lGLEW
+#reason: GCC5 compiled libGLU.so which rejects gccruntime from GCC4
+#export GRAPHITE_LIBS=$(gb_SPACE) -L/usr/g++//usr/g++/lib -lgraphite2
+
+
+
+
 # PJA LO5 status
 # 
 # Gotchas
@@ -30,7 +46,10 @@
 #	--enable-extra-template Add extra template content.
 #	--enable-extra-sample   Add extra sample content.
 #	--enable-extra-font     Add extra font content.
+
 #	--enable-online-update  Enable the online update service that will check for new versions of LibreOffice.
+##TODO## (tomww) I'm very much interested in the online updates, mainly as a notification for user and indirect we may see which (old) versions are still in the field
+
 #	--enable-ext-* 	 whole binch of extensions
 #	--with-lang             Use this option to build LibreOffice with additional
 #	--with-branding         Use given path to retrieve branding images set.
@@ -52,7 +71,7 @@
 
 ##TODO## see if harfbuzz could be replaced by a g++/harfbuzz, in that case the dependency on distro icu could vanish
 
-##TODO## look for the automatic update notification URL to see if we have a new SFE built LibeOffice4
+##TODO## look for the automatic update notification URL to see if we have a new SFE built LibeOffice4 or a 5
 
 
 ##TODO## customize vendorstring by a local file not in SVN, so regular users don't get this set.
@@ -81,29 +100,7 @@
 # Note openindiana generally has gmake version 3.81 that core dumps with parallelism so parallelism is disabled further down
 # Setting this to 0 will not override what _cpus_memory is set to, setting it to 1 will build with a single process
 %define parallelism 1
-
-
-##TODO## NEED a programme able to re-program the access of the process structures, see below for filenames.
-#S12 retired an 20+years deprecated interface, so need to use new proc interface now
-
-#notes S12pkgbuild@s12> S=/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2 && I=$S/instdir && W=$S/workdir &&  mkdir -p $W/CxxObject/sal/osl/unx/ $W/Dep/CxxObject/sal/osl/unx/ && cd /s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2 &&   g++ -DCPPU_ENV=gcc3 -DINTEL -DLIBO_INTERNAL_ONLY -DNDEBUG -DOPTIMIZE -DOSL_DEBUG_LEVEL=0 -DSOLARIS -DSUN -DSUN4 -DSYSV -DUNIX -DUNX -D_POSIX_PTHREAD_SEMANTICS -D_PTHREADS -D_REENTRANT    -D_FILE_OFFSET_BITS=64 -DSAL_DLLIMPLEMENTATION -DRTL_OS="\"Solaris"\" -DRTL_ARCH="\"x86"\" -DSRCDIR="\"/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2\""   -DHAVE_GCC_VISIBILITY_FEATURE -fvisibility=hidden   -Wall -Wnon-virtual-dtor -Wendif-labels -Wextra -Wundef -Wunused-macros -fmessage-length=0 -fno-common -pipe  -fvisibility-inlines-hidden -fPIC -Wshadow -Woverloaded-virtual -std=gpp++11    -DEXCEPTIONS_ON -fexceptions -fno-enforce-eh-specs -O2  -c $S/sal/osl/unx/process.cxx -o $W/CxxObject/sal/osl/unx/process.o -MMD -MT $W/CxxObject/sal/osl/unx/process.o -MP -MF $W/Dep/CxxObject/sal/osl/unx/process.d_ -I$S/sal/osl/unx/  -I$S/include  -I/usr/local/include  -I$S/config_host  -I$S/sal/inc  -I/usr/g++/include   && mv $W/Dep/CxxObject/sal/osl/unx/process.d_ $W/Dep/CxxObject/sal/osl/unx/process.d
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx: In function 'oslProcessError osl_getProcessInfo(oslProcess, oslProcessData, oslProcessInfo*)':
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx:1035:53: warning: format '%u' expects argument of type 'unsigned int', but argument 4 has type 'pid_t {aka long int}' [-Wformat=]
-#notes S12         snprintf(name, sizeof(name), "/proc/%u", pid);
-#notes S12                                                     ^
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx:1039:13: error: 'prstatus_t' was not declared in this scope
-#notes S12             prstatus_t prstatus;
-#notes S12             ^
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx:1039:24: error: expected ';' before 'prstatus'
-#notes S12             prstatus_t prstatus;
-#notes S12                        ^
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx:1041:27: error: 'PIOCSTATUS' was not declared in this scope
-#notes S12             if (ioctl(fd, PIOCSTATUS, &prstatus) >= 0)
-#notes S12                           ^
-#notes S12/s12pool/sfe/packages/BUILD/SFElibreoffice4-4.4.5.2/libreoffice-4.4.5.2/sal/osl/unx/process.cxx:1041:40: error: 'prstatus' was not declared in this scope
-#notes S12             if (ioctl(fd, PIOCSTATUS, &prstatus) >= 0)
-#notes S12                                        ^
-#notes S12
+##TODO## above: this is not having any effect? I get parallel builds even if set to 1.
 
 
 # This file and all modifications and additions to the pristine
@@ -149,8 +146,8 @@
 
 %define major_version   5
 %define minor_version   2
-%define micro_version   3
-%define patch_version   3
+%define micro_version   5
+%define patch_version   1
 
 
 
@@ -202,6 +199,8 @@ Requires:	%{pnm_requires_gnome_media}
 # Requires library/audio/gstreamer/plugin/base bu no PNM yet
 # IIRC hipster split off the gtreamer plugins (base, goodd)
 ## TODO ## PNM  this. update: pnm to cater for hipster.
+##TODO## make gstreamer detection know Solaris 12 with gstreamer being 1.x
+##TODO## make gstreamer detection know Hipster 2016 with gstreamer being 1.x
 %if %{oihipster}
 BuildRequires:	library/audio/gstreamer/plugin/base
 Requires:	library/audio/gstreamer/plugin/base
@@ -219,6 +218,7 @@ Requires:	%{pnm_requires_library_libxml2}
 BuildRequires:	%{pnm_buildrequires_library_libxslt}
 Requires:	%{pnm_requires_library_libxslt}
 
+#(S12) need symbols FcWeightFromOpenType FcWeightToOpenType from version 2.12.1
 BuildRequires:	%{pnm_buildrequires_system_library_fontconfig}
 Requires:	%{pnm_requires_system_library_fontconfig}
 
@@ -239,6 +239,7 @@ Requires:	%{pnm_buildrequires_SUNWzlib}
 
 #OI151, S11, S12 need zlib.pc
 # Does PNM just take care of what distros it's needed on?
+# yes, it does. OSDistro having fixed zlib package direct the macro to normal zlib package
 %if %( expr %{openindiana} '|' %{solaris11} '|' %{solaris12} )
 BuildRequires:  %{pnm_buildrequires_SFEzlib_pkgconfig}
 Requires:       %{pnm_requires_SFEzlib_pkgconfig}
@@ -307,8 +308,10 @@ Requires:	%{pnm_requires_library_nspr}
 BuildRequires:	SFEgraphite2-gpp
 Requires:	SFEgraphite2-gpp
 
-BuildRequires:	SFEharfbuzz-gpp
-Requires:	SFEharfbuzz-gpp
+#BuildRequires:	SFEharfbuzz-gpp
+#Requires:	SFEharfbuzz-gpp
+BuildRequires:	library/g++/harfbuzz
+Requires:	library/g++/harfbuzz
 
 BuildRequires:	%{pnm_buildrequires_library_neon}
 Requires:	%{pnm_requires_library_neon}
@@ -552,9 +555,13 @@ gsed -i.orig.include.namespace \
 #http://stackoverflow.com/questions/12696764/round-is-not-a-member-of-std
 #defined(ANDROID)|defined(SOLARIS)
 
+#5.2.5.1
+#trunc is not a member of std
+
 gsed -i.orig.add.round.method.for.solaris \
 	-e '/defined(ANDROID)/ s/$/ || defined(SOLARIS)/' \
-	drawinglayer/source/primitive2d/borderlineprimitive2d.cxx
+	drawinglayer/source/primitive2d/borderlineprimitive2d.cxx \
+        sc/source/filter/excel/xetable.cxx \
 
 #drawinglayer/qa/unit/border.cxx:138:33: error: 'round' is not a member of 'std'
 #     sal_Int32 nExpectedHeight = std::round(fRightWidth);
@@ -570,6 +577,32 @@ if ( !g_thread_supported() )\
 g_thread_init (NULL);' \
 	vcl/unx/gtk/gtkinst.cxx \
 
+#==================
+#
+#pkgbuild: /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/excel/xetable.cxx: In member function 'virtual void XclExpColinfo::SaveXml(XclExpXmlStream&)':
+#pkgbuild: /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/excel/xetable.cxx:1693:47: error: 'trunc' is not a member of 'std'
+#pkgbuild:      const double nTruncatedExcelColumnWidth = std::trunc( nExcelColumnWidth * 100.0 + 0.5 ) / 100.0;
+#pkgbuild:                                                ^
+#pkgbuild: /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/excel/xetable.cxx:1693:47: note: suggested alternative:
+#pkgbuild: In file included from /usr/include/math.h:13:0,
+#pkgbuild:                  from /usr/gcc-sfe/4.8/include/c++/4.8.5/cmath:44,
+#pkgbuild:                  from /usr/gcc-sfe/4.8/include/c++/4.8.5/random:38,
+#pkgbuild:                  from /usr/gcc-sfe/4.8/include/c++/4.8.5/bits/stl_algo.h:65,
+#pkgbuild:                  from /usr/gcc-sfe/4.8/include/c++/4.8.5/algorithm:62,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/include/oox/helper/refmap.hxx:23,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/include/oox/helper/storagebase.hxx:29,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/include/oox/core/filterbase.hxx:41,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/include/oox/core/xmlfilterbase.hxx:28,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/inc/xestream.hxx:31,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/inc/xerecord.hxx:24,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/inc/xetable.hxx:28,
+#pkgbuild:                  from /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/sc/source/filter/excel/xetable.cxx:20:
+#pkgbuild: /usr/include/iso/math_c99.h:244:15: note:   'trunc'
+#pkgbuild:  extern double trunc __P((double));
+#pkgbuild:                ^
+#pkgbuild: [build CXX] sc/source/filter/excel/xiescher.cxx
+#pkgbuild: make[1]: *** [/s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.5.1/libreoffice-5.2.5.1/workdir/CxxObject/sc/source/filter/excel/xetable.o] Error 1
+#==================
 
 ## Start gratuitous hacks to disable cppunit tests. These really should be resolved for a production pkg
 #  but disable for now so someone smarter than I am can debug
@@ -619,7 +652,7 @@ gsed -i.orig	\
 	-e '/CppunitTest_cppcanvas_emfplus/d'	\
 	cppcanvas/Module_cppcanvas.mk	\
 	;
-
+##END %{oihipster}
 %endif
 
 # Disable tests for OI151
@@ -659,6 +692,7 @@ gsed -i.orig	\
 	cppcanvas/Module_cppcanvas.mk	\
 	;
 
+##END %{openindiana}
 %endif
 
 ## ToDo Tomww ## please set tests to disable for your maintained OS distros (similar to above)
@@ -666,6 +700,39 @@ gsed -i.orig	\
 
 #mostly copied from the %{openindiana} section
 %if %{solaris11}
+# Disable tests in sc module
+#see also CFLAGS CXXFLAGS -DDISABLE_CVE_TESTS
+gsed -i.orig	\
+	-e '/CppunitTest_sc_subsequent_filters_test/d'	\
+	-e '/CppunitTest_sc_subsequent_export_test/d'	\
+	sc/Module_sc.mk	\
+	;
+
+#workdir/CppunitTest/vcl_filters_test.test
+#autogen option --disable-cve-tests resulting in config_host.mk DIABLE_CVE_TESTS=TRUE
+
+# Disable tests in sw module
+gsed -i.orig	\
+	-e '/CppunitTest_sw_macros_test/d'	\
+	-e '/CppunitTest_sw_globalfilter/d'	\
+	-e '/CppunitTest_sw_ooxmlexport7/d'	\
+	sw/Module_sw.mk	\
+	;
+
+# Disable tests in xmlsecurity module
+# check if that needs an updates xml similar to the same test listed in the %{openindiana} section (above)
+gsed -i.orig	\
+	-e '/CppunitTest_xmlsecurity_signing/d'	\
+	xmlsecurity/Module_xmlsecurity.mk	\
+
+
+##END %{solaris11}
+%endif
+
+
+#mostly copied from the %{openindiana} and then %{solaris11} section
+##TODO## merge the shared disabled
+%if %{solaris12}
 # Disable tests in sc module
 gsed -i.orig	\
 	-e '/CppunitTest_sc_subsequent_filters_test/d'	\
@@ -686,7 +753,11 @@ gsed -i.orig	\
 gsed -i.orig	\
 	-e '/CppunitTest_xmlsecurity_signing/d'	\
 	xmlsecurity/Module_xmlsecurity.mk	\
+
+
+##END %{solaris12}
 %endif
+
 
 # ONLY for openindiana: Remove --no-use-server-timestamps from wget options because OI's wget to old to have this option
 %if %{openindiana}
@@ -695,6 +766,7 @@ gsed -i.orig	\
 	Makefile.fetch	\
 	;
 %endif
+
 
 ## End (these) gratuitous hacks
 
@@ -774,6 +846,8 @@ fi
 export CFLAGS="%{optflags} ${ADD_TO_CFLAGS} -I%{gpp_inc} -I%{gnu_inc}"
 export CXXFLAGS="%{cxx_optflags} ${ADD_TO_CFLAGS} -I%{gpp_inc} -I%{gnu_inc}"
 export CPPFLAGS="-I%{gpp_inc} -I%{gnu_inc}"
+
+##TODO## merge the solaris11 solaris12 oihipster sections
 %if %( expr %{solaris11} '|' %{oihipster} )
 #
 #-pthreads helps getting over boost complaining missing -pthreads support (stupid bcs it's there on Solarish). e.g. libcdr
@@ -786,18 +860,29 @@ export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99_MATH -pthreads"
 # http://stackoverflow.com/questions/26095886/error-to-string-is-not-a-member-of-std/27589053#27589053
 export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99"
 #CoinSignal.hpp:91:23: error: ISO C++ forbids declaration of 'decltype' with no type [-fpermissive] -- typedef decltype(SIG_DFL) CoinSighandler_t;
-export CXXFLAGS="$CXXFLAGS -std=gnu++1y -D_GLIBCXX_USE_C99"
+export CXXFLAGS="$CXXFLAGS -std=gnu++1y"
 %endif
 %if %{solaris12}
 #
 #-pthreads helps getting over boost complaining missing -pthreads support (stupid bcs it's there on Solarish). e.g. libcdr
 export CFLAGS="$CFLAGS -pthreads"
+
+#Solaris 12 only, or a OSDistro where /usr/lib/libGLU is compiled with gcc5 and expects gcc-runtime 5 while we are at 4
+#grep GLU config_host.mk
+#export GLEW_LIBS=$(gb_SPACE) -lGLEW -lGLU -lGL
+#remove -lGLU -lGL
+export GLEW_LIBS="-lGLEW"
+
+##TODO## needs a check if the program works if we do not link -lGLU and -lGL
 ##REMOVE_IF_IT_WORKS## #glm configure detection doesn't use CXXFLAGS, only CFLAGS CPPFLAGS
 #using CPPFLAGS here breakes workdir/UnpackedTarball/exttextcat as it injects CPPFLAGS to regular gcc command line as well
 #try solving this one needing newer c++ standard but this sub-project doesn't set itself a default (as LO does: -std=gnu++1y=
 #so we just set the LO default for all sub-project which read CXXFLAGS  ENV variable
+# threadpooltest.cxx:40:31: error: 'to_string' is not a member of 'std' ... setenv("MAX_CONCURRENCY", std::to_string(nThreads).c_str(), true);
+# http://stackoverflow.com/questions/26095886/error-to-string-is-not-a-member-of-std/27589053#27589053
+export CXXFLAGS="$CXXFLAGS -D_GLIBCXX_USE_C99"
 #CoinSignal.hpp:91:23: error: ISO C++ forbids declaration of 'decltype' with no type [-fpermissive] -- typedef decltype(SIG_DFL) CoinSighandler_t;
-export CXXFLAGS="$CXXFLAGS -std=gnu++1y                         -pthreads"
+export CXXFLAGS="$CXXFLAGS -std=gnu++1y -pthreads"
 %endif
 
 export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path}"
@@ -894,6 +979,10 @@ export verbose=t
 # default is libreoffice but with version number we might be able to install differnt versions for testing
 export with_install_dirname=libreoffice%{major_version}.%{minor_version}
 
+##TODO## make gstreamer detection know Solaris 12 with gstreamer being 1.x
+##TODO## make gstreamer detection know Hipster 2016 with gstreamer being 1.x
+##TODO## 
+
 ./autogen.sh \
 	--prefix=%{_prefix}	\
 	--x-includes=/usr/X11/include	\
@@ -955,15 +1044,19 @@ export with_install_dirname=libreoffice%{major_version}.%{minor_version}
 	--with-epm=internal	\
 	--with-package-format=installed	\
         --with-vendor="%{vendorstring}"	\
-        --with-parallelism=%{_cpus_memory}	\
+        --with-parallelism=%{_cpus_memory_768}	\
         --with-tls="openssl"	\
+%if %{solaris12}
+%else
 	--disable-gtk3		\
+%endif
 	--with-system-openldap	\
 %if %{openindiana}
 	--enable-python=no	\
 %else
 	--enable-python=system	\
 %endif
+	--disable-cve-tests	\
 	;
 
 	#--without-system-openldap	\
@@ -1194,7 +1287,9 @@ gsed -i.bak_missing_boost_system \
 #        $(if $(filter MACOSX,$(OS)),external/coinmp/macosx.build.patch.1) \
 #))
 
-gsed -i.bak_coinsignal.hpp_patch \
+echo "Test for already applied patch for decltype in CoinSignal.hpp..."
+grep "typedef decltype(SIG_DFL) CoinSighandler_t" workdir/UnpackedTarball/coinmp/CoinUtils/src/CoinSignal.hpp \
+  && gsed -i.bak_coinsignal.hpp_patch \
    -e '/external\/coinmp\/coinmp-msvc-disable-sse2.patch/a\
 \texternal/coinmp/coinsignal.hpp--escape-doublequote-in-warning--change-typeof-to-decltype.diff.0 \\' \
    external/coinmp/UnpackedTarball_coinmp.mk 
@@ -1231,7 +1326,7 @@ cat - > external/coinmp/coinsignal.hpp--escape-doublequote-in-warning--change-ty
 
 COINMPPATCH
 
-#END %{solaris11} '|' %{solaris12}
+#END %{solaris11} '|' %{solaris12} '|' %{oihipster}
 %endif
 
 
@@ -1252,8 +1347,14 @@ chmod a+rx bin/cc
 # PARALLELISM=1 gmake CC=$CC V=2
 ##doesnt work## to actually see for instance the issued gcc and g++ commands, use this:
 ##doesnt work## PARALLELISM=1 gmake CC=$CC V=2 MAKE="/usr/bin/gmake V=2"
+##variant of the above:
+#/usr/bin/gmake MAKE="/usr/bin/gmake V=2" V=2 -j1  -r -f /s12pool/sfe/packages/BUILD/SFElibreoffice52-5.2.3.3/libreoffice-5.2.3.3/Makefile.gbuild all 
+
+#you may cd into a subdirectory and run    PARALLELISM=1 gmake CC=$CC V=2 MAKE="/usr/bin/gmake V=2"
+#this works only in some subdirs, e.g. vcl/
+
 #e.g.
-#cd /s11poolkvm/sfe/packages/BUILD/SFElibreoffice52-5.2.3.3/libreoffice-5.2.3.3/vcl && /opt/dtbld/bin/make -j1 V=2 -j1
+#cd ....../packages/BUILD/SFElibreoffice52-5.2.3.3/libreoffice-5.2.3.3/vcl && /opt/dtbld/bin/make -j1 V=2 -j1
 date
 gmake CC=$CC 
 date
@@ -1523,6 +1624,10 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Sun Feb  5 2017 - Thomas Wagner
+- Bump from version 5.2.4.2 to 5.2.5.1 FOSDEM greetings
+* Fri Jan  6 2017 - Thomas Wagner
+- Bump from version 5.2.3.3 to 5.2.4.2
 * Mon Jan  2 2017 - Thomas Wagner
 - port version 5.2.3.3 to S11
 - allow background removal of previous source tree by moving aside, delete in backgrond
