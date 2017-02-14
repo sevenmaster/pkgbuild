@@ -6,9 +6,10 @@
 
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-g++.inc
 %include base.inc
-%define _prefix %_basedir/g++
 %define srcname libtorrent-rasterbar
+%define srcnamebase libtorrent
 
 Name:		SFElibtorrent-rasterbar
 IPS_package_name: library/g++/libtorrent-rasterbar
@@ -16,12 +17,12 @@ Summary:	Feature complete C++ bittorrent implementation focusing on efficiency a
 Group:		System/Libraries
 URL:		http://www.rasterbar.com/products/libtorrent/
 Meta(info.upstream):	Arvid Norberg <arvid@rasterbar.com>
-Version:	0.16.2
+Version:	1.0.3
 License:	BSD with advertising
-SUNW_copyright:	%srcname.copyright
-Source:		http://libtorrent.googlecode.com/files/%srcname-%version.tar.gz
-SUNW_BaseDir:	%_basedir
-BuildRoot:	%_tmppath/%srcname-%version-build
+SUNW_copyright:	%{srcname}.copyright
+Source:		%{sf_download}/%{srcnamebase}/%{srcnamebase}/%{srcname}-%{version}.tar.gz
+SUNW_BaseDir:	%{_basedir}
+BuildRoot:	%{_tmppath}/%{srcname}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:	SFEgcc
@@ -32,14 +33,14 @@ BuildRequires:	SFEgeoip-devel
 Requires:	SFEgeoip
 
 %package devel
-Summary:        %summary - development files
-SUNW_BaseDir:   %_basedir
+Summary:        %{summary} - development files
+SUNW_BaseDir:   %{_basedir}
 %include default-depend.inc
-Requires: %name
+Requires: %{name}
 
 
 %prep
-%setup -q -n %srcname-%version
+%setup -q -n %{srcname}-%{version}
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -47,36 +48,39 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=gcc
 export CXX=g++
 export CPPFLAGS="-pthreads -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%_ldflags -pthreads -lxnet -L/usr/g++/lib -R/usr/g++/lib"
+export CXXFLAGS="%{cxx_optflags}"
+export LDFLAGS="%{_ldflags} -pthreads -lxnet -L/usr/g++/lib -R/usr/g++/lib"
 
-./configure --prefix=%_prefix --bindir=%_basedir/bin --libdir=%_libdir --with-boost=/usr/g++ --disable-static --with-libgeoip --enable-examples
+./configure --prefix=%{_prefix} --bindir=%{_basedir}/bin --libdir=%{_libdir} --with-boost=%{_prefix} --disable-static --with-libgeoip --enable-examples
 
 gmake -j$CPUS
 
 %install
-rm -rf %buildroot
-gmake install DESTDIR=%buildroot
-rm %buildroot%_libdir/*.la
+rm -rf %{buildroot}
+gmake install DESTDIR=%{buildroot}
+rm %{buildroot}%{_libdir}/*.la
 
 %clean
-rm -rf %buildroot
+rm -rf %{buildroot}
 
 
 %files
 %defattr (-, root, bin)
-%_libdir/lib*.so*
-%dir %attr (0755, root, other) %_libdir/pkgconfig
-%_libdir/pkgconfig/*
-%_basedir/bin
+%{_libdir}/lib*.so*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
+%{_basedir}/bin
 
 %files devel
 %defattr (-, root, bin)
-%dir %attr (0755, root, other) %_includedir/libtorrent
-%_includedir/libtorrent/*
+%dir %attr (0755, root, other) %{_includedir}/libtorrent
+%{_includedir}/libtorrent/*
 
 
 %changelog
+* Thu Jan  1 2015 - Thomas Wagner
+- bump to 1.0.3
+- 1,$ s?%[^{]\(\w*\)?%{\1}?gc
 * Sun Aug 05 2012 - Milan Jurik
 - bump to 0.16.2
 * Sat Oct 29 2011 - Alex Viskovatoff

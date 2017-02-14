@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - Mserver allows you to play local files on a remote or local mpd server. Stream music files to your mpd that are not in your database. 
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -43,6 +44,8 @@ How it works: Mserver is compiled using the libmicrohttp library, which enables 
 
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Fri Aug  9 2013 - Thomas Wagner
 - remove wrong dependency on SFEtaglib
 * Thu May 31 2012 - Thomas Wagner

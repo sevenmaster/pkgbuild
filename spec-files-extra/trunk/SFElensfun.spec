@@ -9,7 +9,7 @@
 
 Name:		SFElensfun
 IPS_Package_Name:	image/library/lensfun
-Version:	0.2.5
+Version:	0.2.8
 Summary:	A library to rectify the defects introduced by your photographic equipment
 License:	LGPLv3
 Group:		System Environment/Libraries
@@ -47,6 +47,8 @@ Requires: SUNWgnome-common-devel
 # hack to make configure script and linking happy
 export LD=$CC
 
+exit 1
+Testen: --cxxflags="%{optflags}" oder --cxxflags="%{cxx_optflags}"
 ./configure \
   --cflags="%{optflags}" \
   --cxxflags="%{optflags}" \
@@ -95,6 +97,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/lensfun.pc
 
 %changelog
+* Thu Jul 10 2014 - Thomas Wagner
+- bump to 0.2.8
+* Thu Aug 16 2012 - Thomas Wagner
+- bump to 0.2.6
 * Tue Mar 01 2011 - Milan Jurik
 - fix header for Sun Studio
 * Thu Jul 15 2010 - Milan Jurik

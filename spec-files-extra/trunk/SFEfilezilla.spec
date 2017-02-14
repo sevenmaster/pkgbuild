@@ -50,6 +50,7 @@ BuildRoot:          %{_tmppath}/%{name}-%{version}-build
 #fresh filezilla requires -std=c++14 features
 BuildRequires: SFEgcc-49
 BuildRequires: SFEgccruntime-49
+Requires: SFEgccruntime-49
 
 Requires: SUNWgnome-libs
 Requires: SUNWgnome-base-libs
@@ -142,6 +143,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 13 2016 - Thomas Wagner
+- set Requires: SFEgccruntime-49 to workaround pkgtool flaw to now check buildtime-requires and fail is missing
 * Sun Jan 17 2016 - Thomas Wagner
 - bump to 3.14.1
 - set BuildRequires to SFEgcc-4.9 and set CC/CXX/CPP for -std=c++14 compiler

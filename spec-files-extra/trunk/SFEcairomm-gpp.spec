@@ -19,7 +19,7 @@
 #default version for most osdistros
 %define cairomm_osspecific_version    1.8.6
 
-%if %( expr '%openindiana''%solaris12' '>=' 1 && echo 1 || echo 0 )
+%if %( expr '%openindiana' + '%solaris12' '>=' 1 && echo 1 || echo 0 )
 ##TODO## improve version detection
 %define cairo_version              $( LC_ALL=C pkg info cairo | grep -i Version | gsed -e 's?.*Version: *??' )
 #%define cairo_version_major_minor  $( echo %{cairo_version} | gsed -e 's?^\([0-9]*\.[0-9]*\).*?\1?' )
@@ -110,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 #%_datadir/devhelp
 
 %changelog
+* Thu Nov 12 2015 - Thomas Wagner
+- fix syntax for setting cairo version, expr for detecting '%openindiana' + '%'%openindiana' + '%solaris12'
 * Sat Nov 16 2013 - Thomas Wagner
 - implement version switch for openindiana, solaris12, set 1.10.0 version
   version (0.151.1.7 -> 1.8.6, 0.151.1.8 -> 1.10.0)

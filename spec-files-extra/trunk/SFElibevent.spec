@@ -4,13 +4,14 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include usr-gnu.inc
 %define _pkg_docdir %_docdir/libevent
 
-Name:                SFElibevent
-Summary:             An event notification library for event-driven network servers.
-Version:             1.4.13
-#Source:              http://www.monkey.org/~provos/libevent-%{version}-stable.tar.gz
-Source:              %{sf_download}/levent/libevent/libevent-1.4/libevent-1.4.13-stable.tar.gz
+Name:                SFElibevent-gnu
+IPS_Package_Name:    library/gnu/libevent
+Summary:             libevent - An event notification library for event-driven network servers. (/usr/gnu)
+Version:             1.4.15
+Source:              %{sf_download}/levent/libevent/libevent-1.4/libevent-%{version}-stable.tar.gz
 URL:                 http://monkey.org/~provos/libevent/
 License:             BSD
 Group:               System/Libraries
@@ -61,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/*
 
 %changelog
+* Thu Nov 12 2015 - Thomas Wagner
+- bump to 1.4.15
+- relocate with usr-gnu.inc, Solaris 11.2 has library/libevent@1.4.14
 * Thr Mar 17 2011 - Thomas Wagner
 - fix ownergroup for %{_docdir}
 * Mon Mar 14 2011 - Alex Viskovatoff

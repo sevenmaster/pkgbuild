@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - The Wikipedia plugin shows information about the current artist
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -40,6 +41,8 @@ http://gmpc.wikia.com/wiki/GMPC_PLUGIN_WIKIPEDIA
 
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Wed Apr 25 2012 - Thomas Wagner
 - add (Build)Requires: SUNWgcc(runtime)
 * Tue Apr 24 2012 - Thomas Wagner

@@ -74,6 +74,8 @@ NOTE:                             openssl     -> SUNWopenssl or openssl or libra
 NOTE:                library/security/openssl -> SUNWopenssl or openssl or library/security/openssl
 
 %prep
+echo "uname_-v:	`uname -v`"
+echo "uname_-n:	`uname -n`"
 echo "
 \$RPM_SOURCE_DIR	%{_sourcedir}
 \$RPM_BUILD_DIR		%{_builddir}
@@ -338,6 +340,8 @@ pnm_buildrequires_SFElibgpg_error                                -> %{pnm_buildr
 
 
 %changelog
+* Thu Nov 10 2016 - Thomas Wagner
+- add uname -v uname -n to the output
 * Mon Oct 31 2016 - Thomas Wagner
 - add oih20160926 OpenIndiana Hipster Snap 20160926 or later
 * Thu Oct 13 2016 - Thomas Wagner

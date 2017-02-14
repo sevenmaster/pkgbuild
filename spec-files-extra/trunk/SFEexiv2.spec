@@ -72,6 +72,9 @@ Requires:                %{name}
 #%patch6 -p1
 %patch7 -p1
 
+gsed -i.bak -e '/postdeps_CXX=.-library=Cstd -library=Crun./ s/^/echo we use stdcxx #/' configure
+
+
 %build
 
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -136,7 +139,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-- Mon Jul  7 2014 - Thomas Wagner
+* Mon Jul 14 2014 - Thomas Wagner
+- use stdcxx
+* Mon Jul  7 2014 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWgraphviz}, %{pnm_buildrequires_SUNWlxsl}
 - add patch05 exiv2-05-missing-includes.diff for include string.h (strcmp), stdio.h (snprintf), ios ...
 - add patch07 exiv2-07-namespace-rcsid_int.hpp.diff

@@ -12,9 +12,9 @@ Name:		SFEufraw
 IPS_Package_Name:	image/ufraw
 Summary:	Ufraw - Raw Photo Converter
 Group:		Graphics
-Version:	0.18
+Version:	0.22
 Source:		%{sf_download}/ufraw/ufraw-%{version}.tar.gz
-Patch1:		ufraw-01-openmp.diff
+#obsolete# Patch1:		ufraw-01-openmp.diff
 Patch2:		ufraw-02-sunstudio.diff
 URL:		http://ufraw.sourceforge.net/
 License:	GPLv2
@@ -23,16 +23,16 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 #BuildRequires: SUNWlcms-devel
-BuildRequires: SUNWlcms
+BuildRequires: %{pnm_buildrequires_library_lcms}
 BuildRequires: SUNWgnome-libs-devel
 BuildRequires: SFEgtkimageview
-Requires: SUNWlcms
+Requires: %{pnm_requires_library_lcms}
 Requires: SUNWgnome-libs
 Requires: SUNWgnome-base-libs
 Requires: SUNWgnome-img-editor
 Requires: SUNWjpg
 Requires: SUNWTiff
-Requires: SUNWmlib
+Requires: %{pnm_requires_SUNWmlib}
 Requires: SUNWzlib
 Requires: SUNWlibms
 Requires: SUNWlibexif
@@ -44,7 +44,7 @@ BuildRequires: SUNWgnome-base-libs-devel
 BuildRequires: SUNWgnome-img-editor-devel
 BuildRequires: SUNWjpg-devel
 BuildRequires: SUNWTiff-devel
-BuildRequires: SUNWmlibh
+BuildRequires: %{pnm_buildrequires_SUNWmlib_devel}
 BuildRequires: SUNWlibm
 BuildRequires: SUNWlibexif-devel
 # dos2unix:
@@ -68,7 +68,7 @@ Requires:                %{name}
 touch NEWS
 touch AUTHORS
 for f in *.[ch]; do dos2unix -ascii $f $f; done
-%patch1 -p1
+#obsolete# %patch1 -p1
 %patch2 -p1
 
 %build
@@ -134,6 +134,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 24 2015 - Thomas Wagner
+- bump to 0.22
+* Thu Jul 10 2014 - Thomas Wagner
+- bump to 0.19.2
+- change (Build)Requires: %{pnm_buildrequires_library_lcms} (S11.x lost legacy package name SUNWlcms)
+* Sun May 11 2014 - Thomas Wagner
+- change (Build)Requires: %{pnm_buildrequires_SUNWmlib_devel}
 * Sun Jun 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibstdcxx4}, %include packagenamacros.inc
 * Mon Jul 25 2011 - N.B.Prashanth

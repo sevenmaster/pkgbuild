@@ -102,8 +102,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 ) | $BASEDIR/var/lib/postrun/postrun -i -a
 
 %actions
-group groupname="clamav"
-user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=NP group="clamav"
+#group groupname="clamav"
+user ftpuser=false gcos-field="ClamAV Reserved UID" username="clamav" password=NP group="other"
 
 %files
 %defattr (-, root, bin)

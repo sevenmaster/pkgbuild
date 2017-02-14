@@ -13,7 +13,7 @@
 Name:         libcdio
 License:      LGPL
 Group:        System Environment/Libraries
-Version:      0.82
+Version:      0.94
 Release:      1
 Distribution: Java Desktop System
 Vendor:       Sun Microsystems, Inc.
@@ -64,7 +64,9 @@ export ACLOCAL_FLAGS="-I `pkgparam CBEgettext BASEDIR`/share/aclocal"
 export ACLOCAL_FLAGS="-I %{_datadir}/aclocal"
 %endif
 
+export CFLAGS="%optflags -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -DDBUS_API_SUBJECT_TO_CHANGE"
 export LDFLAGS="$LDFLAGS -liconv"
+
 
 libtoolize --force
 aclocal $ACLOCAL_FLAGS -I .
@@ -103,6 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Wed Feb  1 2017 - Thomas Wagner
+- bump to 0.92
 * Sun Oct 28 2013 - Thomas Wagner
 - cleanup target dir in %install
 * Sun Mar 07 2010 - Milan Jurik

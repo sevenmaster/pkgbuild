@@ -5,15 +5,16 @@
 # package are under the same license as the package itself.
 #
 
-%define _basedir /usr/g++
 %include Solaris.inc
+%include usr-g++.inc
+%include base.inc
 
 %define cc_is_gcc 1
 %include base.inc
 
 Name:                SFEclucene-gpp
 IPS_Package_Name:    text/library/g++/clucene
-Summary:             CLucene - a C++ search engine
+Summary:             CLucene - a C++ search engine (g++)
 Version:             2.3.3.4
 URL:                 http://clucene.sourceforge.net
 Source:              http://downloads.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-%{version}.tar.gz
@@ -64,7 +65,10 @@ fi
 export CC=gcc
 export CXX=g++
 export CFLAGS="%optflags -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags -I/usr/g++/include"
 export LDFLAGS="%_ldflags  -L/usr/g++/lib"
+echo "DEBUG: CFLAGS =$CFLAGS"
+echo "DEBUG: LDFLAGS=$LDFLAGS"
 
 mkdir build
 cd build
@@ -97,5 +101,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Apr  7 2013 - Thomas Wagner
+- relocate to usr-gnu.inc
 * Tue Feb 5 2013 - Logan Bruns <logan@gedanken.org>
 - initial version

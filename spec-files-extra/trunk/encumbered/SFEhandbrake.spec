@@ -83,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 21 2016 - Thomas Wagner
+- bump to 0.10.5
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFElibschroedinger to use (OIH) libschroedinger
 * Thu Aug 20 2015 - Thomas Wagner

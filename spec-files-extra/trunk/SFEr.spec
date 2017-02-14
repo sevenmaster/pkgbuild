@@ -3,6 +3,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define osbuild %(uname -v | sed -e 's/[A-z_]//g')
 
@@ -34,7 +35,10 @@ Requires: SUNWTcl
 Requires: SUNWncurses
 Requires: SUNWpcre
 Requires: SUNWzlib
-Requires: SUNWTk
+
+BuildRequires:  %{pnm_buildrequires_SUNWTk_devel}
+Requires:       %{pnm_requires_SUNWTk}
+
 #Requires: SUNWxwrtl
 Requires: SUNWbzip
 Requires: SUNWgnome-base-libs
@@ -235,6 +239,8 @@ rm -rf ${RPM_BUILD_ROOT};
 #    > /dev/null 2>&1 || exit 0
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- change (Build)Requires to  %{pnm_buildrequires_SUNWTk_devel}
 * Sun Dec  9 2012 - Thomas Wagner
 - remove noisy comments
 - clean %files

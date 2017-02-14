@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - browse and preview albums from www.magnatune.com and fetch cover art - plugin for gmpc
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -38,6 +39,8 @@ http://gmpc.wikia.com/wiki/Magnatune
 %{_datadir}/gmpc/plugins/*
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Sat Jun 23 2012 - Thomas Wagner
 - fix permissions
 * Wed Apr 25 2012 - Thomas Wagner

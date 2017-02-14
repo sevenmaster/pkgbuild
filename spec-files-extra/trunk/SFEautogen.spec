@@ -1,3 +1,4 @@
+a
 
 #!!only for autogen version 5.16.2
 #build this spec on solaris 11 and OmniOS
@@ -40,8 +41,8 @@ Requires:      %{pnm_requires_SUNWlxml}
 #too old. needs 2.x Requires:      %{pnm_requires_SUNWguile}
 #autogen 5.18 needs guild 2.x BuildRequires:  SFEguile
 #autogen 5.18 needs guild 2.x Requires:       SFEguile
-#BuildRequires: %{pnm_buildrequires_SUNWguile_devel}
-#Requires:      %{pnm_requires_SUNWguile}
+BuildRequires: %{pnm_buildrequires_SUNWguile_devel}
+Requires:      %{pnm_requires_SUNWguile}
 #BuildRequires: SUNWgnu-mp
 #BuildRequires:  SFEguile
 #Requires:       SFEguile
@@ -145,6 +146,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- check if infodir exists before trying to delete it (OM)
+- re-enable (Build)Requires %{pnm_buildrequires_SUNWguile_devel} (the one from OSDistro might be too old)
 * Tue May 24 2016 - Thomas Wagner
 - go back to version 5.16.2
 - fix build with wrapper around guile-config (remove -pthreads)

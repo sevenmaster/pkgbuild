@@ -63,8 +63,8 @@ Requires:		SUNWTiff
 # Or could use SFElcms2 (modern API)
 #BuildRequires:		SUNWlcms
 #Requires:		SUNWlcms
-BuildRequires:		SFElcms2
-Requires:		SFElcms2
+BuildRequires:		SFElcms2-gnu
+Requires:		SFElcms2-gnu
 
 # The XML library
 BuildRequires:		SUNWlxml-devel
@@ -163,6 +163,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Wed Mar 19 2014 - Thomas Wagner
+- update (Build)Requires to SFElcms2-gnu
 * Sat Feb 8 2014 - Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 - bump to 1.3.19
 * Sun Nov  4 2012 - Thomas Wagner

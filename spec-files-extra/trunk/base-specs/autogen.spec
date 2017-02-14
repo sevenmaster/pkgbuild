@@ -52,7 +52,7 @@ gmake -j$CPUS
 %install
 #rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
+[ -d ${RPM_BUILD_ROOT}%{_datadir}/info/dir ] && rm ${RPM_BUILD_ROOT}%{_datadir}/info/dir
 
 #/usr/share/pkgconfig/autoopts.pc
 mv ${RPM_BUILD_ROOT}%{_datadir}/pkgconfig ${RPM_BUILD_ROOT}%{_libdir}/
@@ -64,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 31 2016 - Thomas Wagner
+- check if infodir exists before trying to delete it (OM)
 * Tue May 24 2016 - Thomas Wagner
 - go back to version 5.16.2
 - fix build with wrapper around guile-config (remove -pthreads)

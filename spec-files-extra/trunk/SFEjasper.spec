@@ -14,9 +14,9 @@ License:	Jasper Software License
 Summary:	A free software-based reference implementation of the JPEG-2000 Part-1 CODEC
 Version:	1.900.1
 SUNW_Copyright:	jasper.copyright
-URL:		http://www.ece.uvic.ca/~mdadams/jasper/
-Source:		http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-%{version}.zip
-Source1:	http://www.ece.uvic.ca/~mdadams/jasper/LICENSE
+URL:		http://www.ece.uvic.ca/~frodo/jasper/
+Source:		http://www.ece.uvic.ca/~frodo/jasper/software/jasper-%{version}.zip
+Source1:	http://www.ece.uvic.ca/~frodo/jasper/LICENSE
 Patch1:		jasper-01-debian.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -88,6 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Thu Sep 24 2015 - Thomas Wagner
+- update source URL
 * Sat Dec 24 2011 - Milan Jurik
 - add several security patches from Debian
 * Mon Oct 17 2011 - Milan Jurik

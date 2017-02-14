@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - This plugin collects metadata by checking the directory where the music is located
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -61,6 +62,8 @@ In the directory of the song mdcover checks for $title.lyrics.
 %attr (-, root, other) %{_datadir}/locale
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Wed Apr 25 2012 - Thomas Wagner
 - add (Build)Requires: SUNWgcc(runtime)
 * Tue Apr 24 2012 - Thomas Wagner

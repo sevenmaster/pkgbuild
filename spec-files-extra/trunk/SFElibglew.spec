@@ -7,8 +7,10 @@
 #
 ##
 
+
 %include Solaris.inc
 %define cc_is_gcc 1
+%include usr-gnu.inc
 %include base.inc
 %include packagenamemacros.inc
 
@@ -22,7 +24,7 @@
 
 Name:		SFElibglew
 IPS_Package_Name:	sfe/library/libglew
-Summary:	OpenGL Extension Wrangler Library
+Summary:	OpenGL Extension Wrangler Library (/usr/gnu/)
 Group:		System/Libraries
 URL:		http://glew.sourceforge.net/
 Version:	%major_version.%minor_version
@@ -82,7 +84,7 @@ export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 export SYSTEM="solaris-gcc"
-export GLEW_DEST="/usr"
+export GLEW_DEST="%{_prefix}"
 
 export LD=`which ld-wrapper`
 [ -z "$LD" ] && LD=/usr/bin/ld
@@ -122,6 +124,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov  6 2016 - Thomas Wagner
+- relocate to /usr/gnu/ because (OIH) has its own libglew starting with 2016
+  export GLEW_DEST="%{_prefix}"
 * Fri Oct 23 2015 - Thomas Wagner
 - merge in pjama's changes. Help finding LD on various build environments
 * Sun Jun 14 2015 - pjama

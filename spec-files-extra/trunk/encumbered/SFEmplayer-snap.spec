@@ -90,7 +90,8 @@ Requires: SUNWfontconfig
 Requires: SUNWspeex
 Requires: SUNWjpg
 Requires: SUNWpng
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: %{pnm_requires_SUNWogg_vorbis}
 Requires: SUNWlibtheora
 Requires: SFEgccruntime
 Requires: SUNWgnome-base-libs
@@ -286,6 +287,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to pnm_buildrequires_SFEopenjpeg, SFElibschroedinger to use (OIH) openjpeg, libschroedinger
 * Sat Apr 13 2014 - Thomas Wagner

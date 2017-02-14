@@ -73,6 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Feb 13 2017 - Thomas Wagner
+- bump to 1.39.12 (IPS: 1.39.12)
+* Tue Aug 23 2016 - Thomas Wagner
+- bump to 1.39.10 (IPS: 1.39.10)
 * Sun Jun  5 2016 - Thomas Wagner
 - bump to 1.39.08 (IPS: 1.39.8)
 * Sun Aug 16 2015 - Thomas Wagner

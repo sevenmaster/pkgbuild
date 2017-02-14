@@ -17,12 +17,12 @@ Version:      0.24.3
 Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
 %endif
 
-#%if %{oihipster}
-#use poppler from osdistro for now, so we don't build this spec file base-specs/poppler.spec you are looking at
-#Version:      0.00.0
-#Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
-#%define cairo_version n.nn.n
-#%endif
+%if %{oihipster}
+#stop using bcs gcc5 runtime libs - #use poppler from osdistro for now, so we don't build this spec file base-specs/poppler.spec you are looking at
+Version:      0.32.0
+Source:       http://poppler.freedesktop.org/%{name}-%{version}.tar.xz
+%define cairo_version 1.14.6
+%endif
 
 %if %{solaris11}
 # might be bumped to Version:      0.39.0
@@ -220,6 +220,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Tue Nov  1 2016 - Thomas Wagner
+- re-enable SFEpoppler-gpp 0.32.0 on OIH 2016, as GCC5 runtime libs are not matching when building LO4
 * Fri Sep 30 2016 - pjama
 - Add config to define Version and cairo_version for openindiana
 - include /usr/gnu/include in CFLAGS path to find SFElibiconv headers for openindiana

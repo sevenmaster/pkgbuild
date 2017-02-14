@@ -4,6 +4,7 @@
 # includes module(s): webkitgtk
 #
 %include Solaris.inc
+%include packagenamemacros.inc
 
 #we are on OpenSolaris (or on SXCE or Solaris 10)
 %define OS2nnn %( egrep "OpenSolaris 20[0-9][0-9]" /etc/release > /dev/null  && echo 1 || echo 0) 
@@ -55,7 +56,8 @@ Requires: SUNWgtk2
 Requires: SUNWflexlex
 Requires: SUNWgobject-introspection
 BuildRequires: SUNWgnome-spell
-BuildRequires: SUNWgnu-idn
+BuildRequires: %{pnm_buildrequires_SUNWgnu_idn}
+Requires:      %{pnm_buildrequires_SUNWgnu_idn}
 BuildRequires: SUNWgnome-base-libs
 BuildRequires: SUNWicu
 BuildRequires: SUNWlxml
@@ -141,6 +143,7 @@ fi
 #autom4te=/usr/bin/autom4te
 #automake-1.10
 autoconf 
+perl -pi.orig -e 's/LIBSOUP_REQUIRED_VERSION=2.28.2/LIBSOUP_REQUIRED_VERSION=2.28.1/' configure*
 ./configure --prefix=%{_prefix}			\
             --disable-jit                       \
 	    --libdir=%{_libdir}                 \
@@ -196,6 +199,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Oct 25 2013 - Thomas Wagner
+- change to (Build)Requires to %{pnm_buildrequires_SUNWgnu_idn}, %include packagenamacros.inc
+- tweak to be happy with silgthly older libsoup
 * Mon Oct 17 2011 - Milan Jurik
 - add IPS package name
 * Sun Mar 20 2011 - Milan Jurik

@@ -1,4 +1,3 @@
-#
 # Copyright (c) 2008 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -6,6 +5,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 Name:                SFEliberationfonts
 License:             GPL+exception
@@ -17,7 +17,10 @@ Source:              http://www.redhat.com/f/fonts/liberation-fonts.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWTk
+
+BuildRequires:  %{pnm_buildrequires_SUNWTk_devel}
+Requires:       %{pnm_requires_SUNWTk}
+
 
 %prep
 %setup -q -n liberation-fonts-%version
@@ -44,6 +47,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/*
 
 %changelog
+* Tue Mar 22 2016 - Thomas Wagner
+- change (Build)Requires to  %{pnm_buildrequires_SUNWTk_devel}
 * Mon Apr 14 2008 - shivakumar.gn@gmail.com
 - The source location of the tarball has changed
 * Sun Feb 03 2008 - moinak.ghosh@sun.com

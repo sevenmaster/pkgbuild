@@ -41,7 +41,7 @@ Requires:          %{pnm_requires_SUNWlibC}
 
 #replace with explicit python version from %{python_major_minor_version}
 perl -pi -e 's:^#! */usr/bin/python.*:#!/usr/bin/python%{python_major_minor_version}:' `find . -type f -print`
-perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}2.6:' `find . -type f -print`
+perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}:' `find . -type f -print`
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -145,6 +145,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 24 2012 - Thomas Wagner
+- fix typo in replacement of python shebang line
 * Tue Apr 24 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_perl_default} %{pnm_buildrequires_SUNWsqlite3} %{pnm_buildrequires_SUNWpysqlite} %{pnm_buildrequires_SUNWlibC}, %include packagenamemacros.inc
 - Bump to 2.24.3

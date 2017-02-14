@@ -7,6 +7,7 @@
 #
 
 %include Solaris.inc
+%include packagenamemacros.inc
 
 %define osbuild %(uname -v | sed -e 's/[A-z_]//g')
 
@@ -24,12 +25,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Requires:       SUNWgnome-base-libs
 BuildRequires:  SUNWgnome-base-libs-devel
 
-%if %(expr %{osbuild} '>=' 134)
-Requires:	data/docbook
-%else
-BuildRequires:	SUNWgnome-xml
-%endif
-BuildRequires: SUNWgtk-doc
+BuildRequires:	%{pnm_buildrequires_SUNWgnome_xml}
+BuildRequires:  %{pnm_buildrequires_SUNWgtk_doc}
 
 %package devel
 Summary:        %{summary} - development files
@@ -96,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Aug  7 2011 - Thomas Wagner
+- make (Build)Requires	%{pnm_buildrequires_SUNWgnome_xml} (remove %if expr..%osbuild..)
+- make (Build)Requires  %{pnm_buildrequires_SUNWgtk_doc}
 * May 02 2010 - Gilles Dauphin
 - get ready for next release
 * Fri Apr 30 2010 - Milan Jurik

@@ -14,25 +14,33 @@
 
 Name:		SFEtaglib-gpp
 IPS_Package_Name:	library/audio/g++/taglib
-Summary:	A library for reading and editing the meta-data of several popular audio formats (/usr/g++)
+Summary:	TagLib - A library for reading and editing the meta-data of several popular audio formats (/usr/g++)
 Group:		System/Multimedia Libraries
 URL:		http://taglib.github.io/
 Version:	1.9.1
-Source:		http://taglib.github.io/releases/%srcname-%version.tar.gz
+Source:		http://taglib.github.io/releases/%{srcname}-%{version}.tar.gz
 License:	LGPLv2.1
 Patch1:		taglib-01-map.diff
 SUNW_Copyright:	taglib.copyright
+SUNW_BaseDir:	%{_basedir}
+BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:	SFEcmake
+
+BuildRequires: %{pnm_buildrequires_developer_build_cmake}
+Requires:      %{pnm_requires_developer_build_cmake}
+
+
+BuildRequires:  SFEgcc-48
+Requires:       SFEgccruntime-48
 
 %package devel
 Summary:	%{summary} - development files
 SUNW_BaseDir:	%{_basedir}
 %include default-depend.inc
-Requires: %name
+Requires: %{name}
 
 %prep
-%setup -q -n %srcname-%version
+%setup -q -n %{srcname}-%{version}
 %patch1 -p1
 
 %build
@@ -40,19 +48,19 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags"
-export CXXFLAGS="%cxx_optflags"
-export LDFLAGS="%_ldflags -Wl,-zmuldefs"
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{cxx_optflags}"
+export LDFLAGS="%{_ldflags} -Wl,-zmuldefs"
 
-cmake -DCMAKE_INSTALL_PREFIX=%_prefix -DCMAKE_RELEASE_TYPE=Release -DWITH_MP4=ON -DWITH_ASF=ON  .
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_RELEASE_TYPE=Release -DWITH_MP4=ON -DWITH_ASF=ON  .
 make -j$CPUS 
 
 %install
-rm -rf %buildroot
-make install DESTDIR=%buildroot
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %clean
-rm -rf %buildroot
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
@@ -70,6 +78,11 @@ rm -rf %buildroot
 %{_libdir}/pkgconfig/*
 
 %changelog
+* Sun Jan 15 2017 - Thomas Wagner
+- add (Build)Requires cmake %{pnm_buildrequires_developer_build_cmake}
+* Mon Sep 21 2015 - Thomas Wagner
+- add (Build)Requires SFEgcc
+- restore curly brackets for variables to be distinguised from sections and tags
 * Sat Sep 19 2015 - Alex Viskovatoff <herzen@imap.org>
 - bump to 1.9.1; clean up
 * Fri Jan  9 2015 - Thomas Wagner

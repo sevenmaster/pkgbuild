@@ -30,7 +30,7 @@ Source:		http://github.com/%srcname/%srcname/releases/download/%version/%srcname
 BuildRequires:	SFElibfribidi-devel
 Requires:	SFElibfribidi
 BuildRequires:	SFEharfbuzz-gpp-devel
-Requires:	SFEharfbuzz-gpp-devel
+Requires:	SFEharfbuzz-gpp
 BuildRequires:	SFEfontconfig-gpp
 Requires:	SFEfontconfig-gpp
 BuildRequires:	SFEgraphite2-gpp
@@ -100,6 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 30 2016 - Thomas Wagner
+- correct Requires to read SFEharfbuzz-gpp
 * Fri Feb 26 2016 - Thomas Wagner
 #- enable again assembler, use yasm 1.3.0 instead 1.2.0 (updated SFEyasm.spec to 1.3.0 - undefined symbol HAVE_ALIGNED_STACK)
 - merge different spec files sitting around

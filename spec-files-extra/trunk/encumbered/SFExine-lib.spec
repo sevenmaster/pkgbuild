@@ -42,8 +42,8 @@ BuildRequires: SFEaalib-devel
 Requires: SFEaalib
 BuildRequires: SUNWxorg-headers
 Requires: SUNWxorg-clientlibs
-BuildRequires: SUNWogg-vorbis-devel
-Requires: SUNWogg-vorbis
+BuildRequires: %{pnm_buildrequires_SUNWogg_vorbis_devel}
+Requires: %{pnm_requires_SUNWogg_vorbis}
 BuildRequires: SUNWlibtheora-devel
 Requires: SUNWlibtheora
 Requires: SUNWsmbau
@@ -317,6 +317,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
 * Aug 01 2009 - Gilles Dauphin
 - SUNWlibmng is in B117
 - bump to 1.1.16.1

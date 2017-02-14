@@ -4,6 +4,7 @@
 %use gmpcplugin = gmpc-plugin.spec
 
 Name:			SFEgmpc-plugin-%{pluginname}
+IPS_package_name:	audio/mpd/gmpc/%{pluginname}
 Summary:                gmpc-%{pluginname} - Editor for songtags
 # Version e.g. 0.20.0
 Version:                %{gmpcplugin.version}
@@ -51,6 +52,8 @@ The tagedit plugin for GMPC adds a editor panel for editing song tags. With the 
 #%{_datadir}/gmpc/plugins/*
 
 %changelog
+* Fri Apr  4 2014 - Thomas Wagner
+- add IPS_Package_Name
 * Fri Jun  1 2012 - Thomas Wagner
 - change to (Build)Requires: SFEgob (SFEgob2 is messed up)
 * Tue May 15 2012 - Thomas Wagner

@@ -11,7 +11,7 @@
 Name:                SFElighttpd
 Summary:             Lighttpd Web Server
 IPS_package_name:    web/server/lighttpd-14
-Version:             1.4.29
+Version:             1.4.36
 Source:              http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-%{version}.tar.gz 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -64,6 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/*.8
 
 %changelog
+* Fri Aug  7 2015 - Thomas Wagner
+- bump to 1.4.36
 * Fri Oct 16 2011 - Ken Mays <kmays2000@gmail.com>
 - Updated for MySql 5.1 package.
 * Fri Oct 14 2011 - Ken Mays <kmays2000@gmail.com>
