@@ -43,8 +43,13 @@
 %define pnm_requires_libpopt			SFElibpopt
 %endif
 
+#add make to onbld
+%define pnm_buildrequires_SUNWonbld		developer/build/make,developer/build/onbld
+
 
 %changelog
+* Tue Feb 14 2017 - Thomas Wagner
+- add developer/build/make to pnm macro pnm_buildrequires_SUNWonbld (developer/build/onbld) (OM)
 * Sun Jul 31 2016 - Thomas Wagner
 - use for pnm_buildrequires_SFEautomake_115 Omnios' package developer/build/automake @ 1.15 (OM)
 - use for pnm_buildrequires_library_guile SFEguile (OM)
