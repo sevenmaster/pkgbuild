@@ -6,7 +6,7 @@
 
 %include Solaris.inc
 
-%define src_name sshfs-fuse
+%define src_name sshfs
 %include base.inc
 
 Name:                    SFEsshfs
@@ -15,9 +15,9 @@ Summary:                 sshfs - filesystem access over SSH
 Version:                 2.8
 IPS_package_name:	system/file-system/sshfs
 License:                 GPLv2
-Source:			 %{sf_download}/fuse/%{src_name}-%{version}.tar.gz
+Source:			http://github.com/libfuse/sshfs/releases/download/sshfs_%{version}/sshfs-%{version}.tar.gz
 Patch1:                  sshfs-fuse-01-sunpro.diff
-Url:                     http://www.tuxera.com/community/sshfs-download/
+Url:                     https://github.com/libfuse/sshfs
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 14 2017 - Thomas Wagner
+- fix Source, update URL
 * Tue Nov 15 2016 - Thomas Wagner
 - bump to 2.8
 * Sat Sep 28 2013 - Milan Jurik

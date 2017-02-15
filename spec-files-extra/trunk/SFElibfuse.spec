@@ -85,13 +85,30 @@ gsed -i.bak2 -e 's?-std=c99?-xc99?' Makefile.com
 %endif
 
 %build
-export MAKE=/usr/ccs/bin/make
 
+#remove once /usr/ccs/bin/make points to working make capable to make kernel modules
+#symlink /usr/ccs/bin/make -> /usr/make is broken in pkg://omnios/developer/build/make@0.5.11,5.11-0.151014:20150402T191828Z
+#use dmake from solaris developer studio
+%if %{omnios}
+export MAKE=dmake
+dmake
+%else
+export MAKE=/usr/ccs/bin/make
 /usr/ccs/bin/make
+%endif
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
+#remove once /usr/ccs/bin/make points to working make capable to make kernel modules
+#symlink /usr/ccs/bin/make -> /usr/make is broken in pkg://omnios/developer/build/make@0.5.11,5.11-0.151014:20150402T191828Z
+#use dmake from solaris developer studio
+%if %{omnios}
+export MAKE=dmake
+dmake install
+%else
 /usr/ccs/bin/make install
+%endif
 
 mkdir -p $RPM_BUILD_ROOT/usr/gnu/
 #cp -r proto/usr/* $RPM_BUILD_ROOT/usr/gnu
@@ -148,6 +165,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 14 2017 - Thomas Wagner
+- add workaround and use dmake (OM)
 * Sat Nov 17 2016 - Thomas Wagner
 - fix build with compiler defaulting to -m64 (S12/developerstudio)
 * Wed Nov 16 2016 - Thomas Wagner
