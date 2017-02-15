@@ -97,13 +97,27 @@ cd kernel
   #rm sparc/Makefile
 %endif
 
+#remove once /usr/ccs/bin/make points to working make capable to make kernel modules
+#symlink /usr/ccs/bin/make -> /usr/make is broken in pkg://omnios/developer/build/make@0.5.11,5.11-0.151014:20150402T191828Z
+#use dmake from solaris developer studio
+%if %{omnios}
+dmake
+%else
 /usr/ccs/bin/make
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 cd kernel
 
+#remove once /usr/ccs/bin/make points to working make capable to make kernel modules
+#symlink /usr/ccs/bin/make -> /usr/make is broken in pkg://omnios/developer/build/make@0.5.11,5.11-0.151014:20150402T191828Z
+#use dmake from solaris developer studio
+%if %{omnios}
+dmake install
+%else
 /usr/ccs/bin/make install
+%endif
 
 cp -r proto/ $RPM_BUILD_ROOT
 
@@ -140,6 +154,8 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Tue Feb 14 2017 - Thomas Wagner
+- add workaround and use dmake able to make kernel modules (OM)
 * Sat Nov 26 2016 - Thomas Wagner
 - add patch2 (permanent patch for rctl, but temporary patch for disabling attribute caches) only for (S12)
 * Wed Nov 16 2016 - Thomas Wagner
