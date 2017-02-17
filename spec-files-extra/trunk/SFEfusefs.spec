@@ -21,7 +21,7 @@ License:	CDDL
 Group:		System/File System
 SUNW_Copyright:	fusefs.copyright
 URL: http://jp-andre.pagesperso-orange.fr/openindiana-ntfs-3g.html
-Source:		 http://github.com/jurikm/illumos-fusefs/archive/Version-%{version}.tar.gz
+Source:		 http://github.com/jurikm/illumos-fusefs/archive/Version-%{version}.tar.gz?%{src_name}.tar.gz
 Patch1:		fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff
 Patch2:		fusefs-02-s12-rctl_action__donts_cache_attributes.diff
 SUNW_BaseDir:	%{_basedir}
@@ -86,10 +86,23 @@ This is the kernel module.
 %patch2 -p1
 %endif
 
+#if there is /usr/include/sys/cred_impl.h requiring c2/audit.h but is not there
+grep "include <c2/audit.h>" /usr/include/sys/cred_impl.h && [ ! -r /usr/include/c2/audit.h ] \
+  && { 
+     mkdir -p kernel/include/c2
+     cp -p /usr/include/bsm/audit.h kernel/include/c2  
+     gsed -i.bak -e '/CFLAGS *=/ s?$? -Iinclude?' kernel/Makefile.com
+     gsed -i.bak -e '/CFLAGS *=/ s?$? -I../include?' kernel/sparcv9/Makefile kernel/amd64/Makefile
+     }
+
 %build
 export PATH=/opt/onbld/bin/`uname -p`:$PATH
 
+[ -r kernel/include/c2/audit.h ] && export CFLAGS="-I`pwd`/kernel/include"
+
 cd kernel
+
+export CPP="$CC -E"
 
 %if %{solaris12}
   #64-bit only
@@ -154,6 +167,10 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Fri Feb 17 2017 - Thomas Wagner
+- improve Source URL to get src_name into download file
+- set CPP
+- fix missing include file (S12)
 * Tue Feb 14 2017 - Thomas Wagner
 - add workaround and use dmake able to make kernel modules (OM)
 * Sat Nov 26 2016 - Thomas Wagner
