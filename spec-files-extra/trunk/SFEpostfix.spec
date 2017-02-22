@@ -389,7 +389,7 @@ CCARGS="${CCARGS} -fsigned-char"
 ##TODO## here the SFEcyrus-sasl will need the /gnu/ offest integrated, incomplete/untested for the moment
 #it uses gnu_libdir gnu_includedir and gnu_sysconfdir (in the %files section)
     %define sasl_lib_dir %{gnu_libdir}/sasl2
-    CCARGS="${CCARGS} -I%{gnu_includedir}/sasl2 -DUSE_SASL_AUTH -DUSE_CYRUS_SASL"
+    CCARGS="${CCARGS} -I%{gnu_includedir}/sasl -DUSE_SASL_AUTH -DUSE_CYRUS_SASL"
     AUXLIBS="${AUXLIBS} -L%{sasl_lib_dir} -R%{sasl_lib_dir} -lsasl2"
   fi
 %endif
@@ -1035,7 +1035,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %if %(test %{with_sasl} -ge 1 && echo 1 || echo 0)
 %dir %attr (0755, root, bin) %{gnu_dir}
 %dir %attr (0755, root, bin) %{gnu_libdir}
-%dir %attr (0755, root, other) %{gnu_libdir}/sasl2
+%dir %attr (0755, root, bin) %{gnu_libdir}/sasl2
 %config %{gnu_libdir}/sasl2/smtpd.conf
 %endif
 
@@ -1050,6 +1050,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Feb 22 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- fix incompatibilities with SFEcyrus-sasl (CCARGS to -I%{gnu_includedir}/sasl and group ownership of %{gnu_libdir}/sasl2 to bin)
 * Wed Jan  4 2017 - Thomas Wagner
 - bump to 3.1.4
 * Sun Nov 13 2016 - Thomas Wagner
