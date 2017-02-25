@@ -12,10 +12,12 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.7.2
+Version:             1.8.0
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
+License:             GPLv2
+SUNW_Copyright:      %{license}.copyright
 Patch2:              mutt-02-configure-gssapi-krb5.diff
 Patch3:              mutt-03-configure-unquoted-test.diff
 ##TODO## remove once CVE-2014-9116 included in next version (past 1.5.23)
@@ -160,6 +162,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sat Feb 25 2017 - Thomas Wagner
+- bump to 1.8.0
 * Mon Dec  5 2016 - Thomas Wagner
 - bump to 1.7.2
 * Sat Oct  8 2016 - Thomas Wagner
