@@ -2,18 +2,16 @@
 # spec file for package SFEmpg123.spec
 #
 
-# NOTE: Latest version (1.18.0) does not compile.
-#	Previous versions starting at 1.14.x "have some nasty regressions".
-#	So do not bump this spec to earlier than 1.18.0.
-
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
 %include packagenamemacros.inc
 
 Name:           SFEmpg123
 IPS_package_name: audio/mpg123
 Summary:        Fast console MPEG Audio Player and decoder library
-#Version:        1.23.4
-Version:        1.13.4
+Version:        1.23.8
+#Version:        1.13.4
 URL:            http://www.mpg123.org/
 Source:         %{sf_download}/mpg123/mpg123/%{version}/mpg123-%{version}.tar.bz2
 License:        LGPL,GPL
@@ -52,8 +50,12 @@ Requires:       %name
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
+export CC=gcc
+export CPP="gcc -E"
+export CXX=g++
 #export CFLAGS="%{optflags}"
-export CFLAGS="-i -xO4 -xc99 -D_XPG6 -D__EXTENSIONS__ -xspace -xstrconst -xarch=sse -mr -xregs=no%frameptr"
+#export CFLAGS="-i -xO4 -xc99 -D_XPG6 -D__EXTENSIONS__ -xspace -xstrconst -xarch=sse -mr -xregs=no%frameptr"
+export CFLAGS="%{optflags} -xc99 -D_XPG6 -D__EXTENSIONS__ -xspace -xstrconst -mr -xregs=no%frameptr"
 export LDFLAGS="%{_ldflags} -lsocket"
 
 %if %cc_is_gcc
@@ -86,11 +88,11 @@ sed -i.bak -e 's?\t\.short?\t.value?'  src/libmpg123/tabinit_mmx.S
             --enable-int-quality=yes    \
             --enable-fifo=yes		\
             --enable-network=yes	\
-            --with-cpu=sse		\
             --with-default-audio=oss	\
             --with-module-suffix=.so	\
             --enable-ipv6=yes 		\
-            --with-optimization=1
+            --with-optimization=3       \
+            --with-cpu=sse              \
 
 gmake -j$CPUS 
 
@@ -119,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Mon Feb 27 2017 - Thomas Wagner
+- bump to 1.23.8 - try again with mpd
 * Mon Jul  4 2016 - Thomas Wagner
 - back to version 1.13.4, "mpd" can't use the new 1.23.4 version
 * Fri Jun 10 2016 - Thomas Wagner

@@ -26,7 +26,8 @@ Summary:             Daemon for remote access music playing & managing playlists
 License:             GPLv2
 SUNW_Copyright:	     mpd.copyright
 Meta(info.upstream): Max Kellermann <max@duempel.org>
-Version:             0.19.15
+#requires c++14, fails with std::gets not defined - Version:             0.20.5
+Version:             0.19.20
 %define major_minor %( echo %{version} |  sed -e 's/\.[0-9]*$//' )
 Source:              http://www.musicpd.org/download/mpd/%{major_minor}/mpd-%{version}.tar.xz
 URL:		     http://www.musicpd.org/
@@ -53,7 +54,7 @@ BuildRequires: %{pnm_buildrequires_SUNWglib2_devel}
 BuildRequires: %{pnm_buildrequires_SUNWcurl_devel}
 BuildRequires: %{pnm_buildrequires_SUNWlibsoup_devel}
 #TODO# BuildRequires: SFElibpulse-devel
-BuildRequires: %{pnm_buildrequires_SUNWavahi-bridge-dsd-devel
+BuildRequires: %{pnm_buildrequires_SUNWavahi_bridge_dsd_devel}
 ## MPD INSTALL file says AO "should be used only if there is no native plugin
 ## available or if the native plugin doesn't work."
 Requires: SFElibao
@@ -73,7 +74,7 @@ Requires: %{pnm_requires_SUNWglib2}
 Requires: %{pnm_requires_SUNWcurl}
 Requires: %{pnm_requires_SUNWlibsoup}
 #TODO# Requires: SFElibpulse
-Requires: %{pnm_buildrequires_SUNWavahi_bridge_dsd_devel}
+Requires: %{pnm_requires_SUNWavahi_bridge_dsd}
 %if %build_encumbered
 BuildRequires: SFEffmpeg-devel
 BuildRequires: SFElibmpcdec-devel
@@ -124,6 +125,13 @@ BuildRequires:  %{pnm_buildrequires_SUNWlibtheora_devel}
 Requires:       %{pnm_requires_SUNWlibtheora}
 BuildRequires:  SFElibvpx
 Requires:       SFElibvpx
+BuildRequires: SFEshine-gpp
+Requires:      SFEshine-gpp
+
+
+#Version 0.20.5 requires c++14 support
+#BuildRequires: SFEgcc-49
+#Requires:      SFEgccruntime-49
 
 
 %description
@@ -147,10 +155,16 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 # LDFLAGS below are based on the following fix to the same problem:
 # http://lists.libsdl.org/pipermail/commits-libsdl.org/2013-March/006360.html
 
-export CC=gcc
-export CXX=g++
-export CFLAGS="%optflags -D_POSIX_PTHREAD_SEMANTICS -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D__EXTENSIONS__ -I/usr/g++/include"
-export CXXFLAGS="%cxx_optflags  -D_POSIX_PTHREAD_SEMANTICS"
+#export CC=/usr/gcc-sfe/4.9/bin/gcc
+#export CPP="/usr/gcc-sfe/4.9/bin/gcc -E"
+#export CXX=/usr/gcc-sfe/4.9/bin/g++
+CC=gcc
+CPP="gcc -E"
+CXX=g++
+
+#get CMSG_FIRSTHDR with _XPG4_2
+export CFLAGS="%optflags  -D_POSIX_PTHREAD_SEMANTICS -D__EXTENSIONS__ -D_XPG4_2 -D_XPG6 -I/usr/g++/include"
+export CXXFLAGS="%cxx_optflags  -D_POSIX_PTHREAD_SEMANTICS -D__EXTENSIONS__ -D_XPG4_2 -D_XPG6 -D_GNU_SOURCE -I/usr/g++/include"
 # Without -R, icu libs are not found (RPATH does not get added to SOs)
 export LDFLAGS="%_ldflags -Wl,-zdeferred $PULSEAUDIO_LIBS -R/usr/g++/lib -L/usr/g++/lib -Wl,-znodeferred"
 #                                             SFEorc orc-0.4.pc
@@ -212,6 +226,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Mon Feb 27 2017 - Thomas Wagner
+- add (Build)Requires: SFEshine-gpp
+- bump to 0.19.20  (0.20.x needs c++14, fails with std::gets undefined)
 * Sun Nov 11 2016 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}, SUNWglib2, SUNWgnome-audio, SUNWflac, SUNWlibsoup, SUNWavahi-bridge-dsd
 * Wed Nov 23 2016 - Thomas Wagner
