@@ -35,6 +35,11 @@
 
 %include Solaris.inc
 %include packagenamemacros.inc
+%if %{solaris12}
+#CHECK_VAL_HELPER_* complains empty declaration with developerstudio12.5 compiler
+%define cc_is_gcc 1
+%include base.inc
+%endif
 
 %define _use_internal_dependency_generator 0
 
@@ -255,6 +260,12 @@ Then configure postfix in /etc/postfix/ and remember, the by
 default active "aliases"-file is the file "/etc/aliases" and
 the file /etc/postfix/aliases ist not used by default.
 
+For SMTP-AUTH please use (SFE-) dovecot to provide the authentication support
+suggested in the package description or in public configuration guides:
+conf.d/10-master.conf:  service auth { unix_listener /var/spool/postfix/private/auth { mode = 0660 group = postfix user = postfix } }
+.
+The use of cyrus-sasls for providing SMTP-AUTH is deprecated (code receives no updates any more)
+
 %prep
 %setup -q -n postfix-%version
 
@@ -315,6 +326,12 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
+
+%if %{solaris12}
+export CC=gcc
+export CXX=g++
+export CPP="gcc -E"
+%endif
 
 #./configure --prefix=%{_prefix}  \
 #            --mandir=%{_mandir}   \
@@ -389,7 +406,7 @@ CCARGS="${CCARGS} -fsigned-char"
 ##TODO## here the SFEcyrus-sasl will need the /gnu/ offest integrated, incomplete/untested for the moment
 #it uses gnu_libdir gnu_includedir and gnu_sysconfdir (in the %files section)
     %define sasl_lib_dir %{gnu_libdir}/sasl2
-    CCARGS="${CCARGS} -I%{gnu_includedir}/sasl -DUSE_SASL_AUTH -DUSE_CYRUS_SASL"
+    CCARGS="${CCARGS} -I%{gnu_includedir}/sasl2 -DUSE_SASL_AUTH -DUSE_CYRUS_SASL"
     AUXLIBS="${AUXLIBS} -L%{sasl_lib_dir} -R%{sasl_lib_dir} -lsasl2"
   fi
 %endif
@@ -1050,6 +1067,11 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sat Feb 25 2017 - Thomas Wagner
+- build with gcc for now, as developerstudio12.5 complains about empty declaration when using CHECK_VAL_HELPER_<macro>
+* Thu Feb 23 2017 - Thomas Wagner
+- change back shared directory /usr/gnu/lib/sasl to /usr/gnu/lib/sasl2
+- using SFEcyrus-sasl.spec is highly deprecated, use dovecot! conf.d/10-master.conf:  service auth { unix_listener /var/spool/postfix/private/auth { mode = 0660 group = postfix user = postfix } }
 * Wed Feb 22 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
 - fix incompatibilities with SFEcyrus-sasl (CCARGS to -I%{gnu_includedir}/sasl and group ownership of %{gnu_libdir}/sasl2 to bin)
 * Wed Jan  4 2017 - Thomas Wagner
