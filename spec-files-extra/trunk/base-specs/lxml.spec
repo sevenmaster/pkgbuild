@@ -10,9 +10,18 @@ Summary:                 The XML library (gnu)
 Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
 URL:                     http://xmlsoft.org
 
+Patch5:	lxml-05-CVE-2016-4658.patch
+Patch6:	lxml-06-CVE-2016-5131-1.patch
+Patch7:	lxml-07-CVE-2016-5131-2.patch
+
 %prep
 %setup -q -n %{src_name}-%{version}
 
+#CVE-2016-4658
+%patch5 -p1
+#CVE-2016-5131
+%patch6 -p1
+%patch7 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -50,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Mar 23 2017 - Thomas Wagner
 - bump to 2.9.4
+- add patch5 patch6 patch7 for CVE-2016-4658 and CVE-2016-5131
 * Fri Aug  2 2013 - Thomas Wagner
 - bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
 - remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
