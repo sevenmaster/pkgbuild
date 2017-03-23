@@ -87,6 +87,7 @@ rm -rf %{buildroot}
 
 #create isaexec layout (move i86 binaries to i86/, create symbolic links to isaexec)
 mkdir -p %{buildroot}/%{_bindir}/%{base_isa}
+#for binary in `cd %{buildroot}/%{_bindir}; find . -type f -print`
 for binary in `cd %{buildroot}/%{_bindir}; ls -1d x*`
   do
   mv %{buildroot}/%{_bindir}/$binary %{buildroot}/%{_bindir}/%{base_isa}/
@@ -150,6 +151,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gtk-doc
 
 %changelog
+* Thu Mar 23 2017 - Thomas Wagner
+- bump to 2.9.4
 * Fri Aug  2 2013 - Thomas Wagner
 - bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
 - remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
