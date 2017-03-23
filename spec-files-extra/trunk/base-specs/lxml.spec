@@ -4,7 +4,7 @@
 
 
 Name:                    SFElxml-gnu
-Version:                 2.9.1
+Version:                 2.9.4
 Summary:                 The XML library (gnu)
 #Source:                  ftp://xmlsoft.org/libxml2/libxml2-%{version}.tar.gz
 Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml2-%{version}.tar.gz
@@ -48,6 +48,8 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/xml2Conf.sh
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu Mar 23 2017 - Thomas Wagner
+- bump to 2.9.4
 * Fri Aug  2 2013 - Thomas Wagner
 - bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
 - remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
