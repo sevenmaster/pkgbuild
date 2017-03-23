@@ -31,6 +31,8 @@ Source:                  http://gd.tuwien.ac.at/gds/languages/html/libxml/libxml
 URL:                     %{lxml.url}
 SUNW_BaseDir:            %{_prefix}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
+
+
 %include default-depend.inc
 
 BuildRequires: %{pnm_buildrequires_SUNWzlib_devel}
@@ -149,10 +151,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/gtk-doc
+%{_libdir}/cmake/*
+%ifarch amd64 sparcv9
+%{_libdir}/%{_arch64}/cmake/*
+%endif
+
 
 %changelog
 * Thu Mar 23 2017 - Thomas Wagner
 - bump to 2.9.4
+- add patch5 patch6 patch7 for CVE-2016-4658 and CVE-2016-5131
 * Fri Aug  2 2013 - Thomas Wagner
 - bump to 2.9.1 / 2.9.1 (IPS) CVE-2013-2877
 - remove now obsolete patch1 libxml2-01-2.9.0-fix-PTHREAD_ONCE_INIT.diff
