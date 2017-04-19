@@ -6,9 +6,7 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define python_version 2.6
-
-%define bzr_major_version 2.5
+%define bzr_major_version 2.7
 
 Name:		SFEbzr
 IPS_Package_Name:	developer/versioning/bzr
@@ -16,7 +14,7 @@ Summary:	Bazaar Source Code Management System
 License:	GPLv2+
 SUNW_Copyright:	bzr.copyright
 Group:		Development/Source Code Management
-Version:	2.5.1
+Version:	2.7.0
 Source:		http://launchpad.net/bzr/%{bzr_major_version}/%{version}/+download/bzr-%{version}.tar.gz
 URL:		http://bazaar-vcs.org
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -85,6 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Apr 19 2017 - Thomas Wagner
+- bump to 2.7.0
 * Sun Dec 23 2012 - TAKI,Yasushi <taki@justplayer.com>
 - use packagenamemacros.inc.
 - use _localedir for /usr/local/locale
