@@ -18,10 +18,10 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.3.13
-#https://openvpn.net/index.php/open-source/downloads.html
+Version:	2.4.1
+#https://openvpn.net/index.php/download/community-downloads.html
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
-Patch1:         openvpn-01-get_default_gateway.diff
+#retired Patch1:         openvpn-01-get_default_gateway.diff
 SUNW_BaseDir:   %{_basedir}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -45,7 +45,7 @@ openvpn
 %prep
 %setup -q -n %srcname-%version
 
-%patch1 -p1
+#retired %patch1 -p1
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -56,6 +56,8 @@ export AR=/usr/bin/ar
 #ranlib is a dummy
 export RANLIB="/usr/bin/ranlib"
 export LIBS="-lnsl -lsocket"
+
+gsed -i.bak -e 's?-std=c99??' configure
 
 ./configure --prefix=%{_prefix}  \
             --mandir=%{_mandir}
@@ -85,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Sat Apr 22 2017 - Thomas Wagner
+- bump to 2.4.1
+- retire patch1 openvpn-01-get_default_gateway.diff
 * Sun Nov 13 2016 - Thomas Wagner
 - bump to 2.3.13
 * Thu Oct 27 2016 - Thomas Wagner
