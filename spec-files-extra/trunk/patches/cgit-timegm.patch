@@ -1,0 +1,28 @@
+diff -urN cgit-1.1/ui-stats.c cgit-1.1.mod/ui-stats.c
+--- cgit-1.1/ui-stats.c	2016-11-22 23:24:36.000000000 -0500
++++ cgit-1.1.mod/ui-stats.c	2017-04-30 18:40:27.805176068 -0400
+@@ -2,6 +2,24 @@
+ #include "ui-stats.h"
+ #include "html.h"
+ #include "ui-shared.h"
++#include <time.h>
++#include <stdlib.h>
++
++time_t timegm (struct tm *tm) {
++    time_t ret;
++    char  *tz;
++
++    tz = getenv("TZ");
++    setenv("TZ", "", 1);
++    tzset();
++    ret = mktime(tm);
++    if (tz)
++        setenv("TZ", tz, 1);
++    else
++        unsetenv("TZ");
++    tzset();
++    return ret;
++}
+ 
+ struct authorstat {
+ 	long total;
