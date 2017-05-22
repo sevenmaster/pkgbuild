@@ -114,7 +114,7 @@
 %define with_pcre         1
 %define with_pgsql        0
 %define with_sasl         1
-%define with_spf          0
+%define with_spf          1
 %define with_disable_eai  1
 %define with_dovecot      1
 %define with_tls          1
@@ -170,6 +170,11 @@ BuildRequires: %{pnm_buildrequires_SUNWopenssl}
 Requires:      %{pnm_requires_SUNWopenssl}
 
 BuildRequires: %{pnm_buildrequires_SUNWggrp}
+
+%if %with_spf
+BuildRequires: SFElibspf2
+Requires:      SFElibspf2
+%endif
 
 #SASL
 %if %(test %{with_sasl} -eq 1 && echo 1 || echo 0)
@@ -1067,6 +1072,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon May 22 2017 - Thomas Wagner
+- add libspf2 sender policy framework
 * Sat Feb 25 2017 - Thomas Wagner
 - build with gcc for now, as developerstudio12.5 complains about empty declaration when using CHECK_VAL_HELPER_<macro>
 * Thu Feb 23 2017 - Thomas Wagner

@@ -9,7 +9,7 @@
 Name:                SFElibspf2
 IPS_Package_Name:    mail/library/libspf2
 Summary:             libspf2 - implements the Sender Policy Framework
-Version:             1.2.9
+Version:             1.2.10
 URL:                 http://www.spf2.org
 Source:              http://www.libspf2.org/spf/libspf2-%{version}.tar.gz
 License:      	     GPLv2 or BSD
@@ -66,5 +66,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 
 %changelog
+* Mon May 22 2017 - Thomas Wagner
+- bump to 1.2.10
 * Thu Jan 31 2012 - Logan Bruns <logan@gedanken.org>
 - initial version
