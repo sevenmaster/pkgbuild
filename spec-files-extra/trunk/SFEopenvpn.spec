@@ -18,7 +18,7 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.4.1
+Version:	2.4.2
 #https://openvpn.net/index.php/download/community-downloads.html
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
 #retired Patch1:         openvpn-01-get_default_gateway.diff
@@ -87,6 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Wed May 24 2017 - Thomas Wagner
+- bump to 2.4.2 - fix remote DOS - http://www.prweb.com/releases/2017/05/prweb14326488.htm
 * Sat Apr 22 2017 - Thomas Wagner
 - bump to 2.4.1
 - retire patch1 openvpn-01-get_default_gateway.diff
