@@ -51,14 +51,14 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see downloadversion 22 above
-Version:	2.2.29
+Version:	2.2.30.1
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
 Source2:	dovecot.xml
 
 Patch1:		dovecot-01-raise-soft-fd-limit.patch
-Patch2:		dovecot-02-void-cannot-return-value-ldap-compare.c.diff
+#retired 2.2.29 Patch2:		dovecot-02-void-cannot-return-value-ldap-compare.c.diff
 
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -108,7 +108,7 @@ See the wiki page for SFEdovecot.spec for installation guidance:
 cp -p %{SOURCE2} dovecot.xml
 
 %patch1 -p1
-%patch2 -p1
+#retired 2.2.29 %patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -252,8 +252,11 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Sun Jun  4 2017 - Thomas Wagner
+- bump to 2.2.30.1
 * Mon May 22 2017 - Thomas Wagner
 - bump to 2.2.29
+- retired patch2 dovecot-02-void-cannot-return-value-ldap-compare.c.diff
 * Wed Jan  4 2017 - Thomas Wagner
 - bump to 2.2.27
 * Sat Dec 17 2016 - Thomas Wagner
