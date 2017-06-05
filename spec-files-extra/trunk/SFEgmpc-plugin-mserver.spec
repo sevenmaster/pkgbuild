@@ -11,8 +11,8 @@ Version:                %{gmpcplugin.version}
  
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
-BuildRequires: SFElibmicrohttpd
-Requires: SFElibmicrohttpd
+BuildRequires: SFElibmicrohttpd-gnu
+Requires: SFElibmicrohttpd-gnu
 
 
 BuildRequires: SFEgmpc-devel
