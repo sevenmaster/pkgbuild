@@ -90,6 +90,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun  6 2017 - Thomas Wagner
+- bump to 4.12
 * Sun Oct 11 2015 - Thomas Wagner
 - bump to 4.5
 - add IPS_Package_Name, relocate to usr-gnu.inc

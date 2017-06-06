@@ -1,6 +1,6 @@
 #
 Name:     	libtasn1
-Version: 	4.7
+Version: 	4.12
 License:	LGPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Docdir:         %{_datadir}/doc
@@ -61,7 +61,9 @@ rm -rf $RPM_BUILD_ROOT/%{_infodir}
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sun Okt 11 2015 - Thomas Wagner
+* Tue Jun  6 2017 - Thomas Wagner
+- bump to 4.12
+* Sun Oct 11 2015 - Thomas Wagner
 - bump to 4.5
 * Sun Jun  7 2015 - Thomas Wagner
 - bump to 4.5
