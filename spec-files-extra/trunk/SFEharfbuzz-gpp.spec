@@ -23,13 +23,15 @@ IPS_Package_Name:	library/g++/harfbuzz
 Summary:		harfbuzz - text shaping engine (/usr/g++)
 Group:			System/Libraries
 #available: 0.9.42 and 1.0.1
-Version:		1.0.6
+#Version:		1.0.6
+Version:		1.4.6
 URL:			http://www.freedesktop.org/wiki/Software/HarfBuzz
 License:		MIT
 SUNW_Copyright:		%{src_name}.copyright
 Source:			http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-%{version}.tar.bz2
-Patch1:			harfbuzz-01-cast-double-scalbn.diff
-Patch2:			harfbuzz-02-cast-double-lround.diff
+#fixed upstream
+#Patch1:			harfbuzz-01-cast-double-scalbn.diff
+#Patch2:			harfbuzz-02-cast-double-lround.diff
 
 SUNW_BaseDir:		%_basedir
 
@@ -59,8 +61,8 @@ Requires: %name
 %prep
 %setup -q -n %{src_name}-%{version}
 
-%patch1 -p1
-%patch2 -p1
+#%patch1 -p1
+#%patch2 -p1
 
 %build
 
@@ -86,7 +88,7 @@ export GRAPHITE2_LIBS="-lgraphite2 -lstdc++"
         --disable-static        \
         --with-graphite2=yes    \
         --with-freetype=yes     \
-        --with-glib=yes         \
+		--with-glib=no			\
         ;
 
 gmake V=2 -j$CPUS
@@ -107,7 +109,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 
 %dir %attr (0755, root, bin) %_bindir
-%_bindir/hb-*
 
 %dir %attr (0755, root, bin) %_libdir
 %_libdir/*.so*
@@ -123,9 +124,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %_includedir/%src_name
 %_includedir/%src_name/*
 
-
-
 %changelog
+* Wed Jun 14 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.4.6
+* Tue Nov 22 2016 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.3.3
 * Sat Apr 23 2016 - Thomas Wagner
 - bump to 1.0.6
 - add patch1 harfbuzz-01-cast-double-scalbn.diff, patch2 harfbuzz-02-cast-double-lround.diff  (cast argument to scalbn and lround)
