@@ -11,7 +11,7 @@ IPS_Package_Name:	 service/network/imap/dovecot/plugin/pigeonhole
 Summary:	Dovecot Pigeonhole Plugin
 URL:		http://pigeonhole.dovecot.org/
 Vendor:		Stephan Bosch <stephan@rename-it.nl>
-Version:	0.4.16
+Version:	0.4.18
 License:	LGPL
 Source0:	http://pigeonhole.dovecot.org/releases/%{dovecot_version_major_minor}/dovecot-%{dovecot_version_major_minor}-pigeonhole-%{version}.tar.gz
 
@@ -63,8 +63,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/dovecot/libdovecot-sieve.*
 %{_libdir}/dovecot/managesieve
 %{_libdir}/dovecot/managesieve-login
-%{_libdir}/dovecot/modules/lib90_sieve_plugin.*
-%{_libdir}/dovecot/modules/sieve/lib90_sieve_extprograms_plugin.so
+%{_libdir}/dovecot/modules/lib*
+%{_libdir}/dovecot/modules/sieve/lib*
 %dir %{_libdir}/dovecot/modules/doveadm
 %{_libdir}/dovecot/modules/doveadm/*
 %dir %{_libdir}/dovecot/modules/settings
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 13 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 0.4.18
 * Wed Jan  4 2017 - Thomas Wagner
 - bump to 0.4.16
 * Fri Jan  8 2016 - Thomas Wagner
