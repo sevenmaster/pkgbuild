@@ -5,21 +5,23 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define python_version 2.6
+%define python_version 2.7
+%define src_name overviewer
 
 Name:		SFEoverviewer
 IPS_Package_Name:	games/minecraft/overviewer
 Summary:	The Minecraft Overviewer
-Version:	0.11.0
+Version:	0.12.137
 Group:		Amusements/Games
 License:	GPLv3
 URL:		http://overviewer.org/
-Source:		https://github.com/overviewer/Minecraft-Overviewer/archive/v%{version}.tar.gz
+#Source:		https://github.com/overviewer/Minecraft-Overviewer/archive/v%{version}.tar.gz
+Source:		http://overviewer.org/builds/src/3/%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	%{pnm_buildrequires_python_default}
-BuildRequires:	SFEpython26-imaging-header
+BuildRequires:	SFEpython27-imaging-header
 Requires:		%{pnm_requires_python_default}
 
 %include default-depend.inc
@@ -62,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,bin)
 %{_bindir}/*
-%{_libdir}/python%{python_version}/vendor-packages/Minecraft_Overviewer-unknown-py%{python_version}.egg-info
+%{_libdir}/python%{python_version}/vendor-packages/Minecraft_Overviewer-%{version}-py%{python_version}.egg-info
 %dir %{_libdir}/python%{python_version}/vendor-packages/overviewer_core
 %{_libdir}/python%{python_version}/vendor-packages/overviewer_core/*
 %attr(0755,root,sys) %dir %{_datadir}
@@ -71,5 +73,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/minecraft-overviewer/*
 
 %changelog
+* Tue Nov 08 2016 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Bump to 0.12.137
+- Change default python to 2.7
 * Mon Feb 24 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial spec version 0.11.0
