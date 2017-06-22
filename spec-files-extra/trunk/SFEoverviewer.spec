@@ -11,12 +11,13 @@
 Name:		SFEoverviewer
 IPS_Package_Name:	games/minecraft/overviewer
 Summary:	The Minecraft Overviewer
-Version:	0.12.137
+Version:	0.12.198
 Group:		Amusements/Games
 License:	GPLv3
 URL:		http://overviewer.org/
 #Source:		https://github.com/overviewer/Minecraft-Overviewer/archive/v%{version}.tar.gz
 Source:		http://overviewer.org/builds/src/3/%{src_name}-%{version}.tar.gz
+Source:		http://overviewer.org/builds/src/41/%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -73,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/minecraft-overviewer/*
 
 %changelog
+* Thu Jun 22 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Bump to 0.12.198
 * Tue Nov 08 2016 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Bump to 0.12.137
 - Change default python to 2.7
