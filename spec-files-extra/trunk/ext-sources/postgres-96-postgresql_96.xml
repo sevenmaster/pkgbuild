@@ -107,9 +107,9 @@
 		-->
         	<property_group name='postgresql_96' type='application'>
                 	<propval name='bin' type='astring'
-                    	   value='/usr/postgres/9.4/bin' />
+                    	   value='/usr/postgres/9.6/bin' />
                 	<propval name='data' type='astring'
-                    	   value='/var/postgres/9.4/data' />
+                    	   value='/var/postgres/9.6/data' />
                 	<propval name='log' type='astring'
 			   value='server.log' />
 			<propval name='initialized' type='boolean'
@@ -133,9 +133,9 @@
 		-->
         	<property_group name='postgresql_96' type='application'>
                 	<propval name='bin' type='astring'
-                    	   value='/usr/postgres/9.4/bin/64' />
+                    	   value='/usr/postgres/9.6/bin/64' />
                 	<propval name='data' type='astring'
-                    	   value='/var/postgres/9.4/data_64' />
+                    	   value='/var/postgres/9.6/data_64' />
                 	<propval name='log' type='astring'
 			   value='server.log' />
 			<propval name='initialized' type='boolean'
@@ -151,7 +151,7 @@
         <template>
                 <common_name>
                         <loctext xml:lang='C'>
-                                PostgreSQL RDBMS version 9.4
+                                PostgreSQL RDBMS version 9.6
                         </loctext>
                 </common_name>
                 <documentation>
