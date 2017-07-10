@@ -48,8 +48,12 @@ Vendor:		         OpenSolaris Community
 SUNW_Basedir:            /usr
 SUNW_Copyright:          SFEpostgres-92.copyright
 
-BuildRequires: library/libedit
-BuildRequires: library/security/openssl
+BuildRequires: %{pnm_buildrequires_library_libedit}
+Requires:      %{pnm_requires_library_libedit}
+
+BuildRequires: %{pnm_buildrequires_library_security_openssl}
+Requires:      %{pnm_requires_library_security_openssl}
+
 %if %{with_tcl}
 BuildRequires: runtime/tcl-8
 %endif
@@ -108,6 +112,7 @@ SUNW_Basedir:            %{_basedir}
 
 Requires: %{name}
 Requires: %{prefix_name}-libs
+BuildRequires: SFEpostgres-common
 Requires: SFEpostgres-common
 
 %package -n %{prefix_name}-contrib
@@ -1272,6 +1277,8 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/%{_arch64}/vacuumlo
 
 %changelog
+* Mon Jul 10 2017 - Thomas Wagner
+- add missing Requires: libedit openssl
 * Sun Jun  4 2017 - Thomas Wagner
 - bump to version 9.6.3
 - create symlink bin/64 bin/%{_arch64} or bin/sparcv9 to match path to bin in SMF xml (shows bin/64/ )
