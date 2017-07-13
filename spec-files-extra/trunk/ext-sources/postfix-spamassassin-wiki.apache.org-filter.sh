@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # source: http://wiki.apache.org/spamassassin/IntegratedSpamdInPostfix
-# changes: changed from /bin/sh to /bin/bash, logger remove -s, /usr/sbin/sendmail.postfix
+# changes: changed from /bin/sh to /bin/bash, logger remove -s, /usr/lib/sendmail.postfix
 # tom68@users.sourceforge.net
 
 # filter.sh
@@ -9,7 +9,7 @@
 # This script redirects mail flagged as spam to a separate account
 # You must first create a user account named "spamvac" to hold the flagged mail
 
-SENDMAIL="/usr/sbin/sendmail.postfix -i"
+SENDMAIL="/usr/lib/sendmail.postfix -i"
 SPAMASSASSIN=/usr/bin/spamc
 COMMAND="$SENDMAIL $@"
 #If your SQL preferences set to "user"
