@@ -3,16 +3,23 @@
 #
 
 %include Solaris.inc
+%include packagenamacros.inc
 
 %define src_name        sylpheed
-#note: download path changes with beta versions
-%define src_url         http://sylpheed.sraoss.jp/sylpheed/v3.3/
+#%define src_version 3.3.0
+#%define src_version 3.4.0beta4
+%define src_version 3.6.0
+#(echo 3.4.0; echo 3.4.0beta4) | sed regex-here) -> 3.4 or 3.4beta
+$define src_url_dir     $( echo src_version |  sed -e 's/^\([0-9]*\.[0-9]*\)\.[0-9]*/\1/'  -e 's/^\([0-9]*\.[0-9]*\)\(beta\).*/\1\2/' )
+%define src_url         http://sylpheed.sraoss.jp/sylpheed/%{src_url_dir}
 
 
 Name:                     SFEsylpheed
 IPS_Package_Name:  	  mail/sylpheed
 Summary:                  A GTK+ based, lightweight, and fast e-mail client
-Version:                  3.3.0
+Version:                  %{src_version}
+#make betas 3.4.0.0.<beta-n> and release 3.4.0.1.0
+IPS_component_version: %( echo %{version} | sed -e 's/beta\(.*\)/.0.\1/' -e 's/^\([0-9]*\.[0-9]*\.[0-9]*\)$/\1.1.0/' )
 Group:		          Applications/Internet
 Source:                   %{src_url}/%{src_name}-%{version}.tar.bz2
 License:                  GPLv2+ with openSSL exception
@@ -22,15 +29,16 @@ BuildRoot:                %{_tmppath}/%{name}-%{version}-build
 SUNW_Copyright:		  sylpheed.copyright
 %include default-depend.inc
 
-BuildRequires: SUNWgnome-base-libs-devel
-BuildRequires: SUNWopenssl-include
-BuildRequires: SUNWgtkspell
+#BuildRequires: SUNWgnome-base-libs-devel
+BuildRequires: %{pnm_buildrequires_SUNWopenssl}
+BuildRequires: %{pnm_buildrequires_SUNWlibms}
+BuildRequires: %{pnm_buildrequires_library_desktop_gtkspell}
 BuildRequires: SUNWgnupg
-Requires: SUNWlibmsr
-Requires: SUNWgnome-base-libs
-Requires: SUNWopenssl-libraries
-Requires: SUNWgtkspell
-Requires: SUNWgnupg
+Requires:      %{pnm_requires_SUNWlibms}
+Requires:      SUNWgnome-base-libs
+Requires:      %{pnm_requires_SUNWopenssl}
+Requires:      %{pnm_requires_library_desktop_gtkspell}
+Requires:      SUNWgnupg
 
 #descriton taken from original sylpheed.spec file:
 %description
@@ -109,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/*
 %dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_docdir}
 %{_datadir}/%{src_name}/faq/*/*
 %{_datadir}/%{src_name}/manual/*/*
 %dir %attr (0755, root, other) %{_datadir}/pixmaps
@@ -124,6 +133,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jul 25 2017 - Thomas Wagner
+- bump to 3.6.0
+* Sun Aug 11 2013 - Thomas Wagner
+- bump to 3.4.0beta4
+- make IPS_Component_Version "beta4" aware, make src_url_dir "beta" aware
+- fix permissions for %{_docdir}
+- change to (Build)Requires to %{pnm_buildrequires_SUNWopenssl}, %include packagenamacros.inc
 * Fri Jan 04 2013 - Ken Mays <kmays2000@gmail.com>
 - bump to 3.3.0
 - Added GnuPG and GTKspell
