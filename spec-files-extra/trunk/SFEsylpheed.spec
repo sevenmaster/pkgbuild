@@ -3,14 +3,17 @@
 #
 
 %include Solaris.inc
-%include packagenamacros.inc
+%include packagenamemacros.inc
 
 %define src_name        sylpheed
 #%define src_version 3.3.0
 #%define src_version 3.4.0beta4
 %define src_version 3.6.0
 #(echo 3.4.0; echo 3.4.0beta4) | sed regex-here) -> 3.4 or 3.4beta
-$define src_url_dir     $( echo src_version |  sed -e 's/^\([0-9]*\.[0-9]*\)\.[0-9]*/\1/'  -e 's/^\([0-9]*\.[0-9]*\)\(beta\).*/\1\2/' )
+#%define src_url_dir     %( echo src_version |  sed -e 's/^\([0-9]*\.[0-9]*\)\.[0-9]*/\1/'  -e 's/^\([0-9]*\.[0-9]*\)\(beta\).*/\1\2/' )
+# 3.6.0beta1 > 3.6beta
+# (echo 3.6.1; echo 3.6.0beta1 ) | sed -e 's?beta.*?beta?' -e 's?\.[0-9]$??' -e 's?\.[0-9]*beta?beta?'
+%define src_url_dir     %( echo v%{src_version} | sed -e 's?beta.*?beta?' -e 's?\.[0-9]$??' -e 's?\.[0-9]*beta?beta?' )
 %define src_url         http://sylpheed.sraoss.jp/sylpheed/%{src_url_dir}
 
 
@@ -19,7 +22,10 @@ IPS_Package_Name:  	  mail/sylpheed
 Summary:                  A GTK+ based, lightweight, and fast e-mail client
 Version:                  %{src_version}
 #make betas 3.4.0.0.<beta-n> and release 3.4.0.1.0
-IPS_component_version: %( echo %{version} | sed -e 's/beta\(.*\)/.0.\1/' -e 's/^\([0-9]*\.[0-9]*\.[0-9]*\)$/\1.1.0/' )
+# ( echo "3.4.0"; echo "3.5.0beta1" )  |  sed -e 's/beta/.0./' -e '/^[0-9]*\.[0-9]*\.[0-9]*$/ s/$/.1.0/'
+#3.4.0.1.0
+#3.5.0.0.1
+IPS_component_version: %( echo %{version} | sed -e 's/beta/.0./' -e '/^[0-9]*\.[0-9]*\.[0-9]*$/ s/$/.1.0/' )
 Group:		          Applications/Internet
 Source:                   %{src_url}/%{src_name}-%{version}.tar.bz2
 License:                  GPLv2+ with openSSL exception
@@ -33,12 +39,12 @@ SUNW_Copyright:		  sylpheed.copyright
 BuildRequires: %{pnm_buildrequires_SUNWopenssl}
 BuildRequires: %{pnm_buildrequires_SUNWlibms}
 BuildRequires: %{pnm_buildrequires_library_desktop_gtkspell}
-BuildRequires: SUNWgnupg
+BuildRequires: %{pnm_buildrequires_SUNWgnupg_devel}
 Requires:      %{pnm_requires_SUNWlibms}
 Requires:      SUNWgnome-base-libs
 Requires:      %{pnm_requires_SUNWopenssl}
 Requires:      %{pnm_requires_library_desktop_gtkspell}
-Requires:      SUNWgnupg
+Requires:      %{pnm_requires_SUNWgnupg}
 
 #descriton taken from original sylpheed.spec file:
 %description
@@ -135,6 +141,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Jul 25 2017 - Thomas Wagner
 - bump to 3.6.0
+- fix (Build)Requires to more pnm_macros
+- fix version number calculation for old pkgbuild version
 * Sun Aug 11 2013 - Thomas Wagner
 - bump to 3.4.0beta4
 - make IPS_Component_Version "beta4" aware, make src_url_dir "beta" aware
