@@ -1708,6 +1708,38 @@
 %define pnm_buildrequires_gnu_gettext text/gnu-gettext
 %define pnm_requires_gnu_gettext text/gnu-gettext
 
+#S12 adds gstreamer 1.x and obsoletes it on build 113
+#library/audio/gstreamer                           0.10.32-5.12.0.0.0.87.0    i--
+#library/audio/gstreamer/plugin/gnonlin            0.10.17-5.12.0.0.0.90.0    --o
+#library/desktop/gstreamer-1                       1.4.5-5.12.0.0.0.112.1     i--
+#library/desktop/gstreamer-1/gst-plugins-base      1.4.5-5.12.0.0.0.112.1     i--
+#library/desktop/gstreamer-1/gst-plugins-good      1.4.5-5.12.0.0.0.112.1     i--
+##TODO## open: what to do with the new package names. for a moment we can use pnm_macro
+#        of old package name and still get the new package. would work across all supported osdistro
+#
+##TODO## open: how to handle library/desktop/gstreamer-1/gst-plugins-base and library/desktop/gstreamer-1/gst-plugins-good
+##NOTE##   s/audio/desktop/
+%define pnm_buildrequires_library_audio_gstreamer	library/desktop/gstreamer-1
+%define pnm_requires_library_audio_gstreamer		library/desktop/gstreamer-1
+#for now, just request library/desktop/gstreamer-1, details only handled once the need arises
+%define pnm_buildrequires_SUNWgnome_media_devel		library/desktop/gstreamer-1
+%define pnm_buildrequires_SUNWgnome_media		library/desktop/gstreamer-1
+%define pnm_requires_SUNWgnome_media			library/desktop/gstreamer-1
+%define pnm_buildrequires_gnome_media			library/desktop/gstreamer-1
+%define pnm_requires_gnome_media			library/desktop/gstreamer-1
+#for now, just request library/desktop/gstreamer-1, details only handled once the need arises
+%define pnm_buildrequires_library_audio_gstreamer_plugin_gnonlin	library/desktop/gstreamer-1
+%define pnm_requires_library_audio_gstreamer_plugin_gnonlin	library/desktop/gstreamer-1
+%define pnm_buildrequires_SUNWgnonlin_devel		library/desktop/gstreame-1r
+%define pnm_buildrequires_SUNWgnonlin			library/desktop/gstreamer-1
+%define pnm_requires_SUNWgnonlin			library/desktop/gstreamer-1
+%define pnm_buildrequires_gnonlin			library/desktop/gstreamer-1
+%define pnm_requires_gnonlin				library/desktop/gstreamer-1
+
+
+#codec/libvorbis                                   1.3.3-5.12.0.0.0.115.0     ---
+#codec/ogg-vorbis                                  2.30.0-5.12.0.0.0.108.0    --r
+
 #START solaris 12 - special build versions below >= 87
 %endif
 #END solaris12 - generic/(almost)all builds - more details below
@@ -1724,15 +1756,17 @@
 
 #START solaris 12 - special build versions below >= 108
 %if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000001080000.1 )
-#Package codec/ogg-vorbis was renamed to pkg:/codec/libvorbis pkg:/codec/libogg
+#Package codec/ogg-vorbis was renamed to pkg:/codec/libvorbis pkg:/codec/libogg  (NOTE: these are *two* packages!)
 #pkg://solaris/codec/libogg@1.2.2-5.12.0.0.0.108.1:20160919T062323Z           ---
-%define pnm_buildrequires_codec_ogg_vorbis	codec/libogg
-%define pnm_requires_codec_ogg_vorbis		codec/libogg
-%define pnm_buildrequires_SUNWogg_vorbis_devel	codec/libogg
-%define pnm_buildrequires_SUNWogg_vorbis	codec/libogg
-%define pnm_requires_SUNWogg_vorbis		codec/libogg
-%define pnm_buildrequires_ogg_vorbis		codec/libogg
-%define pnm_requires_ogg_vorbis			codec/libogg
+#pkg://solaris/codec/ogg-vorbis@2.30.0-5.12.0.0.0.108.0:20160919T062335Z
+
+%define pnm_buildrequires_codec_ogg_vorbis	codec/libogg,codec/libvorbis
+%define pnm_requires_codec_ogg_vorbis		codec/libogg,codec/libvorbis
+%define pnm_buildrequires_SUNWogg_vorbis_devel	codec/libogg,codec/libvorbis
+%define pnm_buildrequires_SUNWogg_vorbis	codec/libogg,codec/libvorbis
+%define pnm_requires_SUNWogg_vorbis		codec/libogg,codec/libvorbis
+%define pnm_buildrequires_ogg_vorbis		codec/libogg,codec/libvorbis
+%define pnm_requires_ogg_vorbis			codec/libogg,codec/libvorbis
 %endif
 #END solaris12 special build version 108 and newer
 
@@ -2954,13 +2988,13 @@
 # Needs more confirmation
 %if %{oihipster}
 
-%define postgres_version 9.3
+%define postgres_version 9.6
 %define postgres_major_version 9
-%define postgres_major_minor_version 9.3
-##not defined %define postgres_major_minor_micro_version 9.3.4
+%define postgres_major_minor_version 9.6
+##not defined %define postgres_major_minor_micro_version 9.6.4
 
-%define pnm_buildrequires_postgres_default	service/database/postgres-93
-%define pnm_requires_postgres_default		service/database/postgres-93
+%define pnm_buildrequires_postgres_default	service/database/postgres-96
+%define pnm_requires_postgres_default		service/database/postgres-96
 %endif
 #END oihipster
 
@@ -3277,6 +3311,11 @@
 
 
 %changelog
+* Sat Jul 29 2017 - Thomas Wagner
+- bump %define postgres_major_minor_version 9.6 (9.6.4) as the new SFE default postgresql version
+- fix pnm_macro pnm_buildrequires_codec_ogg_vorbis as it was renamed/split into two packages: codec/libogg,codec/libvorbis
+* Sat Jan 14 2017 - Thomas Wagner
+- handle gstreamer update to 1.x for S12 - map most of the packages for now to: library/audio/gstreamer-1
 * Sun Dec 11 2016 - Thomas Wagner
 - use OSDistro libgcrypt / libgpg / libgpg-error on (S12)
 - add gnome audio pnm_macros for new name system/core-os on (S12)
