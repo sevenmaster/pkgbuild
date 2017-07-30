@@ -1,0 +1,44 @@
+https://bugzilla.samba.org/show_bug.cgi?id=12502
+
+
+From f244c29dac41d9ab01ad56cfdb67d75d64278d68 Mon Sep 17 00:00:00 2001
+From: Ralph Boehme <slow@samba.org>
+Date: Sun, 8 Jan 2017 09:38:42 +0100
+Subject: [PATCH] messaging_dgm: MSG_NOSIGNAL is in POSIX.1-2008 but not
+ present on every system
+
+This means on platforms without MSG_NOSIGNAL we'll get a SIGPIPE signal
+if the connection is broken, but we should be safe because we're
+blocking SIGPIPE anyway (at least in smbd, winbindd, nmbd, ...).
+---
+ source3/lib/messages_dgm.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/source3/lib/messages_dgm.c b/source3/lib/messages_dgm.c
+index 49b3903..283b917 100644
+--- a/source3/lib/messages_dgm.c
++++ b/source3/lib/messages_dgm.c
+@@ -337,6 +337,11 @@ static ssize_t messaging_dgm_sendmsg(int sock,
+ {
+ 	struct msghdr msg;
+ 	ssize_t fdlen, ret;
++	int flags = 0;
++
++#ifdef MSG_NOSIGNAL
++	flags = MSG_NOSIGNAL;
++#endif
+ 
+ 	/*
+ 	 * Do the actual sendmsg syscall. This will be called from a
+@@ -360,7 +365,7 @@ static ssize_t messaging_dgm_sendmsg(int sock,
+ 		msghdr_prep_fds(&msg, buf, fdlen, fds, num_fds);
+ 
+ 		do {
+-			ret = sendmsg(sock, &msg, MSG_NOSIGNAL);
++			ret = sendmsg(sock, &msg, flags);
+ 		} while ((ret == -1) && (errno == EINTR));
+ 	}
+ 
+-- 
+2.7.4
+
