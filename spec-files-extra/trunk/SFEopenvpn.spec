@@ -18,7 +18,7 @@ Group:		System/Security
 URL:		http://openvpn.net
 License:	GPLv2
 SUNW_copyright:	openvpn.copyright
-Version:	2.4.2
+Version:	2.4.3
 #https://openvpn.net/index.php/download/community-downloads.html
 Source:		http://swupdate.openvpn.net/community/releases/%srcname-%version.tar.gz
 #retired Patch1:         openvpn-01-get_default_gateway.diff
@@ -51,6 +51,9 @@ openvpn
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
+%if cc_is_gcc
+export CFLAGS="${CFLAGS} -std=c99"
+%endif
 export LDFLAGS="%_ldflags"
 export AR=/usr/bin/ar
 #ranlib is a dummy
@@ -87,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %_docdir/%srcname
 
 %changelog
+* Mon Jul 31 2017 - Thomas Wagner
+- add -std=c99 if CC=gcc
+- bump to 2.4.3
 * Wed May 24 2017 - Thomas Wagner
 - bump to 2.4.2 - fix remote DOS - http://www.prweb.com/releases/2017/05/prweb14326488.htm
 * Sat Apr 22 2017 - Thomas Wagner
