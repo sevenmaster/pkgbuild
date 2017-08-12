@@ -6,6 +6,7 @@
 %include Solaris.inc
 
 Name:                SFEdcc
+IPS_Package_Name:    service/network/snmp/dcc
 Summary:             Distributed Checksum Clearinghouse
 Version:             1.3.159
 #Source:              http://www.rhyolite.com/anti-spam/dcc/source/dcc-%{version}.tar.Z
@@ -78,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri 11 Aug 2017 - Thomas Wagner
 - bump to 1.3.159
 - Source URL updated, now fetching exact version
+- add IPS_Package_Name (subject to change)
 * Fri 22 Aug 2008 - Thomas Wagner
 - bump to 1.3.92
 - reworked TODO
