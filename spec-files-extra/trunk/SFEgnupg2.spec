@@ -12,7 +12,7 @@
 %use gnupg = gnupg2.spec
 
 Name:          SFEgnupg2
-IPS_component_version: crypto/gnupg2
+IPS_package_name: crypto/gnupg2
 Summary:       %{gnupg.summary} (/usr/gnu)
 Version:       %{gnupg.version}
 Patch1:        gnupg2-01-asschk.diff
@@ -22,22 +22,27 @@ Patch4:        gnupg2-04-keyserver-sm-Makefile.diff
 SUNW_BaseDir:  %{_basedir}
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWbzip
-Requires: SUNWzlib
-Requires: %{pnm_requires_library_readline}
+
+
+BuildRequires: %{pnm_buildrequires_SUNWbzip}
+Requires:      %{pnm_requires_SUNWbzip}
+BuildRequires: %{pnm_buildrequires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_library_readline}
-BuildRequires: SFElibksba
-#BuildRequires: SFEpth
-BuildRequires: SUNWpth
+Requires:      %{pnm_requires_library_readline}
 BuildRequires: SFElibassuan
-Requires: SFElibksba
-#Requires: SFEpth
-Requires: SUNWpth
-Requires: SFElibassuan
-Requires: SUNWcurl
+Requires:      SFElibassuan
+BuildRequires: SFElibksba
+Requires:      SFElibksba
+BuildRequires: SFElibgcrypt-gnu
+Requires:      SFElibgcrypt-gnu
+#Requires: SFEpth or SUNWpth
+BuildRequires: %{pnm_buildrequires_SUNWpth}
+Requires:      %{pnm_requires_SUNWpth}
+Requires:      %{pnm_requires_SUNWcurl}
 %if %build_l10n
-Requires: SFEgettext
-Requires: SFElibiconv
+Requires:      SFEgettext
+Requires:      SFElibiconv
 %endif
 
 %if %build_l10n
@@ -63,8 +68,12 @@ cd ..
 %build
 export PATH="$PATH:%{_bindir}"
 export CFLAGS="%optflags %{gnu_inc}"
+%if %{cc_is_gcc}
+%else
+export CFLAGS="${CFLAGS} -Xc -c99 -xinline=%auto -xbuiltin=%none"
+%endif
 export MSGFMT="/usr/bin/msgfmt"
-export LDFLAGS="%{gnu_lib_path} %_ldflags -lsocket"
+export LDFLAGS="%{gnu_lib_path} %_ldflags -lsocket -lc "
 %if %build_l10n
 LDFLAGS="$LDFLAGS -lintl -liconv"
 LIBINTL="/usr/gnu/lib/libintl.so"
@@ -84,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/info
 #
 mv $RPM_BUILD_ROOT%{_docdir}/gnupg/FAQ \
     $RPM_BUILD_ROOT%{_docdir}/gnupg/FAQ2
-mv $RPM_BUILD_ROOT%{_docdir}/gnupg/faq.html \
+[ -f $RPM_BUILD_ROOT%{_docdir}/gnupg/faq.html ] && mv $RPM_BUILD_ROOT%{_docdir}/gnupg/faq.html \
     $RPM_BUILD_ROOT%{_docdir}/gnupg/faq2.html
 
 %if %build_l10n
@@ -120,6 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 15 2017 - Thomas Wagner
+- bump to 2.0.30
+- change (Build)Requrires to pnm_macros (e.g. OM)
+- fix IPS_package_name
+- fix build with gcc (e.g. OM)
 * Mon Oct 14 2013 - Thomas Wagner
 - bump to 2.0.22
 * Wed Oct  2 2013 - Thomas Wagner
