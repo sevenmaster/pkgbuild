@@ -1,7 +1,7 @@
 #
 #
 Name:     	gnutls
-Version: 	3.5.0
+Version: 	3.5.14
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
@@ -84,16 +84,21 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 20 2017 - Thomas Wagner
+- bump to 3.5.14
+- change (Build)Requires to SFElibunistring-gnu
 * Wed May 25 2016 - Thomas Wagner
 - do not edit path into wrapper script bin/guile-config *if* we run in S12
 * Tue May 24 2016 - Thomas Wagner
 - enable patch1 for any osdistro (OIH)
 - move CPP variable to base-specs/gnutls.spec (guile-snarf not seeing CPP)
 - edit %_arch64 into wrapper script bin/guile-config
-- bump to 3.5.0
+- bump to 3.5.0, removed is /usr/gnu/bin/tpmtool
 - CFLAGS add -D__EXTENSIONS__
 - LDFLAGS add -liconv
 - edit configure to remove "-z defs" as it stubles over unused UNDEF function _start in /usr/lib/libguile.so (S11)
+* Tue May 24 2016 - Thomas Wagner
+- enable patch1 for any osdistro (OIH)
 * Wed Apr 13 2016 - Thomas Wagner
 - bump to 3.4.11
 * Sat Jan 16 2016 - Thomas Wagner

@@ -3,6 +3,9 @@
 #
 # includes module(s): libtasn1
 #
+
+%define _use_internal_dependency_generator 0
+
 %include Solaris.inc
 
 %include usr-gnu.inc
@@ -90,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 20 2017 - Thomas Wagner
+- disable dependency generator
 * Tue Jun  6 2017 - Thomas Wagner
 - bump to 4.12
 * Sun Oct 11 2015 - Thomas Wagner

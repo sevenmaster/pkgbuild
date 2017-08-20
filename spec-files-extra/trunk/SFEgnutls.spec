@@ -71,6 +71,9 @@ Requires:       SFEunbound
 BuildRequires:  SFElibtasn1-gnu
 Requires:       SFElibtasn1-gnu
 
+BuildRequires:  SFElibunistring-gnu
+Requires:       SFElibunistring-gnu
+
 #./gnutls-idna.h:29:19: fatal error: idna.h: No such file or directory
 BuildRequires:  SFEicu-gpp
 Requires:       SFEicu-gpp
@@ -192,7 +195,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*
 %{_datadir}/guile/site/*
 
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/*
+
+
 %changelog
+* Sun Aug 20 2017 - Thomas Wagner
+- bump to 3.5.14
+- change (Build)Requires to SFElibunistring-gnu
 * Wed May 25 2016 - Thomas Wagner
 - do not edit path into wrapper script bin/guile-config *if* we run in S12
 * Tue May 24 2016 - Thomas Wagner
@@ -212,6 +222,7 @@ rm -rf $RPM_BUILD_ROOT
 - fix %files guile for (OM), see if necessary on other OS as well, ##TODO## revisit once SFEguile.spec is 32/64-bit
 * Fri Jan  8 2016 - Thomas Wagner
 - add patch1 gnutls-01-ENABLE_PKCS11.diff or get unresolved symbol pkcs11_common  tpmtool.o (S11 S12)
+- bump to 3.4.8
 * Sun Oct 11 2015 - Thomas Wagner
 - add to *FLAGS  -I/usr/include/idn to find idna.h
 - add BuildRequires SFEicu-gpp SFElibtasn1-gnu pnm_buildrequires_library_guile pnm_buildrequires_library_libidn

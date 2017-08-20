@@ -40,8 +40,8 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires: SFEgmp
 Requires:      SFEgmp
-#not in version 1.8.8 BuildRequires: SFElibunistring
-#not in version 1.8.8 Requires:      SFElibunistring
+#not in version 1.8.8 BuildRequires: SFElibunistring-gnu
+#not in version 1.8.8 Requires:      SFElibunistring-gnu
 BuildRequires:  %{pnm_buildrequires_SFEautomake_115}
 BuildRequires: %{pnm_buildrequires_SUNWlibtool_devel}
 Requires:      %{pnm_requires_SUNWlibtool}

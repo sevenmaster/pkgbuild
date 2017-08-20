@@ -3,7 +3,7 @@
 #
 
 Name:         gnupg
-Version:      2.0.22
+Version:      2.0.30
 Release:      1
 Summary:      gnupg - GNU Utility for data encryption and digital signatures.
 License:      GPL
@@ -29,22 +29,19 @@ these versions of PGP 2.
 %setup -n %{name}-%{version}
 
 %build
-%if %build_l10n
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
                         --prefix=%{_prefix} \
                         --libexecdir=%{_libexecdir} \
                         --mandir=%{_mandir}         \
                         --infodir=%{_datadir}/info  \
+                        --enable-largefile          \
+                        --disable-selinux-support   \
+                        --enable-nls                \
+%if %build_l10n
                         --with-included-gettext     \
-#  --with-libassuan-prefix=PFX
-%else
-CFLAGS="$RPM_OPT_FLAGS" ./configure \
-                        --prefix=%{_prefix} \
-                        --libexecdir=%{_libexecdir} \
-			--mandir=%{_mandir}         \
-			--infodir=%{_datadir}/info  \
-#  --with-libassuan-prefix=PFX
 %endif
+
+#  --with-libassuan-prefix=PFX
 
 make 
 
@@ -87,6 +84,11 @@ fi
 %attr (0755,root,root) %{_libexecdir}/gnupg/*
 
 %changelog -n gnupg
+* Tue Aug 15 2017 - Thomas Wagner
+- bump to 2.0.30
+- change (Build)Requrires to pnm_macros (e.g. OM)
+- fix IPS_package_name
+- fix build with gcc (e.g. OM)
 * Mon Oct 14 2013 - Thomas Wagner
 - bump to 2.0.22
 * Mon Jan 21 2008 - moinak.ghosh@sun.com
