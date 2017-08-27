@@ -7,17 +7,17 @@
 Name:		ldns
 URL:		http://www.nlnetlabs.nl/projects/ldns/
 Summary:	ldns library for DNS programming
-Version:	1.6.17
+Version:	1.7.0
 Group:		System/Libraries
 License:	BSD
 Source:		http://www.nlnetlabs.nl/downloads/%{name}/%{name}-%{version}.tar.gz 
-Patch1:         ldns-01-doxyparse.pl-perl5.22-bug-554982.diff
+#retired Patch1:         ldns-01-doxyparse.pl-perl5.22-bug-554982.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %{name}-%{version}
 
-%patch1 -p1
+#retired %patch1 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -37,6 +37,7 @@ export LDFLAGS="%_ldflags"
 	--disable-static \
 	--disable-ecdsa \
 	--disable-gost \
+        --disable-dane-verify \
 	--with-drill
 
 make -j$CPUS
@@ -50,6 +51,10 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Aug 27 2017 - Thomas Wagner
+- bump to 1.7.0
+- retire patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff
+- for now --disable-dane-verify (need OpenSSL 1.1.0)
 * Sat Okt 10 2015 - Thomas Wagner
 - add patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff (perl5.22, OIH, ...)
 * Sun May 04 2014 - Milan Jurik

@@ -98,6 +98,10 @@ rm -rf %{buildroot}
 %{_mandir}
 
 %changelog
+* Sun Aug 27 2017 - Thomas Wagner
+- bump to 1.7.0
+- retire patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff
+- for now --disable-dane-verify (need OpenSSL 1.1.0)
 * Sat Okt 10 2015 - Thomas Wagner
 - add patch1 ldns-01-doxyparse.pl-perl5.22-bug-554982.diff (perl5.22, OIH, ...)
 * Sun May 04 2014 - Milan Jurik
