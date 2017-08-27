@@ -9,11 +9,13 @@
 Summary:	Validating, recursive, and caching DNS resolver
 IPS_Package_Name:	service/network/dns/unbound
 Name:		SFEunbound
-Version:	1.5.5
+#1.6.5
+Version:	1.5.10
 License:	BSD
 URL:		http://www.nlnetlabs.nl/unbound/
 Source:		http://www.unbound.net/downloads/unbound-%{version}.tar.gz
 Source1:	unbound.xml
+Patch1:         unbound-01-add-inlude-limits.h.diff
 Group:		System/Services
 BuildRoot:	%{_tmppath}/unbound-%{version}-build
 SUNW_Copyright:	unbound.copyright
@@ -63,7 +65,7 @@ LDFLAGS="-lsocket -lnsl" \
 	--with-conf-file=%{_sysconfdir}/unbound/unbound.conf \
 	--with-pidfile=%{_localstatedir}/run/unbound.pid
 
-make -j$CPUS
+make V=2 -j$CPUS
 
 %install
 rm -rf %{buildroot}
@@ -108,8 +110,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 ) | $BASEDIR/var/lib/postrun/postrun -i -a
 
 %actions
-group groupname="unbound"
-user ftpuser=false gcos-field="Unbound Reserved UID" username="unbound" password=NP group="unbound"
+#group groupname="unbound"
+user ftpuser=false gcos-field="Unbound Reserved UID" username="unbound" password=NP group="other"
 
 
 %files
@@ -120,8 +122,10 @@ user ftpuser=false gcos-field="Unbound Reserved UID" username="unbound" password
 %dir %attr (0755, root, other) %{_datadir}/doc/unbound
 %attr(0644, root, other) %{_datadir}/doc/unbound/*
 %dir %attr (0755, root, sys) %{_sysconfdir}
-%dir %attr(0700, unbound, unbound) %{_sysconfdir}/unbound
-%attr(0644, unbound, unbound) %config(noreplace) %{_sysconfdir}/unbound/unbound.conf
+#%dir %attr(0700, unbound, unbound) %{_sysconfdir}/unbound
+%dir %attr(0700, unbound, other) %{_sysconfdir}/unbound
+#%attr(0644, unbound, unbound) %config(noreplace) %{_sysconfdir}/unbound/unbound.conf
+%attr(0644, unbound, other) %config(noreplace) %{_sysconfdir}/unbound/unbound.conf
 %dir %attr (0755, root, sys) %{_localstatedir}
 %dir %attr (0755, root, sys) %{_localstatedir}/svc
 %dir %attr (0755, root, sys) %{_localstatedir}/svc/manifest
@@ -134,6 +138,11 @@ user ftpuser=false gcos-field="Unbound Reserved UID" username="unbound" password
 %{_libdir}/libunbound*
 
 %changelog
+* Sun Aug 27 2017 - Thomas Wagner
+- bump to 1.5.10
+- add patch1 unbound-01-add-inlude-limits.h.diff
+* Wed Jan 13 2016 - Thomas Wagner
+- %action group groupname="unbound" throws sometimes an error 'gid' at pkg install, try fixed "other" for the moment
 * Sat Oct 10 2015 - Thomas Wagner
 - bump to 1.5.5
 - add (Build)Requires %{pnm_buildrequires_SUNWopenssl_devel}, SUNWflexlex, SUNWlexpt, %include packagenamemacros.inc
