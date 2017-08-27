@@ -1,0 +1,11 @@
+--- unbound-1.5.10/smallapp/unbound-checkconf.c.orig	2017-08-27 16:40:54.850472736 +0200
++++ unbound-1.5.10/smallapp/unbound-checkconf.c	2017-08-27 16:40:23.137667007 +0200
+@@ -42,6 +42,8 @@
+  * Exit status 1 means an error.
+  */
+ 
++#include <limits.h>
++
+ 
+ #include "config.h"
+ #include "util/log.h"
