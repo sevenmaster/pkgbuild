@@ -46,8 +46,35 @@
 #add make to onbld
 %define pnm_buildrequires_SUNWonbld		developer/build/make,developer/build/onbld
 
+#OmniOS doesn't have it
+##%define pnm_buildrequires_SUNWgnupg_devel	SFEgnupg2
+##%define pnm_requires_SUNWgnupg			SFEgnupg2
+##%define pnm_buildrequires_crypto_gnupg		SFEgnupg2
+##%define pnm_requires_crypto_gnupg		SFEgnupg2
+##%define pnm_buildrequires_sfe_crypto_gnupg	SFEgnupg2
+##%define pnm_requires_sfe_crypto_gnupg		SFEgnupg2
+%define pnm_buildrequires_library_pth		SFEpth-gnu
+%define pnm_requires_library_pth		SFEpth-gnu
+%define pnm_buildrequires_SUNWpth_devel		SFEpth-gnu
+%define pnm_buildrequires_SUNWpth		SFEpth-gnu
+%define pnm_requires_SUNWpth			SFEpth-gnu
+
+%define pnm_buildrequires_SUNWslang_devel	SFEslang
+%define pnm_buildrequires_SUNWslang		SFEslang
+%define pnm_requires_SUNWslang			SFEslang
+
+%define pnm_buildrequires_SUNWpng_devel		SFElibpng
+%define pnm_buildrequires_SUNWpng		SFElibpng
+%define pnm_requires_SUNWpng			SFElibpng
+
+
 
 %changelog
+* Tue Sep  5 2017 - Thomas Wagner
+- use for pnm_buildrequires_SUNWslang_devel SFEslang (OM)
+- use for pnm_buildrequires_SUNWpng_devel SFElibpng (OM)
+##* Sun Aug 13 2017 - Thomas Wagner
+##- add pnm_buildrequires_SUNWgnupg SFEgnupg2 (OM)
 * Tue Feb 14 2017 - Thomas Wagner
 - add developer/build/make to pnm macro pnm_buildrequires_SUNWonbld (developer/build/onbld) (OM)
 * Sun Jul 31 2016 - Thomas Wagner

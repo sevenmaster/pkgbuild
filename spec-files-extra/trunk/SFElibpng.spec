@@ -5,7 +5,7 @@
 %include usr-gnu.inc
 
 %define src_name	libpng
-%define src_version	1.5.10
+%define src_version	1.6.32
 %define pkg_release	1
 
 # =========================================================================== 
@@ -19,12 +19,13 @@ SUNW_BaseDir:	%{_basedir}
 # Tag definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 Name:         	%{src_name}
-IPS_Package_Name:	 image/library/libpng15
+IPS_Package_Name:	 image/library/libpng16
 Summary:      	libpng - reference library for use in applications that create and manipulate PNG (Portable Network Graphics) raster image files
 Version:      	%{src_version}
 Release:      	%{pkg_release}
 License:      	http://www.libpng.org/pub/png/src/libpng-LICENSE.txt
-Source:         %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.bz2
+#Source:         %{sf_download}/%{src_name}/%{src_name}-%{version}.tar.bz2
+Source:         ftp://ftp-osl.osuosl.org/pub/libpng/src/libpng16/libpng-%{version}.tar.gz
 Patch1:         libpng-01-no_ld_version_script.diff
 URL:            http://www.libpng.org
 Packager:     	Shivakumar GN
@@ -70,14 +71,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libpng*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*.h
-%dir %attr (0755, root, bin) %{_includedir}/libpng15
-%{_includedir}/libpng15/*.h
+%dir %attr (0755, root, bin) %{_includedir}/libpng*
+%{_includedir}/libpng*/*.h
 %dir %attr (0755, root, other) %{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/man
 
 %changelog
+* Tue Sep  5 2017 - Thomas Wagner
+- bumped to 1.6.32
 * Tue May 1 2012 - Logan Bruns <logan@gedanken.org>
 - moved to /usr/gnu.
 * Sun Apr 29 2012 - Logan Bruns <logan@gedanken.org>
