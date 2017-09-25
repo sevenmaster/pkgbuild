@@ -136,7 +136,7 @@ IPS_Package_Name:	 service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.2.2
+Version:                 3.2.3
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1072,6 +1072,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon Sep 25 2017 - Thomas Wagner
+- bump to 3.2.3
 * Thu Jul 13 2017 - Thomas Wagner
 - update path to sendmail.postfix in Source5 postfix-spamassassin-wiki.apache.org-filter.sh
 * Sun Jun 11 2017 - Thomas Wagner
