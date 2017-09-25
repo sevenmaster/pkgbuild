@@ -51,7 +51,7 @@ openvpn
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
 export CFLAGS="%optflags"
-%if cc_is_gcc
+%if %{cc_is_gcc}
 export CFLAGS="${CFLAGS} -std=c99"
 %endif
 export LDFLAGS="%_ldflags"
