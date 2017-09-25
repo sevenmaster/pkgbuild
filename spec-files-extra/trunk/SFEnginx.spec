@@ -37,7 +37,7 @@
 
 Name:		SFEnginx
 IPS_Package_Name:	web/server/nginx
-Version:	1.10.3
+Version:	1.12.1
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -227,6 +227,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 21 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.12.1
+* Thu May 18 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 1.12.0
 * Thu Feb 02 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 1.10.3
 * Wed Jan 25 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
