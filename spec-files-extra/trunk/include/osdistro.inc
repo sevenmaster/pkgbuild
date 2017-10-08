@@ -575,9 +575,14 @@
 # lets use this and hope no one ever uninstalls this package
 #    FMRI: pkg://solaris/release/name@5.12-5.12.0.0.0.63.1:20141215T141436Z
 # could use as well: system/core-os or system/kernel
+#Update: sometimes we may see "name" and "entire" diverting in version numbers. That is a SRU might not necessarily update the "name" package.
+#Now we collect from more packages and just use the one with the highest version
+#testing: (echo 0.5.11,5.11-0.175.3.19.0.5.0; echo 0.5.11,5.11-0.175.3.11.0.4.0; echo 0.5.11,5.11-0.175.3.19.0.5.0) | sort -n -t'.' | tail -1
+
 %if %{os2nnn}
 #entire might be uninstalled, so use release/name instead. You don't uninstall it! If you do, then don't blame us if pnm_macros get confused.
-%define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
+#%define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
+%define osdistro_entire %( pkg info release/name entire | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
 %endif
 
 #older hipster doesn't match entire and release/name version packages. People! Don't uninstall entire on a OIHipster machine please!
