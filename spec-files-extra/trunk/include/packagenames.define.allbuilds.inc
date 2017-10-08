@@ -869,11 +869,11 @@
 %define pnm_buildrequires_library_security_libgpg_error	library/security/libgpg-error
 %define pnm_requires_library_security_libgpg_error	library/security/libgpg-error
 #sfe
-%define pnm_buildrequires_SFElibgpg_error_devel			library/security/libgpg-error
-%define pnm_buildrequires_SFElibgpg_error			library/security/libgpg-error
-%define pnm_requires_SFElibgpg_error				library/security/libgpg-error
-%define pnm_buildrequires_sfe_library_security_libgpg_error	library/security/libgpg-error
-%define pnm_requires_sfe_library_security_libgpg_error		library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error_gnu_devel			library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error_gnu			library/security/libgpg-error
+%define pnm_requires_SFElibgpg_error_gnu				library/security/libgpg-error
+%define pnm_buildrequires_library_security_libgpg_error_gnu	library/security/libgpg-error
+%define pnm_requires_library_security_libgpg_error_gnu		library/security/libgpg-error
 %endif
 #END >=130
 
@@ -906,17 +906,17 @@
 #not set %define pnm_buildrequires_system_library_security_libgcrypt	SFElibgcrypt-devel
 #not set %define pnm_requires_system_library_security_libgcrypt		SFElibgcrypt
 #sunw
-%define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-devel
-%define pnm_buildrequires_SUNWlibgpg_error		SFElibgpg-error-devel
-%define pnm_requires_SUNWlibgpg_error			SUNWlibgpg-error
-%define pnm_buildrequires_library_security_libgpg_error	SFElibgpg-error-devel
-%define pnm_requires_library_security_libgpg_error	SFElibgpg-error
+%define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-gnu-devel
+%define pnm_buildrequires_SUNWlibgpg_error		SFElibgpg-error-gnu-devel
+%define pnm_requires_SUNWlibgpg_error			SFElibgpg-error-gnu
+%define pnm_buildrequires_library_security_libgpg_error	SFElibgpg-error-gnu-devel
+%define pnm_requires_library_security_libgpg_error	SFElibgpg-error-gnu
 #sfe
-%define pnm_buildrequires_SFElibgpg_error_devel	SFElibgpg-error-devel
-%define pnm_buildrequires_SFElibgpg_error		SFElibgpg-error-devel
-%define pnm_requires_SFElibgpg_error			SFElibgpg-error
-%define pnm_buildrequires_sfe_library_security_libgpg_error	SFElibgpg-error-devel
-%define pnm_requires_sfe_library_security_libgpg_error	SFElibgpg-error
+%define pnm_buildrequires_SFElibgpg_error_gnu_devel		SFElibgpg-error-gnu-devel
+%define pnm_buildrequires_SFElibgpg_error_gnu		SFElibgpg-error-gnu-devel
+%define pnm_requires_SFElibgpg_error_gnu			SFElibgpg-error-gnu
+%define pnm_buildrequires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu-devel
+%define pnm_requires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu
 %endif
 #END <130
 
@@ -953,11 +953,11 @@
 %define pnm_buildrequires_library_security_libgpg_error	library/security/libgpg-error
 %define pnm_requires_library_security_libgpg_error	library/security/libgpg-error
 #sfe
-%define pnm_buildrequires_SFElibgpg_error_devel		library/security/libgpg-error
-%define pnm_buildrequires_SFElibgpg_error		library/security/libgpg-error
-%define pnm_requires_SFElibgpg_error			library/security/libgpg-error
-%define pnm_buildrequires_sfe_library_security_libgpg_error	library/security/libgpg-error
-%define pnm_requires_sfe_library_security_libgpg_error	library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error_gnu_devel		library/security/libgpg-error
+%define pnm_buildrequires_SFElibgpg_error_gnu		library/security/libgpg-error
+%define pnm_requires_SFElibgpg_error_gnu			library/security/libgpg-error
+%define pnm_buildrequires_library_security_libgpg_error_gnu	library/security/libgpg-error
+%define pnm_requires_library_security_libgpg_error_gnu	library/security/libgpg-error
 
 %define pnm_buildrequires_developer_documentation_tool_xmlto	text/xmlto
 %define pnm_requires_developer_documentation_tool_xmlto		text/xmlto
@@ -966,6 +966,38 @@
 
 %endif
 #END oihipster
+
+
+
+%if %{omnios}
+#sunw
+%define pnm_buildrequires_SUNWgnupg_devel	SFEgnupg2
+%define pnm_buildrequires_SUNWgnupg		SFEgnupg2
+%define pnm_requires_SUNWgnupg			SFEgnupg2
+%define pnm_buildrequires_crypto_gnupg	    	SFEgnupg2
+%define pnm_requires_crypto_gnupg		SFEgnupg2
+#sfe
+%define pnm_buildrequires_SFEgnupg2_devel	SFEgnupg2
+%define pnm_buildrequires_SFEgnupg2		SFEgnupg2
+%define pnm_requires_SFEgnupg2			SFEgnupg2
+%define pnm_buildrequires_sfe_crypto_gnupg	SFEgnupg2
+%define pnm_requires_sfe_crypto_gnupg		SFEgnupg2
+##TODO## is libgcrypt needed?
+##TODO## is libgpg-error needed?
+#sunw
+%define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-gnu
+%define pnm_buildrequires_SUNWlibgpg_error		SFElibgpg-error-gnu
+%define pnm_requires_SUNWlibgpg_error			SFElibgpg-error-gnu
+%define pnm_buildrequires_library_security_libgpg_error	SFElibgpg-error-gnu
+%define pnm_requires_library_security_libgpg_error	SFElibgpg-error-gnu
+#sfe
+%define pnm_buildrequires_SFElibgpg_error_gnu_devel		SFElibgpg-error-gnu
+%define pnm_buildrequires_SFElibgpg_error_gnu		SFElibgpg-error-gnu
+%define pnm_requires_SFElibgpg_error_gnu			SFElibgpg-error-gnu
+%define pnm_buildrequires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu
+%define pnm_requires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu
+%endif
+#END omnios
 
 
 #SUNWfftw3 was added with build 107
@@ -1787,6 +1819,9 @@
 %define perl_major_version 5
 %define perl_major_minor_version 5.8
 %define perl_major_minor_micro_version 5.8.4
+%define perl_bitness    32
+%define perl_bitness_32 1
+%define perl_bitness_64 0
 
 ###TODO## not clear if we should require SUNWperl584core or SUNWperl584usr
 #both?
@@ -1817,6 +1852,9 @@
 %define perl_version 5.12
 %define perl_major_minor_version 5.12
 %define perl_major_minor_micro_version 5.12.5
+%define perl_bitness    32
+%define perl_bitness_32 1
+%define perl_bitness_64 0
 #runtime/perl-512 or library/perl-5/sun-solaris-512
 %define pnm_buildrequires_perl_default runtime/perl-512
 %define pnm_requires_perl_default	runtime/perl-512
@@ -1825,6 +1863,9 @@
 %define perl_major_minor_version 5.22
 %define perl_major_minor_micro_version 5.22.1
 #perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
 %define pnm_buildrequires_perl_default runtime/perl-522
 %define pnm_requires_perl_default	runtime/perl-522
 %endif
@@ -1918,6 +1959,56 @@
 %define perl_major_minor_version 5.16
 ##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
 %define perl_major_minor_micro_version 5.16.1
+#perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
+#runtime/perl-64
+%define pnm_buildrequires_perl_default runtime/perl-64
+%define pnm_requires_perl_default	runtime/perl-64
+%endif
+#END omnios
+
+#set perl5 for OmniOS Community Edition omniosce
+##NOTE## the default minimal install as of 0.151022 is *only* *32* *bit* perl
+#we want the future and this is runtime/perl-64
+
+# determine perl bittness by looking at libperl.so loaded by the perl binary
+#
+# perl -e 'foreach $inc ( @INC) { print $inc."\n" if -f "$inc/CORE/libperl.so"; }'
+# /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64
+# file /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+# /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB dynamic lib 80386 Version 1, dynamically linked, not stripped, no debugging information available
+
+#once runtime/perl-64 is installed, this overlays the 32-bit perl implementation when called by /usr/bin/perl and the like
+
+#          FMRI: pkg://omnios/entire@11-0.151014:20161027T172955Z
+#pkgbuild@omnios>  find /usr/perl5/ -name libperl.so -exec file {} \; -ls
+#/usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB shared object, Intel 80386, version 1, dynamically linked, not stripped
+#201298 1140 -r-xr-xr-x   1 root     bin       1812644 Dec  1  2016 /usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+#/usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so: ELF 64-bit LSB shared object, x86-64, version 1, dynamically linked, not stripped
+#202879 1156 -r-xr-xr-x   1 root     bin       1902280 Dec  1  2016 /usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so
+
+
+#          FMRI: pkg://omnios/entire@11-0.151022:20170511T002513Z
+#root@mailrouter:~#  find /usr/perl5/ -name libperl.so -exec file {} \; -ls
+#/usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so:    ELF 64-bit LSB dynamic lib AMD64 Version 1, dynamically linked, not stripped, no debugging information available
+# 9632 1370 -r-xr-xr-x   1 root     bin       2342992 Aug 13 19:16 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so
+#/usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB dynamic lib 80386 Version 1, dynamically linked, not stripped, no debugging information available
+#81673 1358 -r-xr-xr-x   1 root     bin       2179640 Jul 17 20:56 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+
+
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000000000000000000.0 )
+##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
+#set perl5 for OmniOS
+%define perl_version 5.22
+%define perl_major_minor_version 5.22
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.22.1
+#perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
 #runtime/perl-64
 %define pnm_buildrequires_perl_default runtime/perl-64
 %define pnm_requires_perl_default	runtime/perl-64
@@ -2281,6 +2372,39 @@
 %define pnm_buildrequires_library_python_importlib	SFEpython26-importlib
 %define pnm_requires_library_python_importlib		SFEpython26-importlib
 %endif
+
+#ipaddress module
+#python2.7 ... on Solaris 11 available from 11.3 SRU 14
+# library/python/ipaddress                          1.0.16-0.175.3.20.0.1.0    ---
+# library/python/ipaddress                          1.0.16-0.175.3.14.0.2.0    i--
+
+#python2.7 ... on Solaris 12 (later 11.4) available from 5.12.0.0.0.95.0
+# library/python/ipaddress  1.0.16-5.12.0.0.0.122.0    i--
+# library/python/ipaddress  1.0.16-5.12.0.0.0.115.0    ---
+# library/python/ipaddress  1.0.14-5.12.0.0.0.105.1    ---
+# library/python/ipaddress  1.0.14-5.12.0.0.0.95.0     ---
+
+#the Default
+%define pnm_buildrequires_library_python_ipaddress	SFEpython27-ipaddress
+%define pnm_requires_library_python_ipaddress		SFEpython27-ipaddress
+
+#need to uninstall once Solaris 11 SRU 14 is available
+##TODO## make SFEpython27-ipaddress.spec auto-uninstall once 11.3 SRU14 or later is to be installed
+%if %( expr %{solaris11} '&' %{osdistro_entire_padded_number4}.1 '>=' 0000017500030014000000020000.1 )
+%define pnm_buildrequires_library_python_ipaddress	library/python/ipaddress
+%define pnm_requires_library_python_ipaddress		library/python/ipaddress
+%endif
+
+##TODO## add Solaris 11.4 once it is available
+#simplified!
+%if %( expr %{solaris12} )
+%define pnm_buildrequires_library_python_ipaddress	library/python/ipaddress
+%define pnm_requires_library_python_ipaddress		library/python/ipaddress
+%endif
+
+##TODO## OpenIndiana
+##TODO## OmniOS
+
 
 
 #START setting mysql, defaults  - Part 1 of 3
@@ -2920,69 +3044,22 @@
 
 
 #START setting postgres, defaults  - Part 1 of 3
-#define postgres defaults, primarily shared settings and default version, paths
-#for older osbuilds/osdistros like OpenSolaris 134, SXCE/Nevada, Solaris 10
-#STRONG NOTE: located *below* the osdistro and osbuild sections, there is *another*
-#section evaluating the resulting paths on the disk, those are specific
-#to the postgres version in use. We hope, that we do not need to handle special
-#cases there, e.g. this would be an odd distro deciding to relocate to 
-#another path layout on disk....
-##TODO## Solaris 10's postgres versions *not yet* covered here
 
-##TODO## we might want to select the postgres versions maintained in SFE itself
-##TODO## to cover the 9.x series. This would need a *LOCAL* overright on your
-##TODO## system. Ideas on how to solve that are welcome! email me tom68@....
-
-#from SXCE on we have this: (mind the execptions below!)
-%define postgres_version 8.4
-%define postgres_major_version 8
-%define postgres_major_minor_version 8.4
-##not defined %define postgres_major_minor_micro_version 8.4.X
-
-#we simplify the variants for postgres, we try to use only the newer one
-#for *all* consuming spec files. Please not that in the future  we might
-#override on the local system with a much newer SFEpostgres version!
-#include files:
-#/usr/postgres/8.4/include/libpq-fe.h
-#/usr/postgres/8.4/include/server/libpq/libpq.h
-%define pnm_buildrequires_postgres_default	SUNWpostgr-84-devel
-%define pnm_requires_postgres_default		SUNWpostgr-84-libs
-
+#change of strategy. we want SFE postgres be the standard, only few exceptions from that for other OSses
+%define postgres_version 9.6
+%define postgres_major_version 9
+%define postgres_major_minor_version 9.6
+#%define pnm_buildrequires_postgres_default	database/postgres-common,service/database/postgres-96
+#%define pnm_requires_postgres_default		database/postgres-common,service/database/postgres-96
+%define pnm_buildrequires_postgres_default	SFEpostgres-common,SFEpostgres-96
+%define pnm_requires_postgres_default		SFEpostgres-common,SFEpostgres-96
 #END setting postgres, defaults  - Part 1 of 3
 
 #START setting postgres, changes with specific builds and distros  - Part 2 of 3
 #set postgres for Solaris11Express or OpenIndiana or OpenSolaris
-%if %{os2nnn}
-#older IPS systems
-%define pnm_buildrequires_postgres_default	SUNWpostgr-84-devel
-%define pnm_requires_postgres_default		SUNWpostgr-84-libs
-%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
-#from build 133 and up we have
-#database/postgres-51
-%define pnm_buildrequires_postgres_default	database/postgres-84/developer
-%define pnm_requires_postgres_default		database/postgres-84
-%endif
-#END >= 133
-%endif
-#END os2nnn
-
-
-#for better readability repeat. This time special switch for Solaris build >= 147
-%if %{os2nnn}
-%if %( expr %{osbuild} '>=' 147        '|' %{solaris12} '>=' 1 )
-#from build 147 and up we have postgres no longer in the Solaris repo
-#database/postgres-91 - we default to the latest SFE postgres we know that is working fine
-
-%define postgres_version 9.1
-%define postgres_major_version 9
-%define postgres_major_minor_version 9.1
-##not defined %define postgres_major_minor_micro_version 9.1.X
-
-%define pnm_buildrequires_postgres_default	database/postgres-91/developer
-%define pnm_requires_postgres_default		database/postgres-91
-%endif
-#END >= 147
-%endif
+#%if %{SXCE}
+#define once needed
+#%endif
 
 #Repeat for Hipster. This time special switch for hipster
 # Needs more confirmation
@@ -2991,7 +3068,7 @@
 %define postgres_version 9.6
 %define postgres_major_version 9
 %define postgres_major_minor_version 9.6
-##not defined %define postgres_major_minor_micro_version 9.6.4
+##not defined %define postgres_major_minor_micro_version 9.6.3
 
 %define pnm_buildrequires_postgres_default	service/database/postgres-96
 %define pnm_requires_postgres_default		service/database/postgres-96
@@ -3311,8 +3388,10 @@
 
 
 %changelog
+* Sun Jul 30 2017 - Thomas Wagner
+- change strategy for postgresql, default for pnm_buildrequires to be SFEpostgres-common,SFEpostgres-96, except on hipster
 * Sat Jul 29 2017 - Thomas Wagner
-- bump %define postgres_major_minor_version 9.6 (9.6.4) as the new SFE default postgresql version
+- bump %define postgres_major_minor_version 9.6 (9.6.3) as the new SFE default postgresql version
 - fix pnm_macro pnm_buildrequires_codec_ogg_vorbis as it was renamed/split into two packages: codec/libogg,codec/libvorbis
 * Sat Jan 14 2017 - Thomas Wagner
 - handle gstreamer update to 1.x for S12 - map most of the packages for now to: library/audio/gstreamer-1
