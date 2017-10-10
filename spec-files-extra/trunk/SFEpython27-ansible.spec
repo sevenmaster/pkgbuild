@@ -13,6 +13,7 @@
 Name:                    SFEpython27-ansible
 IPS_Package_Name:	 library/python/ansible-27
 Summary:                 ansible automation
+License:		GPLv3+
 URL:                     https://www.ansible.com/
 #                                  .0. release or a beta
 #2.4.0.0 .0. 0  release
@@ -48,16 +49,22 @@ BuildRequires:		library/python/pyyaml
 Requires:		library/python/pyyaml
 BuildRequires:		library/python/paramiko
 Requires:		library/python/paramiko
-BuildRequires:		library/python/setuptools
-Requires:		library/python/setuptools
+#BuildRequires:		library/python/setuptools
+#Requires:		library/python/setuptools
+#we need >= 1.0 and not 0.9.x unfortunately. We patch ansible to use the binary call to
+BuildRequires:		SFEpython27-setuptools
+Requires:		SFEpython27-setuptools
 BuildRequires:		library/python/pyasn1
 Requires:		library/python/pyasn1
 BuildRequires:		library/python/cryptography
 Requires:		library/python/cryptography
 BuildRequires:		library/python/six
 Requires:		library/python/six
-BuildRequires:		library/python/ipaddress
-Requires:		library/python/ipaddress
+#BuildRequires:		library/python/ipaddress
+#Requires:		library/python/ipaddress
+#NOTE: on S12 and on S11 from 1.0.16-0.175.3.14.0.2.0 and up, we have OS library/python/ipaddress - this gets auto-replaced through "renamed" flag in SFEpython27-ipaddress.spec-own-library/python/ipaddress@1.0.16-0.175.3.14.0.2.0 - so the OS library/python/ipaddress is the result
+BuildRequires:		SFEpython27-ipaddress
+Requires:		SFEpython27-ipaddress
 BuildRequires:		library/python/pycparser
 Requires:		library/python/pycparser
 
@@ -82,6 +89,12 @@ ansible -m ping yourlocalmachinename
 #%if %{omnios}
 #gsed -e '/std=c99/ s/^/#/' < setup.py
 #%endif
+
+#need to use *our* setuptools version >= 1.0 because Solaris Python 2.7 only has a 0.9 version
+#we change the call to our extra easy_install-2.7-sfe
+gsed -i -e '/candidate_easy_inst_basenames = ..easy_install/ s?easy_install?easy_install-2.7-sfe?' \
+    lib/ansible/modules/packaging/language/easy_install.py
+
 
 %build
 %if %( expr %{solaris11} '=' 1 '|' %{solaris12} '=' 1 )
