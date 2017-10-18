@@ -1,17 +1,20 @@
 # 
 # spec file for package SFEbacula 
 # 
+
 %include Solaris.inc
 %include packagenamemacros.inc
 
 %define src_name bacula
+%define mysql_version %(pkg mediator -H mysql | awk '{print $3}')
+%define mysql_pkg_version %(echo %{mysql_version} | sed -e 's/\.//g')
 
 Name:                SFEbacula
 IPS_Package_Name:	 backup/bacula
 License:             AGPLv3
 Summary:             The Bacula Open Source Network Backup Solution
-Version:             5.2.13
-Source:              http://downloads.sourceforge.net/sourceforge/bacula/bacula-5.2.13.tar.gz
+Version:             9.0.4
+Source:              http://downloads.sourceforge.net/sourceforge/bacula/bacula-%{version}.tar.gz
 Source1:			 bacula.xml
 URL:                 http://www.bacula.org/
 # SUNW_BaseDir:        %{_basedir}
@@ -19,9 +22,11 @@ SUNW_Copyright:      bacula.copyright
 Group:		    	 Applications/System
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires: %{pnm_buildrequires_mysql_default}
-Requires: %{pnm_requires_mysql_default}
-Requires: %{pnm_requires_SUNWmtx}
+BuildRequires: database/mysql-%{mysql_pkg_version}
+BuildRequires: database/mysql-%{mysql_pkg_version}/library
+Requires: database/mysql-%{mysql_pkg_version}
+Requires: database/mysql-%{mysql_pkg_version}/library
+Requires: SFEmtx
 
 %prep
 echo %{_sysconfdir}
@@ -33,15 +38,22 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
   CPUS=1
 fi
 
-export CFLAGS="%{optflags}"
-export LDFLAGS="%{_ldflags}"
+# Using the standard flags results in several problems with default values at runtime
+# Similar to http://bacula.10910.n7.nabble.com/bconsole-can-t-talk-to-bacula-dir-td84578.html
+
+#export CFLAGS="%{optflags}"
+#export CXXFLAGS="%{cxx_optflags}"
+#export LDFLAGS="%{_ldflags}"
 
 ./configure				\
 	--prefix=%{_prefix} \
-	--with-mysql=/usr/mysql/5.1 \
+	--with-mysql=/usr/mysql/%{mysql_version} \
 	--sysconfdir=%{_sysconfdir}/bacula \
+	--with-scriptdir=%{_sysconfdir}/bacula/scripts \
 	--with-working-dir=/var/bacula \
+	--with-logdir=/var/bacula \
 	--mandir=%{_datadir}/man \
+	--enable-batch-insert=no \
 	--enable-tray-monitor
 
 make -j $CPUS
@@ -69,18 +81,21 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) %{_sysconfdir}
 %dir %attr (0755, root, sys) %{_sysconfdir}/bacula
 %config(noreplace) %{_sysconfdir}/bacula/*.conf
-%{_sysconfdir}/bacula/bacula
-%{_sysconfdir}/bacula/*ctl*
-%{_sysconfdir}/bacula/bacula_config
-%{_sysconfdir}/bacula/bconsole
-%{_sysconfdir}/bacula/btraceback.*
-%{_sysconfdir}/bacula/*backup*
-%config(noreplace) %{_sysconfdir}/bacula/*changer
-%{_sysconfdir}/bacula/*database
-%{_sysconfdir}/bacula/*handler
-%{_sysconfdir}/bacula/*privileges
-%{_sysconfdir}/bacula/*tables
-%{_sysconfdir}/bacula/*.sql
+%dir %attr (0755, root, sys) %{_sysconfdir}/bacula/scripts
+%{_sysconfdir}/bacula/scripts/bacula
+%{_sysconfdir}/bacula/scripts/*ctl*
+%{_sysconfdir}/bacula/scripts/bacula_config
+%{_sysconfdir}/bacula/scripts/bconsole
+%{_sysconfdir}/bacula/scripts/btraceback.*
+%{_sysconfdir}/bacula/scripts/*backup*
+%{_sysconfdir}/bacula/scripts/*.desktop
+%config(noreplace) %{_sysconfdir}/bacula/scripts/*changer
+%config(noreplace) %{_sysconfdir}/bacula/scripts/*changer.conf
+%{_sysconfdir}/bacula/scripts/*database
+%{_sysconfdir}/bacula/scripts/*privileges
+%{_sysconfdir}/bacula/scripts/*tables
+%{_sysconfdir}/bacula/scripts/tapealert
+%{_sysconfdir}/bacula/scripts/*.sql
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/doc
 %dir %attr (0755, root, other) %{_datadir}/doc/bacula
@@ -99,6 +114,10 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/application/bacula/bacula.xml
 
 %changelog
+* Wed Oct 18 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Remove standard flags to fix runtime issues with default values
+* Fri Oct 06 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Bump to 9.0.4
 * Wed Apr 02 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Restrict %config tag to actual config files and changer scripts
 * Tue Apr 01 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
