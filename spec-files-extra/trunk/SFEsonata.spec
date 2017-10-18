@@ -10,7 +10,7 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define python_version 2.6
+%define python_version 2.7
 
 Name:		SFEsonata
 IPS_package_name: audio/mpd/sonata
@@ -24,7 +24,7 @@ Url:		http://sonata.berlios.de/
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: sonata.copyright
 
-Source0:	http://download.berlios.de/sonata/sonata-%{version}.tar.bz2
+Source0:	http://download.berlios.de/sonata/sonata-%{version}.tar.gz
 Patch0:		sonata-01-xfade.diff
 
 %include default-depend.inc
@@ -35,12 +35,12 @@ BuildRequires:	%{pnm_buildrequires_python_default}
 #BuildRequires:  SUNWgnome-python26-libs
 #BuildRequires:  SUNWgnome-python26-extras
 #BuildRequires:  SUNWdbus-python26
-BuildRequires:	SFEpython26-mpd
+BuildRequires:	SFEpython27-mpd
 Requires:	%{pnm_requires_python_default}
 #Requires:	SUNWgnome-python26-libs
 #Requires:	SUNWgnome-python26-extras
 #Requires:	SUNWdbus-python26
-Requires:	SFEpython26-mpd
+Requires:	SFEpython27-mpd
 
 Meta(info.maintainer):          James Lee <jlee@thestaticvoid.com>
 Meta(info.upstream):            Scott Horowitz <stonecrest@gmail.com>
@@ -107,6 +107,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 09 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- Change python_version to 2.7
 * Wed Feb 12 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add sonata-01-xfade.diff (patch for compatibility with mpd >=0.18)
 - include packagenamemacros.inc

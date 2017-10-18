@@ -18,7 +18,7 @@ IPS_Package_Name:	library/video/libass
 Summary:	Portable renderer for the ASS/SSA (Substation Alpha) subtitle format
 Group:		System/Multimedia Libraries
 URL:		https://github.com/libass/libass
-Version:	0.13.1
+Version:	0.13.7
 License:	ISC
 SUNW_Copyright:	libass.copyright
 SUNW_BaseDir:	%_basedir
@@ -100,6 +100,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 14 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 0.13.7
+* Wed Nov 02 2016 - Ian Johnson <ianj@tsundoku.ne.jp>
+- bump to 0.13.4
 * Sun Oct 30 2016 - Thomas Wagner
 - correct Requires to read SFEharfbuzz-gpp
 * Fri Feb 26 2016 - Thomas Wagner
