@@ -57,8 +57,8 @@ SUNW_Copyright:		icu.copyright
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-BuildRequires:		SFEgcc
-Requires:		SFEgccruntime
+#BuildRequires:		SFEgcc
+#Requires:		SFEgccruntime
 
 %package devel
 Summary:		%{summary} - development files
