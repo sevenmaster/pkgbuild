@@ -98,8 +98,8 @@
 	</dependent>
 
 	<exec_method type='method' name='start'
-		exec='/usr/bin/spamd -d -u spamd -g spamd'
-		timeout_seconds='0' />
+		exec='/usr/bin/spamd -d'
+		timeout_seconds='180' />
 
 	<exec_method type='method' name='stop'
 		exec=':kill'
