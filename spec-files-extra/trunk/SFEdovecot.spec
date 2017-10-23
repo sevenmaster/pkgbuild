@@ -51,7 +51,7 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see %define downloadversion 22 above
-Version:	2.2.31
+Version:	2.2.33.2
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -252,6 +252,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Mon Oct 23 2017 - Thomas Wagner
+- bump to 2.2.33.2
 * Fri Jul 28 2017 - Thomas Wagner
 - bump to 2.2.31
 * Sun Jun  4 2017 - Thomas Wagner
