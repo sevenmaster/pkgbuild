@@ -17,7 +17,7 @@ Name:                SFEfreeradius
 Summary:             FreeRADIUS - modular, high performance and feature-rich RADIUS suite
 IPS_Package_Name:    service/network/freeradius
 Group:               System/Services
-Version:             2.2.5
+Version:             2.2.10
 Source:              ftp://ftp.freeradius.org/pub/freeradius/freeradius-server-%{version}.tar.bz2
 Source2:	     freeradius.xml
 Source3:             svc-freeradius
@@ -275,6 +275,10 @@ user ftpuser=false gcos-field="freeradius" username="%{radiususer}" uid="%{radiu
 
 
 %changelog
+* Mon Oct 30 2017 - Thomas Wagner
+- bump to 2.2.10
+* Wed May 31 2017 - Thomas Wagner
+- bump to 2.2.9
 * Tue Jun 17 2014 - Thomas Wagner
 - add IPS_Package_Name and Group
 * Mon Jun 16 2014 - Thomas Wagner
