@@ -5,81 +5,6 @@
 ## https://github.com/sjorge/pkgsrc-blackdot/blob/master/samba-pbd/Makefile
 
 
-## was ist mit LD=gnu oder Sun
-
-
-##TODO## testen: (lpcfg_service ohne korrekte Adresse)
-#-fsanitize=address
-
-
-#könnte es vielleicht sein, dass ausgerechnet diese eine Datei nicht korrekt geladen wird?
-#
-#es faellt auf, dass alle anderen \.so die lpcfg_service kennen keine Adresse stehen haben sondern "UNDEF"
-#da dies wohl zur Laufzeit dazugelinkt werden soll
-#waere es eine Moeglichkeit das in die config als zu ladendes Modul reinzuschreiben oder findet man den 
-#Fehler darin, dass alle Module statisch-AUS geschaltet sind in configure...welches
-#modul müsste denn dann hinein in die statisch liste?
-
-#was ist an der Modul-Konfig zu ntvfs anders als bei den anderen, dass hier der Zugriff "SIGSEV" auf die Funktion
-#belohnt wird, und bei anderen modules aber nicht?
-#vielleicht gibt es eine Projekt-Definitionsdatei die sagt was vorausgesetzt wird
-
-#./bin/default/lib/ldb/libldb-cmdline-samba4.so:
-#./bin/default/lib/ldb/libldb-cmdline-samba4.so
-#./bin/default/lib/param/libsamba-hostconfig.so:
-#[973]   |    107008|       320|FUNC |GLOB |0    |14     |lpcfg_service
-#[1004]  |     84448|       628|FUNC |GLOB |0    |14     |lpcfg_service_ok
-#[724]   |    106960|        43|FUNC |GLOB |0    |14     |lpcfg_servicebynum
-#[1299]  |    107328|        11|FUNC |GLOB |0    |14     |lpcfg_servicename
-#./bin/default/lib/param/libsamba-hostconfig.so
-#./bin/default/lib/param/libsamba-hostconfig.inst.so:
-#[973]   |    106928|       320|FUNC |GLOB |0    |14     |lpcfg_service
-#[1004]  |     84368|       628|FUNC |GLOB |0    |14     |lpcfg_service_ok
-#[724]   |    106880|        43|FUNC |GLOB |0    |14     |lpcfg_servicebynum
-#[1299]  |    107248|        11|FUNC |GLOB |0    |14     |lpcfg_servicename
-#./bin/default/lib/param/libsamba-hostconfig.inst.so
-#./bin/default/lib/param/libserver-role-samba4.inst.so:
-
-
-
-
-
-
-
-
-##=>[1] lpcfg_service(0x0, 0x5d65b1b, 0x8071f30, 0x0, 0x803a030, 0x0), at 0x745a1da 
-##  [2] ntvfs_init(0xfeffe96c), at 0x5d78402 
-##  [3] samba_init_module(0x8076aa8, 0x70c0e8a, 0x4, 0x70c1538, 0xfeffe9ac, 0x70c0e42), at 0x5c1b638 
-##  [4] run_init_functions(0xfeffea2c, 0x1, 0xfeffec88, 0x805ce54, 0x808e7d0, 0x8056af7), at 0x70c1538 
-##  [5] 1(0x805ff2a, 0x806ffb4, 0xfeffec94, 0x805ffb1, 0x805ff7a, 0xfe7fa968), at 0x805ce54 
-##  [6] main(0x3, 0xfeffecd8, 0xfeffece8, 0xfe7fa968, 0xfeffeccc, 0x8057aa2), at 0x805ffb1 
-
-
-# -gdwarf-2"
-
-# runargs -i
-
-
-# run
-# ...
-
-
-# Reading wrepl.so
-# t@1 (l@1) signal SEGV (no mapping at the fault address) in lpcfg_service at 0x745a1da
-# 0x0745a1da: lpcfg_service+0x001a:       movl     0x0000002c(%eax),%eax
-# (dbx)
-# (dbx) where
-# current thread: t@1
-# =>[1] lpcfg_service(0x0, 0x5895adf, 0x8071728, 0x0, 0x803a030, 0x0), at 0x745a1da
-  # [2] ntvfs_init(0xfeffe9ec), at 0x58a83c2
-  # [3] samba_init_module(0x8075890, 0x70c0e8a, 0x4, 0x70c1538, 0xfeffea2c, 0x70c0e42), at 0x581b618
-  # [4] run_init_functions(0xfeffeaac, 0x1, 0xfeffed08, 0x805ce54, 0x808e7e0, 0x8056af7), at 0x70c1538
-  # [5] 1(0x805ff2a, 0x806ffb4, 0xfeffed14, 0x805ffb1, 0x805ff7a, 0xfe7fa968), at 0x805ce54
-  # [6] main(0x2, 0xfeffed58, 0xfeffed64, 0xfe7fa968, 0xfeffed4c, 0x8057aa2), at 0x805ffb1
-# (dbx) (dbx) Use `exit'
-# (dbx) exit
-# 
-
 
 
 ##TODO## ntp in Solaris11 has not been compiled with: Mar  4 20:06:07 s11175 ntpd[7788]: [ID 702911 daemon.warning] mssntp restrict bit ignored, this ntpd was configured without --enable-ntp-signd.
@@ -131,7 +56,7 @@ Name:                    SFEsamba46
 IPS_package_name:	 sfe/service/network/samba46
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.6.6
+Version:                 4.6.9
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -857,6 +782,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 31 2017 - Thomas Wagner
+- bump to 4.6.9
 * Sun Jul 30 2017 - Thomas Wagner
 - bump to 4.6.4
 - re-add SMF manifest for non-AD modes sambagnu-smbd.xml sambagnu-nmbd.xml sambagnu-winbindd.xml
