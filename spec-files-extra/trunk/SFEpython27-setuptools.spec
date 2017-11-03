@@ -12,7 +12,7 @@ Name:                    SFEpython27-setuptools
 IPS_Package_Name:	 sfe/library/python/setuptools-27
 Summary:	         Python setuptools (site-packages)
 URL:		         https://pypi.python.org/pypi/setuptools
-Version:                 36.5.0
+Version:                 36.6.0
 #https://github.com/pypa/setuptools/archive/v36.5.0.tar.gz
 Source:		         http://github.com/pypa/setuptools/archive/v%{version}.tar.gz?%{src_name}-%{version}.tar.gz
 SUNW_BaseDir:            %{_basedir}
@@ -112,6 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python%{python_version}
 
 %changelog
+* Fri Nov  3 2017 - Thomas Wagner
+- bump to 36.6.0
 * Sat Mar 25 2017 - Thomas Wagner
 - Initial spec file version 36.5.0
 - don't use spaces in filenames, as pkgbuild/IPS can't take them without workarounds
