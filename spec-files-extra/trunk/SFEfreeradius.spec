@@ -17,14 +17,14 @@ Name:                SFEfreeradius
 Summary:             FreeRADIUS - modular, high performance and feature-rich RADIUS suite
 IPS_Package_Name:    service/network/freeradius
 Group:               System/Services
-Version:             2.2.10
+Version:             3.0.15
 Source:              ftp://ftp.freeradius.org/pub/freeradius/freeradius-server-%{version}.tar.bz2
 Source2:	     freeradius.xml
 Source3:             svc-freeradius
 #Patch1:              freeradius-01-types.diff
 #Patch2:              freeradius-02-makefiles.diff
 #should be obsolete some day
-Patch3:              freeradius-03-libradius.h_sig_t.diff
+#obsolete with 3.x.x Patch3:              freeradius-03-libradius.h_sig_t.diff
 URL:                 http://www.freeradius.org/
 
 SUNW_BaseDir:        %{_basedir}
@@ -80,7 +80,7 @@ cp %{SOURCE3} svc-freeradius
 #%patch1 -p1
 #%patch2 -p1
 #should be obsolete some day
-%patch3 -p1
+#obsolete with 3.x.x %patch3 -p1
 
 #or skip defining struct utmp in rlm_unix.c -> error
 gsed -i.bak -e 's?(_sun)?(__sun)?' src/include/sysutmp.h src/include/libradius.h
@@ -275,6 +275,10 @@ user ftpuser=false gcos-field="freeradius" username="%{radiususer}" uid="%{radiu
 
 
 %changelog
+* Sun Nov  5 2017 - Thomas Wagner
+- remove obsolete patch3 freeradius-03-libradius.h_sig_t.diff
+* Mon Oct 30 2017 - Thomas Wagner
+- bump to 3.0.15
 * Mon Oct 30 2017 - Thomas Wagner
 - bump to 2.2.10
 * Wed May 31 2017 - Thomas Wagner
