@@ -37,6 +37,8 @@ export PATH=`pwd`/bin:$PATH
 
 export CFLAGS="%optflags -I/usr/include/gmp"
 export LDFLAGS="%_ldflags"
+export PKG_CONFIG_PATH="%{_pkg_config_path}"
+
 
 ./configure --prefix=%{_prefix}  \
             --bindir=%{_bindir}  \
@@ -64,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov  1 2017 - Thomas Wagner
+- remove typo
+- fix lining agains correct 64-bit files
 * Sun Jul 31 2016 - Thomas Wagner
 - check if infodir exists before trying to delete it (OM)
 * Tue May 24 2016 - Thomas Wagner

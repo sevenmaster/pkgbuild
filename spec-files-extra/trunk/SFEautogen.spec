@@ -1,5 +1,3 @@
-a
-
 #!!only for autogen version 5.16.2
 #build this spec on solaris 11 and OmniOS
 %if %( expr %{omnios} '+' %{solaris11} '<=' 0 )
@@ -46,6 +44,7 @@ Requires:      %{pnm_requires_SUNWguile}
 #BuildRequires: SUNWgnu-mp
 #BuildRequires:  SFEguile
 #Requires:       SFEguile
+
 
 %package devel
 Summary:                 %{summary} - development files
@@ -146,6 +145,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov  1 2017 - Thomas Wagner
+- remove typo
+- fix lining agains correct 64-bit files
 * Sun Jul 31 2016 - Thomas Wagner
 - check if infodir exists before trying to delete it (OM)
 - re-enable (Build)Requires %{pnm_buildrequires_SUNWguile_devel} (the one from OSDistro might be too old)

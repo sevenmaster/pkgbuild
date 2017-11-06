@@ -1,7 +1,7 @@
 #
 #
 Name:     	gnutls
-Version: 	3.5.14
+Version: 	3.5.16
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Docdir:         %{_datadir}/doc
@@ -84,6 +84,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov  1 2017 - Thomas Wagner
+- bump to 3.5.16
 * Sun Aug 20 2017 - Thomas Wagner
 - bump to 3.5.14
 - change (Build)Requires to SFElibunistring-gnu
