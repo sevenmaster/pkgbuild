@@ -21,11 +21,11 @@ IPS_package_name: library/perl-5/http-date
 Version:	6.02
 IPS_component_version: 6.2
 Group:          Development/Libraries                    
-Summary:	HTTP::Date - Date conversion for HTTP date formats
+Summary:	HTTP::Date - HTTP::Date - Date conversion for HTTP date formats
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTTP-Date-%{tarball_version}.tar.gz
@@ -34,11 +34,12 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Gisle Aas <gisle@ActiveState.com>
+Meta(info.upstream_url):        http://search.cpan.org/~gaas/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
+HTTP::Date
 HTTP::Date
 Date conversion for HTTP date formats
 
@@ -61,7 +62,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -107,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Aug 12 2017 - Thomas Wagner
+- reworked, same version 6.02
 * Thu Mar 10 2016 - Thomas Wagner
 - rework / renew - note the new IPS_Package_Name
 * Sun May 27 2012 - Milan Jurik

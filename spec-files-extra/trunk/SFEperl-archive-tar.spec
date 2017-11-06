@@ -13,19 +13,19 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 2.04
+%define tarball_version 2.26
 %define tarball_name    Archive-Tar
 
 Name:		SFEperl-archive-tar
 IPS_package_name: library/perl-5/archive-tar
-Version:	2.04
-IPS_component_version: 2.4
+Version:	2.26
+IPS_component_version: 2.26
 Group:          Development/Libraries                    
-Summary:	Archive::Tar - Read, write and manipulate tar files
+Summary:	Archive::Tar - Archive::Tar
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~bingos/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/Archive-Tar-%{tarball_version}.tar.gz
@@ -34,11 +34,12 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Jos Boumans <kane@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Chris Williams <chris@bingosnet.co.uk>
+Meta(info.upstream_url):        http://search.cpan.org/~bingos/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
+Archive::Tar
 Archive::Tar
 Read, write and manipulate tar files
 
@@ -113,16 +114,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Wed Mar 16 2016 - Thomas Wagner
-- rework / renew version 1.84 -> 2.04 (IPS 2.4)
-* Tue May 15 2012 - Thomas Wagner
-- add missing INSTALLVENDORLIB to get path vendor_perl work on perl 5.12
-- bump version to 1.84 (1.84 on IPS)
-- add IPS_package_name library/perl-5/%{module_package_name}
-* Fri Jun 17 2011 - Thomas Wagner
-- change (Build)Requires to %{pnm_buildrequires_perl_default} and make module 
-  paths dynamic, define fewer directories in %files
-- BuildRequires: %{pnm_buildrequires_SUNWsfwhea}
-* Sat Jul 11 2009 - Thomas Wagner
-- Initial spec
-consider adding these modules to the "(Build)Requires section:  
+* Sat Aug 12 2017 - Thomas Wagner
+- reworked, bump version 2.04 -> 2.26

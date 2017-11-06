@@ -1,63 +1,61 @@
 #
-# spec file for package SFEperl-Net-DNS
+# spec file for package: SFEperl-net-dns
 #
-# includes module(s): Net-DNS
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
 #
-
-#TODO# re-work perl specific prerequisites...
-
-%define module_version 0.65
-%define module_name Net-DNS
-%define module_name_major Net
-%define module_package_name net-dns
-#still unused: %define module_name_minor DNS
-
-
+# includes module(s):
+#
 %include Solaris.inc
 %include packagenamemacros.inc
-Name:                    SFEperl-%{module_package_name}
-IPS_package_name:        library/perl-5/%{module_package_name}
-Summary:                 %{module_name}-%{module_version} PERL module
-Version:                 %{perl_version}.%{module_version}
-Source:                  http://www.cpan.org/modules/by-module/%{module_name_major}/%{module_name}-%{module_version}.tar.gz
-SUNW_BaseDir:            %{_basedir}
-BuildRoot:               %{_tmppath}/%{name}-%{version}-build
-BuildRequires:           %{pnm_buildrequires_perl_default}
-Requires:  	         %{pnm_requires_perl_default}
-BuildRequires:           %{pnm_buildrequires_SUNWsfwhea}
-BuildRequires:           SFEperl-io-socket-inet6
-Requires:                SFEperl-io-socket-inet6
 
-#TODO# re-work perl specific prerequisites...
-#prerequisites from the modules README
-#  (Test::More)
-#  IO::Socket
-#  MIME::Base64
-#  Digest::MD5
-#  Digest::HMAC_MD5
-#  Net::IP
+#consider switching off dependency_generator to speed up packaging step
+#if there are no binary objects in the package which link to external binaries
+%define _use_internal_dependency_generator 0
 
+%define tarball_version 1.11
+%define tarball_name    Net-DNS
 
-%ifarch sparc
-%define perl_dir sun4-solaris-64int
-%else
-%define perl_dir i86pc-solaris-64int 
-%endif
-%include default-depend.inc
+Name:		SFEperl-net-dns
+IPS_package_name: library/perl-5/net-dns
+Version:	1.11
+IPS_component_version: 1.11
+Group:          Development/Libraries                    
+Summary:	Net::DNS - Net::DNS
+License:	Artistic
+#Distribution:   OpenSolaris
+#Vendor:         OpenSolaris Community
+Url:		http://search.cpan.org/~nlnetlabs/%{tarball_name}-%{tarball_version}
+SUNW_Basedir:	%{_basedir}
+SUNW_Copyright: %{license}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/N/NL/NLNETLABS/Net-DNS-%{tarball_version}.tar.gz
+
+BuildRequires:	%{pnm_buildrequires_perl_default}
+Requires:	%{pnm_requires_perl_default}
+
+Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
+Meta(info.upstream):            NLnet Labs <cpan@nlnetlabs.nl>
+Meta(info.upstream_url):        http://search.cpan.org/~nlnetlabs/%{tarball_name}-%{tarball_version}
+Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
+
+%description
+Net::DNS
+Net::DNS
 
 %prep
-%setup -q            -c -n %name-%version
+%setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-cd %{module_name}-%{module_version}
 
-#NOTE# special to this module: --no-online-tests
-
-perl Makefile.PL \
-    UNINST=0 \
+if test -f Makefile.PL
+  then
+  # style "Makefile.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
     INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
@@ -65,33 +63,61 @@ perl Makefile.PL \
     --no-online-tests \
     --no-IPv6-tests
 
-make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd %{module_name}-%{module_version}
-make install
+if test -f Makefile.PL
+   then
+   # style "Makefile.PL"
+   make install
+else
+   # style "Build.PL"
+   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build install
+fi
 
-rm -rf $RPM_BUILD_ROOT%{_prefix}/lib
-
-%{?pkgbuild_postprocess: %pkgbuild_postprocess -v -c "%{version}:%{jds_version}:%{name}:$RPM_ARCH:%(date +%%Y-%%m-%%d):%{support_level}" $RPM_BUILD_ROOT}
+find $RPM_BUILD_ROOT -name .packlist -exec %{__rm} {} \; -o -name perllocal.pod  -exec %{__rm} {} \;
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr (-, root, bin)
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/%{module_name_major}
-%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/%{module_name_major}/*
-%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto
-%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir}/auto/*
-%dir %attr(0755, root, sys) %{_datadir}
+%defattr(-,root,bin)
+%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
+%{_prefix}/%{perl_path_vendor_perl_version}/*
+#%dir %attr(0755,root,bin) %{_bindir}
+#%{_bindir}/*
+%dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
-%dir %attr(0755, root, bin) %{_mandir}/man3
-%{_mandir}/man3/*
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
+%{_mandir}/*/*
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
+* Sat Aug 12 2017 - Thomas Wagner
+- reworked, bump to version 0.65 -> 1.11
+- kept settings  --no-online-tests --no-IPv6-tests  for style Makefile.PL
 * Mon Dec 13 2011 - Thomas Wagner
 - add IPS_package_name library/perl-5/net-dns
 * Fri Jun 23 2011 - Thomas Wagner
