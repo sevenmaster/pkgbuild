@@ -35,8 +35,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 BuildRequires: SFElxml-gnu-devel
 Requires:      SFElxml-gnu
-BuildRequires: %{pnm_buildrequires_SFElibgpg_error_devel}
-Requires:      %{pnm_buildrequires_SFElibgpg_error}
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error_devel}
+Requires:      %{pnm_buildrequires_SUNWlibgpg_error}
 BuildRequires: %{pnm_buildrequires_SUNWlibgcrypt_devel}
 Requires:      %{pnm_buildrequires_SUNWlibgcrypt}
 BuildRequires: %{pnm_buildrequires_SUNWzlib_devel}
@@ -164,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 14 2017 - Thomas Wagner
+- change BuildRequires pnm macro
+- move modules into correct site-packages directory
 * Sun Jan 13 2013 - Thomas Wagner
 - fix Name: SFExslt-gnu -> SFElxsl-gnu
 - fix isaexec (hardlink)

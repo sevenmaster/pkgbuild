@@ -53,10 +53,16 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 rm -f $RPM_BUILD_ROOT/%{_libdir}/xml2Conf.sh
 
+#pyton modules started to appear in /usr/lib/python2.7/site-packages
+echo "%{_libdir}" | grep "/gnu/lib" && ls -1d $RPM_BUILD_ROOT/usr/lib/python*/site-packages && mv $RPM_BUILD_ROOT{_std_libdir} $RPM_BUILD_ROOT%{_prefix}/
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Aug 14 2017 - Thomas Wagner
+- change BuildRequires pnm macro
+- move modules into correct site-packages directory
 * Thu Mar 23 2017 - Thomas Wagner
 - bump to 2.9.4
 - add patch5 patch6 patch7 for CVE-2016-4658 and CVE-2016-5131
