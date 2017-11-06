@@ -1,3 +1,8 @@
+# 00:10 < leoric_> BTW, we miss this commit - https://github.com/gmarler/nicstat/commit/1aa6740f89269bf0f183ff63f0e1610ad3ce5e5f
+
+
+
+
 #
 # spec file for package SFEnicstat
 #
@@ -32,7 +37,8 @@ make
 rm -rf $RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
-cp -p .nicstat.`uname -o`_`uname -r | sed -e 's/5\.//'`_`uname -p` $RPM_BUILD_ROOT/%{_bindir}/nicstat
+#cp -p .nicstat.`uname -o`_`uname -r | sed -e 's/5\.//'`_`uname -p` $RPM_BUILD_ROOT/%{_bindir}/nicstat
+cp -p .nicstat.Solaris_`uname -r | sed -e 's/5\.//'`_`uname -p` $RPM_BUILD_ROOT/%{_bindir}/nicstat
 
 ##TODO## install Man pages, ...
 
