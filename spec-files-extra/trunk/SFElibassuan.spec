@@ -7,6 +7,10 @@
 %include usr-gnu.inc
 %include base.inc
 
+%include packagenamemacros.inc
+
+%define _use_internal_dependency_generator 0
+
 Name:		SFElibassuan
 IPS_Package_Name:	system/library/security/gnu/libassuan
 Summary:	An IPC libbray used by GnuPG 2, GPGME etc. (/usr/gnu)
@@ -21,11 +25,18 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWpth
-Requires: SUNWpth
-BuildRequires: SUNWlibgpg-error
-Requires: SUNWlibgpg-error
-Requires: SUNWtexi
+%if %{omnios}
+BuildRequires: %{pnm_buildrequires_SUNWpth}
+Requires: %{pnm_requires_SUNWpth}
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error}
+Requires: %{pnm_requires_SUNWlibgpg_error}
+%else
+BuildRequires: %{pnm_buildrequires_SUNWpth}
+Requires: %{pnm_requires_SUNWpth}
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error}
+Requires: %{pnm_requires_SUNWlibgpg_error}
+Requires: %{pnm_requires_SUNWtexi}
+%endif
 
 %description
 Libassuan is a small library implementing the so-called Assuan protocol. This
@@ -108,6 +119,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/info/*
 
 %changelog
+* Sun Aug 16 2015 - Thomas Wagner
+- fix order %include usr-g.*inc base.inc
 * Wed Oct  2 2013 - Thomas Wagner
 - %include usr-gnu.inc (S11 implements ver 2.0.1)
 - change IPS_Package_Name, add /gnu/
