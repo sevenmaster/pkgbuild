@@ -16,7 +16,7 @@ Summary:                 vanessa-logger - logging functions library to support p
 URL:                     http://www.vergenet.net/linux/perdition/
 #Version:                 n.m.o
 Version:		%{libvanessa_logger_version}
-Source:                  http://www.vergenet.net/linux/perdition/download/%{perditionparentversion}/vanessa_logger-%{version}.tar.gz
+Source:                  http://horms.net/projects/vanessa/download/vanessa_logger/%{version}/vanessa_logger-%{version}.tar.bz2
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 15 2017 - Thomas Wagner
+- bump to 0.0.10 (in file include/perditionparentversion.inc)
+- new download URL
 * Fri May 22 2015 - Thomas Wagner
 - add IPS_Package_Name
 * Sun Feb  2 2012 - Thomas Wagner

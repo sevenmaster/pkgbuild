@@ -16,7 +16,8 @@ Summary:                 vanessa-adt - abstract data type library to support per
 URL:                     http://www.vergenet.net/linux/perdition/
 #Version:                 n.m.o
 Version:		%{libvanessa_adt_version}
-Source:                  http://www.vergenet.net/linux/perdition/download/%{perditionparentversion}/vanessa_adt-%{version}.tar.gz
+#Source:                  http://www.vergenet.net/linux/perdition/download/%{perditionparentversion}/vanessa_adt-%{version}.tar.gz
+Source:                  http://horms.net/projects/vanessa/download/vanessa_adt/%{version}/vanessa_adt-%{version}.tar.bz2
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -73,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 15 2017 - Thomas Wagner
+- new Download URL
 * Fri May 22 2015 - Thomas Wagner
 - add IPS_Package_Name
 * Mon Aug 02 2010 - Thomas Wagner

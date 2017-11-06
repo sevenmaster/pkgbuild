@@ -17,7 +17,7 @@ Summary:                 vanessa-socket - TCP socket interface library to suppor
 URL:                     http://www.vergenet.net/linux/perdition/
 #Version:                 n.m.o
 Version:		%{libvanessa_socket_version}
-Source:                  http://www.vergenet.net/linux/perdition/download/%{perditionparentversion}/vanessa_socket-%{version}.tar.gz
+Source:                  http://horms.net/projects/vanessa/download/vanessa_socket/%{version}/vanessa_socket-%{version}.tar.bz2
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -80,6 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri May 22 2015 - Thomas Wagner
 - add IPS_Package_Name
+- new Download URL
 * Thu May 21 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibpopt_devel}, %include packagenamacros.inc
 * Mon Aug 02 2010 - Thomas Wagner
