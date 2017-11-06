@@ -5,6 +5,7 @@
 
 %include Solaris.inc
 %include usr-gnu.inc
+%include packagenamemacros.inc
 
 Name:                SFElibksba
 IPS_Package_Name:	system/library/security/libksba
@@ -20,9 +21,14 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWlibgpg-error
-Requires: SUNWlibgpg-error
-Requires: SUNWtexi
+%if %{omnios}
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error_devel}
+Requires:      %{pnm_requires_SUNWlibgpg_error}
+%else
+BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error_devel}
+Requires:      %{pnm_requires_SUNWlibgpg_error}
+Requires:      %{pnm_requires_SUNWtexi}
+%endif
 
 %prep
 %setup -q -n libksba-%version
@@ -87,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/info/*
 
 %changelog
+* Sun Aug 13 2017 - Thomas Wagner
+- change (Build)Requires to pnm_macros, %include packagenamemacros.inc
 * Sun Oct 30 2016 - Thomas Wagner
 - bump to 1.3.4
 * Wed Oct  2 2013 - Thomas Wagner
