@@ -25,7 +25,7 @@ Summary:	Package::Constants - Package::Constants
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~bingos/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/Package-Constants-%{tarball_version}.tar.gz
@@ -34,8 +34,8 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Jos Boumans <kane@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~kane/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Chris Williams <chris@bingosnet.co.uk>
+Meta(info.upstream_url):        http://search.cpan.org/~bingos/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
@@ -113,6 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Aug 12 2017 - Thomas Wagner
+- reworked, same version 0.06
 * Sun Jun 05 2016 - Thomas Wagner
 - bump to version 06 - reworked
 * Thu Nov 29 2012 - Thomas Wagner

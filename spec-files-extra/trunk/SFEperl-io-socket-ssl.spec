@@ -13,13 +13,13 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 2.024
+%define tarball_version 2.049
 %define tarball_name    IO-Socket-SSL
 
 Name:		SFEperl-io-socket-ssl
 IPS_package_name: library/perl-5/io-socket-ssl
-Version:	2.024
-IPS_component_version: 2.24
+Version:	2.049
+IPS_component_version: 2.49
 Group:          Development/Libraries                    
 Summary:	IO::Socket::SSL - IO::Socket::SSL
 License:	Artistic
@@ -44,6 +44,7 @@ Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
 IO::Socket::SSL
+IO::Socket::SSL
 This module is a true drop-in replacement for IO::Socket::INET that
 uses SSL to encrypt data before it is transferred to a remote server
 or client. IO::Socket::SSL supports all the extra features that one
@@ -56,6 +57,8 @@ mod_perl.
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
+export NO_NETWORK_TESTING=y
 
 if test -f Makefile.PL
   then
@@ -123,6 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+- reworked, bump version 2.024 -> 2.049
 * Tue Mar 22 2016 - Thomas Wagner
 - remove (Build)Requires SFEperl-io-socket
 * Wed Mar 16 2016 - Thomas Wagner

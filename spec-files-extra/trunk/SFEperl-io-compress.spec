@@ -1,5 +1,17 @@
+
+
+# Note spec file differs from Perl Module name and download tarball name
+
+# the upstream tarball and Perl module name do not match ... we try to make something useful out of this
+
+
+
+
+
 #
 # spec file for package: SFEperl-io-compress-base
+#
+# This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
 # includes module(s):
@@ -11,14 +23,16 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 2.069
-#Note: This is different from the Perl-Module-Name!
+%define tarball_version 2.074
+##NOTE## source tarball name differs!  %define tarball_name    IO-Compress-Base
 %define tarball_name    IO-Compress
 
+##NOTE## our package name differs   Name:		SFEperl-io-compress-base
 Name:		SFEperl-io-compress
+##NOTE## IPS package name differs #IPS_package_name: library/perl-5/io-compress-base
 IPS_package_name: library/perl-5/io-compress
-Version:	2.069
-IPS_component_version: 2.69
+Version:	2.074
+IPS_component_version: 2.74
 Group:          Development/Libraries                    
 Summary:	IO::Compress::Base - IO::Compress::Base
 License:	Artistic
@@ -43,6 +57,8 @@ IO::Compress::Base
 new package name is SFEperl-io-compress library/perl-5/io-compress (IPS)
 old package name was SFEperl-io-compress-base library/perl-5/io-compress-base (IPS)
 
+(sorry, there is a mixup of the Perl module name, the download tarball name and so on)
+
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
@@ -60,9 +76,16 @@ if test -f Makefile.PL
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
+
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -72,7 +95,9 @@ else
     --install_path bin=%{_bindir} \
     --install_path bindoc=%{_mandir}/man1 \
     --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
+    --destdir $RPM_BUILD_ROOT \
+
+
 
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
@@ -108,7 +133,10 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Fr. Mär 11 2016 - 
+* Sat Aug 12 2017 - Thomas Wagner
+- reworked, bump version 2.069 -> 2.074
+- kept the changed names for Package, IPS_Component_name, tarball variables
+* Fri Mar 11 2016 - 
 - initial spec
 - reworked / renewed version 2.62 -> 2.69 / 2.062 -> 2.069
 - keep shorter spec filename w/o -base

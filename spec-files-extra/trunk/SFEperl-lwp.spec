@@ -11,25 +11,26 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 6.15
+%define tarball_version 6.26
+#%define tarball_name    LWP
 %define tarball_name    libwww-perl
 
 Name:		SFEperl-lwp
 #IPS_package_name: library/perl-5/lwp
 IPS_Package_Name:	library/perl-5/libwww-perl-lwp
-Version:	6.15
-IPS_component_version: 6.15
+Version:	6.26
+IPS_component_version: 6.26
 Group:          Development/Libraries                    
-Summary:	LWP - Libwww-perl
+Summary:	LWP - LWP
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~oalders/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/libwww-perl-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/libwww-perl-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
@@ -49,8 +50,8 @@ BuildRequires:  SFEperl-net-http
 Requires:       SFEperl-net-http
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            The libwww-perl mailing list <libwww@perl.org>
-Meta(info.upstream_url):        http://search.cpan.org/~lwwwp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Olaf Alders <olaf@wundersolutions.com>
+Meta(info.upstream_url):        http://search.cpan.org/~oalders/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
@@ -76,7 +77,13 @@ if test -f Makefile.PL
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -122,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Fri Aug 12 2017 - Thomas Wagner
+- reworked / renewed version 6.15 -> 6.26
+- note: IPS_Component_Name different from what automatic script experimental/make_perl_cpan_settings.pl calculates
 * Fri Mar 11 2016 - Thomas Wagner
 - reworked / renewed version 6.05 -> 6.15
 * Sat Oct  5 2013 - Thomas Wagner
