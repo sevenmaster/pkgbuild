@@ -128,15 +128,15 @@
 %define	V_postfinger	1.30
 
 Name:                    SFEpostfix
-%if %( expr %{solaris12} '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000220000.0 )
+#%if %( expr %{hipster} '|' %{solaris12} '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000220000.0 )
 IPS_Package_Name:	 sfe/service/network/smtp/postfix
-%else
-IPS_Package_Name:	 service/network/smtp/postfix
-%endif
+#%else
+#IPS_Package_Name:	 service/network/smtp/postfix
+#%endif
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.2.3
+Version:                 3.2.4
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1072,6 +1072,10 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Nov  8 2017 - Thomas Wagner
+- bump to 3.2.4
+- make the IPS_package_name be sfe/service/network/smtp/postfix on all platforms (OIH version constraint pkg w/ same name, userland-incorporation would need facet.version unlock)
+##TODO## make a renamed-to package so old installs propperly upgrade to the new package name
 * Mon Sep 25 2017 - Thomas Wagner
 - bump to 3.2.3
 * Thu Jul 13 2017 - Thomas Wagner
