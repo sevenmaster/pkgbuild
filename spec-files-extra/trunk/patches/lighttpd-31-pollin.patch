@@ -1,0 +1,14 @@
+#adopted from OpenSolaris Userland
+
+--- src/fdevent_solaris_port.c.orig	2017-11-17 01:20:43.188851218 +0100
++++ src/fdevent_solaris_port.c	2017-11-17 01:23:20.735146807 +0100
+@@ -15,6 +15,9 @@
+ 
+ #ifdef FDEVENT_USE_SOLARIS_PORT
+ 
++/* For POLLIN and POLLOUT */
++#include <sys/poll.h>
++
+ static const int SOLARIS_PORT_POLL_READ       = POLLIN;
+ static const int SOLARIS_PORT_POLL_WRITE      = POLLOUT;
+ static const int SOLARIS_PORT_POLL_READ_WRITE = POLLIN & POLLOUT;
