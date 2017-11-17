@@ -1,0 +1,18 @@
+#adopted from solaris userland. modified to patch file mod_openssl.c instead of network.c
+
+Patch origin: in-house
+Patch status: Not suitable for upstream.
+
+Always disable SSLv3 and don't allow to enable it ever again.
+
+--- src/mod_openssl.c.orig	2017-11-11 17:30:25.000000000 +0100
++++ src/mod_openssl.c	2017-11-17 00:29:39.968350331 +0100
+@@ -739,7 +739,7 @@
+             }
+         }
+ 
+-        if (!s->ssl_use_sslv3 && 0 != SSL_OP_NO_SSLv3) {
++        if (1) {
+             /* disable SSLv3 */
+             if ((SSL_OP_NO_SSLv3
+                  & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3))
