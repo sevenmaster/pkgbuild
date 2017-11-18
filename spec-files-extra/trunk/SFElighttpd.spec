@@ -11,10 +11,17 @@
 
 Name:                SFElighttpd
 Summary:             Lighttpd Web Server
-IPS_package_name:    web/server/lighttpd-14
+IPS_package_name:    sfe/web/server/lighttpd-14
 Version:             1.4.48
 Source:              http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-%{version}.tar.gz 
-SUNW_BaseDir:        %{_basedir}
+Source2:             lighttpd-auth_attr
+Source3:             lighttpd-prof_attr
+Source4:             lighttpd-fcgi-php.conf
+Source5:             lighttpd-http-lighttpd14.xml
+Source6:             lighttpd-lighttpd.8.sunman
+Source7:             lighttpd-ssl.conf
+
+SUNW_BaseDir:        /
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 Patch1:              lighttpd-01-drop_privileges.patch
 Patch2:              lighttpd-02-sslv3-disable.patch
@@ -26,8 +33,6 @@ Patch21:             lighttpd-21-studio.patch
 #disabled# Patch22:             lighttpd-22-tests-perlver.patch
 Patch31:             lighttpd-31-pollin.patch
 
-#lighttpd-auth_attr
-#lighttpd-fcgi-php.conf
 #lighttpd-http-lighttpd14.xml
 #lighttpd-lighttpd.8.sunman
 #lighttpd-prof_attr
@@ -42,6 +47,9 @@ Patch31:             lighttpd-31-pollin.patch
 
 BuildRequires: %{pnm_buildrequires_SUNWpcre}
 Requires: %{pnm_requires_SUNWpcre}
+
+BuildRequires: %{pnm_buildrequires_library_file_monitor_gamin}
+Requires: %{pnm_requires_library_file_monitor_gamin}
 
 %prep
 %setup -q -n lighttpd-%version
@@ -69,8 +77,13 @@ export LDFLAGS="%_ldflags %{gnu_lib_path}"
 ./configure --prefix=%{_prefix}  \
             --mandir=%{_mandir}  \
             --with-openssl=/usr --with-attr --with-fam --with--gdbm \
-            --with-kerberos5 --with-ldap --with-lua --with-memcache \
+            --with-kerberos5 --with-ldap \
+--with-memcache \
+%if %{omnios}
+%else
+--with-lua \
             --with-mysql=%{_prefix}/%{mysql_default_prefix}/bin/mysql_config \
+%endif
             --without-attr \
 	    --with-pcre --with-webdav-locks --with-webdav-props
 
@@ -85,11 +98,42 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 rm ${RPM_BUILD_ROOT}%{_libdir}/mod_*.la
 
+ESCAPED_PKG_NAME=$( echo %{ips_package_name} | sed -e 's?/?_?g' )
+mkdir -p $RPM_BUILD_ROOT/etc/security/auth_attr.d/
+#Source2:             lighttpd-auth_attr
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/security/auth_attr.d/${ESCAPED_PKG_NAME}
+
+mkdir -p $RPM_BUILD_ROOT/etc/security/prof_attr.d/
+#Source3:             lighttpd-prof_attr
+cp -p  %{SOURCE3} $RPM_BUILD_ROOT/etc/security/prof_attr.d/${ESCAPED_PKG_NAME}
+
+mkdir -p $RPM_BUILD_ROOT/lib/svc/manifest/network
+#Source5:             lighttpd-http-lighttpd14.xml
+cp -p %{SOURCE5} ${RPM_BUILD_ROOT}/lib/svc/manifest/network/http-lighttpd14.xml
+
+#Source6:             lighttpd-lighttpd.8.sunman
+cp -p %{SOURCE6} ${RPM_BUILD_ROOT}%{_mandir}/man8/lighttpd.8.sunman
+
+
+#populate the config directory (will be tagged "renamenew" in IPS)
+TARGETDIR=${RPM_BUILD_ROOT}%{_sysconfdir}/lighttpd/1.4
+mkdir -p ${TARGETDIR}
+[ -d doc/config/conf.d ] && cp -pr doc/config/conf.d ${TARGETDIR}
+
+#Source4:             lighttpd-fcgi-php.conf
+cp -p %{SOURCE4} ${TARGETDIR}/conf.d/lighttpd-fcgi-php.conf 
+
+#Source7:             lighttpd-ssl.conf
+cp -p %{SOURCE7} ${TARGETDIR}/conf.d/lighttpd-ssl.conf 
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
+%attr (0755, root, sys) %dir %{_sysconfdir}
+%{_sysconfdir}/lighttpd*
 %dir %attr (0755, root, bin) %{_sbindir}
 %{_sbindir}/lighttpd
 %{_sbindir}/lighttpd-angel
@@ -97,9 +141,23 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mod*.so*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, bin) %{_mandir}
-%{_mandir}/man8/*.8
+%{_mandir}/man8/*
+%dir %attr (0755, root, sys) /etc/security
+%dir %attr (0755, root, sys) /etc/security/auth_attr.d
+%attr (0644, root, sys) /etc/security/auth_attr.d/*
+%dir %attr (0755, root, sys) /etc/security/prof_attr.d
+%attr (0644, root, sys) /etc/security/prof_attr.d/*
+
+
+%dir %attr (0755, root, sys) /lib/svc/manifest
+%dir %attr (0755, root, sys) /lib/svc/manifest/network
+%class(manifest) %attr(0444, root, sys)/lib/svc/manifest/network/*.xml
 
 %changelog
+* Sat Nov 18 2017 - Thomas Wagner
+- add (Build)Requires pnm_buildrequires_library_file_monitor_gamin
+* Fri Nov 17 2017 - Thomas Wagner
+- change IPS_Package_Name to sfe/web/server/lighttpd-14 (avoid clush with OS consolidation)
 * Thu Nov 16 2017 - Thomas Wagner
 - bump to 1.4.48
 - use pnm_macros for finding mysql_config 
