@@ -1,3 +1,7 @@
+##TODO## mkdir -p /var/lighttpd/1.4/logs
+##TODO##  537  sudo chown webservd:webservd /var/lighttpd/1.4/logs
+
+
 #
 # Copyright (c) 2011 Oracle Corporation
 # This file and all modifications and additions to the pristine
@@ -98,6 +102,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 rm ${RPM_BUILD_ROOT}%{_libdir}/mod_*.la
 
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lighttpd/1.4/logs
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lighttpd/1.4/docroot
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lighttpd/1.4/vhosts
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lighttpd/1.4/cache
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lighttpd/1.4/sockets
+
+
 ESCAPED_PKG_NAME=$( echo %{ips_package_name} | sed -e 's?/?_?g' )
 mkdir -p $RPM_BUILD_ROOT/etc/security/auth_attr.d/
 #Source2:             lighttpd-auth_attr
@@ -119,6 +130,8 @@ cp -p %{SOURCE6} ${RPM_BUILD_ROOT}%{_mandir}/man8/lighttpd.8.sunman
 TARGETDIR=${RPM_BUILD_ROOT}%{_sysconfdir}/lighttpd/1.4
 mkdir -p ${TARGETDIR}
 [ -d doc/config/conf.d ] && cp -pr doc/config/conf.d ${TARGETDIR}
+cp -p doc/config/lighttpd.conf doc/config/modules.conf  ${TARGETDIR}
+
 
 #Source4:             lighttpd-fcgi-php.conf
 cp -p %{SOURCE4} ${TARGETDIR}/conf.d/lighttpd-fcgi-php.conf 
@@ -153,9 +166,19 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, sys) /lib/svc/manifest/network
 %class(manifest) %attr(0444, root, sys)/lib/svc/manifest/network/*.xml
 
+%dir %attr (0700, webservd, webservd) %{_localstatedir}/lighttpd/1.4/logs
+
+%dir %attr (0755, webservd, webservd) %{_localstatedir}/lighttpd/1.4/docroot
+%dir %attr (0755, webservd, webservd) %{_localstatedir}/lighttpd/1.4/vhosts
+%dir %attr (0755, webservd, webservd) %{_localstatedir}/lighttpd/1.4/cache
+%dir %attr (0755, webservd, webservd) %{_localstatedir}/lighttpd/1.4/sockets
+
+
 %changelog
 * Sat Nov 18 2017 - Thomas Wagner
 - add (Build)Requires pnm_buildrequires_library_file_monitor_gamin
+- add lighttpd.conf modules.conf to package
+- add directories logs docroot vhosts cache sockets
 * Fri Nov 17 2017 - Thomas Wagner
 - change IPS_Package_Name to sfe/web/server/lighttpd-14 (avoid clush with OS consolidation)
 * Thu Nov 16 2017 - Thomas Wagner
