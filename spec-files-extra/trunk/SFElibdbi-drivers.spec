@@ -5,9 +5,14 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%define src_version 0.8.3-1
+#examples:
+#%define src_version 0.8.3-1
 #just in case, use for 0.8.3-1 -> 0.8.3.1
-%define ips_version 0.8.3.1
+#%define ips_version 0.8.3.1
+
+%define src_version 0.9.0
+#just in case, use for 0.9.0-1 -> 0.9.0.1
+%define ips_version 0.9.0
 
 %define src_name libdbi-drivers
 
@@ -22,7 +27,7 @@ Group:		System/Libraries
 License:	LGPL
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}_%{version}-build
-SUNW_Copyright: %{name}.copyright
+##TODO## SUNW_Copyright: %{name}.copyright
 
 %include default-depend.inc
 
@@ -107,5 +112,7 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Mar 15 2013 - Thomas Wagner
+- bump to 0.9.0
 * Sat Aug 11 2012 - Thomas Wagner
 - initial spec
