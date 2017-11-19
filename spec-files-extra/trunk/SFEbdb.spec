@@ -94,6 +94,8 @@ rm -rf %{buildroot}
 %{_docdir}/*
 
 %changelog
+##* Sat Feb 25 2017 - Thomas Wagner
+##- bump to 6.2.23
 * Wed Jan 22 2014 - Thomas Wagner
 - bump to 5.3.28
 * Tue Aug 28 2012 - Milan Jurik

@@ -4,7 +4,11 @@
 # includes module(s): libmtp
 #
 
-%define src_ver 1.0.1
+%include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
+
+%define src_ver 1.1.6
 %define src_name libmtp
 %define src_url http://jaist.dl.sourceforge.net/sourceforge/%{src_name}
 
@@ -13,14 +17,14 @@ Summary:	Implementation of Microsoft's Media Transfer Protocol (MTP)
 License:        LGPL
 Version:	%{src_ver}
 Source:		%{src_url}/%{src_name}-%{version}.tar.gz
-Patch1:		libmtp-01-wall.diff
-Patch2:		libmtp-02-u_int.diff
+#Patch1:		libmtp-01-wall.diff
+#Patch2:		libmtp-02-u_int.diff
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %{src_name}-%{version}
-%patch1 -p1
-%patch2 -p1
+#%patch1 -p1
+#%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -40,9 +44,9 @@ export CFLAGS="%optflags"
 export CC=gcc
 export CXX=g++
 export CXXFLAGS="%gcc_cxx_optflags"
-export LDFLAGS="%_ldflags"
+export LDFLAGS="%_ldflags -lusb"
 
-export LD_LIBRARY_PATH=/usr/gnu/lib
+#export LD_LIBRARY_PATH=/usr/gnu/lib
 
 #libtoolize -f -c
 #aclocal-1.10 -I m4
@@ -90,6 +94,12 @@ rm libmtp.pc.new
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Thu May 15 2014 - Thomas Wagner
+- Bump to 1.1.6
+- %include Solaris.inc
+* Thu Dec 13 2012 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
+- re-enable building doc, unconditionally
 * Fri Oct 23 2009 - jchoi42@pha.jhu.edu
 - Bump to 1.0.1, updated both patches to this version, add libiconv
 - changed to build against /usr/lib/g++/ and without libtool (officially available verson is too old)

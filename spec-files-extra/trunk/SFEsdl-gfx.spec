@@ -114,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 30 2014 - Thomas Wagner
+- add call to aclocal ($lt_unset CDPATH errors)
 * Fri Nov  2 2012 - Thomas Wagner
 - bump to 2.0.24
 - change (Build)Requires to %{pnm_buildrequires_SUNWlibsdl}, %include packagenamemacros.inc

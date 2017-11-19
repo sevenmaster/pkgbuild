@@ -31,12 +31,16 @@ Headers and libraries for developing code that uses xblas.
 %setup -q
 %patch1 -p1 -b .shared
 
+
 %build
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+
+export CONFIG_SHELL=/usr/bin/bash
 autoconf
 
 export CFLAGS="%optflags"
 export FCFLAGS="%optflags"
-export LDFLAGS="%_ldflags"
+#export LDFLAGS="%_ldflags"
 export FC=f77
 
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
@@ -44,11 +48,13 @@ if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
 	export FCFLAGS="-m64"
 fi
 
+
+perl -w -pi -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure
 ./configure --prefix=%{_prefix}	\
             --libdir=%{_libdir}
 make makefiles
 # smp_mflags doesn't work
-make lib
+make -j$CPUS lib
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_libdir}
@@ -64,6 +70,11 @@ install -m0644 src/*.h $RPM_BUILD_ROOT%{_includedir}
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Jun 17 2012 - Thomas Wagner
+- enable parallel make
+- force bash into configure
+* Sat May 22 2010 - Milan Jurik
+- initial import to SFE
 * Fri Aug 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> 1.0.248-2
 - drop README.devel, move README to -devel
 - don't bother deleting buildroot at the beginning of install

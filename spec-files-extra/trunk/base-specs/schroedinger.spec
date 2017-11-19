@@ -6,6 +6,11 @@ License:        LGPL/MIT/MPL
 URL:            http://diracvideo.org/
 #Source:         http://diracvideo.org/download/schroedinger/schroedinger-%{version}.tar.gz
 Source:         http://diracvideo.org/download/schroedinger/schroedinger-%{version}.tar.gz
+#####NEW  NEW   NEW - check + test this new URL
+#https://patch-diff.githubusercontent.com/raw/OpenIndiana/oi-userland/pull/3690.diff
+#COMPONENT_ARCHIVE_URL= \
+#-  http://diracvideo.org/download/schroedinger/$(COMPONENT_ARCHIVE)
+#+  https://launchpad.net/schroedinger/trunk/$(COMPONENT_VERSION)/+download/$(COMPONENT_ARCHIVE)
 Patch1:		schroedinger-01-return.diff
 Patch2:		schroedinger-02-testsuite.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build

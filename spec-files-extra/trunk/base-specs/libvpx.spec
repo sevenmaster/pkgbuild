@@ -38,9 +38,18 @@ fi
 %define _target sparc-solaris-gcc
 %endif
 
+export CC=gcc
+export CXX=g++
+
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{cxx_optflags}"
+export LDFLAGS="%{_ldflags}"
+
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} \
 	--enable-vp8 --enable-postproc --enable-runtime-cpu-detect \
-	--enable-shared --disable-examples \
+	--enable-shared \
+        --disable-static \
+        --disable-examples \
 	--disable-unit-tests \
 	--target=%{_target}
 
@@ -50,12 +59,22 @@ make -j $CPUS
 make install DESTDIR=$RPM_BUILD_ROOT
 
 # Clean up unpackaged files.
-rm $RPM_BUILD_ROOT%{_libdir}/*.*a
+ls -1 $RPM_BUILD_ROOT%{_libdir}/*.*a >/dev/null 2>&1 && rm $RPM_BUILD_ROOT%{_libdir}/*.*a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Jan 16 2017 - Thomas Wagner
+- --disable-static or get (S12)  [LD] libvpx.so.2.0.0 gar: `u' modifier ignored since `D' is the default (see `U') [STRIP] libvpx.a < libvpx_g.a CC: Fatal error in /usr/ccs/bin/ld Error 139
+- add CFLAGS, CXXFLAGS, LDFLAGS as on S12 with developerstudio12.5 linking by $CXX fails with error CC: Fatal error in /usr/ccs/bin/ld CC: Status 139
+* Tue Nov  9 2016 - Thomas Wagner
+- relocate to /usr/gnu (S12, all)
+- bump to 1.4.0.0.1 to better distinguish from OSDistro libpx (S12 and OIH only)
+* Sun Apr 24 2016 - Thomas Wagner
+- fix osdistro detection (OIH)
+* Wed Mar 16 2016 - Thomas Wagner
+- make IPS_Component_Version a bit higher to trick IPS solver on OpenIndiana Hipster to be SFE package selected over OIH one
 * Sat Feb 27 2016 - Thomas Wagner
 - bump to 1.4.0.0.1 trick the IPS solver to stay ahead with the OpenIndiana Hipster delivered version of libvpx by using IPS_Component_Version
 - fix download filename (no >v<)

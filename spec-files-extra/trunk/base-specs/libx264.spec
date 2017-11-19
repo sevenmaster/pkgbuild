@@ -85,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 - bump to x264-snapshot-20160401-2245
 * Sat Jan 30 2016 - Alex Viskovatoff <herzen@imap.cc>
 - bump to 20160129, updating x264_build to 148
+* Sat Dec 26 2015 - Thomas Wagner
+- update to 20150712, updating x264_build to 144
 * Thu Jan 30 2014 - Alex Viskovatoff
 - update to 20140129, updating x264_build to 140 and commenting out two patches
 * Sun Jan 12 2014 - Alex Viskovatoff

@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Tue Sep 15 2015 - Thomas Wagner
+- remove --with-drm
 * Sat May 22 2015 - pjama
 - change mod u+w on ltmain.sh to permit rm of same
 * Tue Dec 24 2013 - Thomas Wagner

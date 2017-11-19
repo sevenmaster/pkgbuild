@@ -103,6 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu May 15 2014 - Thomas Wagner
 - Bump to 1.1.6
+- %include Solaris.inc
 * Thu Dec 13 2012 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWdoxygen}, %include packagenamemacros.inc
 - re-enable building doc, unconditionally
