@@ -113,6 +113,11 @@
 %define enable_0at0_so_1 1
 
 %define enable_vdpau 1
+#default is enable_vdpau 1, but can be disabled:
+#have no nvidia driver on the system, don't want vdpau, then set pkgtool --without-vdpau
+%if 0%{?_without_vdpau:1}
+%define enable_vdpau 0
+%endif
 
 # SFE NEEDS TO ADD A helper-package containing vdpau.h / vdpau_x11.h / libvpdau.so
 #Nvidia stopped packaging the vdpau.h and vdpau_x11.h
@@ -259,6 +264,7 @@ Summary:                vlc - multimedia player and streaming server
 Version:                2.1.5
 Source:                 %{src_url}/%{version}/%{src_name}-%{version}.tar.xz
 Patch3:                vlc-03-211-oss.diff
+#prep2.2.4 Patch3:                vlc-03-222-oss.diff
 
 ## reminder: review if patches 4 .. 18 still valid/needed,
 ## just because something compiles doesn't mean a temporarily 
@@ -275,6 +281,15 @@ Patch21:               vlc-21-211-filesystem.c-NAME_MAX.diff
 #Patch29:               vlc-29-208-allow-for-avcodec-55.diff
 #Patch29:               vlc-29-2xx-allow-sout-for-avcodec-55.diff
 Patch29:               vlc-29-215-allow-for-avcodec-56.diff
+#prep2.2.4 Patch29:               vlc-29-222-allow-for-avcodec-56.diff
+#prep2.2.4 Patch31:               vlc-31-221-make-vlc_strerror_l_a_dummy_missing_strerror_l_in_libc.diff
+#prep2.2.4 #Patch33:		vlc-33-221-lua5.3_luaL_checkint_deprecated.diff
+#prep2.2.4 Patch33:		vlc-33-215-lua5.3_luaL_checkint_deprecated.diff
+#prep2.2.4 Patch34:		vlc-34-221-lua5.3_improve_compatibility_cli.lua.diff
+#prep2.2.4 Patch35:		vlc-35-221-lua5.2+_fix_HTTP_localstring.diff
+#prep2.2.4 #try this
+#prep2.2.4 #Patch37:                vlc-37-221-vdpau.c-git-20151206.diff
+
 
 #note: ts.c:2455:21: error: implicit declaration of function 'dvbpsi_SDTServiceAddDescriptor'
 #needs libdvbpsi >=0.1.6
@@ -307,6 +322,8 @@ Requires:       SUNWxorg-clientlibs
 BuildRequires:  %{pnm_buildrequires_SUNWsmba}
 Requires:  %{pnm_requires_SUNWsmba}
 %endif
+BuildRequires:  SFEgnutls
+Requires:       SFEgnutls
 BuildRequires:  SFElibfribidi-devel
 Requires:       SFElibfribidi
 BuildRequires:  %{pnm_buildrequires_SUNWfreetype2}
@@ -348,7 +365,7 @@ Requires:       SFElibtar
 BuildRequires:	%{pnm_buildrequires_SUNWlua}
 Requires:	%{pnm_buildrequires_SUNWlua}
 BuildRequires: %{pnm_buildrequires_SUNWlibgcrypt}
-BuildRequires: SUNWlibproxy
+BuildRequires: %{pnm_buildrequires_SUNWlibproxy}
 BuildRequires: SUNWgnome-vfs
 BuildRequires: %{pnm_buildrequires_SUNWlibrsvg}
 BuildRequires: SFEtwolame
@@ -357,7 +374,7 @@ BuildRequires: SFEgcc
 BuildRequires: %{pnm_buildrequires_SUNWavahi_bridge_dsd_devel}
 BuildRequires: %{pnm_buildrequires_SUNWlibgpg_error_devel}
 Requires: %{pnm_requires_SUNWlibgcrypt}
-Requires: SUNWlibproxy
+Requires: %{pnm_requires_SUNWlibproxy}
 Requires: SUNWgnome-vfs
 Requires: %{pnm_requires_SUNWlibrsvg}
 Requires: SFEtwolame
@@ -384,13 +401,13 @@ BuildRequires: SFElibdvdcss-devel
 Requires: SFElibdvdcss
 BuildRequires: SFElivemedia
 Requires: SFElivemedia
-%if %{solaris11}
-#to get updated libffi that is used by glib2-gpp
-#vlc-cache-gen would do a blurry core dump with too old libffi
-#LD_DEBUG=files shows glib2 having problems with libffi
-BuildRequires: SFEglib2-gpp
-Requires: SFEglib2-gpp
-%endif
+##paused## %if %{solaris11}
+##paused## #to get updated libffi that is used by glib2-gpp
+##paused## #vlc-cache-gen would do a blurry core dump with too old libffi
+##paused## #LD_DEBUG=files shows glib2 having problems with libffi
+##paused## BuildRequires: SFEglib2-gpp
+##paused## Requires: SFEglib2-gpp
+##paused## %endif
 
 %if %{enable_pulseaudio}
 BuildRequires: %{pnm_buildrequires_pulseaudio}
@@ -432,6 +449,15 @@ xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 %patch3 -p1
 %patch21 -p1
 %patch29 -p1
+#prep2.2.4 %patch31 -p1
+
+
+%if %{oihipster}
+#new lua
+%patch33 -p1
+%patch34 -p1
+%patch35 -p1
+%endif
 
 perl -w -pi.bak -e "s,#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -q "#\!.*/bin/sh" {} \; -print | egrep -v "/libtool"`
 
@@ -473,6 +499,9 @@ export PATH=`pwd`/localbin:$PATH
 [ -s localbin/grep ] || ln -s /usr/gnu/bin/grep localbin/grep
 [ -s localbin/ar ] || ln -s /usr/bin/ar localbin/ar
 [ -s localbin/ranlib ] || ln -s /usr/bin/ranlib localbin/ranlib
+
+export GNUTLS_CFLAGS="-I%{gnu_inc}"
+export GNUTLS_LIBS="%{gnu_lib_path} -lgnutls"
 
 ##TODO## why make an extra "-L/lib -R/lib" ... can't see why we should do this
 #note: only as container, configure doesn't listen to this variable!
@@ -585,10 +614,9 @@ export VDPAU_LIBS="-L%{_libdir}/vdpau -lvdpau"
 #export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA -L/usr/lib -R/usr/lib"
 export EXTRA_LDFLAGS="${EXTRA_LDFLAGS} -L/usr/X11/lib/NVIDIA"
 export LDFLAGS_plugin="-z ignore -z combreloc -Bdirect -z rescan"
+export LUA_LIBS="-z ignore -z combreloc -Bdirect -llua"
 export CFLAGS="$CFLAGS"
 export CXXFLAGS="$CXXFLAGS"
-#export LUA_LIBS="-z ignore -z combreloc -Bdirect -z rescan -llua"
-export LUA_LIBS="-z ignore -z combreloc -Bdirect -llua"
 export LD=/bin/ld
 export LUA_CFLAGS="-DLUA_COMPAT_ALL=1"
 %endif
@@ -654,6 +682,7 @@ autoconf
             --sysconfdir=%{_sysconfdir}		\
 	    --enable-shared			\
 	    --disable-static			\
+	    --enable-gnutls			\
 	    --enable-live555			\
 	    --enable-real			\
 	    --enable-realrtsp			\
@@ -817,10 +846,26 @@ test -x $BASEDIR/lib/postrun || exit 0
 %{_libdir}/pkgconfig/*
 
 %changelog
+- (Build)Requires SFEgnutls, --enable-gnutls  GNUTLS_CFLAGS GNUTLS_LIBS point to /usr/gnu/
 * Fri Dec 23 2016 - Thomas Wagner
 - add (Build)Requires SFEglib2-gpp to get updated SFElibffi-gpp for S11
 - change order of library directory to search /usr/g++ earlier
 - and I thought people would have learned to avoid null pointer access. re-enabling enable_0at0_so_1 1
+* Sun Dec 11 2016 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWogg_vorbis_devel}
+* Sat Jun 11 2016 - Thomas Wagner
+- prep test-bump to 2.2.4
+* Thu Mar 31 2016 - Thomas Wagner
+- prep test-bump to 2.2.2
+* Fri Dec 25 2015 - Thomas Wagner
+- merge from 2.2.1 to 2.1.5 the following:
+- add -gdwarf-2 as debug switch
+- make linking to 0@0.so.1 configurable
+- make vdpau configurable
+- use pnm macro for nvidia driver package
+- add patches for lua 5.2/5.3 missing symbol vlc-33 vlc-34 vlc-35 (OIH)
+- make 2.1.5 version of patch vlc-33
+- set -mmmx in CXXFLAGS instead CPPFLAGS
 * Fri Dec 16 2016 - Thomas Wagner
 - make linking with /usr/lib/0@0.so.1 a configurable in the spec file, defaults to "don't link it"
 - make vdpau an automatic switch for now, as newer Nvidia drivers stop bundling header and lib files -> will be separate package
