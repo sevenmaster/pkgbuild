@@ -1,3 +1,5 @@
+TODO## readline stubling over missing function call tgetent (OM)
+
 %define _use_internal_dependency_generator 0
 
 
@@ -48,15 +50,15 @@
 %define python_major_minor_version 2.7
 %endif
 
-%if %{omnios}
-%define python_major_minor_version 3.5
-%endif
+#%if %{omnios}
+#%define python_major_minor_version 3.5
+#%endif
 
 Name:                    SFEsamba46
 IPS_package_name:	 sfe/service/network/samba46
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.6.9
+Version:                 4.6.8
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -176,12 +178,13 @@ perl -w -pi.bak -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," configure `find source* 
 %endif
 
 #extra scripts, registry input files
+#old mode samba3 with smbd and nmbd winbindd SMF manifests - NOT AUTO IMPORTED!
 cp -p %{SOURCE2} sambagnu-smbd.xml
 cp -p %{SOURCE3} sambagnu-nmbd.xml
 cp -p %{SOURCE4} sambagnu-winbindd.xml
 cp -p %{SOURCE5} addmachinescript
 cp -p %{SOURCE6} domain.reg
-#samba manifest
+#samba SMF manifest for operating as AD controller
 cp -p %{SOURCE7} .
 #%patch4 -p0
 
@@ -703,8 +706,15 @@ test -d $RPM_BUILD_ROOT%{_docdir} || mkdir $RPM_BUILD_ROOT%{_docdir}
 
 
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/site/
-#cp samba4gnu-samba.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
-cp samba%{major_version}%{minor_version}gnu.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
+#new mode as samba4
+cp -p samba%{major_version}%{minor_version}gnu.xml ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
+#old mode as samba3
+cp -p sambagnu-smbd.xml      ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp -p sambagnu-nmbd.xml      ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+cp -p sambagnu-winbindd.xml  ${RPM_BUILD_ROOT}/var/svc/manifest/site/
+
 mkdir -p ${RPM_BUILD_ROOT}%{_bindir}/
 cp -p addmachinescript ${RPM_BUILD_ROOT}%{_bindir}/
 chmod a+rx  ${RPM_BUILD_ROOT}%{_bindir}/addmachinescript
@@ -759,9 +769,9 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr (-, root, bin)
 %dir %attr (0755, root, sys) %{_datadir}
-##TODO##%dir %attr (0755, root, bin) %{_mandir}
-##TODO##%dir %attr (0755, root, bin) %{_mandir}/*
-##TODO##%{_mandir}/*/*
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/*
+%{_mandir}/*/*
 
 %files devel
 %defattr (-, root, bin)
@@ -770,6 +780,7 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
+%{_sysconfdir}/samba/smb.conf.default
 %defattr (-, root, bin)
 %attr (0755, root, bin) %dir %{_sysconfdir}/%{src_name}
 %attr (0500, root, bin) %dir %{_sysconfdir}/%{src_name}/private
@@ -778,10 +789,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_localstatedir}/*
 #%class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/samba4gnu-samba.xml
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/samba%{major_version}%{minor_version}gnu.xml
-
-
+%class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-smbd.xml
+%class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-nmbd.xml
+%class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Thu Nov 16 2017 - Thomas Wagner
+- add back old samba3 SMF manifests to let user decide which one is to be enabled
+* Tue Oct 31 2017 - Thomas Wagner
+- bump to 4.6.8 (downgrade, compile error "ace->aceMask" undefined with version 4.6.9)
 * Tue Oct 31 2017 - Thomas Wagner
 - bump to 4.6.9
 * Sun Jul 30 2017 - Thomas Wagner

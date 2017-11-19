@@ -1,0 +1,11 @@
+--- samba-4.4.9/auth/kerberos/gssapi_pac.c.orig	Sa. Mär  4 14:17:14 2017
++++ samba-4.4.9/auth/kerberos/gssapi_pac.c	Sa. Mär  4 14:13:31 2017
+@@ -23,7 +23,7 @@
+ 
+ #include "auth/kerberos/pac_utils.h"
+ 
+-#if 1
++#if 0
+ /* FIXME - need proper configure/waf test
+  * to determine if gss_mech_krb5 and friends
+  * exist. JRA.
