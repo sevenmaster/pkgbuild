@@ -48,9 +48,11 @@ libtoolize --force
             --libexecdir=%{_libexecdir}      \
             --sysconfdir=%{_sysconfdir}      \
             --with-mpeg4ip                   \
-            --with-drm                       \
             --enable-shared		     \
 	    --disable-static
+
+#13:08 < alp> tomww: http://www.linuxfromscratch.org/blfs/view/svn/multimedia/faad2.html suggests that '--with-drm' is broken
+#this might break playing m4a            --with-drm                       \
 
 gmake -j$CPUS
 
@@ -62,6 +64,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Tue Sep 15 2015 - Thomas Wagner
+- remove --with-drm
 * Sat May 22 2015 - pjama
 - change mod u+w on ltmain.sh to permit rm of same
 * Tue Dec 24 2013 - Thomas Wagner

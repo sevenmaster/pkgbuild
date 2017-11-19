@@ -135,6 +135,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Nov 19 2017 - Thomas Wagner
+- recover missing patch libquicktime-1.2.4-ffmpeg-2.0.patch
 - Sun Dec 11 2016 - Thomas Wagner
 - use correct pnm_macro for SUNWogg-vorbis
 * Sun Nov 29 2015 - Thomas Wagner

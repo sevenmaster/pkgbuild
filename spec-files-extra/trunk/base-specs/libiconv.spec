@@ -26,10 +26,12 @@ make -j$CPUS
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-
+rm -f ${RPM_BUILD_ROOT}%{_libdir}/lib*.la
 rm $RPM_BUILD_ROOT%{_libdir}/charset.alias
 
 
 %changelog
+* Sun Nov 19 2017 - Thomas Wagner
+- merge spec files, remove *.la files
 * Tue Jun 16 2015 - Thomas Wagner
 - make it 32/64-bit

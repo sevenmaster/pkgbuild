@@ -13,11 +13,13 @@ Summary:	Quicktime library
 Version:	%{src_ver}
 Source:		%{src_url}/%{src_name}-%{version}.tar.gz
 Patch1:		libquicktime-01-gccflags.diff
+Patch2:		libquicktime-1.2.4-ffmpeg-2.0.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n %{src_name}-%{version}
 %patch1 -p1
+%patch2 -p1
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -61,6 +63,12 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libquicktime/lib*.*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Nov 19 2017 - Thomas Wagner
+- recover missing patch libquicktime-1.2.4-ffmpeg-2.0.patch
+- Sun Dec 11 2016 - Thomas Wagner
+- use correct pnm_macro for SUNWogg-vorbis
+* Wed May 6 2014 - pjama
+- ruthlessly steal patch from slackware to mod ffmpeg plugin files to suit ffmpeg v2
 * Fri Jun 22 2012 - Milan Jurik
 - bump to 1.2.4
 * Sun Nov 20 2011 - Milan Jurik

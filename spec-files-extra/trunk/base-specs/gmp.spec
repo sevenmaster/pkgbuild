@@ -32,9 +32,14 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
 fi
 
+export LIBSCOMPILETIME=${RPM_BUILD_DIR}/${RPM_PACKAGE_NAME}-%version/%{bld_arch}/%name-%version/tests/cxx/.libs
+export LD_LIBRARY_PATH=${LIBSCOMPILETIME}
+echo "NOTE: for tests setting LIBSCOMPILETIME=$LIBSCOMPILETIME"
+echo "NOTE: for tests setting LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
 export CFLAGS="%optflags %{gnu_lib_path}"
 export CXXFLAGS="%cxx_optflags %{gnu_lib_path}"
-export LDFLAGS="%_ldflags %{gnu_lib_path}"
+#export LDFLAGS="%_ldflags %{gnu_lib_path}"
+export LDFLAGS="%_ldflags -L${LIBSCOMPILETIME} %{gnu_lib_path}"
 
 #/usr/gnu/lib/amd64 or /usr/gnu/lib, depending on which %use section
 if $( echo "%{_libdir}" | /usr/xpg4/bin/grep -q %{_arch64} ) ; then
@@ -81,6 +86,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Aug  9 2015 - Thomas Wagner
+- add LD_LIBRARY_PATH for tests loading the libs from the correct location: e.g. SFEgmp-5.1.3/amd64/gmp-5.1.3/tests/cxx/.libs
+  and not the osdistro provided gmp libs
 * Mon Apr 21 2014 - Thomas Wagner
 - add EXTRACONFIGURE="--build=pentium4-pc-solaris2.11" for running on virtual systems (or get ABI=64 invalid)
 * Sat Oct 26 2013 - Thomas Wagner

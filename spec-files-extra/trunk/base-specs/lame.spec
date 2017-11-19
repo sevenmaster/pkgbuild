@@ -39,6 +39,14 @@ export LD_OPTIONS="%gnu_lib_path"
 
 make -j$CPUS
 
+#root@s11175:/localhomes/sfe# elfdump -d /usr/bin/i86/lame /usr/bin/amd64/lame | grep RPATH
+#     [11]  RPATH           0x1265     /usr/gnu/lib:/localhomes/sfe/packages/BUILD/SFElame-3.99.5/i386/lame-3.99.5/libmp3lame/.libs:/usr/gcc/4.6/lib:/usr/gcc/lib
+#     [11]  RPATH           0x11b0    /usr/gnu/lib/amd64:/localhomes/sfe/packages/BUILD/SFElame-3.99.5/amd64/lame-3.99.5/libmp3lame/.libs:/usr/lib/amd64:/usr/gcc/4.6/lib/amd64:/usr/gcc/lib/amd64
+
+#RUNPATHURXVT=$( /usr/bin/elfedit -re 'dyn:' $RPM_BUILD_ROOT/%{_bindir}/urxvt | grep RUNPATH | sed -e s'?.* /?/?' -e 's,/usr/lib:,,' -e 's,/usr/lib/[A-z0-9]*:,,' )
+#/usr/bin/elfedit -e 'dyn:runpath '$RUNPATHURXVT'' $RPM_BUILD_ROOT/%{_bindir}/urxvt
+#/usr/bin/elfedit -e 'dyn:runpath '$RUNPATHURXVT'' $RPM_BUILD_ROOT/%{_bindir}/urxvtd
+
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
@@ -47,6 +55,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*a
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sat Mar 26 2016 - Thomas Wagner
+- make note abote: remove needless RPATH from binaries
 * Tue Okt  1 2013 - Thomas Wagner
 - use CC=gcc
 * Fri Jun 22 2012 - Milan Jurik

@@ -137,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/*
 
 %changelog
+* Sat Mar 26 2016 - Thomas Wagner
+- make note abote: remove needless RPATH from binaries
 * Sun Nov 29 2015 - Thomas Wagner
 - change (Build)Requires to %{pnm_buildrequires_SUNWgnome_common_devel}
 * Tue Okt  1 2013 - Thomas Wagner

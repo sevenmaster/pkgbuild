@@ -9,6 +9,8 @@
 
 %include Solaris.inc
 %include usr-gnu.inc
+%define cc_is_gcc 1
+%include base.inc
 %include osdistro.inc
 
 # No sparcv9 target
@@ -59,7 +61,6 @@ mkdir %name-%version/%{base_arch}
 %libvpx.prep -d %name-%version/%{base_arch}
 
 %build
-export CC=gcc
 
 %ifarch amd64
 %libvpx_64.build -d %name-%version/%_arch64
@@ -96,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jan 16 2017 - Thomas Wagner
+- --disable-static or get (S12)  [LD] libvpx.so.2.0.0 gar: `u' modifier ignored since `D' is the default (see `U') [STRIP] libvpx.a < libvpx_g.a CC: Fatal error in /usr/ccs/bin/ld Error 139
+- add CFLAGS, CXXFLAGS, LDFLAGS as on S12 with developerstudio12.5 linking by $CXX fails with error CC: Fatal error in /usr/ccs/bin/ld CC: Status 139
 * Tue Nov  9 2016 - Thomas Wagner
 - relocate to /usr/gnu (S12, all)
 - bump to 1.4.0.0.1 to better distinguish from OSDistro libpx (S12 and OIH only)

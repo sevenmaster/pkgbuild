@@ -1,0 +1,11 @@
+--- guile-1.8.8/libguile/filesys.c.orig	2010-12-13 18:25:01.000000000 +0100
++++ guile-1.8.8/libguile/filesys.c	2016-05-24 15:40:03.557953764 +0200
+@@ -212,7 +212,7 @@
+    figuring out how to get the fd (dirfd function, dirfd macro, dd_fd field,
+    or d_fd field).  */
+ #ifndef dirfd
+-#define dirfd(dirstream) ((dirstream)->dd_fd)
++#define dirfd(dirstream) ((dirstream)->d_fd)
+ #endif
+ 
+ 

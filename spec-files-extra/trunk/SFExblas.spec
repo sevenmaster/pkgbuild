@@ -86,6 +86,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*.h
 
 %changelog
+* Sun Jun 17 2012 - Thomas Wagner
+- enable parallel make
+- force bash into configure
 * Sat May 22 2010 - Milan Jurik
 - initial import to SFE
 * Fri Aug 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> 1.0.248-2

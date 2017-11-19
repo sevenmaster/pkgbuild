@@ -114,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 19 2017 - Thomas Wagner
+- merge spec files, remove *.la files
 * Tue Jun 16 2015 - Thomas Wagner
 - make it 32/64-bit
 * Thu Oct 06 2011 - Milan Jurik

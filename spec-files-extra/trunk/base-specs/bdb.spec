@@ -7,6 +7,7 @@
 Name:		bdb
 Summary:	Berkeley DB
 Group:		System/Databases
+#do not use 6.x - openlap can only use 5.x Version:	6.2.23
 Version:	5.3.28
 License:        BSD3c
 Source:		http://download.oracle.com/berkeley-db/db-%{version}.tar.gz
@@ -53,6 +54,8 @@ mv $RPM_BUILD_ROOT%{_prefix}/docs $RPM_BUILD_ROOT%{_prefix}/share/doc/bdb
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+##* Sat Feb 25 2017 - Thomas Wagner
+##- bump to 6.2.23
 * Wed Jan 22 2014 - Thomas Wagner
 - bump to 5.3.28
 * Tue Aug 28 2012 - Milan Jurik

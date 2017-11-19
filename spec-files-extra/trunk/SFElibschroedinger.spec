@@ -42,6 +42,17 @@ BuildRequires:  %{pnm_buildrequires_SFEorc_devel}
 Requires:       %{pnm_requires_SFEorc}
 BuildRequires:  %{pnm_buildrequires_SUNWgtk_doc}
 BuildRequires:  %{pnm_buildrequires_SUNWgnome_media_devel}
+##TODO## temporary fix, it is a try!!!
+##BuildRequires:  data/docbook/docbook-style-xsl
+##TODO## more permanent fix - which SUNWname is this?
+#or get: 
+#pkgbuild@s12> gtkdoc-mkhtml schroedinger ../schroedinger-docs.sgml
+#I/O error : Attempt to load network entity http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+#warning: failed to load external entity "http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl"
+#compilation error: file /usr/share/gtk-doc/data/gtk-doc.xsl line 10 element import
+#xsl:import : unable to load http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+BuildRequires:  data/xml-common
+
 
 %package devel
 Summary:                 %{summary} - development files
@@ -141,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 ##TODO## find new download URL
+data/docbook/docbook-style-xsl as I/O error : Attempt to load network entity http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+hint: https://mail.gnome.org/archives/xml/2008-November/msg00034.html
+
 * Mon Dec 12 2016 - Thomas Wagner
 - developerstudio complains you can't have both -library=Crun and -std=c++03, hope this doesn't break older studio compile runs
 - LDFLAGS -32 and -64 moved out into include/<base|x86_sse2|arch64>.inc
