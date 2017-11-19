@@ -7,7 +7,7 @@
 
 %define	src_ver 7.0.0.2
 %define	src_name amrnb
-%define	src_url	http://ftp.penguin.cz/pub/users/utx/amr
+%define	src_url	http://www.penguin.cz/~utx/ftp/amr
 
 Name:		SFEamrnb
 Summary:	3GPP AMR-NB Floating-point Speech Codec
@@ -74,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Dec 20 2015 - Thomas Wagner
+- update source URL
 * Sat Apr 11 2009 - Milan Jurik
 - update for version 7.0.0.2
 * Fri Aug  3 2007 - dougs@truemail.co.th

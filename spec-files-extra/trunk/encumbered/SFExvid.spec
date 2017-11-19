@@ -15,6 +15,7 @@
 %define _gpp /usr/sfw/bin/g++
 %endif
 
+%include packagenamemacros.inc
 
 %ifarch amd64 sparcv9
 %include arch64.inc
@@ -41,6 +42,9 @@ BuildRequires: SFEnasm
 BuildRequires: SFEgcc
 Requires: SFEgccruntime
 
+ 
+BuildRequires: %{pnm_buildrequires_SUNWlibtool_devel}
+#Requires: %{pnm_buildrequires_SUNWlibtool}
 
 %description
 ISO MPEG-4 compliant video codec. You can play OpenDivX and DivX4 videos
@@ -93,6 +97,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sat Jan 14 2017 - Thomas Wagner
+- add (Build)Requires pnm_buildrequires_SUNWlibtool_devel
 * Mon Sep 21 2015 - Thomas Wagner
 - always use SFEgcc (remove osdistro gcc-3)
 * Tue Oct 11 2011 - Mila Jurik

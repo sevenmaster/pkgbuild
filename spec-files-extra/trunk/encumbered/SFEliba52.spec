@@ -5,6 +5,8 @@
 #
 %include Solaris.inc
 %ifarch amd64 sparcv9
+%include packagenamemacros.inc
+
 %include arch64.inc
 %use liba52_64 = liba52.spec
 %endif
@@ -16,12 +18,18 @@ Name:                    SFEliba52
 IPS_Package_Name:	library/audio/liba52
 Summary:                 %{liba52.summary}
 Version:                 %{liba52.version}
+URL:                     http://liba52.sourceforge.net/
 License:                 GPLv2+
 SUNW_Copyright:          liba52.copyright
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
-Requires: SUNWlibms
+
+BuildRequires: %{pnm_buildrequires_SUNWlibms_devel}
+Requires:      %{pnm_requires_SUNWlibms}
+
+BuildRequires: %{pnm_buildrequires_SUNWlibtool_devel}
+#Requires: %{pnm_buildrequires_SUNWlibtool}
 
 %package devel
 Summary:                 %{summary} - development files
@@ -101,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sat Jan 14 2017 - Thomas Wagner
+- add/change (Build)Requires pnm_buildrequires_SUNWlibtool_devel, pnm_buildrequires_SUNWlibms_devel
 * Mon Oct 10 2011 - Milan Jurik
 - add IPS package name
 * Sun Jul 24 2011 - Guido Berhoerster <gber@openindiana.org>

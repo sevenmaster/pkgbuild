@@ -5,9 +5,9 @@
 #
 %include Solaris.inc
 
-%define	src_ver 7.0.0.3
+%define	src_ver 7.0.0.4
 %define	src_name amrwb
-%define	src_url	http://ftp.penguin.cz/pub/users/utx/amr
+%define	src_url http://www.penguin.cz/~utx/ftp/amr
 
 Name:		SFEamrwb
 Summary:	3GPP AMR-WB Floating-point Speech Codec
@@ -74,6 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}
 
 %changelog
+* Sun Dec 20 2015 - Thomas Wagner
+- bump version to 7.0.0.4
 * Sat Apr 11 2009 - Milan Jurik
 - update for version 7.0.0.3
 * Fri Aug  3 2007 - dougs@truemail.co.th

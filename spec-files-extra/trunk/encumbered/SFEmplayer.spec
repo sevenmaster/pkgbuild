@@ -17,11 +17,18 @@
 %define with_giflib %(pkginfo -q SFEgiflib && echo 1 || echo 0)
 %define with_faac %(pkginfo -q SFEfaac && echo 1 || echo 0)
 
+#for ffmpeg 2.8 -> mplayer 1.2.1
+Version:	1.3.0
+#code below for transitioning only, should be removed later
+#version 1.3.0 sets this to 1
+%define with_ffmpeg_internal 0
+%if %( echo %{version} | egrep "^1\.[3-9]\." >/dev/null && echo 1 || echo 0 )
+%define with_ffmpeg_internal 1
+%endif
+
 Name:		SFEmplayer
 IPS_Package_Name:	media/mplayer
 Summary:	mplayer - The Movie Player
-#for ffmpeg 2.8 -> mplayer 1.2.1
-Version:	1.3.0
 %define tarball_version %{version}
 URL:		http://www.mplayerhq.hu/
 Source:         http://www.mplayerhq.hu/MPlayer/releases/MPlayer-%{tarball_version}.tar.xz
@@ -211,7 +218,9 @@ bash ./configure			\
             --disable-xvr100		\
             --disable-crash-debug	\
             --disable-esd		\
+%if %( expr %{with_ffmpeg_internal} '=' 0 )
             --disable-ffmpeg_a          \
+%endif
 	    $dbgflag
 
        #     --disable-dvdread-internal	\

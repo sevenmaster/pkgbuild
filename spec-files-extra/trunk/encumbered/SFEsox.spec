@@ -11,7 +11,7 @@
 %include Solaris.inc
 
 %define src_name sox
-%define src_ver 14.3.0
+%define src_ver 14.4.1
 %define src_url %sf_download/project/%src_name/%src_name/%src_ver
 
 
@@ -96,6 +96,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/sox.pc
 
 %changelog
+* Fri Mar 29 2013 - Thomas Wagner
+- update to 14.4.1
 * Sun Jul 17 2011 - Alex Viskovatoff
 - update source URL
 * Fri Aug 21 2009 - Milan Jurik
