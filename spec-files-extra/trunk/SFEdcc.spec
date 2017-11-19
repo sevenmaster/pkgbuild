@@ -5,6 +5,12 @@
 
 %include Solaris.inc
 
+%define runuser         spamassassin
+#undefined %define runuserid       12345
+%define runusergroup    other
+%define runusergcosfield Spamassassin Reserved UID
+
+
 Name:                SFEdcc
 IPS_Package_Name:    service/network/snmp/dcc
 Summary:             Distributed Checksum Clearinghouse
@@ -22,6 +28,13 @@ Patch1:			dcc-01-install-sh.diff
 SUNW_Pkg_ThisZone:      true
 
 #Requires: packagename
+
+%description
+
+Note: Files owned by user "spamassassin"
+
+(from: https://wiki.kolab.org/DCC)
+As per http://www.rhyolite.com/anti-spam/dcc/dcc-tree/FAQ.html#firewall-ports DCC traffic is like DNS traffic. You should treat port 6277 like port 53. Allow outgoing packets to distant UDP port 6277 and incoming packets from distant UDP port 6277. 
 
 %prep
 %setup -q -n dcc-%version
@@ -46,9 +59,15 @@ export LDFLAGS="%{_ldflags}"
             --bindir=%{_bindir} \
             --mandir=%{_mandir} \
             --disable-sys-inst \
+             --with-uid=%{runuser} \
             --disable-chown
 
+#--with-rundir=/kolab/var/amavisd \
+
 #unused --homedir=%{_prefix}/dcc  \
+
+#or get stuck in fix-map for ever
+gsed -i.bak -e 's,#! */bin/sh.*,#! /usr/bin/bash -x ,' homedir/fix-map
 
 make -j$CPUS
 
@@ -60,6 +79,10 @@ rm -rf $RPM_BUILD_ROOT/usr/share
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+#delivered by shared meta package for spamassassin-user %actions
+#delivered by shared meta package for spamassassin-user #user ftpuser=false gcos-field="%{runusergcosfield}" username="%{runuser}" uid=%{runuseruid} password=NP group="%{runusergroup}"
+#delivered by shared meta package for spamassassin-user user ftpuser=false gcos-field="%{runusergcosfield}" username="%{runuser}"                   password=NP group="%{runusergroup}"
 
 %files
 %defattr (-, root, bin)
@@ -76,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(preserve) %{_localstatedir}/dcc/dcc_conf
 
 %changelog
+* Tue Aug 15 2017 - Thomas Wagner
+- make files owned by user spamassassin
+- fix shell interpreter for homedir/fix-map
 * Fri 11 Aug 2017 - Thomas Wagner
 - bump to 1.3.159
 - Source URL updated, now fetching exact version

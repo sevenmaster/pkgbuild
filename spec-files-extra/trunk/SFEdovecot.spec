@@ -165,6 +165,12 @@ bash ./configure --prefix=%{_prefix}		\
 #--with-libwrap
 #--with-ssl=openssl
 
+#error in detection of inotify, so we need to patch it off again
+##define HAVE_INOTIFY_INIT 1
+#possibly other OS Distro might as well get stuck here
+%if %{omnios}
+gsed -i.bak -e '/^#define HAVE_INOTIFY_INIT 1/ s?^?// we do not have this ?' config.h
+%endif
 
 
 gmake -j$CPUS
@@ -252,6 +258,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Wed Nov  8 2017 - Thomas Wagner
+- fix compilation, false detection of HAVE_INOTIFY_INIT 1 on OmniOS (OM)
 * Mon Oct 23 2017 - Thomas Wagner
 - bump to 2.2.33.2
 * Fri Jul 28 2017 - Thomas Wagner
