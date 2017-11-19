@@ -21,8 +21,11 @@
 %define micro_version 1
 
 
-Name:			SFElibixion-%{major_version}%{minor_version}-gpp
-IPS_Package_Name:	sfe/library/g++/libixion-%{major_version}%{minor_version}
+#Name:			SFElibixion-%{major_version}%{minor_version}-gpp
+#to have pkgtool-uninstall-recoursive really find this package we need the real name here, without any eval
+Name:			SFElibixion-011-gpp
+#IPS_Package_Name:	sfe/library/g++/libixion-%{major_version}%{minor_version}
+IPS_Package_Name:	sfe/library/g++/libixion-011
 Summary:		A general purpose formula parser and interpreter that can calculate multiple named targets, or "cells" (/usr/g++)
 Group:			System/Libraries
 URL:			https://gitlab.com/ixion/ixion
@@ -152,6 +155,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 15 2017 - Thomas Wagner
+- remove macro variables vom package names -> help pkgtool resolve dependency chains
 * Sep 2016 - pjama
 - initial spec: Copy SFElibixion.spec to SFElibixion-011-gpp.spec because the different versions (0.9.1 vs 0.11.x) have a different API versions, install in differnent paths and have different pkg-config .pc files. They can co-install
 - remove all python config and requirements becuase ixion >= 0.11.1 requires python 3 and we don't have such fancy pants versions around these parts. disabling python with 
