@@ -67,9 +67,18 @@
 %define pnm_buildrequires_SUNWpng		SFElibpng
 %define pnm_requires_SUNWpng			SFElibpng
 
+%define pnm_buildrequires_library_file_monitor_gamin	SFEgamin
+%define pnm_requires_library_file_monitor_gamin		SFEgamin
+%define pnm_buildrequires_SUNWgamin_devel	SFEgamin
+%define pnm_buildrequires_SUNWgamin		SFEgamin
+%define pnm_requires_SUNWgamin			SFEgamin
+%define pnm_buildrequires_gamin			SFEgamin
+%define pnm_requires_gamin			SFEgamin
 
 
 %changelog
+* Sat Nov 18 2017 - Thomas Wagner
+- add pnm_buildrequires_SUNWgamin (OM)
 * Tue Sep  5 2017 - Thomas Wagner
 - use for pnm_buildrequires_SUNWslang_devel SFEslang (OM)
 - use for pnm_buildrequires_SUNWpng_devel SFElibpng (OM)
