@@ -99,7 +99,11 @@
 %endif
 
 #quick and dirty hack, only works on OmniOS - uname -v prints on 151008j: omnios-6de5e81
+#quick and dirty hack, only works on OmniOS - uname -v prints on 151022y: omnios-r151022-eb9d5cb557
 %if %( uname -v | egrep '^omnios-[0-9a-f]' > /dev/null && echo 1 || echo 0 )
+%define osbuild 151
+%endif
+%if %( uname -v | egrep '^omnios-r151[0-9]*-[0-9a-f]*' > /dev/null && echo 1 || echo 0 )
 %define osbuild 151
 %endif
 
@@ -263,6 +267,14 @@
 #                        Use is subject to license terms.
 #                           Assembled 17 August 
 
+#release/name@0.5.11,5.11-2017.0.0.5:20171030T214925Z
+#gzip -d < /tmp/hipster-2017-10-etc-release-3be5012aa181a5e70a1ba26138c5e0f5c76c8249 
+#             OpenIndiana Hipster 2017.10 (powered by illumos)
+#        OpenIndiana Project, part of The Illumos Foundation (C) 2010-2017
+#                        Use is subject to license terms.
+#                           Assembled 30 October 2017
+
+
 
 
 ##START build 151 006 and 008 and up , OmniOS
@@ -275,8 +287,13 @@
 %define os2nnn   1
 #below: subject to change!
 %define omnios 1
-%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
+#OmniTI: r151022
+#OmniOSce: r151022y
+#%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
+#%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
+%define osdistrelnumber %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
 #                                below: subject to change!
+#Please note: if you need a fine grained relese, use osdistro_entire_padded_number4
 %define osdistrelname   "OmniOS"
 #this was the last check, skip all others
 %define osdet299999 0
@@ -568,6 +585,22 @@
 %endif
 ##END
 
+#hipster sfe ~ pkg list | egrep "osnet|entire|/name"
+#consolidation/osnet/osnet-incorporation           0.5.11-2015.0.2.15619      i--
+#entire                                            0.5.11-2015.0.2.0          i--
+#release/name                                      0.5.11-2013.0.0.0          i--
+#hipster sfe ~ uname -a -v -r
+#SunOS hipster 5.11 illumos-380fd67 i86pc i386 i86pc
+ 
+#OpenIndiana 2017.10
+#pkg info entire name osnet-incorporation | grep FMRI
+#             FMRI: pkg://openindiana.org/consolidation/osnet/osnet-incorporation@0.5.11-2017.0.0.16838:20171118T005255Z
+#             FMRI: pkg://openindiana.org/entire@0.5.11-2015.0.2.0:20151027T090547Z
+#             FMRI: pkg://openindiana.org/release/name@0.5.11-2017.0.0.5:20171030T214925Z
+#uname -a -r
+#SunOS hipster 5.11 illumos-a3b2868063 i86pc i386 i86pc
+
+
 
 # if we are on a IPS based system, hopefully the package entire
 # is installed. record the output for later use to detect e.g. SRUs, build numbers
@@ -582,7 +615,7 @@
 %if %{os2nnn}
 #entire might be uninstalled, so use release/name instead. You don't uninstall it! If you do, then don't blame us if pnm_macros get confused.
 #%define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
-%define osdistro_entire %( pkg info release/name entire | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
+%define osdistro_entire %( pkg info release/name entire consolidation/osnet/osnet-incorporation | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
 %endif
 
 #older hipster doesn't match entire and release/name version packages. People! Don't uninstall entire on a OIHipster machine please!
@@ -607,6 +640,24 @@
 %define osdistro_entire 0
 %endif
 
+#add a workaround to distinguish the "letter" releases like r151022h and r151022y
+#make the latter a number and add it to osdistro_entire_padded_number4 
+#0000151022 0000 0008 000000000000   is r151022h
+#0000151022 0000 0025 000000000000   is r151022y
+%if %{omnios}
+#get char if any
+#%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9]\{6\}??' | egrep "^[a-z]$" )
+#%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o047?' | egrep "^.[a-z]$" )
+%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o134\o134\o047?' | egrep "^..[a-z]$" )
+#make char a number, note! \o047 puts an >\'< before the letter in the sed command above (without the > <)
+%define osdistrelnumber_letterrelease_number %( expr -96 '+' `printf "%d" \\%{osdistrelnumber_letterrelease_char}` )
+#fix empty chat to be number zero
+#%if %( expr %{osdistrelnumber_letterrelease_number} '=' '-96' )
+#%define osdistrelnumber_letterrelease_number 0
+#%endif
+%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, %{osdistrelnumber_letterrelease_number}, $5, $6, $7}' )
+%endif
+
 
 
 ### bail out, detection of the os2... distribution failed!
@@ -617,6 +668,10 @@
 
 
 %changelog
+* Tue Nov  7 2017 - Thomas Wagner
+- detect OmniOSce with new pattern in uname -v .... omnios-r151022-eb9d5cb557
+* Sun Oct  8 2017 - Thomas Wagner
+- harden release detection for S11 and use most recent version of release/name | entire | consolidation/osnet/osnet-incorporation
 * Mon Oct 31 2016 - Thomas Wagner
 - add / detect oih20160926 with changed name in /etc/release: OpenIndiana Hipster 2016.04 / Assembled 17 August 2016 pkg info osnet-incorporation -> 2016.0.1.15945:20161028T005445Z
 * Thu Oct 13 2016 - Thomas Wagner

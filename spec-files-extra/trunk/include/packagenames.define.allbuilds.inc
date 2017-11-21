@@ -1998,6 +1998,69 @@
 #81673 1358 -r-xr-xr-x   1 root     bin       2179640 Jul 17 20:56 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
 
 
+##OmniTI - not OmniOSce
+# NOTE: We are simply ignoring the non-64-bit perl packages
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000000000000000000.0 )
+##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
+#set perl5 for OmniOS
+%define perl_version 5.22
+%define perl_major_minor_version 5.22
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.22.1
+#perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
+#runtime/perl-64
+%define pnm_buildrequires_perl_default runtime/perl-64
+%define pnm_requires_perl_default	runtime/perl-64
+%endif
+#END omnios
+
+## OmniOSce - the successor (overwrites old settings of OmniTI
+# NOTE: We are simply ignoring the non-64-bit perl packages
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000025000000000000.0 )
+##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
+#set perl5 for OmniOS
+%define perl_version 5.24
+%define perl_major_minor_version 5.24
+%define perl_major_minor_micro_version 5.24.1
+#perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
+#runtime/perl-64
+%define pnm_buildrequires_perl_default runtime/perl-64
+%define pnm_requires_perl_default	runtime/perl-64
+%endif
+#END omnios
+
+
+# determine perl bittness by looking at libperl.so loaded by the perl binary
+#
+# perl -e 'foreach $inc ( @INC) { print $inc."\n" if -f "$inc/CORE/libperl.so"; }'
+# /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64
+# file /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+# /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB dynamic lib 80386 Version 1, dynamically linked, not stripped, no debugging information available
+
+#once runtime/perl-64 is installed, this overlays the 32-bit perl implementation when called by /usr/bin/perl and the like
+
+#          FMRI: pkg://omnios/entire@11-0.151014:20161027T172955Z
+#pkgbuild@omnios>  find /usr/perl5/ -name libperl.so -exec file {} \; -ls
+#/usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB shared object, Intel 80386, version 1, dynamically linked, not stripped
+#201298 1140 -r-xr-xr-x   1 root     bin       1812644 Dec  1  2016 /usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+#/usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so: ELF 64-bit LSB shared object, x86-64, version 1, dynamically linked, not stripped
+#202879 1156 -r-xr-xr-x   1 root     bin       1902280 Dec  1  2016 /usr/perl5/5.16.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so
+
+
+#          FMRI: pkg://omnios/entire@11-0.151022:20170511T002513Z
+#root@mailrouter:~#  find /usr/perl5/ -name libperl.so -exec file {} \; -ls
+#/usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so:    ELF 64-bit LSB dynamic lib AMD64 Version 1, dynamically linked, not stripped, no debugging information available
+# 9632 1370 -r-xr-xr-x   1 root     bin       2342992 Aug 13 19:16 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so
+#/usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB dynamic lib 80386 Version 1, dynamically linked, not stripped, no debugging information available
+#81673 1358 -r-xr-xr-x   1 root     bin       2179640 Jul 17 20:56 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+
+
 %if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000000000000000000.0 )
 ##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
 #set perl5 for OmniOS
@@ -2215,10 +2278,27 @@
 #END %{solaris12} >= build 86
 
 # additionaly, in OmniOS we have a different python micro version number:
+#older OmniOS
 %if %{omnios}
 %define python_major_minor_micro_version 2.6.8
 %endif
 #END %{omnios}
+
+#OmniOSce
+##TOODO## check which osdistro version starts with the new default python version
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000025000000000000.0 )
+#r151022y
+#pkg://omnios/runtime/python-27@2.7.14-0.151022:20170917T151402Z
+%define python_version 2.7
+%define python_major_version 2
+%define python_major_minor_version 2.7
+%define python_major_minor_micro_version 2.7.14
+%define python_version_package_string 27
+%define pnm_buildrequires_python_default	runtime/python-27
+%define pnm_requires_python_default		runtime/python-27
+%endif
+#END %{omnios}
+
 
 # additionaly, in OIHpster we have a different python micro version number:
 %if %{oihipster}
@@ -3388,6 +3468,8 @@
 
 
 %changelog
+* Wed Nov 15 2017 - Thomas Wagner
+- perepare for OmniOSce community edition r151022<x> which carries perl_major_minor_micro_version 5.24.1 (OM)
 * Sun Jul 30 2017 - Thomas Wagner
 - change strategy for postgresql, default for pnm_buildrequires to be SFEpostgres-common,SFEpostgres-96, except on hipster
 * Sat Jul 29 2017 - Thomas Wagner
