@@ -59,7 +59,7 @@ Source:                  http://www.vergenet.net/linux/perdition/download/%{src_
 Source2:                 perdition.xml
 Patch1:			perdition-01-Makefile_in_am-LDFLAGS.diff
 Patch3:			perdition-03-remove-strcasestr.diff
-Patch4:			perdition-04-const-char-gdbm_version.h.diff
+#retired# Patch4:			perdition-04-const-char-gdbm_version.h.diff
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
@@ -89,10 +89,10 @@ Requires: %name
 %setup -q -n %{src_name}-%version
 %patch1 -p1
 %patch3 -p1
-if grep "extern int const gdbm_version" /usr/include/gdbm.h
- then
- %patch4 -p1
-fi
+#retired# if grep "extern int const gdbm_version" /usr/include/gdbm.h
+#retired#  then
+#retired#  %patch4 -p1
+#retired# fi
 cp -p %{SOURCE2} perdition.xml
 
 
@@ -114,6 +114,16 @@ libtoolize --force --copy
 autoheader
 automake
 autoconf
+
+
+#see if we have the fips-140 openssl implementation or get compile errors "EC_KEY" not defined
+
+#pkg mediator openssl | grep fips-140 || \
+#   {
+#   echo "ATTENTION: Setting pfexec pkg set-mediator -I fips-140 openssl"
+#   echo "ATTENTION: to get definitions for EC_KEY from include file ec.h "
+#   pfexec pkg set-mediator -I fips-140 openssl
+#   }
 
 ./configure --prefix=%{_prefix}  \
             --mandir=%{_mandir}  \
@@ -169,13 +179,11 @@ rm -rf $RPM_BUILD_ROOT
 ##TODO## below: /etc/perdition/pam.d/perdition not in Solaris format and location
 %files root
 %defattr (-, root, bin)
-#%attr (0755, root, sys) %dir %{_sysconfdir}
-#why is this "bin" not "gnu" ... probably fault of SUNWa2psr SUNWffiltersr years ago
-%attr (0755, root, bin) %dir %{_sysconfdir}
-#%attr (0755, root, bin) %dir %{_sysconfdir}/openldap
-#%{_sysconfdir}/openldap/*
+%attr (0755, root, sys) %dir %{_sysconfdir}
+%attr (0755, root, bin) %dir %{_sysconfdir}/gnu
 %attr (0755, root, bin) %dir %{_sysconfdir}/gnu/openldap
-%{_sysconfdir}/gnu/openldap/*
+%attr (0755, openldap, openldap) %dir %{_sysconfdir}/gnu/openldap/schema
+%{_sysconfdir}/gnu/openldap/schema/*
 %attr (0755, root, bin) %dir %{_sysconfdir}/perdition
 %class(renamenew) %{_sysconfdir}/perdition/*
 %defattr (-, root, sys)
@@ -184,6 +192,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 15 2017 - Thomas Wagner
+- bump to version 2.2 (include/perditionparentversion.inc)
 * Fri Jul  3 2015 - Thomas Wagner
 - add patch4 to handle int const gdbm_version (1.11.x SFEgdbm on OM / int gdbm_version (older gdbm) - fix typo in name
 - fix %files for etc/gnu
