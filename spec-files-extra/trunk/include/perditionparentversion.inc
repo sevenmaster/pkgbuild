@@ -1,6 +1,15 @@
 #used by at least SFElibvanessa-* and SFEperdition.spec
 
+#default version
+%define perditionparentversion 2.2
+
+#exceptions:
+%if %( /usr/bin/grep -w OPENSSL_NO_EC /usr/include/openssl/opensslconf.h >/dev/null && echo 1 || echo 0 )
+#the OpenSSL compile time config switched off EC
 %define perditionparentversion 2.1
+%endif
+
+
 #%define perditionparentversion 1.19-rc4
 # echo 1.19-rc4 | sed -e 's/-rc\([0-9]*\)/.\1/'
 #1.19.4
@@ -30,6 +39,11 @@
 ##TODO## possibly define the lib versions as well (tied to the download-version directory)
 
 %changelog
+* Wed Aug 16 2017 - Thomas Wagner
+- redefine version to 2.1 (perdition) if OpenSSL has switched off "EC" by OPENSSL_NO_EC in compile time config
+* Thu Aug 15 2017 - Thomas Wagner
+- bump to version 2.2 (perdition)
+- bump to version 0.0.13 (libvanessa_logger_version)
 * Thu May 21 2015 - Thomas Wagner
 - bump to version 2.1
 * Sun Feb 26 2012 - Thomas Wagner
