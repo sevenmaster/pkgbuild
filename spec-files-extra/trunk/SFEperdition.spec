@@ -109,11 +109,11 @@ export CXXFLAGS="%{cxx_optflags} -I%{gnu_inc}"
 export LDFLAGS="%{_ldflags} -lsocket -lxnet %{mysql_lib_path} %{gnu_lib_path}"
 
 #spyed on perdition.spec (from source tarball)
-aclocal
-libtoolize --force --copy
-autoheader
-automake
-autoconf
+#aclocal
+#libtoolize --force --copy
+#autoheader
+#automake
+#autoconf
 
 
 #see if we have the fips-140 openssl implementation or get compile errors "EC_KEY" not defined
@@ -192,6 +192,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 26 2017 - Thomas Wagner
+- remove updating configure world
 * Thu Aug 15 2017 - Thomas Wagner
 - bump to version 2.2 (include/perditionparentversion.inc)
 * Fri Jul  3 2015 - Thomas Wagner
