@@ -18,8 +18,8 @@
 
 Name:		SFEopenconnect
 IPS_Package_Name:	system/network/openconnect
-Version:	7.07
-IPS_Component_Version: 7.7
+Version:	7.08
+IPS_Component_Version: 7.8
 Summary:	Open client for Cisco AnyConnect VPN
 Group:		Productivity/Networking/Security
 License:	LGPLv2+
@@ -145,6 +145,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Nov 27 2017 - Thomas Wagner
+- bump to 7.08 (IPS 7.8)
 * Tue Dec 13 2016 - Thomas Wagner
 - propperly deliver vpnc-script file
 * Fri Dec  9 2016 - Thomas Wagner
