@@ -13,29 +13,29 @@
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
 
-%define tarball_version 2.27300
+%define tarball_version 2.97000
 %define tarball_name    JSON-PP
 
 Name:		SFEperl-json-pp
 IPS_package_name: library/perl-5/json-pp
-Version:	2.27300
-IPS_component_version: 2.27300
+Version:	2.97000
+IPS_component_version: 2.97
 Group:          Development/Libraries                    
 Summary:	JSON::PP - JSON::PP
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~makamaka/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~ishigaki/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/M/MA/MAKAMAKA/JSON-PP-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/I/IS/ISHIGAKI/JSON-PP-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Makamaka Hannyaharamitu <makamaka@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~makamaka/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Kenichi Ishigaki <ishigaki@cpan.org>
+Meta(info.upstream_url):        http://search.cpan.org/~ishigaki/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
@@ -59,9 +59,16 @@ if test -f Makefile.PL
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
+
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -71,7 +78,9 @@ else
     --install_path bin=%{_bindir} \
     --install_path bindoc=%{_mandir}/man1 \
     --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
+    --destdir $RPM_BUILD_ROOT \
+
+
 
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
@@ -107,5 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Dec  2 2017 - Thomas Wagner
+- reworked, bump version 2.27300 -> 2.97
 * Wed Mar 09 2016 - Thomas Wagner
 - initial spec

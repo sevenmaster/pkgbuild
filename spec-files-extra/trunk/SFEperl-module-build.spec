@@ -12,7 +12,7 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-#%define _use_internal_dependency_generator 0
+%define _use_internal_dependency_generator 0
 
 %define tarball_version 0.4216
 %define tarball_name    Module-Build
@@ -50,8 +50,11 @@ BuildRequires:  SFEperl-parse-cpan-meta
 Requires:       SFEperl-parse-cpan-meta
 #TAP::Harness (3.17) is installed, but we need version >= 3.29
 #contained in Test::Harness
+#we assume perl 5.22.1 has harness fresh enough (##TODO## research which perl version bundles harness >= 3.29, adjust perl_version_padded)
+%if %( expr %{perl_version_padded}.0 < 0005002200010000.0 )
 BuildRequires:  SFEperl-test-harness
 Requires:       SFEperl-test-harness
+%endif
 #inc::latest (0.3603) is installed, but we need version >= 0.5
 BuildRequires:  SFEperl-inc-latest
 Requires:       SFEperl-inc-latest
@@ -133,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec  2 2017 - Thomas Wagner
+- make Build)Requires conditional, new perl doesn't need Test::Harness in updated version (all)
 * Mon Mar  7 2016 - Thomas Wagner
 - renewed spec
 - add (Build)Requires 
