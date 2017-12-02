@@ -2076,23 +2076,6 @@
 #81673 1358 -r-xr-xr-x   1 root     bin       2179640 Jul 17 20:56 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
 
 
-%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000000000000000000.0 )
-##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
-#set perl5 for OmniOS
-%define perl_version 5.22
-%define perl_major_minor_version 5.22
-##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
-%define perl_major_minor_micro_version 5.22.1
-#perl is 64-bit
-%define perl_bitness    64
-%define perl_bitness_32 0
-%define perl_bitness_64 1
-#runtime/perl-64
-%define pnm_buildrequires_perl_default runtime/perl-64
-%define pnm_requires_perl_default	runtime/perl-64
-%endif
-#END omnios
-
 
 #add more distro here
 
@@ -3486,6 +3469,7 @@
 * Sat Dec  2 2017 - Thomas Wagner
 - prepare for OmniOSce community edition with two letters for sub release (what a bad idea this is) (OM)
 - refine switch to perl 5.24.1 on r151022s and later (000015102200000019000000000000) (OM)
+- remove duplicate block accidentiall overwriting perl_version again (OM)
 * Mon Nov 27 2017 - Thomas Wagner
 - set pnm_buildrequires_SFEzlib_pkgconfig to be OS distro library/zlib from S11.3 SRU9 and later
 * Wed Nov 15 2017 - Thomas Wagner
