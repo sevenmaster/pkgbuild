@@ -173,6 +173,11 @@
 #and still works with early opensolaris builds as well
 ##TODO## this is accumulative (see above %if %{os2nnn} w/o osbuild detection
 
+# ~/spec-files-extra/include pkg contents -r -m pkg://solaris/library/security/openssl@1.0.2.11,5.11-0.175.3.19.0.1.0 | grep openssl/ec.h
+#file f2463bfe32222c40ede22c3029699bf0a72ebcc5 chash=5c4b2370d8f9c4575864f16a9133b4ac234425a8 facet.devel=all group=bin mode=0444 owner=root path=usr/include/openssl/ec.h pkg.csize=9938 pkg.size=56134
+#file 7eeea32830643e2f0f4d15395206df2be5df49c4 chash=b31684878ee1da2ed4e67cc0fee91dd99269383d facet.devel=all group=bin mode=0444 owner=root path=usr/include/openssl/ecdh.h pkg.csize=2058 pkg.size=5191
+
+
 #cases >=133 AND os2nnn
 %if %{os2nnn}
 ##TODO## Re-visit this buildnumber, was this 133 or 134 ? (pkg info SUNWopenssl says not installed)
@@ -1776,6 +1781,14 @@
 %endif
 #END solaris12 - generic/(almost)all builds - more details below
 
+%if %( expr %{solaris11} '&' %{osdistro_entire_padded_number4}.1 '>=' 0000017500030009000000030000.1 )
+#many osdistro do not deliver the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
+#osdistro which have one, can replace this in pnm_macro include file
+%define pnm_buildrequires_SFEzlib_pkgconfig     library/zlib
+%define pnm_requires_SFEzlib_pkgconfig          library/zlib
+%endif
+#END solaris11 from 11.3 SRU 9 on has own zlib.pc in package library/zlib
+
 
 %if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000000870000.1 )
 #many osdistro do not deliver the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
@@ -2017,9 +2030,11 @@
 %endif
 #END omnios
 
+#  OmniOS v11 r151022s -> pkg://omnios/runtime/perl@5.24.1-0.151022:20170921T162748Z
+#                    ^ corresponds to number 19
 ## OmniOSce - the successor (overwrites old settings of OmniTI
 # NOTE: We are simply ignoring the non-64-bit perl packages
-%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000025000000000000.0 )
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000019000000000000.0 )
 ##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
 #set perl5 for OmniOS
 %define perl_version 5.24
@@ -3468,6 +3483,11 @@
 
 
 %changelog
+* Sat Dec  2 2017 - Thomas Wagner
+- prepare for OmniOSce community edition with two letters for sub release (what a bad idea this is) (OM)
+- refine switch to perl 5.24.1 on r151022s and later (000015102200000019000000000000) (OM)
+* Mon Nov 27 2017 - Thomas Wagner
+- set pnm_buildrequires_SFEzlib_pkgconfig to be OS distro library/zlib from S11.3 SRU9 and later
 * Wed Nov 15 2017 - Thomas Wagner
 - perepare for OmniOSce community edition r151022<x> which carries perl_major_minor_micro_version 5.24.1 (OM)
 * Sun Jul 30 2017 - Thomas Wagner

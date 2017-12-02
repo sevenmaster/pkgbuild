@@ -291,7 +291,8 @@
 #OmniOSce: r151022y
 #%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' )
 #%define osdistrelnumber %( grep "OmniOS v[0-9]* r[0-9]*" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
-%define osdistrelnumber %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
+#%define osdistrelnumber %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
+%define osdistrelnumber %( egrep "OmniOS v[0-9]* r[0-9a-z]" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
 #                                below: subject to change!
 #Please note: if you need a fine grained relese, use osdistro_entire_padded_number4
 %define osdistrelname   "OmniOS"
@@ -648,7 +649,7 @@
 #get char if any
 #%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9]\{6\}??' | egrep "^[a-z]$" )
 #%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o047?' | egrep "^.[a-z]$" )
-%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o134\o134\o047?' | egrep "^..[a-z]$" )
+%define osdistrelnumber_letterrelease_char %( /usr/gnu/bin/egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | /usr/gnu/bin/sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o134\o134\o047?' | /usr/gnu/bin/egrep "^..[a-z][a-z]*$" )
 #make char a number, note! \o047 puts an >\'< before the letter in the sed command above (without the > <)
 %define osdistrelnumber_letterrelease_number %( expr -96 '+' `printf "%d" \\%{osdistrelnumber_letterrelease_char}` )
 #fix empty chat to be number zero
@@ -668,6 +669,8 @@
 
 
 %changelog
+* Sat Dec  2 2017 - Thomas Wagner
+- improve detection for OmniOSce with two letters as sub release e.g. r151022aa (OM)
 * Tue Nov  7 2017 - Thomas Wagner
 - detect OmniOSce with new pattern in uname -v .... omnios-r151022-eb9d5cb557
 * Sun Oct  8 2017 - Thomas Wagner
