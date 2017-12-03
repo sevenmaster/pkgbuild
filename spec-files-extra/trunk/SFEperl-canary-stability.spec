@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-json
+# spec file for package: SFEperl-canary-stability
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -11,42 +11,41 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 2.97000
-%define tarball_name    JSON
+%define tarball_version 2012
+%define tarball_name    Canary-Stability
 
-Name:		SFEperl-json
-IPS_package_name: library/perl-5/json
-Version:	2.97
-IPS_component_version: 2.97
+Name:		SFEperl-canary-stability
+IPS_package_name: library/perl-5/canary-stability
+Version:	2012
+IPS_component_version: 2012
 Group:          Development/Libraries                    
-Summary:	JSON - JSON
+Summary:	Canary::Stability - Canary::Stability
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~ishigaki/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~mlehmann/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-#http://search.cpan.org/CPAN/authors/id/I/IS/ISHIGAKI/JSON-2.97000.tar.gz
-Source0:	http://search.cpan.org/CPAN/authors/id/I/IS/ISHIGAKI/JSON-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/Canary-Stability-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Kenichi Ishigaki <ishigaki@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~ishigaki/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Marc A. Lehmann <cpan@schmorp.de>
+Meta(info.upstream_url):        http://search.cpan.org/~mlehmann/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-JSON
+Canary::Stability
+Canary::Stability
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -117,8 +116,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sun Dec  3 2017 - Thomas Wagner
-- fix tarball version
-* Sat Dec  2 2017 - Thomas Wagner
-- reworked, bump version 2.70 -> 2.97
-* Sat Feb 20 2016 - Thomas Wagner
-- initial spec
+- initial spec version 2012 to support SFEperl-json-xs

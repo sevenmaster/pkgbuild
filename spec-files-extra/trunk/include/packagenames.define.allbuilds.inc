@@ -2102,6 +2102,18 @@
 # echo %{_prefix}/%{perl_path_site_perl_version}   -> prints /usr/perl5/site_perl/5.8.4 (or 5.10.0)
 %define perl_path_site_perl_version perl%{perl_major_version}/site_perl/%{perl_version}
 
+# make a version that can be used in "expr"
+#kommandant tom ~/spec-files-extra printf "%.4i %.4i %.4i %.4i\n" 5 132 3 0
+#0005 0132 0003 0000
+#printf "%.4i %.4i %.4i %.4i\n" `echo 5.22.1 | awk -F'.' '{print $1" "$2" "$3}'`                                                                                                                         
+#0005 0022 0001 0000
+
+#kommandant tom ~/spec-files-extra printf "%.4i%.4i%.4i%.4i\n" `echo 5.22.1.2 |  awk -F'.' '{print $1" "$2" "$3" "$4}'`
+#0005002200010002
+#NOTE: remove "\n" from format spec
+#NOTE: escape for % is %%
+%define perl_version_padded %( printf "%%.4i%%.4i%%.4i%%.4i" `echo %{perl_major_minor_micro_version} |  awk -F'.' '{print $1" "$2" "$3" "$4}'` )
+
 %if %{omnios}
 #Exception! OmniOS uses different directory 5.16 -> 5.16.1
 #overwrite the above settings now
@@ -3466,10 +3478,13 @@
 
 
 %changelog
+* Sun Dec  3 2017 - Thomas Wagner
+- fix calculation for perl_version_padded
 * Sat Dec  2 2017 - Thomas Wagner
 - prepare for OmniOSce community edition with two letters for sub release (what a bad idea this is) (OM)
 - refine switch to perl 5.24.1 on r151022s and later (000015102200000019000000000000) (OM)
 - remove duplicate block accidentiall overwriting perl_version again (OM)
+- add perl_version_padded for use in expr (all)
 * Mon Nov 27 2017 - Thomas Wagner
 - set pnm_buildrequires_SFEzlib_pkgconfig to be OS distro library/zlib from S11.3 SRU9 and later
 * Wed Nov 15 2017 - Thomas Wagner
