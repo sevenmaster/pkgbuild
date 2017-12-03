@@ -51,7 +51,7 @@ Requires:       SFEperl-parse-cpan-meta
 #TAP::Harness (3.17) is installed, but we need version >= 3.29
 #contained in Test::Harness
 #we assume perl 5.22.1 has harness fresh enough (##TODO## research which perl version bundles harness >= 3.29, adjust perl_version_padded)
-%if %( expr %{perl_version_padded}.0 < 0005002200010000.0 )
+%if %( expr %{perl_version_padded}.0 '<' 0005002200010000.0 )
 BuildRequires:  SFEperl-test-harness
 Requires:       SFEperl-test-harness
 %endif
@@ -136,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec  3 2017 - Thomas Wagner
+- fix expr in perl_version_padded for dependency calulation
 * Sat Dec  2 2017 - Thomas Wagner
 - make Build)Requires conditional, new perl doesn't need Test::Harness in updated version (all)
 * Mon Mar  7 2016 - Thomas Wagner

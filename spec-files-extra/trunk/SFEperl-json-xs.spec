@@ -33,6 +33,9 @@ Source0:	http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/JSON-XS-%{tarball_
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-canary-stability
+Requires:       SFEperl-canary-stability
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Marc A. Lehmann <cpan@schmorp.de>
 Meta(info.upstream_url):        http://search.cpan.org/~mlehmann/%{tarball_name}-%{tarball_version}
@@ -40,12 +43,16 @@ Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
 JSON::XS
-JSON::XS
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
+#you may want to read the message if the blow is unset. Warns about 
+#standard perl versions 5.022 and up are not supported by JSON::XS
+#may be ignored if everything works fine anyways...we'll try and learn
+export PERL_CANARY_STABILITY_NOPROMPT=1
 
 if test -f Makefile.PL
   then
@@ -105,8 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-#%dir %attr(0755,root,bin) %{_bindir}
-#%{_bindir}/*
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -116,5 +123,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Dec  3 2017 - Thomas Wagner
+- add (Build)Requires SFEperl-canary-stability
+- fix %files
 * Sat Dec  2 2017 - Thomas Wagner
 - initial spec 3.04 (3.4) (for SFEkvmadm)
