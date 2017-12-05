@@ -23,9 +23,9 @@ URL:                     https://www.ansible.com/
 #2.4.1.0 .1. 0  release 2.4.1.0 if we have a previous a beta2
 #
 
-IPS_Component_version:   2.4.0.0.0.0
+IPS_Component_version:   2.4.2.0.0.0
 #Version:                 2.4.0.0-0.2.beta2
-Version:                 2.4.0.0
+Version:                 2.4.2.0
 
 #Source:			http://releases.ansible.com/ansible/ansible-2.4.1.0-0.2.beta2.tar.gz
 Source:			http://releases.ansible.com/ansible/ansible-%{version}.tar.gz
@@ -81,7 +81,7 @@ Requires:		SFEpython27-ansible
 Ansible automation
 
 Verify your ansible install with:
-ansible -m ping yourlocalmachinename
+ansible -m ping localhost
 
 %prep
 %setup -q -n ansible-%version
@@ -141,5 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python%{python_version}
 
 %changelog
+* Tue Dec  5 2017 - Thomas Wagner
+- bump to 2.4.2
 * Sat Oct  7 2017 - Thomas Wagner
 - Initial spec file version 2.4.0.0
