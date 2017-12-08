@@ -56,6 +56,7 @@ Summary:                 Python 3.3's ipaddress for older Python versions - unin
 Requires:	         SFEpython27-ipaddress
 
 
+%if %{solaris11}%{solaris12}
 #prepare a automatic uninstall package like this:
 #package is built *now* but carries a dependency on a package the osdistro shows when our package needs to be uninstalled
 %package -n %{name}-noinst-1
@@ -137,16 +138,16 @@ depend fmri=consolidation/osnet/osnet-incorporation@%{ips_os_component_os_buildv
 depend fmri=entire@%{ips_os_component_os_buildversion}-%{ips_branch_renamed_package} type=optional
 depend fmri=consolidation/osnet/osnet-incorporation@%{ips_os_component_os_buildversion}-%{ips_branch_renamed_package} type=optional
 
+%endif #%{solaris11}%{solaris12}
 
 
 %description
 Python module "ipaddess" (backported from Python 3.3)
 
-NOTE: once the OSdistro has its own module ipaddress (e.g. S11 11.3 SRU 14), then you NEED to uninstall this module!
+NOTE: once the OSdistro has its own module ipaddress (e.g. S11 11.3 SRU 14), then this module uninstalls automatically in favor of the ODDISTRO provided module.
 These OS Releases have ipaddress themselves:
 
-library/python/ipaddress  1.0.16-0.175.3.14.0.2.0 and
-library/python/ipaddress  1.0.16-0.175.3.20.0.1.0
+library/python/ipaddress  1.0.16-0.175.3.14.0.2.0 and later
 
 
 %prep
@@ -207,5 +208,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec  8 2017 - Thomas Wagner
+- make automatic uninstall @ specific OSDISTRO version only for solaris11 solaris12 (S11 S12)
 * Sun Oct  8 2017 - Thomas Wagner
 - Initial spec file version 1.0.16 (to keep it upgradable by the OS)

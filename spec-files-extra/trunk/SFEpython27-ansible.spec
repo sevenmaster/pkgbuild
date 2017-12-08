@@ -29,7 +29,7 @@ Version:                 2.4.2.0
 
 #Source:			http://releases.ansible.com/ansible/ansible-2.4.1.0-0.2.beta2.tar.gz
 Source:			http://releases.ansible.com/ansible/ansible-%{version}.tar.gz
-SUNW_BaseDir:            %{_basedir}
+SUNW_BaseDir:            /
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 #License: BSD
 
@@ -37,36 +37,43 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 BuildRequires:           runtime/python-27
 Requires:                runtime/python-27
 
-#get pycrypto
-BuildRequires:		SFEpython27-crypto
-Requires:		SFEpython27-crypto
+%if %{omnios}
+#with this package, the following IPS package names can be resolved by pkgtool/pkgbuild automatically.
+#the packages provide python modules which are normally in OSDISTRO, but OmniOS/OmniOSce is a bit too slim :)
+BuildRequires:          SFEpython27-omnios-bundle
+Requires:               SFEpython27-omnios-bundle
+%endif
 
-BuildRequires:		library/python/cffi
-Requires:		library/python/cffi
-BuildRequires:		library/python/jinja2
-Requires:		library/python/jinja2
-BuildRequires:		library/python/pyyaml
-Requires:		library/python/pyyaml
-BuildRequires:		library/python/paramiko
-Requires:		library/python/paramiko
+#get pycrypto either by requesting SFEpython27-pycrypto or from the OSdistro
+BuildRequires:		library/python/pycrypto-27
+Requires:		library/python/pycrypto-27
+BuildRequires:		library/python/cffi-27
+Requires:		library/python/cffi-27
+BuildRequires:		library/python/jinja2-27
+Requires:		library/python/jinja2-27
+BuildRequires:		library/python/pyyaml-27
+Requires:		library/python/pyyaml-27
+BuildRequires:		library/python/paramiko-27
+Requires:		library/python/paramiko-27
+BuildRequires:		library/python/pyasn1-27
+Requires:		library/python/pyasn1-27
+BuildRequires:		library/python/cryptography-27
+Requires:		library/python/cryptography-27
+BuildRequires:		library/python/six-27
+Requires:		library/python/six-27
+BuildRequires:		library/python/pycparser-27
+Requires:		library/python/pycparser-27
+
 #BuildRequires:		library/python/setuptools
 #Requires:		library/python/setuptools
 #we need >= 1.0 and not 0.9.x unfortunately. We patch ansible to use the binary call to
 BuildRequires:		SFEpython27-setuptools
 Requires:		SFEpython27-setuptools
-BuildRequires:		library/python/pyasn1
-Requires:		library/python/pyasn1
-BuildRequires:		library/python/cryptography
-Requires:		library/python/cryptography
-BuildRequires:		library/python/six
-Requires:		library/python/six
 #BuildRequires:		library/python/ipaddress
 #Requires:		library/python/ipaddress
 #NOTE: on S12 and on S11 from 1.0.16-0.175.3.14.0.2.0 and up, we have OS library/python/ipaddress - this gets auto-replaced through "renamed" flag in SFEpython27-ipaddress.spec-own-library/python/ipaddress@1.0.16-0.175.3.14.0.2.0 - so the OS library/python/ipaddress is the result
 BuildRequires:		SFEpython27-ipaddress
 Requires:		SFEpython27-ipaddress
-BuildRequires:		library/python/pycparser
-Requires:		library/python/pycparser
 
 %define python_version  2.7
 
@@ -130,6 +137,8 @@ mv $RPM_BUILD_ROOT%{_libdir}/python%{python_version}/site-packages/* \
    $RPM_BUILD_ROOT%{_libdir}/python%{python_version}/vendor-packages/
 rmdir $RPM_BUILD_ROOT%{_libdir}/python%{python_version}/site-packages
 
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ansible
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -139,8 +148,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ansible*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/python%{python_version}
+%dir %attr(-, root, sys) %{_sysconfdir}
+%dir %attr(-, root, sys) %{_sysconfdir}/ansible/
 
 %changelog
+* Fri Dec  8 2017 - Thomas Wagner
+- add empty %{_sysconfdir/ansible (check if that directory gets removed on pkg uninstall ansible if files are in it)
+- rename (Build)Requires from python-crypto to python/pycryptro
+- add helper package to pull in modules (Build)Requires SFEpython27-omnios-bundle (OM only).
 * Tue Dec  5 2017 - Thomas Wagner
 - bump to 2.4.2
 * Sat Oct  7 2017 - Thomas Wagner
