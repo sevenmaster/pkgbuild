@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Fri Dec  8 2017 - Thomas Wagner
-- add empty %{_sysconfdir/ansible (check if that directory gets removed on pkg uninstall ansible if files are in it)
+- add empty %{_sysconfdir}/ansible (check if that directory gets removed on pkg uninstall ansible if files are in it)
 - rename (Build)Requires from python-crypto to python/pycryptro
 - add helper package to pull in modules (Build)Requires SFEpython27-omnios-bundle (OM only).
 * Tue Dec  5 2017 - Thomas Wagner
