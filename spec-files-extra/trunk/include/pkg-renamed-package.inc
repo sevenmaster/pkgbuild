@@ -36,5 +36,6 @@ IPS_Vendor_Version: %{ips_branch_renamed_package}
 %changelog
 * Fri Nov  6 2015 - Thomas Wagner
 - don't use SUNW_Pkg: if it is an IPS package name with a "/" in it
+- check if we are already included with variable pkgbuild_features set to non-zero
 * Thu Nov 14 2013 - Thomas Wager
 - split out from pkg-renamed.inc to be included for every single oldname package

@@ -15,6 +15,8 @@
 # IPS_Legacy: false
 # %endif
 
+#to check if we are already included
+%define pkgbuild_features 1
 
 #examples:
 #pkgbuild version 1.3.103
@@ -115,6 +117,8 @@ exit 1
 #END not %{pkgbuild_ver_numeric}
 
 %changelog
+* fri Dec  8 2017 - Thonas Wagner
+- add pkgbuild_features to check if we are already included
 * Mon Jan 18 2016 - Thomas Wagner
 - bail out in case pkgbuild_ver_numeric is 0
 * Fri Jan  2 2015 - Thomas Wagner

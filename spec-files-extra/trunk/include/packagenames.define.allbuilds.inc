@@ -2112,7 +2112,7 @@
 #0005002200010002
 #NOTE: remove "\n" from format spec
 #NOTE: escape for % is %%
-%define perl_version_padded %( printf "%%.4i%%.4i%%.4i%%.4i" `echo %{perl_major_minor_micro_version} |  awk -F'.' '{print $1" "$2" "$3" "$4}'` )
+%define perl_version_padded %( /usr/bin/printf "%%.4i%%.4i%%.4i%%.4i" `echo %{perl_major_minor_micro_version} |  awk -F'.' '{print $1" "$2" "$3" "$4}'` )
 
 %if %{omnios}
 #Exception! OmniOS uses different directory 5.16 -> 5.16.1
@@ -3478,6 +3478,8 @@
 
 
 %changelog
+* Fri Dec  8 2017 - Thomas Wagner
+- spec full patch to /usr/bin/printf
 * Sun Dec  3 2017 - Thomas Wagner
 - fix calculation for perl_version_padded
 * Sat Dec  2 2017 - Thomas Wagner
