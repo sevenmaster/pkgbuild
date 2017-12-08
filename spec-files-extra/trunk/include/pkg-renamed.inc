@@ -2,6 +2,12 @@
 
 ##TODO## check added leading "0." for branch with different versions of pkgbuild!
 
+##NOTE## -- include this spec file into the package by specifying %include pkg-renamed.inc
+#           and adding the sessions accoding to the other examples like SFEurxvt.spec
+
+##NOTE## testing this inclulde file with e.g.: spectool --define 'version 3' eval %{ips_version_release_renamedbranch} include/pkg-renamed.inc
+
+
 # include file to help creating packages with the
 # "renamed=true" flag in case a package name has
 # changed.
@@ -47,6 +53,12 @@
 %include osdistro.inc
 %endif
 
+#already included before?
+%if %{?pkgbuild_features:%{pkgbuild_features}}%{?!pkgbuild_features:0}
+#yes, pkgbuild-features.inc is already included
+%else
+%include pkgbuild-features.inc
+%endif
 
 
 
@@ -114,14 +126,16 @@
 %define ips_branch_renamed_package %( echo %{ips_branch_raw} | awk -F'.' '{ print "0."$1"."$2"."$3"."$4"."0+$5"."0+$6"."0+$7"."1+$8 }' )
 %else
 %endif
-#END %{ips_branch_raw} sanity check 0.0.175.0.0.0.1.0
+#END %{ips_branch_raw} sanity check ....151.1.8....
 %else
 %endif
 #END %{openindiana}
 
 #example: uname -r 5.11  0.175.0.0.0.1.0 or uname -r 5.12  5.12.0.0.0.32.2
 #-->>        9.18,5.11-0.0.175.0.0.0.1.1         9.18,5.12-5.12.0.0.0.32.3
-%define ips_version_release_renamedbranch %( echo "%{version},`uname -r`-%{ips_branch_renamed_package}" | tee /tmp/ips_branch_renamed_package )
+%define ips_release_renamedbranch %( uname -r)-%{ips_branch_renamed_package}
+#again, but prefixed with current package version
+%define ips_version_release_renamedbranch %{version},%ips_release_renamedbranch
 %else
 %endif
 #END pkgbuild_ips_legacy
