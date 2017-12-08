@@ -651,7 +651,8 @@
 #%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o047?' | egrep "^.[a-z]$" )
 %define osdistrelnumber_letterrelease_char %( /usr/gnu/bin/egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | /usr/gnu/bin/sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o134\o134\o047?' | /usr/gnu/bin/egrep "^..[a-z][a-z]*$" )
 #make char a number, note! \o047 puts an >\'< before the letter in the sed command above (without the > <)
-%define osdistrelnumber_letterrelease_number %( expr -96 '+' `printf "%d" \\%{osdistrelnumber_letterrelease_char}` )
+#%define osdistrelnumber_letterrelease_number %( expr -96 '+' `printf "%%d" \\%{osdistrelnumber_letterrelease_char}` )
+%define osdistrelnumber_letterrelease_number %( expr -96 '+' `/usr/bin/printf "%d" \\%{osdistrelnumber_letterrelease_char}` )
 #fix empty chat to be number zero
 #%if %( expr %{osdistrelnumber_letterrelease_number} '=' '-96' )
 #%define osdistrelnumber_letterrelease_number 0
@@ -669,6 +670,8 @@
 
 
 %changelog
+* Fri Dec  8 2017 - Thomas Wagner
+- spec full path to /usr/bin/printf
 * Sat Dec  2 2017 - Thomas Wagner
 - improve detection for OmniOSce with two letters as sub release e.g. r151022aa (OM)
 * Tue Nov  7 2017 - Thomas Wagner
