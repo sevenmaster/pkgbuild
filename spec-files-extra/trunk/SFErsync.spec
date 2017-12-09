@@ -11,6 +11,8 @@ Summary:                 rsync - fast incremental file transfer (%{_basedir}/gnu
 URL:                     http://rsync.samba.org/
 Version:                 3.1.2
 Source:                  http://rsync.samba.org/ftp/rsync/rsync-%{version}.tar.gz
+Patch1:                  rsync-01-15730984.diff
+Patch4:                  rsync-04-CVE-2017-17433.diff
 License:		 GPLv3
 SUNW_Copyright:		 rsync.copyright
 
@@ -23,6 +25,12 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 
 %prep
 %setup -q -n rsync-%version
+
+#shorten path names referencing source file names
+%patch1 -p1
+
+#CVE-2017-17433
+%patch4 -p1
 
 %build
 
@@ -66,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec  9 2017 - Thomas Wagner
+- patch4 fix for CVE-2017-17433 (rsync-04-CVE-2017-17433.diff) imported
+- patch1 remove path from source file names (rsync-01-15730984.diff) imported
 * Sat Feb 13 2016 - Thomas Wagner
 - bump to 3.1.2 - bug and security fix
 * Fri Jan 24 2014 - Thomas Wagner
