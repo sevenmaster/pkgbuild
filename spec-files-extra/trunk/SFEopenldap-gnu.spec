@@ -30,7 +30,7 @@ IPS_package_name:	sfe/library/gnu/openldap
 Group:			System/Services
 Summary:                 OpenLDAP - LDAP Server, Tools and Libraries (/usr/gnu)
 URL:                     http://www.openldap.org
-Version:                 2.4.44
+Version:                 2.4.45
 Source:                  http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-%{version}.tgz
 Source2:		ldap-olslapd.xml
 Source3:		openldap-exec_attr
@@ -325,6 +325,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Sun Dec 10 2017 - Thomas Wagner
+- bump to 2.4.45
 * Thu Dec  1 2016 - Thomas Wagner
 - add workaround to find gcc runtime for "gsoelim" (called in %install by gmake install) (OM <= 151014)
 * Mon Nov 21 2016 - Thomas Wagner
