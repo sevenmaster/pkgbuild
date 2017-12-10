@@ -124,8 +124,8 @@ fi
 
 export CC=gcc
 export CXX=g++
-export CFLAGS="%optflags -I%{gnu_inc}"
-export CXXFLAGS="%cxx_optflags -I%{gnu_inc}"
+export CFLAGS="%optflags -I%{gnu_inc} -D_POSIX_PTHREAD_SEMANTICS"
+export CXXFLAGS="%cxx_optflags -I%{gnu_inc} -D_POSIX_PTHREAD_SEMANTICS"
 export CPPFLAGS=${CXXFLAGS}
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
@@ -327,6 +327,7 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %changelog
 * Sun Dec 10 2017 - Thomas Wagner
 - bump to 2.4.45
+- add -D_POSIX_PTHREAD_SEMANTICS or get error wrong number of arguments to sigwait
 * Thu Dec  1 2016 - Thomas Wagner
 - add workaround to find gcc runtime for "gsoelim" (called in %install by gmake install) (OM <= 151014)
 * Mon Nov 21 2016 - Thomas Wagner
