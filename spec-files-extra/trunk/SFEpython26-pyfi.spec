@@ -15,8 +15,8 @@
 %define src_url         http://pypi.python.org/packages/source/P/PyFi
 %define src_name_uc     SetupTools
 %define src_name        PyFi
-%define src_version	0.1.24
-%define src_version_major_minor	0.1.24
+%define src_version	0.7.1
+%define src_version_major_minor	0.7.1
 %define packagename SFEpython%{python_version_package_string}-pyfi
 
 Name:		%{packagename}
@@ -34,12 +34,12 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 BuildRequires:	%{pnm_buildrequires_python_default}
 Requires:	%{pnm_requires_python_default}
-#python26 has already BuildRequires:	SFEpython26-setuptools.spec
-#python26 has already Requires:	SFEpython26-setuptools.spec
-BuildRequires:	SFEpython26-configparser.spec
-Requires:	SFEpython26-configparser.spec
-BuildRequires:	SFEpython26-argparse.spec
-Requires:	SFEpython26-argparse.spec
+#python26 has already BuildRequires:	SFEpython26-setuptools
+#python26 has already Requires:	SFEpython26-setuptools
+BuildRequires:	SFEpython26-configparser
+Requires:	SFEpython26-configparser
+BuildRequires:	SFEpython26-argparse
+Requires:	SFEpython26-argparse
 
 %description
 fifo: This is a python implementation of (most) of the Project FiFo API along with a console client to access it.
@@ -72,6 +72,10 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Wed Dec  7 2017 - Thomas Wagner
+- fix (Build)Requires
+* Sun Jan  3 2016 - Thomas Wagner
+- bump to 0.7.1
 * Sat Jun 14 2014 - Thomas Wagner
 - bump to 0.1.24
 * Mon May 12 2014 - Thomas Wagner

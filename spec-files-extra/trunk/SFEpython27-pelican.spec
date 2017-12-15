@@ -16,7 +16,8 @@ Summary:	A static site generator written in Python
 License:	AGPL
 Group:		Development/Languages/Python
 URL:		http://blog.getpelican.com/
-Source:		https://github.com/getpelican/pelican/archive/%{version}.tar.gz
+Source:		http://github.com/getpelican/pelican/archive/%{version}.tar.gz?%{src_name}-%{version}.tar.gz
+
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -33,7 +34,7 @@ Requires: SFEpython27-blinker
 Requires: SFEpython27-dateutil
 Requires: SFEpython27-docutils
 Requires: SFEpython27-feedgenerator
-Requires: SFEpython27-jinja
+Requires: SFEpython27-jinja2
 Requires: SFEpython27-unidecode
 
 %prep
@@ -61,6 +62,9 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Tue Dec  5 2017 - Thomas Wagner
+- make Download file unique to this package name
+- rename (Build)Requires from SFEpython27-jinja to SFEpython27-jinja2
 * Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Add pytz dependency
 * Tue Jan 13 2015 - Ian Johnson <ianj@tsundoku.ne.jp>

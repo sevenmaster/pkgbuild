@@ -12,10 +12,10 @@
 Name:                    SFEsshfs
 IPS_package_name: system/file-system/fuse-sshfs
 Summary:                 sshfs - filesystem access over SSH
-Version:                 2.8
+Version:                 2.10
 IPS_package_name:	system/file-system/sshfs
 License:                 GPLv2
-Source:			http://github.com/libfuse/sshfs/releases/download/sshfs_%{version}/sshfs-%{version}.tar.gz
+Source:			http://github.com/libfuse/sshfs/archive/sshfs-%{version}.tar.gz
 Patch1:                  sshfs-fuse-01-sunpro.diff
 Url:                     https://github.com/libfuse/sshfs
 SUNW_BaseDir:            %{_basedir}
@@ -28,8 +28,21 @@ BuildRequires: SFElibfuse
 Requires: SFEfusefs
 Requires: SFElibfuse
 
+
+%description
+Mount remote diretories through a SSH connection.
+#
+sudo -i;
+mkdir /tmp/ssh-remount-mount;
+sshfs remoteuser@remotehost:/this/remote/filesystem_path /tmp/ssh-remount-mount;
+#
+For umount run "umount /tmp/ssh-remount-mount"
+
+Make sure to check the various options (including sync / async)
+
 %prep
-%setup -q -n %src_name-%version
+#sshfs-sshfs-2.10
+%setup -q -n %{src_name}-%{src_name}-%{version}
 %patch1 -p1
 
 %build
@@ -78,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec  7 2017 - Thomas Wagner
+- bump to 2.10
+- new Download URL (archive)
 * Tue Feb 14 2017 - Thomas Wagner
 - fix Source, update URL
 * Tue Nov 15 2016 - Thomas Wagner
