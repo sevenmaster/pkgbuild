@@ -16,7 +16,7 @@ License:	LGPLv2
 SUNW_Copyright:	libfuse.copyright
 #Version:	0.%{tarball_version}
 # 0.1 to indicate it is patched first round. increment for next added or changed patch
-Version:	2.7.6.0.1
+Version:	2.7.6.0.2
 Group:		System/File System
 #is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
 Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
@@ -165,6 +165,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec  7 2017 - Thomas Wagner
+- fix patch to mount binary to be /sbin/ , change invalid options, use empty envionment (libfuse-03-mount_util.c.diff)
+- bump to 2.7.6.0.2
 * Tue Feb 14 2017 - Thomas Wagner
 - add workaround and use dmake (OM)
 * Sat Nov 17 2016 - Thomas Wagner

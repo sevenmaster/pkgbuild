@@ -36,7 +36,7 @@ Requires:	         SFEpython27-pycrypto
 pycrypto
 This is a collection of both secure hash functions (such as SHA256 and RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal, etc.). 
 
-%if %{solaris11}%{solaris12}%{oihipster}
+#make renamed-to-package for all OSDISTRO %if %{solaris11}%{solaris12}%{oihipster}
 %package -n %{name}-noinst-1
 Summary:                %{summay} - automatic renamed-to-package to uninstall python-crypto package and install pycrypto
 IPS_Package_Name:	/library/python/python-crypto
@@ -57,7 +57,7 @@ depend fmri=library/python/python-crypto@%{ips_version_release_renamedbranch} ty
 %actions -n %{name}-noinst-2
 depend fmri=library/python/python-crypto-27@%{ips_version_release_renamedbranch} type=optional
 
-%endif #%{solaris11}%{solaris12}%{oihipster}
+#make renamed-to-package for all OSDISTRO %endif #%{solaris11}%{solaris12}%{oihipster}
 
 %prep
 %setup -q -n pycrypto-%version
@@ -108,6 +108,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/python%{python_version}
 
 %changelog
+* Sat Dec  9 2017 - Thomas Wagner
+- fix osdistro switch for renamed-to-package (S11, S12, OIH)
 * Thu Dec  7 2017 - Thomas Wagner
 - rename from library/python/python-crypto-27 to library/python/pycrypto-27
 - add unversioned alias package library/python/pycrypto
