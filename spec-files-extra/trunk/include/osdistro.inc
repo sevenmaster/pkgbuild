@@ -310,7 +310,8 @@
 # but still flags ealier versions although not dealt with as such.
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 151 )
-%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
+#%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'OpenIndiana Development|OpenIndiana Hipster' /etc/release > /dev/null && echo 1 || echo 0 )
 # Detect if hipsterish
 %if %( uname -v | egrep '^illumos-' > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
@@ -379,7 +380,8 @@
 # in consuming spec file!
 %if %{osdet299999}
 %if %( expr %{osbuild} '>=' 151 )
-%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
+#%if %( egrep 'OpenIndiana (Development|Hipster)' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'OpenIndiana Development|OpenIndiana Hipster' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
@@ -670,6 +672,8 @@
 
 
 %changelog
+* Fri Dec 15 2017 - Thomas Wagner
+- avoid "(" and ")" in egrep regex, some pkgbuild versions can't escape these propperly
 * Fri Dec  8 2017 - Thomas Wagner
 - spec full path to /usr/bin/printf
 * Sat Dec  2 2017 - Thomas Wagner
