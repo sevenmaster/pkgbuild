@@ -94,11 +94,15 @@
 # oldpkg....(higher branch then any other oldpkg with content)       newpkg.....(lower branch)
 # package_renamed_true@version-buildrelease,branch_renamed_package > package@version-buildrelease,branch
 
+#in short: we need a reasonable osdistro version to only get the renamed-action in effect _if_ the OSdistro version is high enough. This protects the rename from being done on older OSdistro.
+
 %define ips_branch_renamed_package 999999
 
 #ATTENTION# we are editing 0.175 -> 0.0.175 for Solaris 11 (to match what pkgtool/pkgbuild does internally)
 %define ips_branch_raw %( LC_ALL=C pkg info release/name | grep Branch | sed -e 's?.* ??' -e 's?^0\.175?0.0.175?' )
 
+#purpose: add a .1 at the end!
+#S11 S12
 #case: 7 numbers branch sanity check
 %if %( echo %{ips_branch_raw} | egrep "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" > /dev/null && echo 1 || echo 0 )
 #add plus one on the last/seventh digit
@@ -106,12 +110,32 @@
 %endif
 #END %{ips_branch_raw} sanity check e.g. 5.12.0.0.0.32.2
 
+#purpose: add a .1 at the end!
+#S1
 #case: 8 numbers branch sanity check
 %if %( echo %{ips_branch_raw} | egrep "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" > /dev/null && echo 1 || echo 0 )
 #add plus one on the last/eighth digit
 %define ips_branch_renamed_package %( echo %{ips_branch_raw} | awk -F'.' '{ print $1"."$2"."$3"."$4"."$5"."$6"."$7"."1+$8 }' )
 %endif
 #END %{ips_branch_raw} sanity check 0.0.175.0.0.0.1.0
+
+#OmniOSce. Unfortunatly they mix letters into release as written in /etc/release
+#but up to now, there is no way to read this as numbers in version of e.g. release/name, entire or osnet-consolidation
+#therefore we are stuck with only knowing it is r151022 and nothing more (that would be a numeric representation of r151022y or r151022af or r151022bc
+#purpose: add a .1 at the end!
+#OmniOS OmniOSce
+#           FMRI: pkg://omnios/release/name@0.5.11-0.151022:20171102T155624Z
+#case: 8 numbers branch sanity check
+%if %{omnios}
+%if %( echo %{ips_branch_raw} | egrep "^[0-9]+\.[0-9][0-9][0-9][0-9][0-9][0-9]$" > /dev/null && echo 1 || echo 0 )
+#add plus one on the last digit
+#as I'm expecting OmniOSce to add own numbers, we try to stay away. The awk code may need adjustments then. Old and new versions should be made working.
+#0.151022 -> 0.151022.0.0.0.0.1
+%define ips_branch_renamed_package %( echo %{ips_branch_raw} | awk -F'.' '{ print $1"."$2".0.0.0.0."1+$3 }' )
+%endif
+#END ips_branch_raw sanity check 0.151022
+%endif
+#END %{omnios}
 
 #case: 4 (5) numbers branch sanity check (OI: 0.0.151.1.4 or 0.0.151.1.8)
 # oi151a8:  LC_ALL=C pkg info release/name | grep Branch
@@ -144,6 +168,8 @@
 
 
 %changelog
+* Sat Dec 09 2017 - Thomas Wagner
+- handle OmiOS / OmniOSce to get a ips_branch_renamed_package e.g. 0.151022.0.0.0.0.1 (OM)
 * Wed Nov 14 2013 - Thomas Wagner
 - fixed branch calculation
 - fixed detection which renamed_<n> set is defined by the calling spec file
