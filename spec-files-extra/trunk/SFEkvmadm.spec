@@ -20,7 +20,7 @@ exit 254
 Name:                   SFEkvmadm
 IPS_Package_Name:	system/management/kvmadm
 Summary:                Manage KVM instances under SMF control
-Version:                0.12.1
+Version:                0.12.2
 URL:			http://kvmadm.org
 Source:                 http://github.com/hadfl/kvmadm/releases/download/v%{version}/kvmadm-%{version}.tar.gz
 License:		GPLv3
@@ -107,6 +107,7 @@ install -c -m 644  lib/KVMadm/Config.pm lib/KVMadm/Progress.pm lib/KVMadm/Utils.
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/man/man1
 install -c -m 644 man/kvmadm.1 $RPM_BUILD_ROOT/%{_datadir}/man/man1
 
+install -m 0644 smf/system-kvm.xml %{buildroot}%/var/svc/manifest/system/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -118,7 +119,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755,root,sys) %{_datadir}
 %{_mandir}
 
+%class(manifest) %attr(0444, root, sys) %{_localstatedir}/svc/manifest/system/system-kvm.xml
+
+
 
 %changelog
+* Fri Dec 15 2017 - Thomas Wagner
+- bump to 0.12.2
+- install SMF manifest system-kvm.xml
 * Sun Dec  3 2017 - Thomas Wagner
 - Initial version 0.12.1
