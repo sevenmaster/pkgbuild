@@ -51,7 +51,16 @@ Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
 #note: see %define downloadversion 22 above
-Version:	2.2.33.2
+#attention: versions *older* then SRU19
+%if %( expr %{solaris11} '&' %{osdistro_entire_padded_number4}.1 '<' 0000017500030019000000000000.1 )
+#EC support missing in openssl if osdistro os older then: 0.175.3.19.0.1.0
+#2.2.31
+#Version:	2.2.30.1
+Version:	2.2.29
+%else
+#every else osdistro has new openssl with ec.h
+Version:	2.3.0
+%endif
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -258,6 +267,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Tue Jan  2 2018 - Thomas Wagner
+- bump to 2.3.0
 * Wed Nov  8 2017 - Thomas Wagner
 - fix compilation, false detection of HAVE_INOTIFY_INIT 1 on OmniOS (OM)
 * Mon Oct 23 2017 - Thomas Wagner
