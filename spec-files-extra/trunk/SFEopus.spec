@@ -19,7 +19,7 @@ Name:		SFEopus
 IPS_Package_Name:	library/audio/opus
 Summary:      The Opus Audio Codec Library
 Group:		Development/Libraries
-Version:	1.0.2
+Version:	%{opus.version}
 Source:       http://downloads.xiph.org/releases/opus/opus-%{version}.tar.gz
 URL:            http://opus-codec.org
 License:	BSD3c
@@ -97,6 +97,8 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Nov 27 2017 - Thomas Wagner
+- bump to 1.1.5
 * Sat May 25 2013 - Thomas Wagner
 - initial spec derived from libvorbis.spec, SFEgmp.spec and opus.spec (SuSE)
 - starting with GNU gcc (Studio compilers would need patching compiler switches in opus)

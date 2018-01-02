@@ -7,7 +7,7 @@
 
 
 Name:         opus
-Version:      1.0.2
+Version:      1.1.5
 Summary:      The Opus Audio Codec Library
 Source:       http://downloads.xiph.org/releases/opus/opus-%{version}.tar.gz
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
@@ -44,5 +44,7 @@ rm $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Mon Nov 27 2017 - Thomas Wagner
+- bump to 1.1.5
 * Sat May 25 2013 - Thomas Wagner
 - initial spec derived form libvorbis.spec
