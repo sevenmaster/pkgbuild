@@ -67,13 +67,20 @@ cd ..
 
 %build
 export PATH="$PATH:%{_bindir}"
-export CFLAGS="%optflags %{gnu_inc}"
+export CFLAGS="%optflags -I%{gnu_inc}"
 %if %{cc_is_gcc}
 %else
-export CFLAGS="${CFLAGS} -Xc -c99 -xinline=%auto -xbuiltin=%none"
+export CFLAGS="${CFLAGS} -Xc -xc99 -xinline=%auto -xbuiltin=%none"
 %endif
 export MSGFMT="/usr/bin/msgfmt"
 export LDFLAGS="%{gnu_lib_path} %_ldflags -lsocket -lc "
+
+%if %{omnios}
+#or get: "/usr/gnu/include/pth.h", line 93: #error: "FD_SETSIZE is larger than what GNU Pth can handle."
+#sys/select.h says: FD_SETSIZE may be defined by the user, but the default here should be >= RLIM_FD_MAX.
+export CFLAGS="${CFLAGS} -DFD_SETSIZE=1024"
+%endif
+
 %if %build_l10n
 LDFLAGS="$LDFLAGS -lintl -liconv"
 LIBINTL="/usr/gnu/lib/libintl.so"
@@ -129,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jan  4 2018 - Thomas Wagner
+- fix build on OmniOS pth.h FD_SETSIZE > 1024 and use -xc99 to get int64_t defined
 * Tue Aug 15 2017 - Thomas Wagner
 - bump to 2.0.30
 - change (Build)Requrires to pnm_macros (e.g. OM)
