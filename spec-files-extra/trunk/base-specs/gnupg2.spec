@@ -29,7 +29,8 @@ these versions of PGP 2.
 %setup -n %{name}-%{version}
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure \
+
+./configure \
                         --prefix=%{_prefix} \
                         --libexecdir=%{_libexecdir} \
                         --mandir=%{_mandir}         \
@@ -84,6 +85,8 @@ fi
 %attr (0755,root,root) %{_libexecdir}/gnupg/*
 
 %changelog -n gnupg
+* Thu Jan  4 2018 - Thomas Wagner
+- fix build on OmniOS pth.h FD_SETSIZE > 1024 and use -xc99 to get int64_t defined
 * Tue Aug 15 2017 - Thomas Wagner
 - bump to 2.0.30
 - change (Build)Requrires to pnm_macros (e.g. OM)

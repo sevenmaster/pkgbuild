@@ -34,14 +34,21 @@ Source0:	http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/libwww-perl-%{tarba
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+
+#e.g. OmniOS has perl 5.24 with those modules included
+%if %( expr %{perl_version_padded}.0 '<' 0005002400000000.0 )
 BuildRequires:  SFEperl-encode
 Requires:       SFEperl-encode
 BuildRequires:  SFEperl-encode-locale
 Requires:       SFEperl-encode-locale
-BuildRequires:  SFEperl-http-message	
-Requires:       SFEperl-http-message	
 BuildRequires:	SFEperl-io-compress
 Requires:	SFEperl-io-compress
+%else
+#included in runtime/perl@5.24.1
+%endif
+
+BuildRequires:  SFEperl-http-message	
+Requires:       SFEperl-http-message	
 BuildRequires:	SFEperl-html-parser
 Requires:	SFEperl-html-parser
 BuildRequires:	SFEperl-uri
@@ -129,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+- Thu Jan  4 2018 - Thomas Wagner
+- change (Build)Requires active only for old perl version < 5.24.0 for SFEperl-encode SFEperl-encode-locale SFEperl-io-compress (OM)
 * Fri Aug 12 2017 - Thomas Wagner
 - reworked / renewed version 6.15 -> 6.26
 - note: IPS_Component_Name different from what automatic script experimental/make_perl_cpan_settings.pl calculates
