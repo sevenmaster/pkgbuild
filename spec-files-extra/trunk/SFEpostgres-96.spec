@@ -12,7 +12,7 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.6.3
+%define tarball_version  9.6.6
 %define major_version	 9.6
 #e.g.                    96
 %define major_version_no_dot	 %( echo %{major_version} | sed -e 's?\.??g' )
@@ -134,7 +134,8 @@ cp -rp %{tarball_name}-%{tarball_version} %{tarball_name}-%{tarball_version}-64
 %build
 
 #get 768MB mem per CPU
-CPUS=%{_cpus_memory_768}
+#get 1536 mem per CPU to try lower /tmp/ usage by the compiler (trick)
+CPUS=%{_cpus_memory_1536}
 
 cd %{tarball_name}-%{tarball_version}
 %ifarch sparc
@@ -146,7 +147,14 @@ cd %{tarball_name}-%{tarball_version}
 export CCAS=cc
 export CCASFLAGS=
 export CC=cc
-export CFLAGS="-i -xO4 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC"
+#export CFLAGS="-i -xO4 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC"
+#getting hughe files form compiler, explodes /tmp residing in swap and being limited in size
+#use local storage. Listing doesn't show the miximum size, only what has been catched during the compile
+#could be the case that solaris studio 12.3 is a bit old. cc: Sun C 5.12 SunOS_i386 2011/11/16
+#-rw-r--r--   1 sfe staff   9115153 Jul 11 17:01 acomp.1499784967.15585.02.sd
+#-rw-r--r--   1 sfe staff 315490504 Jul 11 17:03 iropt.1499784967.15585.03.ir
+#-rw-r--r--   1 sfe staff 742051468 Jul 11 17:01 acomp.1499784967.15585.01.ir
+export CFLAGS="-i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=%{_builddir}"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -lncurses"
 export LD_OPTIONS="-R/usr/gnu/lib -L/usr/gnu/lib"
 
@@ -197,7 +205,7 @@ cd ../%{tarball_name}-%{tarball_version}-64
 
 #export CFLAGS="%optflags64"
 ##TODO## -xO5 testen
-export CFLAGS="-m64 -i -xO4 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC"
+export CFLAGS="-m64 -i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=%{_builddir}"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib/%{_arch64} -R/usr/gnu/lib/%{_arch64} -lncurses"
 #we aren't using the normal include schemas to get 32-/64-bit dual builds, so fix it here
 export LDFLAGS=$( echo ${LDFLAGS}  | sed -e 's/-m32/-m64/g' )
@@ -239,7 +247,6 @@ PERLCONFIG=""
             DTRACEFLAGS='-64' \
             --with-includes=/usr/gnu/include:/usr/include \
 %if %{with_tcl}
-
             --with-tcl \
             --with-tclconfig=/usr/lib \
 %endif
@@ -1277,8 +1284,11 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/%{_arch64}/vacuumlo
 
 %changelog
+* Fri Jan  5 2018 - Thomas Wagner
+- bump to version 9.6.6
 * Mon Jul 10 2017 - Thomas Wagner
 - add missing Requires: libedit openssl
+- add -temp=%{_builddir} to CFLAGS to have compiler interim files of size 1GB not live in size-limited /tmp on swap (seen with Sun CC 5.12 aka 12.3)
 * Sun Jun  4 2017 - Thomas Wagner
 - bump to version 9.6.3
 - create symlink bin/64 bin/%{_arch64} or bin/sparcv9 to match path to bin in SMF xml (shows bin/64/ )
