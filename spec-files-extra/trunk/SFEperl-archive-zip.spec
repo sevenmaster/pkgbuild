@@ -88,15 +88,13 @@ Meta(pkg.renamed): true
 PkgBuild_Make_Empty_Package: true
 ips_legacy: false
 %endif
-#END openindiana hipster 2016
+#END openindiana hipster 2016 solaris12
 
 %package noinst-1
 %define renamed_from_oldname      library/perl-5/archive-zip
 #%define renamed_to_newnameversion library/zlib = *
 #                   library/perl-5/archive-zip = 1.37-2015.0.2.0
 %define renamed_to_newnameversion library/perl-5/archive-zip = 1.37-2015.0.2.0
-%endif
-#END deliver_no_files
 
 %include pkg-renamed-package.inc
 
@@ -141,6 +139,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 
 %changelog
+* Thu Jan  4 2018 - Thomas Wagner
+- fix spec syntax remove closing %endif
 * Sun Oct  8 2017 - Thomas Wagner
 - add renamed-to package for removal (OIH, S12)
 * Mon Sep 9 2011 - Thomas Wagner

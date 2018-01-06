@@ -11,7 +11,7 @@ IPS_Package_Name:	 media/mtx
 License:             GPLv2
 Summary:             SCSI media changer control program
 Version:             1.3.12
-Source:              https://superb-dca2.dl.sourceforge.net/project/%{src_name}/%{src_name}-stable/%{src_name}-%{version}.tar.gz
+Source:              %{sf_download}/project/mtx/mtx-stable/%{version}/mtx-%{version}.tar.gz
 URL:                 https://sourceforge.net/projects/mtx
 SUNW_BaseDir:        %{_basedir}
 SUNW_Copyright:      %{license}.copyright
@@ -49,5 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 
 %changelog
+* Fri Jan  5 2018 - Thomas Wagner
+- fix download URL
 * Mon Jun 12 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
 - Initial spec to replace obsoleted vendor package

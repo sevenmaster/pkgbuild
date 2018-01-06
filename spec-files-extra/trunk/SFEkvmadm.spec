@@ -25,7 +25,7 @@ URL:			http://kvmadm.org
 Source:                 http://github.com/hadfl/kvmadm/releases/download/v%{version}/kvmadm-%{version}.tar.gz
 License:		GPLv3
 SUNW_Copyright:		%{license}.copyright
-SUNW_BaseDir:           %{_basedir}
+SUNW_BaseDir:           /
 BuildRoot:              %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
@@ -95,6 +95,15 @@ perl -pi -e 's:^#! */usr/bin/env *perl.*:#!%{_prefix}/perl%{perl_major_version}/
 rm -rf $RPM_BUILD_ROOT
 #don't use gmake install DESTDIR=$RPM_BUILD_ROOT
 
+#note: These modules are in the build directory, but *NOT* in the package "kvmadm"
+#      they are created, packaged and installed separately 
+#Successfully installed Data-Processor-0.4.3
+#Successfully installed Illumos-Zones-v0.1.7
+#Successfully installed Illumos-SMF-v0.1.7
+#Successfully installed JSON-2.97001
+#4 distributions installed
+
+
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 install -c bin/kvmadm bin/system-kvm probes/dns_probe probes/ping_probe $RPM_BUILD_ROOT/%{_bindir}
 
@@ -120,11 +129,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755,root,sys) %{_datadir}
 %{_mandir}
 
+%dir %attr (0755, root, sys) /lib/svc/manifest
+%dir %attr (0755, root, sys) /lib/svc/manifest/system
 %class(manifest) %attr(0444, root, sys) /lib/svc/manifest/system/system-kvm.xml
 
 
 
+
 %changelog
+* Fri Jan  6 2018 - Thomas Wagner
+- fix packaging with set basedir /
 * Tue Jan  2 2018 - Thomas Wagner
 - put manifest into /lib/svc
 * Fri Dec 15 2017 - Thomas Wagner

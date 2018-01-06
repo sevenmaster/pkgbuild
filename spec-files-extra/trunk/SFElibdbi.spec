@@ -62,7 +62,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/*
+%{_libdir}/*so*
 
 %files devel
 %defattr (-, root, bin)
@@ -71,9 +71,13 @@ rm -rf %{buildroot}
 %dir %attr (0755, root, sys) %{_datadir} 
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
 
 
 %changelog
+* Sat Jan  6 2018 - Thomas Wagner
+- fix permissions for /usr/lib/pkgconfig
 * Fri Mar 15 2013 - Thomas Wagner
 - bump to 0.9.0
 * Sat Aug 11 2012 - Thomas Wagner

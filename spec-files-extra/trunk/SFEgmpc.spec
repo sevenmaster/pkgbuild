@@ -27,8 +27,8 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 BuildRequires:		 SFEgob
 #			Solaris 11.2 system vala is too old to build this
 BuildRequires:		 SFEvala
-BuildRequires:		 SUNWperl-xml-parser
-Requires:		 SUNWperl-xml-parser
+BuildRequires:		 %{pnm_buildrequires_library_perl_5_xml_parser}
+Requires:		 %{pnm_requires_library_perl_5_xml_parser}
 BuildRequires:		 SFElibmpd-devel
 #test#BuildRequires:           SFEavahi-devel
 Requires:		SFElibmpd
@@ -138,6 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan  6 2018 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_library_perl_5_xml_parser}
 * Sat Aug 29 2015 - Alex Viskovatoff <herzen@imap.cc>
 - update to 11.8.16; remove runtime dependency on vala
 * Tue Apr 24 2012 - Thomas Wagner
