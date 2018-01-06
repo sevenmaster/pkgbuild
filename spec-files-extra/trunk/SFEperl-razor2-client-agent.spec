@@ -30,6 +30,7 @@ SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/Razor2-Client-Agent-%{tarball_version}.tar.gz
 #Source:                  http://downloads.sourceforge.net/razor/razor-agents-%{module_version}.tar.bz2
+Patch1:         razor2-client-agent-01-Makefile-quoting.diff
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
@@ -48,6 +49,9 @@ Razor2::Client::Agent
 
 %build
 
+#fix quoting for MAN5 in Makefile
+[ -f Makefile ] && rm Makefile
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -59,8 +63,10 @@ if test -f Makefile.PL
     INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
+    INSTALLSITEMAN5DIR=$RPM_BUILD_ROOT%{_mandir}/man5 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
+    INSTALLMAN5DIR=$RPM_BUILD_ROOT%{_mandir}/man5 \
 
 
 
@@ -79,6 +85,7 @@ else
     --install_path bin=%{_bindir} \
     --install_path bindoc=%{_mandir}/man1 \
     --install_path libdoc=%{_mandir}/man3 \
+    --install_path libdoc=%{_mandir}/man5 \
     --destdir $RPM_BUILD_ROOT \
 
 
@@ -86,8 +93,19 @@ else
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
 
+#correct (seen with MakeMaker 6.56 on S11.3 GA perl 5.12)
+#   $(INST_MAN5DIR) $(DESTINSTALLMAN5DIR) \
+#wrong (seen with MakeMaker 7.1002 on OmniOSce perl 5.24) - one >"< is lost
+#  "$(INST_MAN1DIR)" "$(DESTINSTALLMAN1DIR) \
+#  $(INST_MAN5DIR) $(INSTALLMAN5DIR)" \
+#fix quoting for MAN5 in Makefile - if we see an opening but no closing >"<
+grep '"$(DESTINSTALLMAN1DIR) ' Makefile > /dev/null && patch -p0 < %{PATCH1}
+
+
+
 %install
 rm -rf $RPM_BUILD_ROOT
+
 if test -f Makefile.PL
    then
    # style "Makefile.PL"
@@ -117,6 +135,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Jan  6 2017 - Thomas Wagner
+- add patch1 fix quoting in Makefile for MAN5 path
 * Sun Aug 13 2017 - Thomas Wagner
 - reworked, version 2.84
 * Wed Nov 28 2012 - Thomas Wagner

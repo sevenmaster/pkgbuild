@@ -33,6 +33,9 @@ Source0:	http://search.cpan.org/CPAN/authors/id/M/MD/MDXI/Curses-UI-%{tarball_ve
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-curses
+Requires:       SFEperl-curses
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Shawn Boyette <mdxi@cpan.org>
 Meta(info.upstream_url):        http://search.cpan.org/~mdxi/%{tarball_name}-%{tarball_version}
@@ -115,4 +118,5 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Nov 23 2017 - Thomas Wagner
 - initial spec (not recovering old spec from perl/ subdir)
+- add (Build)Requires SFEperl-curses
 
