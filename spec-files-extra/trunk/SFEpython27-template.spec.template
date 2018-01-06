@@ -50,9 +50,10 @@ Requires:	         SFEpython27-@@PACKAGENAME@@
 @@PACKAGENAME@@ ##FILLIN##
 
 %prep
-#%setup -q -n @@PACKAGENAME@@-release_v%version
-#%setup -q -n %{src_name}-release_v%version
-%setup -q -n @@PACKAGENAME@@-%version
+#%setup -q -n @@PACKAGENAME@@-release_v%{version}
+#%setup -q -n %{src_name}-%{version}
+#%setup -q -n @@PACKAGENAME@@-%v{ersion}
+#%setup -q -n @@PACKAGENAME@@-%{ersion}
 
 #%if %{omnios}
 #gsed -e '/std=c99/ s/^/#/' < setup.py
@@ -68,12 +69,12 @@ export CC=gcc
 %if %( /usr/bin/python%{python_version}-config --cflags  | grep -- -m64 >/dev/null && echo 1 || echo 0 )
 BITS=64
 export CFLAGS="-m64 -I%{gnu_inc}"
-export LDFLAGS="-L%gnu_lib/%{_arch64} -R%gnu_lib/%{_arch64}"
+export LDFLAGS="-L%{gnu_lib}/%{_arch64} -R%{gnu_lib}/%{_arch64}"
 export PYTHON_BINARY_OFFSET="/usr/bin/%{_arch64}"
 %else
 BITS=32
 export CFLAGS="-I%{gnu_inc}"
-export LDFLAGS="-L%gnu_lib -R%gnu_lib"
+export LDFLAGS="-L%{gnu_lib} -R%{gnu_lib}"
 export PYTHON_BINARY_OFFSET="/usr/bin"
 %endif
 echo "compiling for ${BITS}-bit python!"
@@ -97,11 +98,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 #%dir %attr (0755, root, bin) %{_bindir}
-#%{_bindir}/dummybinary
+#%{_bindir}/*
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/python%{python_version}
 
 
 %changelog
 * XXX XX XXX XXXX - YYYY YYYY
-- Initial spec file version @@VERSION@@
+
