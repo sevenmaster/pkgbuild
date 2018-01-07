@@ -1,3 +1,6 @@
+##TODO## remove remainings to "bzr" downloads, code is now on https://github.com/bitlbee/bitlbee
+
+
 #
 # spec file for package SFEbitlbee
 #
@@ -29,14 +32,15 @@ Group:                   Utility
 #%define download_version %{bzr_revision}
 #Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
 #use release this time %define bzr_revision	1064
-Version:                 3.4.2
+Version:                 3.5.2
 #use release this time %define download_version %{bzr_revision}
 %define download_version %{version}
 #use release this time Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
 Summary:                 BitlBee - An IRC to other chat networks gateway (release version)
 URL:		         http://www.bitlbee.org
 #Source:		         http://get.bitlbee.org/src/bitlbee-%{download_version}.tar.gz
-Source:		         http://code.bitlbee.org/lh/bitlbee/tarball/%{download_version}/bitlbee-develsnapshot-%{download_version}.tar.gz
+#Source:		         http://code.bitlbee.org/lh/bitlbee/tarball/%{download_version}/bitlbee-develsnapshot-%{download_version}.tar.gz
+Source:                  http://github.com/bitlbee/bitlbee/archive/3.5.1.tar.gz?%{srcname}-%{version}.tar.gz
 Source2:                 bitlbee.xml
 License: 		 GPLv2
 Patch1:                  bitlbee-01-ipc.diff
@@ -216,6 +220,9 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 %class(renamenew) /etc/bitlbee/*
 
 %changelog
+* Thu Dec 21 2017 - Thomas Wagner
+- bump to 3.5.2
+- new Download URL (github)
 * Sun Jul 31 2016 - Thomas Wagner
 - bump to 3.4.2 release version, keep the bzr_revision variables in the spec file for later
 * Sun Nov 30 2014 - Thomas Wagner

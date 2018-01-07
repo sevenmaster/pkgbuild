@@ -1,52 +1,79 @@
+##TODO## make 32/64-bit and provide python loadable module according to platform default python bittness
+
 #
 # Copyright 2009 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 
 %include Solaris.inc
+%include packagenamemacros.inc
+%if %( expr %{oihipster} '|' %{omnios} )
+%define cc_is_gcc 1
+%include base.inc
+%endif
 
-%define source_name samba-4.0.0alpha11
 
 Name:                SFEtalloc
+IPS_Package_Name:    library/libtalloc
 Summary:             A hierarchical pool based memory system with destructors.
-Version:             2.0.1 
-Source:              http://us5.samba.org/samba/ftp/samba4/%{source_name}.tar.gz
+Version:             2.1.10
+URL:                 https://talloc.samba.org/
+Source:              http://www.samba.org/ftp/talloc/talloc-%{version}.tar.gz
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
-BuildRequires: SUNWswig
-Requires:SUNWswig
+BuildRequires: %{pnm_buildrequires_developer_swig}
+Requires:      %{pnm_requires_developer_swig}
 
 %prep
 rm -rf  %name-%version
 %setup -q -c -n  %name-%version 
 
 %build
-CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
-if test "x$CPUS" = "x" -o $CPUS = 0; then
-     CPUS=1
-fi
+CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
-export CFLAGS="-g -mt %optflags"
+%if %{cc_is_gcc}
+export CC=gcc
+export CFLAGS="%optflags"
+%else
+export CFLAGS="-mt %optflags"
+%endif
+
 export LDFLAGS="-z ignore %_ldflags"
 
-cd %{source_name}/lib/talloc
-./autogen.sh
-./configure --prefix=%{_prefix}  \
-            --enable-static=no
+#cd %{source_name}/lib/talloc
+#cd talloc-%{version}/lib/replace
+cd talloc-%{version}
 
-make -j$CPUS
+#./configure --prefix=%{_prefix}  \
+#            --enable-static=no
+./configure --prefix=/usr  --bundled-libraries=NONE --builtin-libraries=replace --disable-silent-rules
+
+%if %{cc_is_gcc}
+#noting
+%else
+#remove this  replace_test_cflags="-Wno-format-zero-length"
+gsed -i.bak \
+     -e '/replace_test_cflags.*-Wno-format-zero-length/ s?-Wno-format-zero-length??' \
+     lib/replace/wscript \
+%endif
+
+gmake -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd %{source_name}/lib/talloc
+#cd talloc-%{version}/lib/replace
+cd talloc-%{version}
 
-make install DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
+#%if %{omnios}
+rm -r ${RPM_BUILD_ROOT}/usr/lib/python%{python_version}
+#%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -58,13 +85,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
-%dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/swig/*
+%if %{omnios}
+#why don't we have the man page on OmniOS
+%else
+#%dir %attr (0755, root, sys) %{_datadir}
+#%{_datadir}/swig/*
 %dir %attr(0755, root, bin) %{_mandir}
 %dir %attr(0755, root, bin) %{_mandir}/*
 %{_mandir}/*/*
+%endif
 
 %changelog
+* Fri Jan  5 2018 - Thomas Wagner
+- bump version to 2.1.10
+- add IPS_Package_Name
+- change (Build)Requires to pnm_buildrequires_developer_swig, %include packagenamemacros.inc
+- on OmniOS and Hipster build with CC=gcc (OM, OIH)
+- for CC=gcc remove "-mt"
+- for now remove python loadable object on all OS
+- remove -Wno-format-zero-length if compiler is studio
 * Sat Mar 13 2010 - brian.lu@sun.com
 - Build talloc under SFEtalloc-2.0.1 direcotory
 * Wed Dec 02 2009 - brian.lu@sun.com
