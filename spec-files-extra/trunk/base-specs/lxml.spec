@@ -54,12 +54,14 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.*a
 rm -f $RPM_BUILD_ROOT/%{_libdir}/xml2Conf.sh
 
 #pyton modules started to appear in /usr/lib/python2.7/site-packages
-echo "%{_libdir}" | grep "/gnu/lib" && ls -1d $RPM_BUILD_ROOT/usr/lib/python*/site-packages && mv $RPM_BUILD_ROOT{_std_libdir} $RPM_BUILD_ROOT%{_prefix}/
+echo "%{_libdir}" | grep "/gnu/lib" && ls -1d $RPM_BUILD_ROOT/usr/lib/python*/site-packages && mv $RPM_BUILD_ROOT%{_std_libdir} $RPM_BUILD_ROOT%{_prefix}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Sun Jan  7 2018 - Thomas Wagner
+- typo missing % for %{_std_libdir} in %install
 * Mon Aug 14 2017 - Thomas Wagner
 - change BuildRequires pnm macro
 - move modules into correct site-packages directory

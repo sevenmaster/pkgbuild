@@ -158,6 +158,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan  7 2018 - Thomas Wagner
+- typo missing % for %{_std_libdir} in %install
 * Thu Mar 23 2017 - Thomas Wagner
 - bump to 2.9.4
 - add patch5 patch6 patch7 for CVE-2016-4658 and CVE-2016-5131
