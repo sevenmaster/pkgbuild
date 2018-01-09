@@ -20,7 +20,7 @@ exit 254
 Name:                   SFEkvmadm
 IPS_Package_Name:	system/management/kvmadm
 Summary:                Manage KVM instances under SMF control
-Version:                0.12.2
+Version:                0.12.3
 URL:			http://kvmadm.org
 Source:                 http://github.com/hadfl/kvmadm/releases/download/v%{version}/kvmadm-%{version}.tar.gz
 License:		GPLv3
@@ -137,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan  9 2018 - Thomas Wagner
+- bump to 0.12.3
 * Fri Jan  6 2018 - Thomas Wagner
 - fix packaging with set basedir /
 * Tue Jan  2 2018 - Thomas Wagner
