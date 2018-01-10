@@ -18,7 +18,7 @@ exit 254
 %define src_name	kvmadm
 
 Name:                   SFEkvmadm
-IPS_Package_Name:	system/management/kvmadm
+IPS_Package_Name:	sfe/system/management/kvmadm
 Summary:                Manage KVM instances under SMF control
 Version:                0.12.3
 URL:			http://kvmadm.org
@@ -137,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 10 2018 - Thomas Wagner
+- change IPS_Package_Name to sfe/system/management/kvmadm
 * Tue Jan  9 2018 - Thomas Wagner
 - bump to 0.12.3
 * Fri Jan  6 2018 - Thomas Wagner
