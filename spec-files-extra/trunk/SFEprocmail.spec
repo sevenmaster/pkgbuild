@@ -1,3 +1,7 @@
+# this spec file only makes sense on OmniOSce
+# every other OSDISTRO has procmail in the repositories
+
+
 #
 # spec file for package SFEprocmail
 #
@@ -6,6 +10,7 @@
 %include Solaris.inc
 
 Name:                    SFEprocmail
+IPS_Package_Name:        mail/procmail
 Summary:                 Procmail
 Version:                 3.22
 #Source:                 http://www.procmail.org/procmail-%{version}.tar.gz
@@ -58,6 +63,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/*
 
 %changelog
+* Sat Jan 13 2018 - Thomas Wagner
+- add IPS_Package_Name mail/procmail
 * Sat Apr 16 2011 - Alex Viskovatoff
 - update source URL (does not currently build, apparently because of a change in Sun Studio)
 * Fri Jun 23 2006 - laca@sun.com

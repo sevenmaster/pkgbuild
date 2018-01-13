@@ -1,14 +1,15 @@
-# 00:10 < leoric_> BTW, we miss this commit - https://github.com/gmarler/nicstat/commit/1aa6740f89269bf0f183ff63f0e1610ad3ce5e5f
-
-
-
-
 #
 # spec file for package SFEnicstat
 #
 %include Solaris.inc
+%include osdistro.inc
+
 Name:		SFEnicstat
+%if %{omnios}
+IPS_Package_Name:	sfe/system/network/nicstat
+%else
 IPS_Package_Name:	system/network/nicstat
+%endif
 Summary:	tool for displaying network load similar to iostat/prstat
 Group:		Applications/System Utilities
 URL:		http://blogs.oracle.com/timc/entry/nicstat_the_solaris_network_monitoring
@@ -54,6 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Jan 13 2018 - Thomas Wagner
 - bump to 1.95
+- rename on OmniOS to IPS_Package_Name sfe/system/network/nicstat (OM)
 * Tue Oct 23 2012 - Thomas Wagner
 - bump to 1.92
 * Mon Dec 12 2011 - Thomas Wagner
