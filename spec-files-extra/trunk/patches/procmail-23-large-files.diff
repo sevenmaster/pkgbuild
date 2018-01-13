@@ -99,18 +99,18 @@ diff -urN procmail-3.22/src/lockfile.c procmail-3.22-hacked/src/lockfile.c
  }
  
 diff -urN procmail-3.22/src/mailfold.c procmail-3.22-hacked/src/mailfold.c
---- procmail-3.22/src/mailfold.c	2005-10-21 13:22:14.227678824 +1300
-+++ procmail-3.22-hacked/src/mailfold.c	2005-10-21 13:22:42.527376616 +1300
-@@ -30,7 +30,7 @@
- 
+--- procmail-3.22/src/mailfold.c.orig 2018-01-13 22:36:09.461891455 +0100
++++ procmail-3.22/src/mailfold.c      2018-01-13 22:37:39.897374110 +0100
+@@ -31,7 +31,7 @@
  int logopened,rawnonl;
  off_t lasttell;
+ static int trunced;
 -static long lastdump;
 +static off_t lastdump;
  static volatile int mailread;	/* if the mail is completely read in already */
  static struct dyna_array confield;		  /* escapes, concatenations */
  static const char*realstart,*restbody;
-@@ -78,8 +78,8 @@
+@@ -79,8 +79,8 @@
  #endif /* eMAILBOX_SEPARATOR */
  
  long dump(s,type,source,len)const int s,type;const char*source;
@@ -119,14 +119,14 @@ diff -urN procmail-3.22/src/mailfold.c procmail-3.22-hacked/src/mailfold.c
 + size_t len;
 +{ int i;size_t part;
    lasttell=i= -1;SETerrno(EBADF);
+   trunced=0;
    if(s>=0)
-    { if(ft_lock(type)&&(lseek(s,(off_t)0,SEEK_END),fdlock(s)))
-@@ -105,7 +105,7 @@
+@@ -107,7 +107,7 @@
       goto jin;
       do
        { part=getchunk(s,source,len);
 -jin:	while(part&&(i=rwrite(s,source,BLKSIZ<part?BLKSIZ:(int)part)))
-+jin:	while(part&&(i=rwrite(s,source, BLKSIZ < part ? BLKSIZ : (size_t)part )))
++jin:   while(part&&(i=rwrite(s,source, BLKSIZ < part ? BLKSIZ : (size_t)part )))
  	 { if(i<0)
  	      goto writefin;
  	   part-=i;len-=i;source+=i;
