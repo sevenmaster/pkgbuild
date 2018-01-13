@@ -1,0 +1,68 @@
+
+remaining changes between OpenIndiana userland procmail and what we had in SFE before the mergeing of the patches
+
+
+diff -urN procmail-3.22/src/autoconf procmail-3.22-hacked/src/autoconf
+--- procmail-3.22/src/autoconf	2001-09-11 16:55:46.000000000 +1200
++++ procmail-3.22-hacked/src/autoconf	2005-10-21 13:21:06.660950528 +1300
+@@ -89,7 +89,7 @@
+ #	#define NOfcntl_lock
+ #Ok	#define USElockf
+ #Ok	#define USEflock
+-#Ok	#define MAILSPOOLDIR "/var/spool/mail/"
++#Ok	#define MAILSPOOLDIR "/var/mail/"
+ #Ok	#define SENDMAIL "/usr/sbin/sendmail"
+ #	#define buggy_SENDMAIL
+ #	#define DEFflagsendmail ""
+@@ -1416,14 +1416,14 @@
+ 
+ found=no
+ 
+-for a in /var/spool/mail /usr/spool/mail /var/mail /usr/mail /spool/mail
++for a in /var/mail /var/spool/mail /usr/spool/mail /usr/mail /spool/mail
+ do
+   test -d $a -a $found != yes &&
+    echo '#define MAILSPOOLDIR "'$a'/"' >>$ACONF && found=yes
+ done
+ if test $found != yes
+ then
+- echo '#define MAILSPOOLDIR "/var/spool/mail/"' >>$ACONF
++ echo '#define MAILSPOOLDIR "/var/mail/"' >>$ACONF
+  echo Could not find the system-mailbox directory, supplied default.
+ fi
+ 
+
+diff -urN procmail-3.22/src/authenticate.c procmail-3.22-hacked/src/authenticate.c
+--- procmail-3.22/src/authenticate.c	2001-06-29 14:20:36.000000000 +1200
++++ procmail-3.22-hacked/src/authenticate.c	2005-10-21 13:21:06.653951592 +1300
+@@ -39,13 +39,13 @@
+ #include "authenticate.h"
+ 
+ #ifndef MAILSPOOLDIR
+-#define MAILSPOOLDIR	"/var/spool/mail/"	     /* watch the trailing / */
++#define MAILSPOOLDIR	"/var/mail/"	     /* watch the trailing / */
+ #endif
+ #ifndef MAILSPOOLSUFFIX
+ #define MAILSPOOLSUFFIX ""	      /* suffix to force maildir or MH style */
+ #endif
+ #ifndef MAILSPOOLHASH
+-#define MAILSPOOLHASH	0      /* 2 would deliver to /var/spool/mail/b/a/bar */
++#define MAILSPOOLHASH	0      /* 2 would deliver to /var/mail/b/a/bar */
+ #endif
+ /*#define MAILSPOOLHOME "/.mail"		      /* watch the leading / */
+ 						  /* delivers to $HOME/.mail */
+
+
+
+diff -urN procmail-3.22/FEATURES procmail-3.22-hacked/FEATURES
+--- procmail-3.22/FEATURES	2001-06-29 17:16:33.000000000 +1200
++++ procmail-3.22-hacked/FEATURES	2005-10-21 13:21:06.728940192 +1300
+@@ -30,7 +30,7 @@
+ 	  per message, the similar MH directory folders (numbered files),
+ 	  and Maildir directory folders (a multi-directory format that requires
+ 	  no locking)
+-	+ Native support for /var/spool/mail/b/a/bar type mailspools
++	+ Native support for /var/mail/b/a/bar type mailspools
+ 	+ Variable assignment and substitution is an extremely complete subset
+ 	  of the standard /bin/sh syntax
+ 	+ Provides a mail log file, which logs all mail arrival, shows
