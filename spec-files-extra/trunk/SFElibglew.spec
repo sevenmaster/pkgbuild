@@ -1,3 +1,48 @@
+#17:43 <@tomww> pfexec pkg install -nv libreoffice52-desktop-int
+#17:44 <@tomww> yes
+#17:44 < jimklimov> I'll see how my internet goes now... maybe can try :)
+#17:45 <@tomww> if dryrun gets happy, then I think it'l just work in real. Interesting part will be if the libsmb downgrade with the version facet is still necessary.
+#17:45 <@tomww> thank you!
+#17:45 < jimklimov> i'm in the middle of relocation, so got a modem just today
+#17:45 <@tomww> if libsmb version facet is still necessary, then the focus shifts to samba and libiconv
+#17:45 <@tomww> no hurry please! :)
+#17:45 < jimklimov> or so they called it... a several-hundred-megabit modem :\
+#17:46 < jimklimov> well, gotta test what works here and what needs a chisel ;)
+#17:46 <@tomww> yeah, you are in luck if your location has offerst of that kind. even in germany you sometimes you get only 1 or 3 Mbits downstream
+#17:47 < jimklimov> I lived for 3 years in 40kbyte/s on good weather
+#17:47 < jimklimov> and nothing when the hatches got wet
+#17:48 < jimklimov> dryrun is upset about oi and sfe both providing libglew
+#17:48 <@tomww> oh, so you got enough time for programming because loading a webpage gave you enough time between clicks, right
+#17:48 < jimklimov> otherwise no complaints :)
+#17:48 <@tomww> ah, very goot catch.
+#17:48 < jimklimov> half a dozen of pairs like
+#17:48 < jimklimov> The following packages all deliver file actions to usr/lib/libGLEWmx.so.1.13.0:
+#17:48 < jimklimov>   pkg://localhostoih/sfe/library/libglew@1.13.0,5.11-0.0.151.1.8:20160108T184333Z
+#17:48 < jimklimov>   pkg://openindiana.org/x11/library/libglew@1.13.0,5.11-2017.0.0.0:20170306T133728Z
+#17:49 <@tomww> maybe the complaints appear in a later phase. I'll check for glew ... most likely just a rename of the package on the SFE_OI side.
+#17:49 < jimklimov> or "pkg depend either of ... " :)
+#17:49 <@tomww> it'l take some few days until I can make that
+#17:50 < jimklimov> ok, good luck
+#17:50 <@tomww> I think I'll find out soon. Last question, what is your system's version of those packages right now:
+#17:51 <@tomww>  pkg info name osnet-incorporation entire | grep FMRI
+#17:51 <@tomww> so I can replay here on the build-VM for SFE-OI package
+#17:51  * jimklimov called back to the cupboards ;)
+#17:51 < jimklimov> root@jimoi:/root# pkg info name osnet-incorporation entire | grep FMRI
+#17:51 < jimklimov> pkg: info: no packages matching the following patterns you specified are
+#17:51 < jimklimov> installed on the system.  Try querying remotely instead:
+#17:51 < jimklimov>         entire
+#17:51 < jimklimov>           FMRI: pkg://openindiana.org/consolidation/osnet/osnet-incorporation@0.5.11-2017.0.0.16923:20171223T005150Z
+#17:51 < jimklimov>           FMRI: pkg://openindiana.org/release/name@0.5.11-2017.0.0.5:20171030T214925Z
+#17:52 <@tomww> entire is uninstalled?
+#17:52 < jimklimov> I guess I nuked entire back when that was fashionable :)
+#17:52 <@tomww> entire is not not important to me.
+#17:52 <@tomww> thank you, I'm now perfectly prepared.
+#17:52 < jimklimov> not unimportant?
+#17:52 < jimklimov> :)
+#17:52 < jimklimov> good luck nailing this :)
+#17:53 <@tomww> haha, thanks. It this is only glew, than it is manageable :)
+#17:53 <@tomww> *If
+
 #
 # spec file for package SFElibglew
 #
@@ -84,6 +129,7 @@ export CFLAGS="%optflags"
 export LDFLAGS="%_ldflags"
 
 export SYSTEM="solaris-gcc"
+export GLEW_PREFIX="%{_prefix}"
 export GLEW_DEST="%{_prefix}"
 
 export LD=`which ld-wrapper`
@@ -94,9 +140,9 @@ make LD="$LD" all
 
 %install
 rm -rf $RPM_BUILD_ROOT
-SYSTEM="solaris-gcc" make install.all DESTDIR=$RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT SYSTEM="solaris-gcc" install.all
-rm $RPM_BUILD_ROOT%_libdir/*.*a
+
+make DESTDIR=$RPM_BUILD_ROOT GLEW_PREFIX=%{_prefix} GLEW_DEST=%{_prefix} SYSTEM="solaris-gcc" install.all
+rm $RPM_BUILD_ROOT%{_libdir}/*.*a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -124,6 +170,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 19 2018 - Thomas Wagner
+- fix relocation in %install phase
 * Sun Nov  6 2016 - Thomas Wagner
 - relocate to /usr/gnu/ because (OIH) has its own libglew starting with 2016
   export GLEW_DEST="%{_prefix}"
