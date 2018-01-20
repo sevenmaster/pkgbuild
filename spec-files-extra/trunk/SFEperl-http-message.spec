@@ -39,7 +39,8 @@ Requires:       SFEperl-uri
 BuildRequires:  SFEperl-lwp-mediatypes
 Requires:       SFEperl-lwp-mediatypes
 #e.g. OmniOS has perl 5.24 with those modules included
-%if %( expr %{perl_version_padded}.0 '<' 0005002400000000.0 )
+#e.g. Hipsterhas perl 5.22 with those modules included
+%if %( expr %{perl_version_padded}.0 '<' 0005002200000000.0 )
 #get Encode::Alias
 BuildRequires:  SFEperl-encode
 Requires:       SFEperl-encode
@@ -125,6 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+- Sat Jan 20 2018 - Thomas Wagner
+- change (Build)Requires active only for old perl version < 5.22.0 for SFEperl-encode SFEperl-encode-locale (OIH)
 - Thu Jan  4 2018 - Thomas Wagner
 - change (Build)Requires active only for old perl version < 5.24.0 for SFEperl-encode SFEperl-encode-locale (OM)
 * Fri Mar 11 2016 - 
