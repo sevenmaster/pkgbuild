@@ -24,6 +24,15 @@
 # then the names on OpenSolaris IPS-base without the SUNW prefix and before the big renaming
 # around build 133/134
 
+#already included before?
+%if %{?osdistro:%{osdistro}}%{?!osdistro:0}
+#yes, osdistro.inc is already included
+%else
+echo "ERROR: You should use packagenamemacros.inc and not this file packagenames.define.allbuilds.inc directly"
+exit 1
+%endif
+
+
 
 # below this section will be overwritten by the include files for the later builds
 # it is there so support build machines with osbuild < 133 or < 134
@@ -181,7 +190,7 @@
 #cases >=133 AND os2nnn
 %if %{os2nnn}
 ##TODO## Re-visit this buildnumber, was this 133 or 134 ? (pkg info SUNWopenssl says not installed)
-%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SUNWopenssl			library/security/openssl
 %define pnm_buildrequires_SUNWopenssl_include           library/security/openssl
 #handy alias based on typo
@@ -787,7 +796,7 @@
 #pre/including nnn: SUNWhea    -> past nnn replacement is
 #NOTE: superseeding the previous definitions SUNWsfwhea
 #cases >=133
-%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SUNWhea	    system/header
 %define pnm_requires_SUNWhea		    system/header
 %define pnm_buildrequires_system_header	    system/header
@@ -797,7 +806,7 @@
 
 #NOTE: this section might be superseeded by lower build numbers 
 #cases <133
-%if %( expr %{osbuild} '<' 133 '&' %{solaris12} '=' 0 )
+%if %( expr %{osbuild} '<' 133 '&' %{solaris12} '=' 0 '&' %{s110400} '=' 0 )
 %define pnm_buildrequires_SUNWhea		SUNWhea
 %define pnm_requires_SUNWhea	 		SUNWhea
 #this might be overwritten again by builds below 130
@@ -808,7 +817,7 @@
 
 #pre/including 130: SUNWsfwhea -> past 130 replacement is system/header
 ##TODO## please verify build numbers and intended replacement packagename
-%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SUNWsfwhea	    SUNWhea
 %define pnm_requires_SUNWsfwhea		    SUNWhea
 %define pnm_buildrequires_system_header	    SUNWhea
@@ -818,7 +827,7 @@
 
 #NOTE: including SUNWhea too
 #cases <130
-%if %( expr %{osbuild} '<' 130 '&' %{solaris12} '=' 0 )
+%if %( expr %{osbuild} '<' 130 '&' %{solaris12} '=' 0 '&' %{s110400} '=' 0 )
 %define pnm_buildrequires_SUNWhea		SUNWsfwhea
 %define pnm_requires_SUNWhea	 		SUNWsfwhea
 %define pnm_buildrequires_SUNWsfwhea		SUNWsfwhea
@@ -835,7 +844,7 @@
 
 #pre/including 130: SFEgnupg2 -> past 130 replacement is SUNWgnupg
 #note: oihipster see sections below, needs to set IPS name (knows no legacy name any more)
-%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 130 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #pkg://solaris/crypto/gnupg@2.0.30-5.12.0.0.0.113.1:20161127T235134Z          ---
 #sunw
 %define pnm_buildrequires_SUNWgnupg_devel	crypto/gnupg
@@ -1111,7 +1120,7 @@
 #meta-package data/docbook is requested (it shows never as being installed).
 #up to 133 it was developer/documentation-tool/gtk-doc
 #NOTE we overwrite what the include for 134 has defined
-%if %( expr %{osbuild} '>=' 134 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 134 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_developer_documentation_tool_gtk_doc    developer/documentation-tool/gtk-doc
 %define pnm_requires_developer_documentation_tool_gtk_doc         developer/documentation-tool/gtk-doc
 %define pnm_buildrequires_SUNWgtk_doc_devel     developer/documentation-tool/gtk-doc
@@ -1133,7 +1142,7 @@
 #special case, pkgtool/pkgbuild can't see if packages are installed if
 #meta-package x11/client is requested. up to 143 it was TBD
 #NOTE we overwrite what the include for 133 / 134 has defined (target was x11/client)
-%if %( expr %{osbuild} '>=' 144 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 144 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_x11_clients		compatibility/packages/SUNWxwplt
 %define pnm_requires_x11_clients		compatibility/packages/SUNWxwplt
 %define pnm_buildrequires_SUNWxwplt_devel	compatibility/packages/SUNWxwplt
@@ -1215,7 +1224,7 @@
 %define pnm_requires_developer_vala		SFEvala
 
 #cases >=151
-%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SFEvala_devel		developer/vala
 %define pnm_buildrequires_SFEvala		developer/vala
 %define pnm_requires_SFEvala			developer/vala
@@ -1255,7 +1264,7 @@
 
 #cases Solaris 11 or Solaris 12 has no longer libggz in the
 #packages gnome/games
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SFElibggz_devel	SFElibggz-devel
 %define pnm_buildrequires_SFElibggz		SFElibggz-devel
 %define pnm_requires_SFElibggz			SFElibggz
@@ -1314,12 +1323,22 @@
 #this is for Solaris (Express) 11 builds (above excluding 151)
 #which now includes freeglut
 #%if %(expr %{solaris12} '>=' 1 '|' '(' %{solaris11express} '>=' 1 '&' %{osbuild} '>' 151 ')')
-%if %( expr %{solaris12} '>=' 1 )
+%if %( expr %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #%if 0
 %define pnm_buildrequires_SFEfreeglut		x11/library/freeglut
 %define pnm_requires_SFEfreeglut		x11/library/freeglut
 %define pnm_buildrequires_x11_library_freeglut	x11/library/freeglut
 %define pnm_requires_x11_library_freeglut	x11/library/freeglut
+
+#Solaris 11.4 has no longer guile
+#pkg://solaris/library/guile@1.8.8-5.12.0.0.0.120.0:20170319T174945Z          --o
+%define pnm_buildrequires_library_guile         SFEguile
+%define pnm_requires_library_guile              SFEguile
+%define pnm_buildrequires_SUNWguile_devel       SFEguile
+%define pnm_buildrequires_SUNWguile             SFEguile
+%define pnm_requires_SUNWguile                  SFEguile
+%define pnm_buildrequires_guile                 SFEguile
+%define pnm_requires_guile                      SFEguile
 
 #starting with: developer/documentation-tool/asciidoc@8.6.8,5.12-5.12.0.0.0.34.0
 %if %( expr %{osbuild} '>=' 34 )
@@ -1348,8 +1367,8 @@
 #spec file maintainer how to solve that
 
 #cases >=156
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
-%if %( expr %{osbuild} '>=' 156        '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
+%if %( expr %{osbuild} '>=' 156        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #https://defect.opensolaris.org/bz/attachment.cgi?id=4441
 #(the attachment link from above is in: https://defect.opensolaris.org/bz/show_bug.cgi?id=17668)
 %define pnm_buildrequires_library_python_2_python_pigment_26	SUNWcs
@@ -1374,8 +1393,8 @@
 # this is a workaround, we just require one of the dependents.
 ##TODO## improve: find the best matching replacement for library/python-2/python-gnome-libs-26
 #for now we replace with library/python-2/pygtk2-26
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{solaris12} '>=' 1 )
-%if %( expr %{osbuild} '>=' 160        '|' %{solaris12} '>=' 1 '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
+%if %( expr %{osbuild} '>=' 160        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SUNWgnome_python26_libs_devel		library/python-2/pygtk2-26
 %define pnm_requires_SUNWgnome_python26_libs_devel		library/python-2/pygtk2-26
 %define pnm_buildrequires_SUNWgnome_python26_libs		library/python-2/pygtk2-26
@@ -1387,8 +1406,8 @@
 
 # audio headers got renamed several times, then 
 # included in other package
-%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 )
-%if %( expr %{osbuild} '>=' 163        '|' %{solaris12} '>=' 1 )
+%if %( expr %{solaris11express} '>=' 1 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
+%if %( expr %{osbuild} '>=' 163        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #with 163 system/header/header-audio moved into system/header
 %define pnm_buildrequires_SUNWaudh_devel 			system/header
 %define pnm_buildrequires_SUNWaudh 				system/header
@@ -1418,7 +1437,7 @@
 #solaris 11 >= 160 or solaris12
 #system/library/mozilla-nss renamed library/security/nss@4.12.10-0.172.0.0.0.0.0
 #note: openindiana and oihipster 2015.0.1.0 still have system/library/mozilla-nss/header-nss
-%if %( expr %{solaris12} '|' %{solaris11} '>=' 1 '&' %{osbuild} '>=' 160 )
+%if %( expr %{solaris12} '|' %{s110400} '>=' 1 '|' %{solaris11} '>=' 1 '&' %{osbuild} '>=' 160 )
 %define pnm_buildrequires_system_library_mozilla_nss_header_nss	library/security/nss
 %define pnm_requires_system_library_mozilla_nss_header_nss	library/security/nss
 %define pnm_buildrequires_system_library_mozilla_nss		library/security/nss
@@ -1501,7 +1520,7 @@
 # OI stays unchanged for a while
 # Hipster has header-math integrated into math
 #with build 174 library/math/header-math moved into system/library/math, as well on S12 OIH
-%if %( expr %{solaris12} '+' %{oihipster} '+' %{omnios} '>=' 1 '|' %{osbuild} '>=' 174 )
+%if %( expr %{solaris12} '+' %{s110400} '+' %{oihipster} '+' %{omnios} '>=' 1 '|' %{osbuild} '>=' 174 )
 %define pnm_buildrequires_system_library_math_header_math	system/library/math
 %define pnm_requires_system_library_math_header_math		system/library/math
 %define pnm_buildrequires_SUNWlibm_devel			system/library/math
@@ -1649,7 +1668,7 @@
 #           good style is to make a comment with which build the change happened,
 #           so one gets a chance to make a workaround in case you can't upgrade the os today
 #
-%if %{solaris12}
+%if %( expr %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 %define pnm_buildrequires_SFEpulseaudio				SUNWpulseaudio-devel
 %define pnm_requires_SFEpulseaudio				SUNWpulseaudio
 %define pnm_buildrequires_pulseaudio				SUNWpulseaudio-devel
@@ -1790,7 +1809,7 @@
 #END solaris11 from 11.3 SRU 9 on has own zlib.pc in package library/zlib
 
 
-%if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000000870000.1 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000000870000.1 )
 #many osdistro do not deliver the file "zlib.pc" for pkgconfig, SFE drops one in until the osdistro has one
 #osdistro which have one, can replace this in pnm_macro include file (example: S12)
 %define pnm_buildrequires_SFEzlib_pkgconfig     library/zlib
@@ -1800,7 +1819,7 @@
 
 
 #START solaris 12 - special build versions below >= 108
-%if %( expr %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000001080000.1 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000001080000.1 )
 #Package codec/ogg-vorbis was renamed to pkg:/codec/libvorbis pkg:/codec/libogg  (NOTE: these are *two* packages!)
 #pkg://solaris/codec/libogg@1.2.2-5.12.0.0.0.108.1:20160919T062323Z           ---
 #pkg://solaris/codec/ogg-vorbis@2.30.0-5.12.0.0.0.108.0:20160919T062335Z
@@ -1859,8 +1878,9 @@
 #override previous settings)
 
 #set perl5 for Solaris 12
+#beware: one variable gets overwritten right below for newer builds
 %if %{os2nnn}
-%if %( expr  %{solaris12} '>=' 1 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 )
 #set perl5 for Solaris 12
 %define perl_version 5.12
 %define perl_major_minor_version 5.12
@@ -1871,7 +1891,7 @@
 #runtime/perl-512 or library/perl-5/sun-solaris-512
 %define pnm_buildrequires_perl_default runtime/perl-512
 %define pnm_requires_perl_default	runtime/perl-512
-%if %( expr %{osbuild} '>=' 95 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osbuild} '>=' 95 )
 %define perl_version 5.22
 %define perl_major_minor_version 5.22
 %define perl_major_minor_micro_version 5.22.1
@@ -1961,6 +1981,18 @@
 #runtime/perl-522
 %define pnm_buildrequires_perl_default runtime/perl-522
 %define pnm_requires_perl_default	runtime/perl-522
+%endif
+#END oihipster
+
+#pnm: osdistro_entire_padded_number4 20170000000016925000000000000
+#hipster sfe ~ pkg contents -r -m pkg://openindiana.org/library/libedit | grep -i quire
+#depend fmri=pkg:/system/library@0.5.11-2017.0.0.16250 type=require
+#appeared with build 2017.0.0.16250 
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 20170000000016250000000000000.0 )
+%define pnm_buildrequires_library_libedit		library/libedit
+%define pnm_requires_library_libedit			library/libedit
+%define pnm_buildrequires_SFEeditline			library/libedit
+%define pnm_requires_SFEeditline			library/libedit
 %endif
 #END oihipster
 
@@ -2140,7 +2172,7 @@
 %endif 
 #END omnios
 
-%if %( expr %{solaris12} '>=' 1 '&' %{osbuild} '>=' 95 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osbuild} '>=' 95 )
 %define perl_dir i86pc-solaris-thread-multi-64
 %endif
 #END solaris 12 osbuild >= 95
@@ -2212,7 +2244,7 @@
 # on S12 we don't have legacy package name SUNWPython26, so we need to
 # use runtime/python-26 instead ##TODO## testing for OI151a8 as well
 #before Solaris 12.0.0.0.86.0
-%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #note: the name is subject to change if we find a better one
 #_default string is not meant to be a part of the package name...
 %define pnm_buildrequires_python_default	runtime/python-26
@@ -2255,7 +2287,7 @@
 #END %{solaris11} >= 11.3
 
 #Solaris >= 12.0.0.0.70.0
-%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000700000.0 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000700000.0 )
 #the IPS name changed from python-2/ to python/
 ##TODO##1 check if consuming specs can concentrate on only these pnm_macros below and not older/other variant
 ##TODO##2 prepare for new default python version on S11.3 build 26 and S12 b70
@@ -2274,7 +2306,7 @@
 
 
 #Solaris >= 12.0.0.0.86.0
-%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000860000.0 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000000860000.0 )
 #note: the name is subject to change if we find a better one
 #_default string is not meant to be a part of the package name...
 %define python_version 2.7
@@ -2487,7 +2519,7 @@
 
 ##TODO## add Solaris 11.4 once it is available
 #simplified!
-%if %( expr %{solaris12} )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 )
 %define pnm_buildrequires_library_python_ipaddress	library/python/ipaddress
 %define pnm_requires_library_python_ipaddress		library/python/ipaddress
 %endif
@@ -2527,7 +2559,7 @@
 #older IPS systems
 %define pnm_buildrequires_mysql_default	SUNWmysql51
 %define pnm_requires_mysql_default	SUNWmysql51
-%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #from build 133 and up we have
 #database/mysql-51
 #database/mysql-51                                 5.1.37-5.12.0.0.0.45.0     --o
@@ -2536,7 +2568,7 @@
 %define pnm_requires_mysql_default	database/mysql-51,database/mysql-51/library
 %endif
 #END >= 133
-%if %( expr %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 '&' %{osbuild} '>=' 63 )
 %define mysql_version 5.5
 %define mysql_major_version 5
 %define mysql_major_minor_version 5.5
@@ -2635,7 +2667,7 @@
 %if %{os2nnn}
 #older IPS systems
 #use the default from before (e.g. SUNWj6rt and SUNWj6rtx
-%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #from build 133 and up we have
 #runtime/java and runtime/java/runtime64
 %define pnm_buildrequires_java_runtime_default		runtime/java
@@ -2752,7 +2784,7 @@
 #set ruby for Solaris 12 - just a guess
 #runtime/ruby-18@1.8.7
 %if %{os2nnn}
-%if %( expr  %{solaris12} '>=' 1 )
+%if %( expr  %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #set ruby for Solaris 12
 %define ruby_version 1.8.7
 %define ruby_major_minor_version 1.8
@@ -2909,7 +2941,7 @@
 %if %{os2nnn}
 #older IPS systems
 #use the default from before
-%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 133        '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #from build 133 and up we have
 #note: currently explicitly defined only for SXCE and for >=133
 %define pnm_buildrequires_apache2_default		web/server/apache-%{apache2_version_package_string}
@@ -2972,7 +3004,7 @@
 ##TODO## if requested, add targets for older osdistro with e.g. SVR4 - for now we only resolve to new naming / IPS
 #this is for all builds (below 151)
 #cases >=151
-%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 )
+%if %( expr %{osbuild} '>=' 151 '|' %{solaris12} '>=' 1 '|' %{s110400} '>=' 1 )
 #library/apr-util-13@1.3.9,5.11-0.151.0.1:20101105T055007Z 	Install 	Manifest
 #library/apr-util-13@1.3.9,5.11-0.151:20101027T143546Z 	Install 	Manifest
 ##TODO## re-visit the package names if the left hand side really existed in that naming
@@ -3037,7 +3069,7 @@
 
 #START setting apr, changes with specific builds and distros  - Part 2 of 3
 #note: need to add ".0" to avoid integer too lage, use floating point instead
-%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%if %( expr %{omnios} '|' %{openindiana} '|' %{oihipster} '|' %{s110400} '|' %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
 #this is a special switch: Our SFE spec file will build a package using the same name as more recent distros do
 %define build_library_apr_renamed_to_osdistro_package      1
 %define apr_version 1.5
@@ -3057,7 +3089,7 @@
 %define pnm_buildrequires_apr_util_default	library/apr-util-15
 %define pnm_requires_apr_util_default		library/apr-util-15
 #on S12 >= 63 and S11 >= entire .12. we need to make sure that apr apr-util comes from the osdistro repository
-%if %( expr %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
+%if %( expr %{s110400} '|' %{solaris12} '=' 1 '&' %{osbuild} '>=' 63 '|' %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030000000000120001.0 )
 %define pnm_buildrequires_apr_default		pkg://solaris/library/apr-15
 %define pnm_requires_apr_default		pkg://solaris/library/apr-15
 %define pnm_buildrequires_apr_util_default	pkg://solaris/library/apr-util-15
@@ -3478,6 +3510,11 @@
 
 
 %changelog
+* Sat Jan 20 2018 - Thomas Wagner
+- handle SFEeditline / library/libedit, use OSDISTRO's package (OIH '>=' 20170000000016250000000000000.0 )
+- add %{s110400} for transition for s12 to s11.4 versioning (S11.4)
+* Fri Dec 15 2017 - Thomas Wagner
+- Solaris 12 past build 120 has no longer guile (S12)
 * Fri Dec  8 2017 - Thomas Wagner
 - spec full patch to /usr/bin/printf
 * Sun Dec  3 2017 - Thomas Wagner
