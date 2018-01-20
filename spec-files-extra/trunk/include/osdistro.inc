@@ -164,11 +164,12 @@
 %define oi201100 0
 %define oi201009 0
 
-#Solaris 12
+#Solaris 12 - NOTE: This is now named "11.4" ... these variables deprecated. for transition they'll be defined on s11.4 as it it where s12 at the time of development
 #always defined on 12.0 and all subsequent 12.xx versions. build 00.
 %define s120000 0
 #12.0 build 24
 %define s120024 0
+#superseeded by: s110400 see below
 
 #Solaris 11
 #always defined on 11.0 and all subsequent 11.xx versions.
@@ -180,6 +181,8 @@
 %define s110200 0
 #11.3 build ??
 %define s110300 0
+#11.4 build ??
+%define s110400 0
 
 #Solaris 11 Express and OpenSolaris
 ##TODO## replace s11ex201100
@@ -427,28 +430,48 @@
 %endif
 ##END
 
+#s11.4 ~ cat /etc/release 
+#                            Oracle Solaris Trunk X86
+#  Copyright (c) 1983, 2018, Oracle and/or its affiliates.  All rights reserved.
+#                            Assembled 17 January 2018
+#uname -v
+#11.4.0.12.0
+
+#NOTE: development s12 is now s11.4 - old references to "s12" will eventually go away on some day
 #NOTE: s121200 <- 1200 - 12.00 - nothing is released, all is speculative. Later Updates, e.g. 12.1 -> 1201
 %if %{osdet299999}
-%if %( expr %{osbuild} '>=' 24 )
-%if %( egrep 'Oracle Solaris 12' /etc/release > /dev/null && echo 1 || echo 0 )
+#%if %( expr %{osbuild} '>=' 24 )
+%if %( egrep 'Oracle Solaris Trunk' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
 %define s120000 1
 %define s120024 1
+%define s110100 1
+%define s110200 1
+%define s110300 1
+%define s110400 1
 %define solaris12 1
-%define osdistrelnumber 24
+##TODO##!! which number do we want here?
+%define osdistrelnumber 201104
 #                                below: subject to change!
-%define osdistrelname   "Solaris 12"
+%define osdistrelname   "Solaris 11.4"
 #this was the last check, skip all others
 %define osdet299999 0
 %else
 %endif
-%else
-%endif
+#%else
+#%endif
 %else
 %endif
 ##END
+
+#s11.4 ~ cat /etc/release 
+#                            Oracle Solaris Trunk X86
+#  Copyright (c) 1983, 2018, Oracle and/or its affiliates.  All rights reserved.
+#                            Assembled 17 January 2018
+#uname -v
+#11.4.0.12.0
 
 
 ##START build *greater then* 151, this is 152 and up, detect "Oracle Solaris 11 snv_166 X86" aka 2011.00 as s11ex201100
@@ -627,6 +650,10 @@
 ##TODO## make version detection more robust, entire package might have been uninstalled, which packages to use for version detection in that case?
 ## PJAMA *puts hand up as having uninstalled "entire"*
 ## perhaps osnet-incorporation is a better option for the moment (or release/name? or the most fresh of both?)
+# pkg info name osnet-incorporation entire | grep FMRI                                                                                                                                       
+#           FMRI: pkg://openindiana.org/consolidation/osnet/osnet-incorporation@0.5.11-2017.0.0.16838:20171118T005255Z
+#           FMRI: pkg://openindiana.org/entire@0.5.11-2015.0.2.0:20151027T090547Z
+#           FMRI: pkg://openindiana.org/release/name@0.5.11-2017.0.0.5:20171030T214925Z
 %if %{oihipster}
 #%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
 %define osdistro_entire %( pkg info osnet-incorporation | grep "FMRI:" | sed -e 's/FMRI:.*osnet-incorporation@//' -e s'/.*-//' -e s'/:.*//' )
