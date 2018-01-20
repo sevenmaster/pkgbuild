@@ -36,7 +36,8 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 #e.g. OmniOS has perl 5.24 with those modules included
-%if %( expr %{perl_version_padded}.0 '<' 0005002400000000.0 )
+#e.d. OmniOS has perl 5.22 with those modules included
+%if %( expr %{perl_version_padded}.0 '<' 0005002200000000.0 )
 BuildRequires:  SFEperl-encode
 Requires:       SFEperl-encode
 BuildRequires:  SFEperl-encode-locale
@@ -136,6 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+- Sat Jan 20 2018 - Thomas Wagner
+- change (Build)Requires active only for old perl version < 5.22.0 for SFEperl-encode SFEperl-encode-locale SFEperl-io-compress (OIH)
 - Thu Jan  4 2018 - Thomas Wagner
 - change (Build)Requires active only for old perl version < 5.24.0 for SFEperl-encode SFEperl-encode-locale SFEperl-io-compress (OM)
 * Fri Aug 12 2017 - Thomas Wagner

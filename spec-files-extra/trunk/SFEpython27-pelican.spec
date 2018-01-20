@@ -34,7 +34,11 @@ Requires: SFEpython27-blinker
 Requires: SFEpython27-dateutil
 Requires: SFEpython27-docutils
 Requires: SFEpython27-feedgenerator
-Requires: SFEpython27-jinja2
+#SFEpython27-jinja2.spec:#pkg://solaris/library/python/jinja2-27@2.7.3,5.11-0.175.3.0.0.30.0:20150821T170128Z i--
+#SFEpython27-jinja2.spec:#pkg://solaris/library/python/jinja2-27@2.7.3,5.11-0.175.3.0.0.26.0:20150703T222602Z ---
+#SFEpython27-jinja2.spec:#pkg://solaris/library/python/jinja2-27@2.7.2,5.11-0.175.2.0.0.42.1:20140623T014516Z ---
+#Requires: SFEpython27-jinja2
+Requires: library/python/jinja2-27
 Requires: SFEpython27-unidecode
 
 %prep
@@ -62,6 +66,8 @@ rm -rf %{buildroot}
 %{_libdir}/python%{python_version}/vendor-packages
 
 %changelog
+* Sat Jan 20 2018 - Thomas Wagner
+- change (Build)Requires from SFEpython27-jinja2 to IPS package name library/python/jinja2-27 to temporarily solve S11 providing the same package (S11)
 * Tue Dec  5 2017 - Thomas Wagner
 - make Download file unique to this package name
 - rename (Build)Requires from SFEpython27-jinja to SFEpython27-jinja2
