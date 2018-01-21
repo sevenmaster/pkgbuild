@@ -1,0 +1,41 @@
+--- illumos-fusefs-Version-1.3.1/kernel/Makefile.orig	2016-05-04 21:06:32.000000000 +0000
++++ illumos-fusefs-Version-1.3.1/kernel/Makefile	2016-11-26 18:01:52.545271935 +0000
+@@ -41,14 +41,14 @@
+ pkg:= TARGET = pkg
+ lint:= TARGET = lint
+ 
+-all: $(MACH) $(MACH64)
++all: $(MACH64)
+ 
+-clean: $(MACH) $(MACH64)
++clean: $(MACH) $(MACH64)
+ 	rm -fr $(DIRS) $(ROOT) $(PKGDIR)
+ 
+-install: preinstall $(MACH) $(MACH64)
++install: preinstall $(MACH64)
+ 
+-lint: $(MACH) $(MACH64)
++lint: $(MACH) $(MACH64)
+ 
+ pkg: prepkg pkgdefs
+ 
+@@ -58,7 +58,7 @@
+ prepkg:
+ 	mkdir -p $(PKGDIR)
+ 
+-$(MACH) $(MACH64) pkgdefs: FRC
++$(MACH64) pkgdefs: FRC
+ 	@cd $@; pwd; $(MAKE) $(TARGET)
+ 
+ FRC:
+--- illumos-fusefs-Version-1.3.1/kernel/Makefile.com.orig       2016-11-27 01:06:56.683548269 +0000
++++ illumos-fusefs-Version-1.3.1/kernel/Makefile.com    2016-11-27 01:08:39.395253566 +0000
+@@ -57,7 +57,6 @@
+ 	$(LINT) $(LLINTFLAGS) $(SRC)
+ 
+ install_common:
+-	$(INSTALL) -f $(ROOT)/usr/kernel/drv fuse
+ 	$(INSTALL) -f $(ROOT)/usr/kernel/drv ../fuse.conf
+ 
+ clean:
+

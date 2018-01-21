@@ -3,7 +3,16 @@
 #
 %include Solaris.inc
 %include usr-gnu.inc
+%include osdistro.inc
 %include osdistrofeatures.inc
+
+#avoid detection of osdistro delivered fuse package
+%define _use_internal_dependency_generator 0
+
+%if %( expr %{oihipster} '|' %{omnios} )
+%define cc_is_gcc 1
+%include base.inc
+%endif
 
 %define src_name libfuse
 %define src_url http://sfe.opencsw.org/files
@@ -16,7 +25,7 @@ License:	LGPLv2
 SUNW_Copyright:	libfuse.copyright
 #Version:	0.%{tarball_version}
 # 0.1 to indicate it is patched first round. increment for next added or changed patch
-Version:	2.7.6.0.2
+Version:	2.7.6.0.3
 Group:		System/File System
 #is gone! URL:		http://hub.opensolaris.org/bin/view/Project+fuse/
 Source:		%{src_url}/%{src_name}-%{tarball_version}.tgz
@@ -79,7 +88,11 @@ gsed -i.bak.i386.cflags_32.-m32 \
                       -e '/^include/ aCFLAGS_32 = -m32' \
                       i386/Makefile 
 
-%if !%{cc_is_gcc}
+%if %{cc_is_gcc}
+export CC=gcc
+#fix CC = cc to be CC = gcc
+gsed -i.bak -e '/CC.*=.*cc/ s?CC.*=.*cc?CC = gcc?' Makefile.com
+%else
 #studio
 gsed -i.bak2 -e 's?-std=c99?-xc99?' Makefile.com
 %endif
@@ -165,6 +178,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 21 2018 - Thomas Wagner
+- use gcc on %{oihipster} %{omnios}
+- %define _use_internal_dependency_generator 0
+- bump to 2.7.6.0.3
 * Thu Dec  7 2017 - Thomas Wagner
 - fix patch to mount binary to be /sbin/ , change invalid options, use empty envionment (libfuse-03-mount_util.c.diff)
 - bump to 2.7.6.0.2
