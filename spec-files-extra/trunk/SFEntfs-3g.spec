@@ -9,15 +9,17 @@
 %define cc_is_gcc 1
 %include base.inc
 
+%define _use_internal_dependency_generator 0
+
 %define dl_url  http://jp-andre.pagesperso-orange.fr
 
 Name:                    SFEntfs-3g
 IPS_Package_Name:	system/file-system/ntfs-3g
 Summary:                 NTFS-3G Stable Read/Write Driver
-#ntfs-3g_ntfsprogs-2016.2.22.tgz
-#2016.2.22AR.2
-Version:	2016.2.22AR.2
-IPS_Component_Version:	2016.2.22.0.2
+#ntfs-3g_ntfsprogs-2017.3.23AR.1.tgz
+#2017.3.23.0.1
+Version:	2017.3.23AR.1
+IPS_Component_Version:	2017.3.23.0.1
 License:                 GPLv2
 Source:			%{dl_url}/ntfs-3g_ntfsprogs-%{version}.tgz  
 Group:			System/File System
@@ -27,13 +29,7 @@ BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 %define _execprefix %{_prefix}
 
-BuildRequires:	SUNWgnome-common-devel
-
-#not the *olaris implementation
-#we use the older fuse kernel modules
-Requires:	SFEfusefs
-#not the *olaris implementation (missing calls?)
-#we use the older libfuse implementation
+BuildRequires:	SFElibfuse-devel
 Requires:	SFElibfuse
 
 %package devel
@@ -42,8 +38,6 @@ SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires: %name
 
-BuildRequires:	SFElibfuse-devel
-Requires:	SFElibfuse
 
 %prep
 %setup -q -n ntfs-3g_ntfsprogs-%version
@@ -76,6 +70,11 @@ export CC=gcc
 export CFLAGS="%optflags -I%{gnu_inc} %{gnu_lib_path}"
 export FUSE_MODULE_CFLAGS="$CFLAGS %{gnu_lib_path} -D_FILE_OFFSET_BITS=64 -I/usr/gnu/include/fuse"
 export FUSE_MODULE_LIBS="%{gnu_lib_path} -pthread -lfuse"
+
+export CFLAGS=$( echo ${CFLAGS}  | sed -e 's/-m32//g' -e 's/-m64//g' )
+export LDFLAGS=$( echo ${LDFLAGS}  | sed -e 's/-m32//g' -e 's/-m64//g' )
+export FUSE_MODULE_CFLAGS=$( echo ${FUSE_MODULE_CFLAGS}  | sed -e 's/-m32//g' -e 's/-m64//g' )
+
 
 ./configure --prefix=%{_prefix}			\
 	    --libdir=%{_libdir}                 \
@@ -115,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}
 %{_sbindir}/*
 %{_libdir}/libntfs-3g.so*
+#plugins?
+%{_libdir}/ntfs-3g
 %dir %attr (0755, root, sys) %{_libdir}/fs
 %dir %attr (0755, root, sys) %{_libdir}/fs/ntfs-3g
 %{_libdir}/fs/ntfs-3g/*
@@ -134,6 +135,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 21 2017 - Thomas Wagner
+- bump to 2017.3.23.0.1 
+- %define _use_internal_dependency_generator 0 to avoid OS deliverd libfuse being detected
+- reduce (Build)Requires, let kernel module fusefs be pulled in by libfuse package
+* Sat Dec 17 2016 - Thomas Wagner
+- fix build 64-bit as change to include/base.inc brought in "-m32" through CFLAGS/LDFLAGS, filter out any -m32 or -m64 from *FLAGS
+* Wed Nov 16 2016 - Thomas Wagner
+- fix %files %{_libdir}/ntfs-3g
+- pause BuildRequires SUNWgnome-common-devel
 * Mon Nov 14 2016 - Thomas Wagner
 - bump to 2016.2.22AR.2 (2016.2.22.0.2 on IPS)
 - fix dl_url
