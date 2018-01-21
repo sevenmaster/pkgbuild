@@ -15,7 +15,7 @@
 Name:		SFEfusefs
 IPS_Package_Name:	system/file-system/fusefs
 Summary:	Kernel modules for File system in User Space
-Version:	1.3.1
+Version:	1.3.2
 %define src_name illumos-fusefs-Version-%{version}
 License:	CDDL
 Group:		System/File System
@@ -167,6 +167,8 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Sat Jan 21 2018 - Thomas Wagner
+- bump to 1.3.2 (couldn't identify any other changes besides the version number of the module)
 * Fri Feb 17 2017 - Thomas Wagner
 - improve Source URL to get src_name into download file
 - set CPP

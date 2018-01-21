@@ -1,5 +1,15 @@
---- mount_util.c.ref	2010-06-15 16:46:54.000000000 +0200
-+++ mount_util.c	2016-05-03 21:36:52.782854200 +0200
+
+fixed path to be /sbin/
+remove option "-i"
+remove option "-f"
+use Solaris "-F" for type instead of Linux "-t"
+
+thanks to hints in https://patch-diff.githubusercontent.com/raw/OpenIndiana/oi-userland/pull/3828.diff
+
+remove lazy option thanks to hints in https://github.com/OpenIndiana/oi-userland/commit/afa7f5d
+
+--- mount_util.c.orig	2010-06-15 16:46:54.000000000 +0200
++++ mount_util.c	2017-12-07 21:43:15.416550616 +0100
 @@ -58,6 +58,7 @@
          return -1;
      }
@@ -8,18 +18,20 @@
          char templ[] = "/tmp/fusermountXXXXXX";
          char *tmp;
  
-@@ -79,8 +80,8 @@
+@@ -79,9 +80,9 @@
              exit(1);
          }
          rmdir(tmp);
 -        execl("/bin/mount", "/bin/mount", "-i", "-f", "-t", type, "-o", opts,
 -              fsname, mnt, NULL);
-+        execle("/bin/mount", "/bin/mount", "-i", "-f", "-t", type, "-o", opts,
+-        fprintf(stderr, "%s: failed to execute /bin/mount: %s\n", progname,
++        execle("/sbin/mount", "/sbin/mount", "-F", type, "-o", opts,
 +              fsname, mnt, NULL, &env);
-         fprintf(stderr, "%s: failed to execute /bin/mount: %s\n", progname,
++        fprintf(stderr, "%s: failed to execute /sbin/mount: %s\n", progname,
                  strerror(errno));
          exit(1);
-@@ -112,9 +113,16 @@
+     }
+@@ -112,10 +113,11 @@
          return -1;
      }
      if (res == 0) {
@@ -28,13 +40,9 @@
          setuid(geteuid());
 -        execl("/bin/umount", "/bin/umount", "-i", mnt, lazy ? "-l" : NULL,
 -              NULL);
-+        if (lazy) {
-+            execle("/bin/umount", "/bin/umount", "-i", mnt, "-l",
-+                   NULL, &env);
-+        } else {
-+            execle("/bin/umount", "/bin/umount", "-i", mnt,
-+                   NULL, &env);
-+        }
-         fprintf(stderr, "%s: failed to execute /bin/umount: %s\n", progname,
+-        fprintf(stderr, "%s: failed to execute /bin/umount: %s\n", progname,
++        execle("/sbin/umount", "/sbin/umount", mnt, NULL, &env);
++        fprintf(stderr, "%s: failed to execute /sbin/umount: %s\n", progname,
                  strerror(errno));
          exit(1);
+     }
