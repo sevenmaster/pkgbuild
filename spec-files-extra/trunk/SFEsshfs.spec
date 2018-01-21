@@ -9,6 +9,9 @@
 %define src_name sshfs
 %include base.inc
 
+#avoid detection of osdistro delivered fuse / libfuse package
+%define _use_internal_dependency_generator 0
+
 Name:                    SFEsshfs
 IPS_package_name: system/file-system/fuse-sshfs
 Summary:                 sshfs - filesystem access over SSH
@@ -38,7 +41,9 @@ sshfs remoteuser@remotehost:/this/remote/filesystem_path /tmp/ssh-remount-mount;
 #
 For umount run "umount /tmp/ssh-remount-mount"
 
-Make sure to check the various options (including sync / async)
+Make sure to check the various options (including sync / async).
+
+This package is built for libfuse and fuse delivered by the SFE repository. Therefore you may need to pkg uninstall "fuse" and "libfuse" from your OS package repository.
 
 %prep
 #sshfs-sshfs-2.10
@@ -91,6 +96,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 21 2018 - Thomas Wagner
+- _use_internal_dependency_generator 0
 * Thu Dec  7 2017 - Thomas Wagner
 - bump to 2.10
 - new Download URL (archive)
