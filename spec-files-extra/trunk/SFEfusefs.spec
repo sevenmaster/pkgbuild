@@ -1,3 +1,5 @@
+# do not enforce new BEs and reboots by IPS flags. fuse can be loaded / unloaded without reboots.
+
 #
 #
 # spec file for package SFEfusefs
@@ -7,13 +9,18 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %( expr %{oihipster} '|' %{omnios} )
+%define cc_is_gcc 1
+%include base.inc
+%endif
+
 %define _use_internal_dependency_generator 0
 
 %define usr_kernel /usr/kernel
 %define drv_base %{usr_kernel}/drv
 
 Name:		SFEfusefs
-IPS_Package_Name:	system/file-system/fusefs
+IPS_Package_Name:	sfe/system/file-system/fusefs
 Summary:	Kernel modules for File system in User Space
 Version:	1.3.2
 %define src_name illumos-fusefs-Version-%{version}
@@ -22,29 +29,30 @@ Group:		System/File System
 SUNW_Copyright:	fusefs.copyright
 URL: http://jp-andre.pagesperso-orange.fr/openindiana-ntfs-3g.html
 Source:		 http://github.com/jurikm/illumos-fusefs/archive/Version-%{version}.tar.gz?%{src_name}.tar.gz
-Patch1:		fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff
-Patch2:		fusefs-02-s12-rctl_action__donts_cache_attributes.diff
+Patch3:         fusefs-03-s12-makefile-64bit-only-kernel.diff
+Patch4:         fusefs-04-makefile-compiler-gcc.diff
 SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
 BuildRequires:	%{pnm_buildrequires_SUNWonbld}
 
-#pseudo code, as it is not really clear if pkgtool can handle this propperly down to the build number
-#might need an extra IPS tag added
-%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000001000001.0 )
-#build 100 and higher, rctl private interface has changed quite a bit
-#idee: anderes Paket das mit build 100 hinzugekommen war und immer installiert ist anfordern
-#idee: anderes Paket das mit build 100 hinzugekommen war und immer installiert ist anfordern
-#depend fmri=pkg:/system/kernel@5.12-5.12.0.0.0.100 type=require
+%include pkg-renamed.inc
+%package -n %{name}-noinst-1
 
-%endif
+#example 'category/newpackagename = *'
+#example 'category/newpackagename >= 1.1.1'
+#do not omit version equation!
+%define renamed_from_oldname      system/file-system/fusefs
+%define renamed_to_newnameversion sfe/system/file-system/fusefs = *
+%include pkg-renamed-package.inc
 
 
-%if %{solaris12}
+
+%if %( expr %{solaris12} '|' %{s110400} )
 %description
 
-WARNING: This fusefs module is *not* extensively tested for Solaris 12. You may risk your data.
+WARNING: This fusefs module is *not* extensively tested for Solaris 11.4 (12). You may risk your data.
 You may risk your data. Yes, you may risk your data.
 
 The code for the kernel module had to be changed and attribute caching is switched off.
@@ -73,17 +81,16 @@ This is the kernel module.
 #illumos-fusefs-Version-1.3.1
 %setup -q -n %{src_name}
 
-#only Solaris 12 wants 5 arguments, Hipster, Solaris 11 wants 6 arguments including int vacalign
-#/usr/include/sys/vmsystm.h:#define ADDR_VACALIGN   1
-%if %( expr %{solaris12} '>=' 1 )
-#expect only 5 arguments to choose_addr
-%patch1 -p1
+%if %{cc_is_gcc}
+export CC=gcc
+#fix CFLAGS if gcc is used
+%patch4 -p1
+#fix CC = cc to be CC = gcc
+gsed -i.bak -e '/CC.*=.*cc/ s?CC.*=.*cc?CC = gcc?' kernel/Makefile.com
 %endif
 
-%if %( expr %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000001000001.0 )
-#build 100 and higher, rctl private interface has changed quite a bit
-#permanent patch for rctl, but temporary patch for disabling attribute caches
-%patch2 -p1
+%if %( expr  %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 0005001200000000000001000001.0 )
+%patch3 -p1
 %endif
 
 #if there is /usr/include/sys/cred_impl.h requiring c2/audit.h but is not there
@@ -98,13 +105,18 @@ grep "include <c2/audit.h>" /usr/include/sys/cred_impl.h && [ ! -r /usr/include/
 %build
 export PATH=/opt/onbld/bin/`uname -p`:$PATH
 
+
+%if %{cc_is_gcc}
+export CC=gcc
+%endif
+
 [ -r kernel/include/c2/audit.h ] && export CFLAGS="-I`pwd`/kernel/include"
 
 cd kernel
 
 export CPP="$CC -E"
 
-%if %{solaris12}
+%if %( expr  %{s110400} '>=' 1 '|' %{solaris12} '>=' 1 )
   #64-bit only
   #rm i386/Makefile
   #rm sparc/Makefile
@@ -133,6 +145,9 @@ dmake install
 %endif
 
 cp -r proto/ $RPM_BUILD_ROOT
+
+%actions -n %{name}-noinst-1
+depend fmri=system/file-system/fusefs@%{ips_version_release_renamedbranch} type=optional
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -168,7 +183,12 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 
 %changelog
 * Sat Jan 21 2018 - Thomas Wagner
-- bump to 1.3.2 (couldn't identify any other changes besides the version number of the module)
+- bump to 1.3.2, obsoleted patch1 fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff, 
+- rename to IPS_Package_Name sfe/system/file-system/fusefs
+- rework all patches (partly obsoleted by 1.3.2)
+- add patch3 fusefs-03-s12-makefile-64bit-only-kernel.diff (S11.4 / S12)
+- fix builds with gcc compiler on (OM OIH)
+- add patch4 fusefs-04-makefile-compiler-gcc.diff apply if cc_is_gcc (OM OIH)
 * Fri Feb 17 2017 - Thomas Wagner
 - improve Source URL to get src_name into download file
 - set CPP
