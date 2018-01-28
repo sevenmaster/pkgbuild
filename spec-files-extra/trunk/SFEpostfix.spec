@@ -1,4 +1,80 @@
-#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bug in illumos aufmachen
+
+fehlt! OmniOS
+kommandant tom ~ grep smtps /etc/services 
+smtps           465/tcp         mail
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ##TODO## auto-upgrade configuration:
+# probably add to SMF startup script? Or a one-time-fire SMF manifest?
+# Date: Sat, 30 Dec 2017 09:55:09 -0500 (EST)
+# From: Wietse Venema <wietse@porcupine.org>
+# Reply-To: Postfix users <postfix-users@postfix.org>                                                                                                                                                                                             
+# Subject: Re: Rebuilding mail server from scratch
+# To: Postfix users <postfix-users@postfix.org>
+# X-Mailer: ELM [version 2.4ME+ PL124d (25)]
+# 
+# Voytek:
+# > On Sat, December 30, 2017 3:51 am, Wietse Venema wrote:
+# >
+# > > You should be able to build the new Postfix, use the old config
+# > > files, do 'postfix upgrade-configuration", and look for warnings while
+# > > Postfix handles email for several days, about things that
+# > > might break when you were to set compatibility_level=2.
+# >
+# > hmm, I am not sure I have done 'postfix upgrade-configuration"
+# >
+# > can I run it possibly second time ?
+# 
+# You can run it many times (the operation is idempotent).
+# 
+# > does it only if need changes main.cf ?
+# 
+# It adds or updates some main.cf parameter settings, and if the old
+# Postfix version is old enough, also adds required services to
+# master.cf.
+# 
+# > > That only moves the old system into the new era. If you don't need
+# > > any of the newer features such as postscreen, then you're done.
+# >
+# > where to look for advice/tips etc on postscreen config
+# 
+# The mechanics are explained in www.postfix.org/POSTSCREEN_README.html,
+# and case studies are found with a search engine.
+# 
+#         Wietse
+
+ 
+
 # spec file for package SFEpostfix
 #
 # prepared for SunStudio compiler
@@ -136,7 +212,7 @@ IPS_Package_Name:	 sfe/service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.2.4
+Version:                 3.2.5
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1072,6 +1148,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sun Jan 28 2018 - Thomas Wagner
+- bump to 3.2.5
 * Wed Nov  8 2017 - Thomas Wagner
 - bump to 3.2.4
 - make the IPS_package_name be sfe/service/network/smtp/postfix on all platforms (OIH version constraint pkg w/ same name, userland-incorporation would need facet.version unlock)
