@@ -116,9 +116,7 @@ the gcc runtime from: /usr/gcc/4.9/lib and /usr/gcc/lib
 
 --- gcc-4.9.4/gcc/config/sol2.h.orig	2016-10-03 00:00:00.000000000 +0200
 +++ gcc-4.9.4/gcc/config/sol2.h	2016-10-21 00:00:00.000000000 +0200
-@@ -157,6 +157,10 @@
-    %{!YP,*:%{p|pg:-Y P,%R/usr/ccs/lib/libp:%R/usr/lib/libp:%R/usr/ccs/lib:%R/lib:%R/usr/lib} \
- 	   %{!p:%{!pg:-Y P,%R/usr/ccs/lib:%R/lib:%R/usr/lib}}}"
+@@ -159,4 +159,8 @@
  
 +#undef LINK_LIBGCC_SPEC
 +/* #define LINK_LIBGCC_SPEC "%{m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib/"ARCH64_SUBDIR":@@_BASEPATH_@@/lib/"ARCH64_SUBDIR" %D" "}%{!m64:" "-R @@_BASEPATH_@@/@@_GCCVERSIONPATH_@@/lib:@@_BASEPATH_@@/lib %D" "}" */

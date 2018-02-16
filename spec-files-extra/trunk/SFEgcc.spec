@@ -1,27 +1,12 @@
-#gcc4.9.4 !!
-#
-# diff -r -u libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc
-# --- libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc     Thu Jan  2 14:30:10 2014
-# +++ libstdc++-v3/testsuite/26_numerics/headers/cmath/c99_classification_macros_c.cc     Thu Dec 10 07:40:27 2015
-# @@ -20,9 +20,10 @@
-#  // { dg-do compile }
-#  // { dg-add-options no_pch }
-# 
-# -// { dg-xfail-if "" { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[0-9]* hppa*-*-hpux* *-*-mingw* } || { uclibc || newlib } } { "*" } { "" } }
-# -// { dg-excess-errors "" { target { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[0-9]* hppa*-*-hpux* *-*-mingw* } || { uclibc || newlib } } } }
-# +// { dg-xfail-if "" { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[01]* hppa*-*-hpux* *-*-mingw* *-*-aix* } || { uclibc || newlib } } { "*" } { "" } }
-# +// { dg-excess-errors "" { target { { *-*-linux* *-*-gnu* *-*-darwin* *-*-solaris2.1[01]* hppa*-*-hpux* *-*-mingw* *-*-aix* } || { uclibc || newlib } } } }
-# 
-# +
-#  #include <math.h>
-# 
-#  void fpclassify() { }
-# 
-# "patches/gcc49-027-cmath_c99.patch" line 1272 of 1448 --87%-- col 2
-# 
+##TODO##
 
-#sudo pkgrepo remove -s /var/pkglocal sfe/developer/gcc@5.4.0 system/library/gcc-runtime@5.4.0
+# if you want GCC 4.9.4 _WITH_ java compiler "gcj", then use this line to compile:
+# pkgtool --IPS --interactive --download  --define 'gcc_version 4.9.4' --with-gcj build-only SFEgcc 
+# then export PATH=/usr/gcc-sfe/4.9/bin:$PATH and find 
+# "gcj" as compiler
 
+
+##TODO## from publlic channel #illumos on irc.freenode.org
  
 # 20:25 < richlowe> I'm trying to keep myself in the state where he's convinced me it's right.
 # 20:25 < richlowe> otherwise I'll start doubting it again :)
@@ -77,13 +62,6 @@
 # Only assume 4-byte stack alignment on 32-bit Solaris/x86 (PR target/62281)
 # 
 # 
-
-
-
-
-
-
-# updating? e.g. with pfexec pkg update  -v "pkg://localhostoih/*gcc*"
 
 
 #
@@ -266,7 +244,7 @@
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
 #temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{oihipster}
-%define default_version 4.8.5
+%define default_version 4.9.4
 %define build_gcc_with_gnu_ld 1
 #END OIHipster
 %endif
@@ -297,6 +275,13 @@
 #for package or path names we need the version number _without_ the dots:
 #transform dottet version number to non-dotted:  4.6 -> 46
 %define majorminornumber %( echo %{major_minor} | sed -e 's/\.//g' )
+
+##TODO## check if this works with gcc5 version numbers works (shorter)
+#for comparisons we need the verison number major-minor-micro
+#example echo 4.9.4 | awk -F'.' '{printf "%.4d%.4d%.4d", $1, $2, $3}'
+#mind escaping % by using %%
+#000400090004
+%define majorminormicro_padded_number4 %( echo %{version} | awk -F'.' '{printf "%%.4d%%.4d%%.4d", $1, $2, $3}' )
 
 # new filesystem location /usr/gcc-sfe/ for SFEgcc.spec is now *on* by default, 
 # you may choose to switch this back # to the previous location: /usr/gcc/
@@ -367,7 +352,7 @@
 %define gcc_configure_java --with-java --with-ecj-jar=%{ecj_jar_abs_path} --enable-libgcj
 %define gcc_enable_languages_java ,java
 %define gcc_symlinks_pattern bin/ecj bin/aot-compile bin/gappletviewer bin/gc-analyze bin/gcj bin/gcj-dbtool bin/gcjh bin/gij bin/gjar bin/gjarsigner bin/gjavah bin/gkeytool bin/gnative2ascii bin/gorbd bin/grmic bin/grmid bin/grmiregistry bin/gserialver bin/gtnameserv bin/jcf-dump bin/jv-convert bin/rebuild-gcj-db lib/gcj-* lib/libgcj-tools.so lib/libgcj-tools.so.15 lib/libgcj-tools.so.15.0.0 lib/libgcj.so lib/libgcj.so.15 lib/libgcj.so.15.0.0 lib/libgcj.spec lib/libgij.so lib/libgij.so.15 lib/libgij.so.15.0.0 lib/logging.properties lib/pkgconfig lib/security
-%define gcc_symlinks_pattern_arch64 lib/%{_arch64}/gcj-4.9.3-15 lib/%{_arch64}/libgcj-tools.so lib/%{_arch64}/libgcj-tools.so.15 lib/%{_arch64}/libgcj-tools.so.15.0.0 lib/%{_arch64}/libgcj.so lib/%{_arch64}/libgcj.so.15 lib/%{_arch64}/libgcj.so.15.0.0 lib/%{_arch64}/libgij.so lib/%{_arch64}/libgij.so.15 lib/%{_arch64}/libgij.so.15.0.0 lib/%{_arch64}/logging.properties lib/%{_arch64}/pkgconfig lib/%{_arch64}/security
+%define gcc_symlinks_pattern_arch64 lib/%{_arch64}/gcj-%{version}-15 lib/%{_arch64}/libgcj-tools.so lib/%{_arch64}/libgcj-tools.so.15 lib/%{_arch64}/libgcj-tools.so.15.0.0 lib/%{_arch64}/libgcj.so lib/%{_arch64}/libgcj.so.15 lib/%{_arch64}/libgcj.so.15.0.0 lib/%{_arch64}/libgij.so lib/%{_arch64}/libgij.so.15 lib/%{_arch64}/libgij.so.15.0.0 lib/%{_arch64}/logging.properties lib/%{_arch64}/pkgconfig lib/%{_arch64}/security
 %else
 #no java
 %define gcc_configure_java
@@ -435,7 +420,7 @@ License:             GPLv3+
 Group:		Development/C
 SUNW_BaseDir:	%{_basedir}
 SUNW_Copyright:      gcc.copyright
-Source:              ftp://ftp.gnu.org/pub/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
+Source:              ftp://ftp.gnu.org/pub/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.gz
 #%define version_ecj  -latest
 %define version_ecj  %{major_minor}
 %define version_ecj  4.9
@@ -539,7 +524,9 @@ Patch223: gcc49-023-libcilkrts-tests.patch
 Patch224: gcc49-024-configure.patch
 Patch225: gcc49-025-libgcc-Makefile.in.patch
 Patch226: gcc49-026-basic_string.patch
+%if %( expr %{majorminormicro_padded_number4}.0 '<=' 000400090003.0 )
 Patch227: gcc49-027-cmath_c99.patch
+%endif
 #END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
 %endif
 
@@ -550,7 +537,7 @@ Patch302: gcc53-002-libc-values.patch
 Patch303: gcc53-003-cilk-sparc.patch
 Patch304: gcc53-004-alignment.patch
 Patch306: gcc53-006-fixincludes.patch
-%if %( %{major_minor} '<' 5.4 )
+%if %( expr %{major_minor} '<' 5.4 )
 Patch308: gcc53-008-c99_classification_macros_c++0x.cc.patch
 %endif
 #END %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.8
@@ -587,9 +574,31 @@ BuildRequires:  SUNWbash
 %endif
 
 #need something to start compiling with
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} '|' %{openindiana} )   
+%if %( expr %{solaris11} '|' %{oihipster} '|' %{openindiana} )   
 BuildRequires: developer/gcc-3
 ##TODO## check if required: Requires: developer/gcc-3-runtime
+%endif
+
+%if %( expr %{s110400} )
+BuildRequires: developer/gcc-5
+%endif
+
+#OmniOS R151012 has no gcc-3 any more, request OmniOS's gcc-48
+#as a replacement and in %build, point the CC and CXX variable to this compiler
+%if %{omnios}
+#mind the modification of the CC and CXX variables in %build
+BuildRequires: developer/gcc48
+BuildRequires: developer/gnu-binutils
+%endif
+
+%if %SFEgmp
+BuildRequires: SFEgmp-devel
+Requires: SFEgmp
+#workaround on IPS which is wrong with BASEdir as "/" -> then assume /usr/gnu
+%define SFEgmpbasedir %(pkgparam SFEgmp BASEDIR 2>/dev/null | sed -e 's+^/$+/usr/gnu+')
+%else
+BuildRequires: SUNWgnu-mp
+Requires: SUNWgnu-mp
 %endif
 
 #OmniOS R151012 has no gcc-3 any more, request OmniOS's gcc-48
@@ -710,6 +719,18 @@ SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
 Requires:                %{name}
 %endif
+
+%description
+GCC compiler with special setting to find the own runtime library files in
+this path: ...
+prefix/lib                %{_prefix}/lib/  ...
+_prefix_usr_gcc/lib       %{_prefix_usr_gcc}/lib/  ...
+old_compat_libdir         %{old_compat_libdir}  ...
+old_path_usr_gcc          %{old_path_usr_gcc}  ...
+...
+compile options: ...
+--enable-languages=%{gcc_enable_languages}%{gcc_enable_languages_java}
+
 
 %prep
 
@@ -847,7 +868,9 @@ cd gcc-%{version}
 %patch224 -p0
 %patch225 -p0
 %patch226 -p0
+%if %( expr %{majorminormicro_padded_number4}.0 '<=' 000400090003.0 )
 %patch227 -p0
+%endif
 #%{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9
 %endif
 
@@ -1011,12 +1034,18 @@ export CXX=CC
 #export CPP="cc -E -Xs"
 export CPP="cc -E"
 
-%if %( expr %{solaris11} '|' %{solaris12} '|' %{oihipster} '|' %{openindiana} )
+%if %( expr %{solaris11} '|' %{oihipster} '|' %{openindiana} )
 #using gcc-3 because running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
 export CC=/usr/sfw/bin/gcc
 export CXX=/usr/sfw/bin/g++
 unset CPP
 #solaris11 solaris12 oihipster openindiana
+%endif
+
+%if %( expr %{s110400} )
+export CC=gcc
+export CXX=g++
+unset CPP
 %endif
 
 #R151012 is missing the gcc-3 package, use gcc48 instead
@@ -1325,6 +1354,24 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/lib*.la
 %endif
 
+#would ldd find the map files for _arch64 even if they are only in %{_libdir} ?
+%if %( expr %{major_minor} '>=' 4.9 )
+cp -p $RPM_BUILD_ROOT%{_libdir}/clearcap.map $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/clearcap.map
+cp -p $RPM_BUILD_ROOT%{_libdir}/libgcc-unwind.map $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/libgcc-unwind.map
+%endif
+
+# fix pkgconfig for 64-Bit to show the right libdir
+#s11175 sfe /localhomes/tom/spec-files-extra cat /usr/gcc-sfe/4.9/lib/amd64/pkgconfig/libgcj-4.9.pc 
+#libdir=/usr/gcc-sfe/4.9/lib
+#Description: libgcj
+#Version: 4.9.4
+#Libs: -L${libdir} -lgcj
+#Cflags: -I${includedir}
+
+ls -1 $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc && \
+  gsed -i -e '/^libdir=/ s?$?/%{_arch64}?' \
+          -e '/^Description/ s?$? %{_arch64}?' \
+          $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc && \
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -1400,13 +1447,15 @@ rm -rf $RPM_BUILD_ROOT
 %if %{gcj}
 %{_libdir}/security/classpath.security
 %{_libdir}/logging.properties
-%{_libdir}/pkgconfig/libgcj-4.9.pc
+%{_libdir}/pkgconfig/libgcj-*.pc
 %{_libdir}/gcj-*/libjvm.so
 %{_libdir}/gcj-*/classmap.db
 %{_libdir}/gcj-*/libjvm.la
 %dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/java/libgcj-4.9.3.jar
-%{_datadir}/java/libgcj-tools-4.9.3.jar
+#%{_datadir}/java/libgcj-4.9.3.jar
+#%{_datadir}/java/libgcj-tools-4.9.3.jar
+%{_datadir}/java/libgcj-%{version}.jar
+%{_datadir}/java/libgcj-tools-%{version}.jar
 %dir %attr (0755, root, sys) %{_datadir}/gcc-%{version}
 %dir %attr (0755, root, sys) %{_datadir}/gcc-%{version}/python
 %{_datadir}/gcc-*/python/libjava/classfile.py
@@ -1419,6 +1468,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{_arch64}/lib*.so*
 %{_libdir}/%{_arch64}/lib*.spec
 %{_libdir}/%{_arch64}/lib*.a
+%if %( expr %{major_minor} '>=' 4.9 )
+%{_libdir}/%{_arch64}/clearcap.map
+%{_libdir}/%{_arch64}/libgcc-unwind.map
+%endif
 %if %{gcj}
 %{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc
 %{_libdir}/%{_arch64}/security/classpath.security
@@ -1466,6 +1519,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+- fix gcj compile/package by using gcj-%{version}-15
+- fetch slightly larger .gz file, newer versions only provide .gz or .xz (helps downloads when --define 'version 4.9.4' vs. 7.3.0)
+- apply Patch227 gcc49-027-cmath_c99.patch only if =< 4.9.3; - add missing "expr"
+- new (Build)Requires for (S11.4) is developer/gcc-5
+- new (Build)Requires for (OM) is developer/gcc48 developer/gnu-binutils 
+* Mon Jul 31 2017 - Thomas Wagner
+- bump to 4.9.4 for OIH
+* Sun Feb 27 2017 - Thomas Wagner
+- add libgcc-unwind.map, clearcap.map for %{_arch64} into gcc-..-runtime
+- fix patch to cmath.h for gcc 4.9.4
 * Fri Dec 16 2016 - Thomas Wagner
 - fix build of libgomp in 64-bit as change to include/base.inc brought in "-m32" through CFLAGS/LDFLAGS
   filter out any -m32 or -m64 from *FLAGS
