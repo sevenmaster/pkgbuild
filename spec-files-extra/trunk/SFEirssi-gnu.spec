@@ -14,15 +14,13 @@ Name:                SFEirssi-gnu
 IPS_Package_Name:    network/chat/gnu/irssi
 Summary:             irssi - a terminal based IRC client (/usr/gnu)
 Version:             1.1.1
-Source:              http://www.irssi.org/files/irssi-%{version}.tar.gz
+#Source:              http://www.irssi.org/files/irssi-%{version}.tar.gz
+Source:              http://github.com/irssi/irssi/releases/download/%{version}/irssi-%{version}.tar.gz
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-
-###%define perl_archlib /usr/perl5/vendor_perl/5.8.4/i86pc-solaris-64int
-####LIB=%{_prefix}/%{perl_path_vendor_perl_version}
 
 BuildRequires: %{pnm_buildrequires_perl_default}
 Requires:      %{pnm_requires_perl_default}
@@ -57,9 +55,9 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/irssi/modules/*.la \
-         ${RPM_BUILD_ROOT}%{perl_archlib}/auto/Irssi/.packlist \
-         ${RPM_BUILD_ROOT}%{perl_archlib}/auto/Irssi/*/.packlist \
-         ${RPM_BUILD_ROOT}%{perl_archlib}/perllocal.pod \
+         ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto/Irssi/.packlist \
+         ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto/Irssi/*/.packlist \
+         ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/perllocal.pod \
          ${RPM_BUILD_ROOT}/etc/irssi.conf
 rm -rf ${RPM_BUILD_ROOT}%{_docdir} \
         ${RPM_BUILD_ROOT}%{_includedir}
@@ -74,7 +72,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %{_bindir}/*
 %{_libdir}/irssi/
-%{perl_archlib}
+%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/*
 %{_mandir}
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/irssi/
