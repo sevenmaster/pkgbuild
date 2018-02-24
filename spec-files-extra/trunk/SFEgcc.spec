@@ -212,37 +212,34 @@
 %endif
 
 #set default gcc version
-%define default_version 4.8.5
+%define default_version 4.9.4
 
 #set more defaults
 %define build_gcc_with_gnu_ld 0
 
-#temporary setting, 4.8.5 testing on S12 if runtime is searched in the right places and C++ code like filezilla works
 %if %{solaris12}
-%define default_version 4.8.5
+%define default_version 4.9.4
 #%define build_gcc_with_gnu_ld 0
 #try with gnu_ld to avoid having -fno-exception passed to the linker which only accepts this for dynamic objects
 %define build_gcc_with_gnu_ld 1
 #END solaris12
 %endif
 
-#temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{omnios}
-%define default_version 4.8.5
+%define default_version 4.9.4
 #test %define build_gcc_with_gnu_ld 0
 %define build_gcc_with_gnu_ld 1
 #END OmniOS
 %endif
 
-#temporary setting, 4.8.5 testing on OI151a8 OI151a9
+#temporary setting, 4.9.4 testing on OI151a8 OI151a9
 %if %( expr %{openindiana} '&' %{oihipster} '=' 0 )
-%define default_version 4.8.5
+%define default_version 4.9.4
 %define build_gcc_with_gnu_ld 1
 #END openindiana
 %endif
 
 #transform full version to short version: 4.6.2 -> 4.6  or  4.7.1 -> 4.7
-#temporary setting, 4.8.5 testing on OmniOS if runtime is searched in the right places and C++ code works correctly when exceptions occur
 %if %{oihipster}
 %define default_version 4.9.4
 %define build_gcc_with_gnu_ld 1
@@ -336,15 +333,15 @@
 # Supported languages are: c,c,c++,fortran,go,java,lto,objc,obj-c++
 %define gcc_enable_languages c,c++,fortran,objc
 
+#enable java compiler --with-gcj or disable --without-gcj
+#is default on with majorminor = 4.9, on 4.9 currently this is always on, regardless of --without-gcj is used
+%define gcj %{?_with_gcj:1}%{?!_with_gcj:0}
+
 #enable compiling java gcj
 ##TODO## see if this works also for gcc 5.x
 %if %( expr %{major_minor} '=' 4.9 )
 %define gcj 1
 %endif
-
-#enable java compiler --with-gcj or disable --without-gcj
-#is default on with majorminor > 4.9
-%define gcj %{?_with_gcj:1}%{?!_with_gcj:0}
 
 %if %{gcj}
 #%define ecj_jar_abs_path  %{topdir}/gcc-%{version}/ecj.jar
@@ -547,6 +544,11 @@ Patch308: gcc53-008-c99_classification_macros_c++0x.cc.patch
 #        and hope, that is only uses procfs stuff where this doesn't matter.
 Patch501: gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff
 
+#gcj with 4.9.4 (and others) doesn't work on s1104, missing old_procfs.h defining PIOCOPENPD that is used in
+#older versions of boehm-gc/os_dep.c:3202:41: error: 'PIOCOPENPD' undeclared (first use in this function)
+#     GC_proc_fd = syscall(SYS_ioctl, fd, PIOCOPENPD, 0);
+#s1104 stopped providing old_procfs.h, need to use new interface
+Patch502: gcc49-502-boehm-gc-os_dep.c-avoid-procfs-ioctl.diff
 
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -889,11 +891,15 @@ cd gcc-%{version}
 #note: up to gcc 4.8 we apply patch5 before the large userland batch, with gcc 4.9 we apply patch5 right *after* the large batch of solaris userland patches
 #here: userland patches already applied
 
-#%if %( expr %{major_minor} '>=' 4.9 )
+##TODO## if in need of 4.8.x series, test if same patch is needed on s1104 / s12
 %if %( expr %{major_minor} '>=' 4.9 '&'  %{major_minor} '<' 5.0 )
-# gcc-4.9.3/boehm-gc/os_dep.c 2013-03-06 16:08:58.000000000 +0100
+# gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff
 %patch501 -p1
+#s1104 stopped providing old_procfs.h, need to use new interface
+# gcc49-502-boehm-gc-os_dep.c-avoid-procfs-ioctl.diff
+%patch502 -p1
 %endif
+
 
 ##TODO## make a switch for pkgtool kommand line to override _OLD_COMPAT_LIBDIR_ to be enabled or disabled
 
@@ -1488,6 +1494,12 @@ rm -rf $RPM_BUILD_ROOT
 %{symlinktarget1path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
+%if %{gcj}
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%endif
+%endif
 %{symlinktarget1path}/lib
 %endif
 
@@ -1497,6 +1509,12 @@ rm -rf $RPM_BUILD_ROOT
 %{symlinktarget2path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
+%if %{gcj}
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%endif
+%endif
 %{symlinktarget2path}/lib
 %endif
 
@@ -1506,6 +1524,12 @@ rm -rf $RPM_BUILD_ROOT
 %{symlinktarget3path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
+%if %{gcj}
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+%endif
+%endif
 %{symlinktarget3path}/lib
 %endif
 
@@ -1519,6 +1543,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 18 2018 - Thomas Wagner
+- fix directory permissions for /usr/gnu/lib/pkgconfig /usr/gnu/lib/%{_arch64}/pkgconfig
+* Thu Feb 22 2018 - Thomas Wagner
+- add Patch502 gcc49-502-boehm-gc-os_dep.c-avoid-procfs-ioctl.diff as s1104 stopped providing old_procfs.h, need to use new interface (S11.4 S12)
+* Sun Feb 18 2018 - Thomas Wagner
+- set default version 4.9.4 for all osdistro
+* Fri Feb 16 2018 - Thomas Wagner
 - fix gcj compile/package by using gcj-%{version}-15
 - fetch slightly larger .gz file, newer versions only provide .gz or .xz (helps downloads when --define 'version 4.9.4' vs. 7.3.0)
 - apply Patch227 gcc49-027-cmath_c99.patch only if =< 4.9.3; - add missing "expr"

@@ -1,0 +1,60 @@
+
+
+[boehm-gc] Avoid unstructured procfs on Solaris
+Message ID 	yddr3mq5mg5.fsf@lokon.CeBiTec.Uni-Bielefeld.DE
+State 	New
+Headers 	show
+Commit Message
+Rainer Orth Aug. 26, 2015, 11:16 a.m.
+
+boehm-gc doesn't currently build on Solaris 12 since that release
+finally removed the old unstructured /proc, thus the PIOCOPENPD ioctl.
+This is already mentioned in the Solaris 11 EOF list:
+
+	http://www.oracle.com/technetwork/systems/end-of-notices/eonsolaris11-392732.html
+
+Since the replacement (using /proc/<pid>/pagedata directly) has been
+available since Solaris 2.6 in 1997, there's no need to retain the old
+code, especially given that mainline only supports Solaris 10 and up.
+
+Bootstrapped without regressions on i386-pc-solaris2.1[12] and
+sparc-sun-solaris2.1[12], will install on mainline.  Will backport to
+the gcc 5 branch after some soak time.
+
+	Rainer
+
+
+2015-02-10  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+
+	* os_dep.c [GC_SOLARIS_THREADS] (GC_dirty_init): Use
+	/proc/<pid>/pagedata instead of PIOCOPENPD.
+
+Patch
+
+# HG changeset patch
+# Parent 819be80e1b9c7e840fe5d232d64cf106869a933d
+Avoid unstructured procfs on Solaris 12+
+
+diff --git a/boehm-gc/os_dep.c b/boehm-gc/os_dep.c
+--- a/boehm-gc/os_dep.c
++++ b/boehm-gc/os_dep.c
+@@ -3184,13 +3184,11 @@  void GC_dirty_init()
+ 	    	      		(GC_words_allocd + GC_words_allocd_before_gc));
+ #	endif       
+     }
+-    sprintf(buf, "/proc/%d", getpid());
+-    fd = open(buf, O_RDONLY);
+-    if (fd < 0) {
++    sprintf(buf, "/proc/%d/pagedata", getpid());
++    GC_proc_fd = open(buf, O_RDONLY);
++    if (GC_proc_fd < 0) {
+     	ABORT("/proc open failed");
+     }
+-    GC_proc_fd = syscall(SYS_ioctl, fd, PIOCOPENPD, 0);
+-    close(fd);
+     syscall(SYS_fcntl, GC_proc_fd, F_SETFD, FD_CLOEXEC);
+     if (GC_proc_fd < 0) {
+     	ABORT("/proc ioctl failed");
+
+
+
