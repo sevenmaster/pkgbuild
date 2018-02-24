@@ -95,7 +95,7 @@
 #1 = enabled    0 = disabled
 #and special<n>path point to one of the paths noted in %{gccsymlinks}
 %define symlinktarget1enabled      1
-%define symlinktarget1path /usr/gcc
+%define symlinktarget1path /usr/gcc-sfe
 
 %define symlinktarget2enabled      1
 %define symlinktarget2path /usr/gnu
@@ -1303,13 +1303,11 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
 #leaves out "minor" and "micro" version libs, they are normally not
 #to be linked by userland binaries (runtime linking, see output of "ldd binaryname")
 
-# remove trailing slash, change to "../" and remove trailing slash again
-#  OFFSET=$( echo $SYMLINKTARGET | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' )
-
 for SYMLINKTARGET in %{gccsymlinks}
 do
-  # make from /usr/gcc this offset ../../
-  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' -e 's?/$??' )
+  # make from /usr/gcc-sfe this offset ../../
+  #OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' -e 's?/$??' )
+  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
@@ -1325,7 +1323,8 @@ done #for SYMLINKTARGET
 for SYMLINKTARGET in %{gccsymlinks}
 do
   # make from /usr/gcc this offset ../../
-  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' -e 's?/$??' )
+  #OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' -e 's?/$??' )
+  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
@@ -1341,7 +1340,8 @@ done #for SYMLINKTARGET
 for SYMLINKTARGET in %{gccsymlinks}
 do
   # make from /usr/gcc this offset ../../
-  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?\w*/?../?g' -e 's?\w*$??' -e 's?/$??' )
+  #OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[\w-]*/?../?g' -e 's?[\w-]*$??' -e 's?/$??' )
+  OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
   cd $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
@@ -1469,7 +1469,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 
-%ifarch amd64 sparcv9 i386
+%ifarch amd64 sparcv9
 %dir %attr (0755, root, bin) %{_libdir}/%{_arch64}
 %{_libdir}/%{_arch64}/lib*.so*
 %{_libdir}/%{_arch64}/lib*.spec
@@ -1488,20 +1488,57 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %endif
 
+
 %if %symlinktarget1enabled
 %files -n SFEgcc
 %defattr (-, root, bin)
 %{symlinktarget1path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
-%if %{gcj}
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget1path}/lib/security
+%{symlinktarget1path}/lib/lib*so*
 %ifarch amd64 sparcv9
-%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget1path}/lib/%{_arch64}/security
+%{symlinktarget1path}/lib/%{_arch64}/lib*so*
 %endif
+# amd64 sparcv9
+%if %{gcj}
+%dir %attr (0755, root, other) %{symlinktarget1path}/lib/pkgconfig
+%{symlinktarget1path}/lib/gcj-*
+%{symlinktarget1path}/lib/gcj
+%{symlinktarget1path}/lib/grmic
+%{symlinktarget1path}/lib/gkeytool
+%{symlinktarget1path}/lib/gorbd
+%{symlinktarget1path}/lib/grmid
+%{symlinktarget1path}/lib/gjavah
+%{symlinktarget1path}/lib/libgcj.spec
+%{symlinktarget1path}/lib/jv-convert
+%{symlinktarget1path}/lib/gjar
+%{symlinktarget1path}/lib/gserialver
+%{symlinktarget1path}/lib/jcf-dump
+%{symlinktarget1path}/lib/gij
+%{symlinktarget1path}/lib/logging.properties
+%{symlinktarget1path}/lib/gtnameserv
+%{symlinktarget1path}/lib/gcjh
+%{symlinktarget1path}/lib/gnative2ascii
+%{symlinktarget1path}/lib/rebuild-gcj-db
+%{symlinktarget1path}/lib/gjarsigner
+%{symlinktarget1path}/lib/aot-compile
+%{symlinktarget1path}/lib/gc-analyze
+%{symlinktarget1path}/lib/gappletviewer
+%{symlinktarget1path}/lib/grmiregistry
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{symlinktarget1path}/lib/%{_arch64}/pkgconfig
+%{symlinktarget1path}/lib/%{_arch64}/gcj-*
+%{symlinktarget1path}/lib/%{_arch64}/logging.properties
 %endif
-%{symlinktarget1path}/lib
+# amd64 sparcv9
 %endif
+# gcj
+%endif
+# symlinktarget1enabled
 
 %if %symlinktarget2enabled
 %files -n SFEgcc
@@ -1509,29 +1546,102 @@ rm -rf $RPM_BUILD_ROOT
 %{symlinktarget2path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
-%if %{gcj}
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget2path}/lib/security
+%{symlinktarget2path}/lib/lib*so*
 %ifarch amd64 sparcv9
-%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget2path}/lib/%{_arch64}/security
+%{symlinktarget2path}/lib/%{_arch64}/lib*so*
 %endif
+# amd64 sparcv9
+%if %{gcj}
+%dir %attr (0755, root, other) %{symlinktarget2path}/lib/pkgconfig
+%{symlinktarget2path}/lib/gcj-*
+%{symlinktarget2path}/lib/gcj
+%{symlinktarget2path}/lib/grmic
+%{symlinktarget2path}/lib/gkeytool
+%{symlinktarget2path}/lib/gorbd
+%{symlinktarget2path}/lib/grmid
+%{symlinktarget2path}/lib/gjavah
+%{symlinktarget2path}/lib/libgcj.spec
+%{symlinktarget2path}/lib/jv-convert
+%{symlinktarget2path}/lib/gjar
+%{symlinktarget2path}/lib/gserialver
+%{symlinktarget2path}/lib/jcf-dump
+%{symlinktarget2path}/lib/gij
+%{symlinktarget2path}/lib/logging.properties
+%{symlinktarget2path}/lib/gtnameserv
+%{symlinktarget2path}/lib/gcjh
+%{symlinktarget2path}/lib/gnative2ascii
+%{symlinktarget2path}/lib/rebuild-gcj-db
+%{symlinktarget2path}/lib/gjarsigner
+%{symlinktarget2path}/lib/aot-compile
+%{symlinktarget2path}/lib/gc-analyze
+%{symlinktarget2path}/lib/gappletviewer
+%{symlinktarget2path}/lib/grmiregistry
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{symlinktarget2path}/lib/%{_arch64}/pkgconfig
+%{symlinktarget2path}/lib/%{_arch64}/gcj-*
+%{symlinktarget2path}/lib/%{_arch64}/logging.properties
 %endif
-%{symlinktarget2path}/lib
+# amd64 sparcv9
 %endif
+# gcj
+%endif
+# symlinktarget2enabled
+
 
 %if %symlinktarget3enabled
 %files -n SFEgcc
 %defattr (-, root, bin)
-%{symlinktarget3path}/bin
+%{symlinktarget2path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
-%if %{gcj}
-%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget3path}/lib/security
+%{symlinktarget3path}/lib/lib*so*
 %ifarch amd64 sparcv9
-%dir %attr (0755, root, other) %{_libdir}/%{_arch64}/pkgconfig
+#avoid catching pkgconfig directory
+%{symlinktarget3path}/lib/%{_arch64}/security
+%{symlinktarget3path}/lib/%{_arch64}/lib*so*
 %endif
+# amd64 sparcv9
+%if %{gcj}
+%dir %attr (0755, root, other) %{symlinktarget3path}/lib/pkgconfig
+%{symlinktarget3path}/lib/gcj-*
+%{symlinktarget3path}/lib/gcj
+%{symlinktarget3path}/lib/grmic
+%{symlinktarget3path}/lib/gkeytool
+%{symlinktarget3path}/lib/gorbd
+%{symlinktarget3path}/lib/grmid
+%{symlinktarget3path}/lib/gjavah
+%{symlinktarget3path}/lib/libgcj.spec
+%{symlinktarget3path}/lib/jv-convert
+%{symlinktarget3path}/lib/gjar
+%{symlinktarget3path}/lib/gserialver
+%{symlinktarget3path}/lib/jcf-dump
+%{symlinktarget3path}/lib/gij
+%{symlinktarget3path}/lib/logging.properties
+%{symlinktarget3path}/lib/gtnameserv
+%{symlinktarget3path}/lib/gcjh
+%{symlinktarget3path}/lib/gnative2ascii
+%{symlinktarget3path}/lib/rebuild-gcj-db
+%{symlinktarget3path}/lib/gjarsigner
+%{symlinktarget3path}/lib/aot-compile
+%{symlinktarget3path}/lib/gc-analyze
+%{symlinktarget3path}/lib/gappletviewer
+%{symlinktarget3path}/lib/grmiregistry
+%ifarch amd64 sparcv9
+%dir %attr (0755, root, other) %{symlinktarget3path}/lib/%{_arch64}/pkgconfig
+%{symlinktarget3path}/lib/%{_arch64}/gcj-*
+%{symlinktarget3path}/lib/%{_arch64}/logging.properties
 %endif
-%{symlinktarget3path}/lib
+# amd64 sparcv9
 %endif
+# gcj
+%endif
+# symlinktarget3enabled
 
 
 %if %build_l10n
@@ -1545,6 +1655,9 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Feb 18 2018 - Thomas Wagner
 - fix directory permissions for /usr/gnu/lib/pkgconfig /usr/gnu/lib/%{_arch64}/pkgconfig
+- fix the packaging fix, add gcj supporting files
+- improve gsed regex to change /usr/gcc-sfe into ../..
+- change symlinktarget1path from /usr/gcc to /usr/gcc-sfe
 * Thu Feb 22 2018 - Thomas Wagner
 - add Patch502 gcc49-502-boehm-gc-os_dep.c-avoid-procfs-ioctl.diff as s1104 stopped providing old_procfs.h, need to use new interface (S11.4 S12)
 * Sun Feb 18 2018 - Thomas Wagner
