@@ -2,6 +2,9 @@
 # spec file for package SFEsmartmontools.spec
 #
 %include Solaris.inc
+%define cc_is_gcc 1
+%include base.inc
+%include osdistro.inc
 
 %define src_name	smartmontools
 %define src_url		%{sf_download}/%{src_name}
@@ -13,7 +16,7 @@ IPS_Package_Name:	storage/gnu/smartmontools
 IPS_Package_Name:	storage/smartmontools
 %endif
 Summary:                S.M.A.R.T. monitoring tools
-Version:                6.2
+Version:                6.6
 Group:                  Applications/System Utilities
 License:                GPLv2
 URL:                    http://smartmontools.sourceforge.net/
@@ -41,6 +44,8 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
 fi
 
 %if %cc_is_gcc
+CC=gcc
+CXX=g++
 %else
 export CXX="${CXX} -norunpath"
 %endif
@@ -82,10 +87,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr (0755, root, sys) %dir %{_sysconfdir}
 %{_sysconfdir}/init.d
 %{_sysconfdir}/smartd.conf
-%_sysconfdir/smartd_warning.sh
+%{_sysconfdir}/smartd_warning.sh
+%{_sysconfdir}/smartd_warning.d
 
 
 %changelog
+* Sat Mar  3 2018 - Thomas Wagner
+- update to 6.6, add %include osdistro.inc
 * Tue Feb 16 2016 - Thomas Wagner
 - change IPS_Package_Name on OI but don't change the install location
 * Mon Jan 20 2014 - Alex Viskovatoff
