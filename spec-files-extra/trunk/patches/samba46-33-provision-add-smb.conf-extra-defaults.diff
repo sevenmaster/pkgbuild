@@ -1,0 +1,10 @@
+--- samba-4.6.8/python/samba/provision/__init__.py.orig.pre-new-defaults	2017-02-28 21:04:57.000000000 +0000
++++ samba-4.6.8/python/samba/provision/__init__.py	2017-11-23 21:04:10.133161254 +0000
+@@ -695,6 +695,7 @@
+         "workgroup": domain,
+         "realm": realm,
+         "server role": serverrole,
++        "vfs objects": "zfsacl",
+         }
+ 
+     if lp is None:
