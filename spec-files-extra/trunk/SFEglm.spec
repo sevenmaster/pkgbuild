@@ -31,7 +31,7 @@ Version:		%major_version.%minor_version
 License:		MIT and GPL-2.0+`
 #SUNW_Copyright:		%{license}.copyright
 #Source:			%{src_url}/%{version}/%{src_name}-%{version}.zip
-Source:			http://github.com/g-truc/glm/archive/%{version}.zip
+Source:			http://github.com/g-truc/glm/archive/%{version}.zip?%{src_name}-%{version}.zip
 Patch1:                 glm-01-force_GLM_HAS_CXX11_STL_0.diff
 SUNW_BaseDir:		%_basedir
 BuildRoot:		%_tmppath/%name-%version-build
@@ -56,8 +56,8 @@ SUNW_BaseDir:   %_basedir
 Requires: %name
 
 BuildRequires: %{pnm_buildrequires_developer_build_cmake}
-#to auto-resolve by pkgtool
-Requires:      %{pnm_requires_developer_build_cmake}
+#only there to auto-resolve by pkgtool - but creates runtime dependency on cmake...
+#Requires:      %{pnm_requires_developer_build_cmake}
 
 
 %prep
@@ -114,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/cmake/glm/glmTargets.cmake
 
 %changelog
+* Mon Mar  5 2018 - Thomas Wagner
+- make download-file a unique filename
+- remove Requires: cmake (removes cmake dep through supportlibs needed by libreoffice installs)
 * Mon Oct 31 2016 - Thomas Wagner
 - add to %files /usr/lib/cmake/glm/glmTargets.cmake
 * Sun Feb 14 2016 - Thomas Wagner
