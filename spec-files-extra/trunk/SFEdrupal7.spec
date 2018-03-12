@@ -22,7 +22,7 @@
 Name:                SFEdrupal7
 IPS_Package_Name:	 web/service/drupal 
 Summary:             Drupal - open-source content-management platform
-Version:             7.56
+Version:             7.57
 License: 	     GPLv2
 Source:              http://ftp.drupal.org/files/projects/drupal-%{version}%{src_name_minor_extra}.tar.gz
 #Source2:             %{src_name}-htaccess-protect-backend
@@ -103,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 12 2018 - Thomas Wagner
+- bump to 7.57 - Drupal Core - Critical - Multiple Vulnerabilities - SA-CORE-2018-001
 * Thu Feb  2 2017 - Thomas Wagner
 - bump to 7.56 - Drupal Core - Multiple Vulnerabilities - https://www.drupal.org/SA-CORE-2017-003
 * Sun Dec 11 2016 - Thomas Wagner
