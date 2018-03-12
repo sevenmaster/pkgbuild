@@ -1057,6 +1057,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Wed Mar  7 2018 - Thomas Wagner
+- change dependent SMF service pg name to 'samba4-multi-user-server' in samba46gnu.xml or get badly broken multi-user-server with "Instance has conflicts" (needs magic or BE rollback to fix, I'm sorry)
 * Thu Mar  1 2018 - Thomas Wagner
 - bump to 4.6.13
 * Mon Dec 25 2017 - Thomas Wagner
