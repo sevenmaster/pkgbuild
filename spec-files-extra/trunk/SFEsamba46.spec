@@ -271,7 +271,7 @@ Name:                    SFEsamba46
 IPS_package_name:	 sfe/service/network/samba46
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.6.13
+Version:                 4.6.14
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -1057,6 +1057,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Tue Mar 13 2018 - Thomas Wagner
+- bump to 4.6.14 - CVE-2018-1057: Unprivileged user can change any user (and admin) password
 * Wed Mar  7 2018 - Thomas Wagner
 - change dependent SMF service pg name to 'samba4-multi-user-server' in samba46gnu.xml or get badly broken multi-user-server with "Instance has conflicts" (needs magic or BE rollback to fix, I'm sorry)
 * Thu Mar  1 2018 - Thomas Wagner
