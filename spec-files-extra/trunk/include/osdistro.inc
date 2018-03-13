@@ -678,15 +678,18 @@
 #get char if any
 #%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9]\{6\}??' | egrep "^[a-z]$" )
 #%define osdistrelnumber_letterrelease_char %( egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o047?' | egrep "^.[a-z]$" )
-%define osdistrelnumber_letterrelease_char %( /usr/gnu/bin/egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,1}$" /etc/release | /usr/gnu/bin/sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]?\o134\o134\o047?' | /usr/gnu/bin/egrep "^..[a-z][a-z]*$" )
+%define osdistrelnumber_letterrelease_char_all %( /usr/gnu/bin/egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,2}$" /etc/release | /usr/gnu/bin/sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]??' | /usr/gnu/bin/egrep "^[a-z][a-z]*$" )
+%define osdistrelnumber_letterrelease_char_1 %( echo %{osdistrelnumber_letterrelease_char_all} |  /usr/gnu/bin/sed -e 's?.$??'  -e 's?^?\o134\o134\o047?' )
+%define osdistrelnumber_letterrelease_char_2 %( echo %{osdistrelnumber_letterrelease_char_all} |  /usr/gnu/bin/sed -e 's?^.??'  -e 's?^?\o134\o134\o047?' )
 #make char a number, note! \o047 puts an >\'< before the letter in the sed command above (without the > <)
 #%define osdistrelnumber_letterrelease_number %( expr -96 '+' `printf "%%d" \\%{osdistrelnumber_letterrelease_char}` )
-%define osdistrelnumber_letterrelease_number %( expr -96 '+' `/usr/bin/printf "%d" \\%{osdistrelnumber_letterrelease_char}` )
+%define osdistrelnumber_letterrelease_number_1 %( expr -96 '+' `/usr/bin/printf "%%d" \\%{osdistrelnumber_letterrelease_char_1}` )
+%define osdistrelnumber_letterrelease_number_2 %( expr -96 '+' `/usr/bin/printf "%%d" \\%{osdistrelnumber_letterrelease_char_2}` )
 #fix empty chat to be number zero
-#%if %( expr %{osdistrelnumber_letterrelease_number} '=' '-96' )
+#%if %( expr %{osdistrelnumber_letterrelease_number_1} '=' '-96' )
 #%define osdistrelnumber_letterrelease_number 0
 #%endif
-%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, %{osdistrelnumber_letterrelease_number}, $5, $6, $7}' )
+%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", $1, $2, $3, %{osdistrelnumber_letterrelease_number_1}, %{osdistrelnumber_letterrelease_number_2}, $6, $7}' )
 %endif
 
 
@@ -699,6 +702,8 @@
 
 
 %changelog
+* Fri Mar  2 2018 - Thomas Wagner
+- support two letter OS revisions for OmniOSce (OM)
 * Fri Dec 15 2017 - Thomas Wagner
 - avoid "(" and ")" in egrep regex, some pkgbuild versions can't escape these propperly
 * Fri Dec  8 2017 - Thomas Wagner
