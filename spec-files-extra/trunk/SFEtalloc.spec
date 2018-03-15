@@ -23,6 +23,9 @@ SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
 
+BuildRequires: %{pnm_buildrequires_data_docbook}
+Requires:      %{pnm_buildrequires_data_docbook}
+
 BuildRequires: %{pnm_buildrequires_developer_swig}
 Requires:      %{pnm_requires_developer_swig}
 
@@ -96,6 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Mar 15 2018 - Thomas Wagner
+- add (Build)Requires pnm_buildrequires_data_docbook for manpages (OIH)
 * Fri Jan  5 2018 - Thomas Wagner
 - bump version to 2.1.10
 - add IPS_Package_Name
