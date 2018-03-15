@@ -40,25 +40,23 @@ This is a collection of both secure hash functions (such as SHA256 and RIPEMD160
 #make renamed-to-package for all OSDISTRO %if %{solaris11}%{solaris12}%{oihipster}
 %package -n %{name}-noinst-1
 Summary:                %{summay} - automatic renamed-to-package to uninstall python-crypto package and install pycrypto
-IPS_Package_Name:	/library/python/python-crypto
+IPS_Package_Name:	library/python/python-crypto
 %define renamed_from_oldname      library/python/python-crypto
 %define renamed_to_newnameversion library/python/pycrypto = *
 %include pkg-renamed-package.inc
 
 %package -n %{name}-noinst-2
 Summary:                %{summay} - automatic renamed-to-package to uninstall python-crypto package and install pycrypto
-IPS_Package_Name:	/library/python/python-crypto-27
+IPS_Package_Name:	library/python/python-crypto-27
 %define renamed_from_oldname      library/python/python-crypto-27
 %define renamed_to_newnameversion library/python/pycrypto-27 = *
 %include pkg-renamed-package.inc
 
-%actions -n %{name}-noinst-1
-depend fmri=library/python/python-crypto@%{ips_version_release_renamedbranch} type=optional
 
-%actions -n %{name}-noinst-2
+%actions
+depend fmri=library/python/python-crypto@%{ips_version_release_renamedbranch} type=optional
 depend fmri=library/python/python-crypto-27@%{ips_version_release_renamedbranch} type=optional
 
-#make renamed-to-package for all OSDISTRO %endif #%{solaris11}%{solaris12}%{oihipster}
 
 %prep
 %setup -q -n pycrypto-%version
@@ -126,6 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Mar 15 2018 - Thomas Wagner
 - add workaround to python 2.7 core pointing with full path to /usr/gcc/bin/gcc, we want our /usr/gcc-sfe/bin/gcc (OIH)
+- remove leading "/" from IPS names in renamed-to packages, fix assigment of %action
 * Sat Dec  9 2017 - Thomas Wagner
 - fix osdistro switch for renamed-to-package (S11, S12, OIH)
 * Thu Dec  7 2017 - Thomas Wagner
