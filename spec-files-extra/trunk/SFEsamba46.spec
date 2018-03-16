@@ -1,3 +1,6 @@
+##TODO## enable builds without internet connection. load docbook.xsl from local disk
+##TODO2## omnos doesn't have it in the public repo as of 201803xx (only in extra)
+
 # https://github.com/omniosorg/omnios-build/pull/597/commits/c4bb8a1ecc4b724cdcee979bbaf341b3cf336d12
 # 
 #  16 build/ntpsec/patches/nonet.patch
@@ -50,20 +53,20 @@
 
 #
 #Paketcache wird aktualisiert                     2/2
-#root@drsnt05:/lib/svc/manifest/system# /usr/gnu/bin/smbclient \\\\drsnt06\\renodat -U Administrator
+#root@drsnt05:/lib/svc/manifest/system# /usr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
 #ld.so.1: smbclient: fatal: libpopt.so.0: open failed: No such file or directory
 #ld.so.1: smbclient: fatal: relocation error: file /usr/gnu/bin/smbclient: symbol poptHelpOptions: referenced symbol not found
 #Killed
-#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/^Csr/gnu/bin/smbclient \\\\drsnt06\\renodat -U Administrator
+#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/^Csr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
 #root@drsnt05:/lib/svc/manifest/system# pkg list | grep popt
 #root@drsnt05:/lib/svc/manifest/system# pkg install -v libpopt
 #
 #
 #-rwxr-xr-x   1 root     bin       438336 Aug 20 18:05 /usr/lib/libncurses.so.6.0
 #-rw-r--r--   1 root     bin       183892 Aug 20 18:05 /usr/lib/libncurses++.a
-#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/usr/lib/libncurses.so.6.0 /usr/gnu/bin/smbclient \\\\drsnt06\\renodat -U Administrator
+#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/usr/lib/libncurses.so.6.0 /usr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
 #Enter WORKGROUP\Administrator's password: 
-#Domain=[DRSNT06] OS=[Windows Server 2012 R2 Standard Evaluation 9600] Server=[Windows Server 2012 R2 Standard Evaluation 6.3]
+#Domain=[SERVERNAME] OS=[Windows Server 2012 R2 Standard Evaluation 9600] Server=[Windows Server 2012 R2 Standard Evaluation 6.3]
 #smb: \> 
 #
 #
@@ -444,6 +447,13 @@ gsed -i.bak -e '/XSLTPROC.*xinclude.*stringparam.*noreference.*nonet.*SAMBA_EXPA
 
 perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}:'  `ggrep -r -l "env python"`
 
+%if %{hipster}
+#or get 
+# ../source4/heimdal/lib/gssapi/gssapi/gssapi_krb5.h:64:29: error: expected identifier or '(' before '&' token
+# #define GSS_KRB5_MECHANISM (&__gss_krb5_mechanism_oid_desc)
+%patch31 -p1
+%endif
+
 
 %if %{solaris12}
 ## vim auth/kerberos/gssapi_pac.c
@@ -581,15 +591,6 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CC=/usr/gcc-sfe/4.9/bin/gcc
 export CXX=/usr/gcc-sfe/4.9/bin/g++
 export CPP="$CC -E"
-#export CC=gcc
-#export CXX=g++
-#export CPP="$CC -E"
-#export CC=/usr/gcc-sfe/4.8/bin/gcc doesn't do right:
-#../source4/heimdal/lib/gssapi/gssapi/gssapi_krb5.h:64:29: error: expected identifier or '(' before '&' token
-# #define GSS_KRB5_MECHANISM (&__gss_krb5_mechanism_oid_desc)
-#above: patch31 solves this, needs a "#if 0" in file gss-somthing.c
-#export CXX=/usr/gcc-sfe/4.8/bin/g++
-#export CPP="$CC -E"
 export AR=/usr/bin/ar
 
 ##TODO## which ranlib, which ar? defaults to /usr/gnu/bin/ranlib /usr/gnu/bin/ar
@@ -1057,6 +1058,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Fri Mar 16 2018 - Thomas Wagner
+- enable patch31 samba44-31-gss_mech_krb5.diff for Hipster (OIH)
 * Tue Mar 13 2018 - Thomas Wagner
 - bump to 4.6.14 - CVE-2018-1057: Unprivileged user can change any user (and admin) password
 * Wed Mar  7 2018 - Thomas Wagner
