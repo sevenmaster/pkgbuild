@@ -1,11 +1,13 @@
---- libcdio-0.82/lib/driver/Makefile.am	Sun Mar  7 16:09:20 2010
-+++ libcdio-0.82-patch/lib/driver/Makefile.am	Sun Mar  7 16:12:10 2010
-@@ -107,1 +107,1 @@
--INCLUDES = $(LIBCDIO_CFLAGS)
-+INCLUDES = $(LIBCDIO_CFLAGS) -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -DDBUS_API_SUBJECT_TO_CHANGE
---- libcdio-0.77/lib/driver/solaris.c-orig	2006-07-19 15:13:22.665583000 -0500
-+++ libcdio-0.77/lib/driver/solaris.c	2006-07-19 15:12:30.327643000 -0500
-@@ -50,6 +50,7 @@ static const char _rcsid[] = "$Id: solar
+##--- libcdio-0.82/lib/driver/Makefile.am	Sun Mar  7 16:09:20 2010
+##+++ libcdio-0.82-patch/lib/driver/Makefile.am	Sun Mar  7 16:12:10 2010
+##@@ -107,1 +107,1 @@
+##-INCLUDES = $(LIBCDIO_CFLAGS)
+##+INCLUDES = $(LIBCDIO_CFLAGS) -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -DDBUS_API_SUBJECT_TO_CHANGE
+
+
+--- libcdio-0.94/lib/driver/solaris.c.orig	2014-06-21 04:10:56.000000000 +0200
++++ libcdio-0.94/lib/driver/solaris.c	2017-02-01 22:06:35.426279304 +0100
+@@ -47,6 +47,7 @@ static char ** cdio_get_devices_solaris_
  #include <errno.h>
  #include <unistd.h>
  #include <fcntl.h>
@@ -13,8 +15,8 @@
  
  #ifdef HAVE_SYS_CDIO_H
  # include <sys/cdio.h> /* CDIOCALLOW etc... */
-@@ -650,6 +651,42 @@ get_blocksize_solaris (void *p_user_data
-   }
+@@ -624,6 +625,42 @@ get_disc_last_lsn_solaris (void *p_user_
+   return size;
  }
  
 +static char *
@@ -54,9 +56,9 @@
 +}
 +
  /*!
-   Return a string containing the default CD device if none is specified.
-  */
-@@ -661,6 +698,33 @@ cdio_get_default_device_solaris(void)
+   Set the arg "key" with "value" in the source device.
+   Currently "source" and "access-mode" are valid keys.
+@@ -822,6 +859,33 @@ cdio_get_default_device_solaris(void)
    char *volume_action;
    char *device;
    struct stat stb;
@@ -88,12 +90,12 @@
 +  libhal_ctx_shutdown(hal_ctx, &error);
 +  libhal_ctx_free(hal_ctx);
  
-   if ((volume_device = getenv("VOLUME_DEVICE")) != NULL &&
-       (volume_name   = getenv("VOLUME_NAME"))   != NULL &&
-@@ -669,22 +733,32 @@ cdio_get_default_device_solaris(void)
- 
-     device = calloc(1, strlen(volume_device) 
- 				  + strlen(volume_name) + 2);
+   /* vold and its directory /vol have been replaced by "Tamarack" which
+      is based on hald. This happened in 2006.
+@@ -837,23 +901,32 @@ cdio_get_default_device_solaris(void)
+       strcmp(volume_action, "insert") == 0) {
+     uint len = strlen(volume_device) + strlen(volume_name) + 2;
+     device = calloc(1, len);
 -    if (device == NULL)
 -      return strdup(DEFAULT_CDIO_DEVICE);
 +    if (device == NULL) {
@@ -102,7 +104,7 @@
 +      else
 +        return strdup (DEFAULT_CDIO_DEVICE);
 +    }
-     sprintf(device, "%s/%s", volume_device, volume_name);
+     snprintf(device, len, "%s/%s", volume_device, volume_name);
      if (stat(device, &stb) != 0 || !S_ISCHR(stb.st_mode)) {
        free(device);
 -      return strdup(DEFAULT_CDIO_DEVICE);
@@ -115,8 +117,9 @@
    }
    /* Check if it could be a Solaris media*/
 -  if((stat(DEFAULT_CDIO_DEVICE, &stb) == 0) && S_ISDIR(stb.st_mode)) {
--    device = calloc(1, strlen(DEFAULT_CDIO_DEVICE) + 4);
--    sprintf(device, "%s/s0", DEFAULT_CDIO_DEVICE);
+-    uint len = strlen(DEFAULT_CDIO_DEVICE + 4);
+-    device = calloc(1, len);
+-    snprintf(device, len, "%s/s0", DEFAULT_CDIO_DEVICE);
 +  if(default_device != NULL && (stat(default_device, &stb) == 0) && S_ISDIR(stb.st_mode)) {
 +    device = calloc(1, strlen(default_device) + 4);
 +    sprintf(device, "%s/s0", default_device);

@@ -124,6 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Feb  1 2017 - Thomas Wagner
 - bump to 0.92
 - change to cc_is_gcc 1
+- update patches libcdio-01-usehal.diff libcdio-02-stdint.diff
 * Fri Oct 23 2015 - Thomas Wagner
 - merge with pjama's changes
 * Sat May 23 2013 - pjama

@@ -107,6 +107,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Feb  1 2017 - Thomas Wagner
 - bump to 0.92
+- change to cc_is_gcc 1
+- update patches libcdio-01-usehal.diff libcdio-02-stdint.diff
 * Sun Oct 28 2013 - Thomas Wagner
 - cleanup target dir in %install
 * Sun Mar 07 2010 - Milan Jurik
