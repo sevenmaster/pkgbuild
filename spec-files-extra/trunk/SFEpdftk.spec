@@ -8,6 +8,7 @@ License:             GPLv2
 SUNW_Copyright:	     %{license}.copyright
 Version:             2.02
 IPS_component_version: 2.2
+URL:                 http://www.pdflabs.com
 Source:		     https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk-%{version}-src.zip
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -57,7 +58,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/pdftk
-%dir %attr (0755, root, sys) %{_docdir}
+%dir %attr (0755, root, sys) %{_datadir}
+%dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/pdftk
 %dir %attr (0755, root, bin) %{_mandir}
 %dir %attr (0755, root, bin) %{_mandir}/man1
@@ -67,3 +69,4 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Apr  1 2018 - Thomas Wagner
 - initial version 2.02 (2.2)
+- fix %files
