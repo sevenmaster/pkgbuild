@@ -1,5 +1,6 @@
-##TODO## set better location (w/o /usr in it)
+##TODO## check --with-ioloop=poll if apropriate for Solaris
 
+##TODO## set better location (w/o /usr in it)
 #root@mail:~# ls -l /usr/var/lib/dovecot
 #total 3
 ##-rw-r--r--   1 root     other         62 Jan 18 21:30 instances
@@ -33,8 +34,7 @@
 %define  daemongcosfield dovecot Reserved UID
 %define  daemongroup dovecot
 #%define  daemongid   1
-#leave empty for next free group ID
-%define  daemongid
+%define  daemongid  111
 #starting with version 2.0.0  -  adds one more user
 %define  daemonloginuser  dovenull
 #inspired by http://slackbuilds.org/uid_gid.txt
@@ -287,6 +287,7 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 - set --localstatedir=%{_localstatedir} (or get wrong /usr/var/lib/dovecot)
 - --with-ioloop=poll  (was: best)
 - remove HAVE_INOTIFY_INIT - wrong detected on OmniOS (OM)
+- tie gid to 111
 * Fri Mar  2 2018 - Thomas Wagner
 - bump to 2.2.34 for older Solaris 11.3 GA (S11)
 * Tue Jan  2 2018 - Thomas Wagner
