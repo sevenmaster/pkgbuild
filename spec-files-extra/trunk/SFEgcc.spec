@@ -1,10 +1,5 @@
 ##TODO##
 
-# if you want GCC 4.9.4 _WITH_ java compiler "gcj", then use this line to compile:
-# pkgtool --IPS --interactive --download  --define 'gcc_version 4.9.4' --with-gcj build-only SFEgcc 
-# then export PATH=/usr/gcc-sfe/4.9/bin:$PATH and find 
-# "gcj" as compiler
-
 
 ##TODO## from publlic channel #illumos on irc.freenode.org
  
@@ -348,8 +343,8 @@
 %define ecj_jar_abs_path  %_builddir/%name-%version/ecj.jar
 %define gcc_configure_java --with-java --with-ecj-jar=%{ecj_jar_abs_path} --enable-libgcj
 %define gcc_enable_languages_java ,java
-%define gcc_symlinks_pattern bin/ecj bin/aot-compile bin/gappletviewer bin/gc-analyze bin/gcj bin/gcj-dbtool bin/gcjh bin/gij bin/gjar bin/gjarsigner bin/gjavah bin/gkeytool bin/gnative2ascii bin/gorbd bin/grmic bin/grmid bin/grmiregistry bin/gserialver bin/gtnameserv bin/jcf-dump bin/jv-convert bin/rebuild-gcj-db lib/gcj-* lib/libgcj-tools.so lib/libgcj-tools.so.15 lib/libgcj-tools.so.15.0.0 lib/libgcj.so lib/libgcj.so.15 lib/libgcj.so.15.0.0 lib/libgcj.spec lib/libgij.so lib/libgij.so.15 lib/libgij.so.15.0.0 lib/logging.properties lib/pkgconfig lib/security
-%define gcc_symlinks_pattern_arch64 lib/%{_arch64}/gcj-%{version}-15 lib/%{_arch64}/libgcj-tools.so lib/%{_arch64}/libgcj-tools.so.15 lib/%{_arch64}/libgcj-tools.so.15.0.0 lib/%{_arch64}/libgcj.so lib/%{_arch64}/libgcj.so.15 lib/%{_arch64}/libgcj.so.15.0.0 lib/%{_arch64}/libgij.so lib/%{_arch64}/libgij.so.15 lib/%{_arch64}/libgij.so.15.0.0 lib/%{_arch64}/logging.properties lib/%{_arch64}/pkgconfig lib/%{_arch64}/security
+%define gcc_symlinks_pattern bin/ecj bin/aot-compile bin/gappletviewer bin/gc-analyze bin/gcj bin/gcj-dbtool bin/gcjh bin/gij bin/gjar bin/gjarsigner bin/gjavah bin/gkeytool bin/gnative2ascii bin/gorbd bin/grmic bin/grmid bin/grmiregistry bin/gserialver bin/gtnameserv bin/jcf-dump bin/jv-convert bin/rebuild-gcj-db lib/gcj-%{version}-15 lib/libgcj-tools.so lib/libgcj-tools.so.15 lib/libgcj-tools.so.15.0.0 lib/libgcj.so lib/libgcj.so.15 lib/libgcj.so.15.0.0 lib/libgcj.spec lib/libgij.so lib/libgij.so.15 lib/libgij.so.15.0.0 lib/logging.properties lib/pkgconfig/libgcj-%{major_minor}.pc lib/security/classpath.security
+%define gcc_symlinks_pattern_arch64 lib/%{_arch64}/gcj-%{version}-15 lib/%{_arch64}/libgcj-tools.so lib/%{_arch64}/libgcj-tools.so.15 lib/%{_arch64}/libgcj-tools.so.15.0.0 lib/%{_arch64}/libgcj.so lib/%{_arch64}/libgcj.so.15 lib/%{_arch64}/libgcj.so.15.0.0 lib/%{_arch64}/libgij.so lib/%{_arch64}/libgij.so.15 lib/%{_arch64}/libgij.so.15.0.0 lib/%{_arch64}/logging.properties lib/%{_arch64}/pkgconfig/libgcj-%{major_minor}.pc lib/%{_arch64}/security/classpath.security
 %else
 #no java
 %define gcc_configure_java
@@ -569,8 +564,9 @@ Requires:      SFEgcc-%{majorminornumber},SFEgccruntime-%{majorminornumber}
 #cosmetic:
 Requires:      SFEgccruntime
 
-BuildRequires: SFElibiconv-devel
-Requires:      SFElibiconv
+#try libc iconv by setting --without-libiconv-prefix
+#BuildRequires: SFElibiconv-devel
+#Requires:      SFElibiconv
 %if %{is_s10}
 BuildRequires:  SUNWbash
 %endif
@@ -987,11 +983,11 @@ cd gcc
 %define build_l10n 0
 %endif
 
+#gcj / gcjh / libgcj.so don't propperly link agains libiconv. Try iconv from libc. Older OS might need --with-libiconv-prefix=/usr/gnu
 %if %build_l10n
-nlsopt='--with-libiconv-prefix=/usr/gnu --enable-nls'
+nlsopt='--enable-nls --without-libiconv-prefix'
 %else
-#nlsopt='--disable-nls --without-host-libiconv'
-nlsopt='--disable-nls --with-libiconv-prefix=/usr/gnu'
+nlsopt='--disable-nls --without-libiconv-prefix'
 %endif
 
 #%define build_gcc_with_gnu_ld 0
@@ -1042,8 +1038,10 @@ export CPP="cc -E"
 
 %if %( expr %{solaris11} '|' %{oihipster} '|' %{openindiana} )
 #using gcc-3 because running into problems with -fno-exception, as the Studio compiler would pass that to Solaris linker which doesn't understand
-export CC=/usr/sfw/bin/gcc
-export CXX=/usr/sfw/bin/g++
+#export CC=/usr/sfw/bin/gcc
+#export CXX=/usr/sfw/bin/g++
+export CC=gcc
+export CXX=g++
 unset CPP
 #solaris11 solaris12 oihipster openindiana
 %endif
@@ -1115,6 +1113,7 @@ export CFLAGS_FOR_TARGET="$CFLAGS_FOR_TARGET -Xlinker -i"
 
 ##TODO## fix this to be an optional switch: add extra fallback runpath to find gcc_runtime
 export LDFLAGS_FOR_TARGET="-zinterpose %_ldflags"
+#find mpfr in  %gnu_lib_path
 export LDFLAGS="-zinterpose %_ldflags %gnu_lib_path"
 
 
@@ -1219,6 +1218,7 @@ LD_FOR_TARGET: ${LD_FOR_TARGET}
         #--target=x86_64-pc-solaris2.1x           \
 #g++     -dM -E -x c++ /dev/null 
 
+
 echo "gmake bootstrap..."
 echo "variables:"
 echo "		
@@ -1310,11 +1310,14 @@ do
   OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
-  cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
+  #cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib
+  cd $RPM_BUILD_ROOT/$SYMLINKTARGET
   # gcc_symlinks_pattern includes bin/ and lib/ and directory matched by pattern
   for filepath in %{gcc_symlinks_pattern} lib/libgcc_s.so.1 lib/libgcc_s.so lib/libgfortran.so.3 lib/libgfortran.so lib/libgomp.so.1 lib/libgomp.so lib/libobjc_gc.so.2 lib/libobjc_gc.so lib/libobjc.so.2 lib/libobjc.so lib/libssp.so.0 lib/libssp.so lib/libstdc++.so.6 lib/libstdc++.so lib/libquadmath.so lib/libquadmath.so.0
   do
-  [ -r $OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath
+  DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
+  [ -d ${DIR} ] || mkdir -p ${DIR}
+  [ -r ${DIR}/$OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -1327,12 +1330,15 @@ do
   OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
-  cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
+  #cd $RPM_BUILD_ROOT/$SYMLINKTARGET/lib/%{_arch64}
+  cd $RPM_BUILD_ROOT/$SYMLINKTARGET
   # gcc_symlinks_pattern_arch64 matches e.g. lib/%{_arch64}/libgij.so
   for filepath in %{gcc_symlinks_pattern_arch64} lib/%{_arch64}/libgcc_s.so.1 lib/%{_arch64}/libgcc_s.so lib/%{_arch64}/libgfortran.so.3 lib/%{_arch64}/libgfortran.so lib/%{_arch64}/libgomp.so.1 lib/%{_arch64}/libgomp.so lib/%{_arch64}/libobjc.so.2 lib/%{_arch64}/libobjc.so lib/%{_arch64}/libssp.so.0 lib/%{_arch64}/libssp.so lib/%{_arch64}/libstdc++.so.6 lib/%{_arch64}/libstdc++.so lib/%{_arch64}/libquadmath.so lib/%{_arch64}/libquadmath.so.0
   do
+  DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
+  [ -d ${DIR} ] || mkdir -p ${DIR}
   #note add one ../ for %{_arch64}
-  [ -r $OFFSET/../%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/../%{gccdir}/%major_minor/$filepath
+  [ -r ${DIR}/$OFFSET/../%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/../%{gccdir}/%major_minor/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 %endif
@@ -1344,11 +1350,14 @@ do
   OFFSET=$( echo "$SYMLINKTARGET" | sed -e 's?/$??' -e 's?[A-z0-9_-]*/?../?g' -e 's?[A-z0-9_-]*$??' -e 's?/$??' )
   # with CWD /usr/gcc/lib, an example is ../../gcc/%major_minor/lib/libgcc_s.so.1
   mkdir -p $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
-  cd $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
+  #cd $RPM_BUILD_ROOT/$SYMLINKTARGET/bin
+  cd $RPM_BUILD_ROOT/$SYMLINKTARGET
 # leave out sfw gcc 3.x.x uses this name already ln -s ../../gcc/%major_minor/bin/cpp
   for filepath in bin/c++ bin/g++ bin/gcc bin/cpp bin/gcov bin/gfortran
   do
-  [ -r $OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath
+  DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
+  [ -d ${DIR} ] || mkdir -p ${DIR}
+  [ -r ${DIR}/$OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -1507,28 +1516,28 @@ rm -rf $RPM_BUILD_ROOT
 %if %{gcj}
 %dir %attr (0755, root, other) %{symlinktarget1path}/lib/pkgconfig
 %{symlinktarget1path}/lib/gcj-*
-%{symlinktarget1path}/lib/gcj
-%{symlinktarget1path}/lib/grmic
-%{symlinktarget1path}/lib/gkeytool
-%{symlinktarget1path}/lib/gorbd
-%{symlinktarget1path}/lib/grmid
-%{symlinktarget1path}/lib/gjavah
-%{symlinktarget1path}/lib/libgcj.spec
-%{symlinktarget1path}/lib/jv-convert
-%{symlinktarget1path}/lib/gjar
-%{symlinktarget1path}/lib/gserialver
-%{symlinktarget1path}/lib/jcf-dump
-%{symlinktarget1path}/lib/gij
 %{symlinktarget1path}/lib/logging.properties
-%{symlinktarget1path}/lib/gtnameserv
-%{symlinktarget1path}/lib/gcjh
-%{symlinktarget1path}/lib/gnative2ascii
-%{symlinktarget1path}/lib/rebuild-gcj-db
-%{symlinktarget1path}/lib/gjarsigner
-%{symlinktarget1path}/lib/aot-compile
-%{symlinktarget1path}/lib/gc-analyze
-%{symlinktarget1path}/lib/gappletviewer
-%{symlinktarget1path}/lib/grmiregistry
+%{symlinktarget1path}/lib/libgcj.spec
+%{symlinktarget1path}/bin/gcj
+%{symlinktarget1path}/bin/grmic
+%{symlinktarget1path}/bin/gkeytool
+%{symlinktarget1path}/bin/gorbd
+%{symlinktarget1path}/bin/grmid
+%{symlinktarget1path}/bin/gjavah
+%{symlinktarget1path}/bin/jv-convert
+%{symlinktarget1path}/bin/gjar
+%{symlinktarget1path}/bin/gserialver
+%{symlinktarget1path}/bin/jcf-dump
+%{symlinktarget1path}/bin/gij
+%{symlinktarget1path}/bin/gtnameserv
+%{symlinktarget1path}/bin/gcjh
+%{symlinktarget1path}/bin/gnative2ascii
+%{symlinktarget1path}/bin/rebuild-gcj-db
+%{symlinktarget1path}/bin/gjarsigner
+%{symlinktarget1path}/bin/aot-compile
+%{symlinktarget1path}/bin/gc-analyze
+%{symlinktarget1path}/bin/gappletviewer
+%{symlinktarget1path}/bin/grmiregistry
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, other) %{symlinktarget1path}/lib/%{_arch64}/pkgconfig
 %{symlinktarget1path}/lib/%{_arch64}/gcj-*
@@ -1558,28 +1567,28 @@ rm -rf $RPM_BUILD_ROOT
 %if %{gcj}
 %dir %attr (0755, root, other) %{symlinktarget2path}/lib/pkgconfig
 %{symlinktarget2path}/lib/gcj-*
-%{symlinktarget2path}/lib/gcj
-%{symlinktarget2path}/lib/grmic
-%{symlinktarget2path}/lib/gkeytool
-%{symlinktarget2path}/lib/gorbd
-%{symlinktarget2path}/lib/grmid
-%{symlinktarget2path}/lib/gjavah
-%{symlinktarget2path}/lib/libgcj.spec
-%{symlinktarget2path}/lib/jv-convert
-%{symlinktarget2path}/lib/gjar
-%{symlinktarget2path}/lib/gserialver
-%{symlinktarget2path}/lib/jcf-dump
-%{symlinktarget2path}/lib/gij
 %{symlinktarget2path}/lib/logging.properties
-%{symlinktarget2path}/lib/gtnameserv
-%{symlinktarget2path}/lib/gcjh
-%{symlinktarget2path}/lib/gnative2ascii
-%{symlinktarget2path}/lib/rebuild-gcj-db
-%{symlinktarget2path}/lib/gjarsigner
-%{symlinktarget2path}/lib/aot-compile
-%{symlinktarget2path}/lib/gc-analyze
-%{symlinktarget2path}/lib/gappletviewer
-%{symlinktarget2path}/lib/grmiregistry
+%{symlinktarget2path}/lib/libgcj.spec
+%{symlinktarget2path}/bin/gcj
+%{symlinktarget2path}/bin/grmic
+%{symlinktarget2path}/bin/gkeytool
+%{symlinktarget2path}/bin/gorbd
+%{symlinktarget2path}/bin/grmid
+%{symlinktarget2path}/bin/gjavah
+%{symlinktarget2path}/bin/jv-convert
+%{symlinktarget2path}/bin/gjar
+%{symlinktarget2path}/bin/gserialver
+%{symlinktarget2path}/bin/jcf-dump
+%{symlinktarget2path}/bin/gij
+%{symlinktarget2path}/bin/gtnameserv
+%{symlinktarget2path}/bin/gcjh
+%{symlinktarget2path}/bin/gnative2ascii
+%{symlinktarget2path}/bin/rebuild-gcj-db
+%{symlinktarget2path}/bin/gjarsigner
+%{symlinktarget2path}/bin/aot-compile
+%{symlinktarget2path}/bin/gc-analyze
+%{symlinktarget2path}/bin/gappletviewer
+%{symlinktarget2path}/bin/grmiregistry
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, other) %{symlinktarget2path}/lib/%{_arch64}/pkgconfig
 %{symlinktarget2path}/lib/%{_arch64}/gcj-*
@@ -1595,7 +1604,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %symlinktarget3enabled
 %files -n SFEgcc
 %defattr (-, root, bin)
-%{symlinktarget2path}/bin
+%{symlinktarget3path}/bin
 %files -n SFEgccruntime
 %defattr (-, root, bin)
 #avoid catching pkgconfig directory
@@ -1610,28 +1619,28 @@ rm -rf $RPM_BUILD_ROOT
 %if %{gcj}
 %dir %attr (0755, root, other) %{symlinktarget3path}/lib/pkgconfig
 %{symlinktarget3path}/lib/gcj-*
-%{symlinktarget3path}/lib/gcj
-%{symlinktarget3path}/lib/grmic
-%{symlinktarget3path}/lib/gkeytool
-%{symlinktarget3path}/lib/gorbd
-%{symlinktarget3path}/lib/grmid
-%{symlinktarget3path}/lib/gjavah
-%{symlinktarget3path}/lib/libgcj.spec
-%{symlinktarget3path}/lib/jv-convert
-%{symlinktarget3path}/lib/gjar
-%{symlinktarget3path}/lib/gserialver
-%{symlinktarget3path}/lib/jcf-dump
-%{symlinktarget3path}/lib/gij
 %{symlinktarget3path}/lib/logging.properties
-%{symlinktarget3path}/lib/gtnameserv
-%{symlinktarget3path}/lib/gcjh
-%{symlinktarget3path}/lib/gnative2ascii
-%{symlinktarget3path}/lib/rebuild-gcj-db
-%{symlinktarget3path}/lib/gjarsigner
-%{symlinktarget3path}/lib/aot-compile
-%{symlinktarget3path}/lib/gc-analyze
-%{symlinktarget3path}/lib/gappletviewer
-%{symlinktarget3path}/lib/grmiregistry
+%{symlinktarget3path}/lib/libgcj.spec
+%{symlinktarget3path}/bin/gcj
+%{symlinktarget3path}/bin/grmic
+%{symlinktarget3path}/bin/gkeytool
+%{symlinktarget3path}/bin/gorbd
+%{symlinktarget3path}/bin/grmid
+%{symlinktarget3path}/bin/gjavah
+%{symlinktarget3path}/bin/jv-convert
+%{symlinktarget3path}/bin/gjar
+%{symlinktarget3path}/bin/gserialver
+%{symlinktarget3path}/bin/jcf-dump
+%{symlinktarget3path}/bin/gij
+%{symlinktarget3path}/bin/gtnameserv
+%{symlinktarget3path}/bin/gcjh
+%{symlinktarget3path}/bin/gnative2ascii
+%{symlinktarget3path}/bin/rebuild-gcj-db
+%{symlinktarget3path}/bin/gjarsigner
+%{symlinktarget3path}/bin/aot-compile
+%{symlinktarget3path}/bin/gc-analyze
+%{symlinktarget3path}/bin/gappletviewer
+%{symlinktarget3path}/bin/grmiregistry
 %ifarch amd64 sparcv9
 %dir %attr (0755, root, other) %{symlinktarget3path}/lib/%{_arch64}/pkgconfig
 %{symlinktarget3path}/lib/%{_arch64}/gcj-*
@@ -1653,6 +1662,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Apr 17 2018 - Thomas Wagner
+- remove (Build)Requires SFElibiconv (especially good for gcj gcjh libgcj-tools.so.15.0.0)
+- set CC CXX without full path (now found by $PATH) (S11, OIH, OI)
+* Sun Apr  1 2018 - Thomas Wagner
+- fix symlink glob for directory gcj-* and libgcj-*.pc
+* Fri Mar 16 2018 - Thomas Wagner
+- fix typo in symlinktarget3path (s/2/3)
 * Sat Feb 18 2018 - Thomas Wagner
 - fix directory permissions for /usr/gnu/lib/pkgconfig /usr/gnu/lib/%{_arch64}/pkgconfig
 - fix the packaging fix, add gcj supporting files
