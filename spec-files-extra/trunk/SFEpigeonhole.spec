@@ -4,14 +4,19 @@
 
 %include Solaris.inc
 
-%define dovecot_version_major_minor 2.2
+%define cc_is_gcc 1
+%include base.inc
+
+
+%define dovecot_version_major_minor 2.3
 
 Name:		SFEpigeonhole
+Version:	0.5.1
 IPS_Package_Name:	 service/network/imap/dovecot/plugin/pigeonhole
 Summary:	Dovecot Pigeonhole Plugin
 URL:		http://pigeonhole.dovecot.org/
 Vendor:		Stephan Bosch <stephan@rename-it.nl>
-Version:	0.4.21
+
 License:	LGPL
 Source0:	http://pigeonhole.dovecot.org/releases/%{dovecot_version_major_minor}/dovecot-%{dovecot_version_major_minor}-pigeonhole-%{version}.tar.gz
 
@@ -34,6 +39,9 @@ Pigeonhole Sieve sorting plugin for Dovecot
 %build
 
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
+
+export CC=gcc
+export CXX=g++
 
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{cxx_optflags}"
@@ -78,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 16 2018 - Thomas Wagner
+- bump to 0.5.1 for dovecot 2.3, use gcc only
 * Thu Oct 26 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
 - bump to 0.4.21
 * Tue Jun 13 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
