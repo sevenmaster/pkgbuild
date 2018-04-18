@@ -1,3 +1,13 @@
+##TODO## set better location (w/o /usr in it)
+
+#root@mail:~# ls -l /usr/var/lib/dovecot
+#total 3
+##-rw-r--r--   1 root     other         62 Jan 18 21:30 instances
+#-rw-r--r--   1 root     other        230 Jan 11 18:13 ssl-parameters.dat
+#root@mailrouter:~# cat /usr/var/lib/dovecot/instances 
+#1516307458      dovecot /var/run/dovecot        /etc/dovecot/dovecot.conf
+
+
 #
 # spec file for package SFEdovecot
 #
@@ -17,15 +27,14 @@
 %define with_clucene %{!?_with_clucene:0}%{?_with_clucene:1}
 
 %define src_name dovecot
-# maybe set to nullstring outside release-candidates (example: 1.1/rc  or just 1.1)
-#%define downloadversion	 1.1/rc
-%define downloadversion	 2.2
 
 %define  daemonuser  dovecot
 %define  daemonuid   111
 %define  daemongcosfield dovecot Reserved UID
-%define  daemongroup other
-%define  daemongid   1
+%define  daemongroup dovecot
+#%define  daemongid   1
+#leave empty for next free group ID
+%define  daemongid
 #starting with version 2.0.0  -  adds one more user
 %define  daemonloginuser  dovenull
 #inspired by http://slackbuilds.org/uid_gid.txt
@@ -38,29 +47,18 @@
 %define  daemonlogingid   65534
 
 %include Solaris.inc
-%include packagenamemacros.inc
-
-%if %{with_clucene}
 %define cc_is_gcc 1
 %include base.inc
-%endif
+%include packagenamemacros.inc
+
 
 Name:		SFEdovecot
 IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-#note: see %define downloadversion 22 above
-#attention: versions *older* then SRU19
-%if %( expr %{solaris11} '&' %{osdistro_entire_padded_number4}.1 '<' 0000017500030019000000000000.1 )
-#EC support missing in openssl if osdistro os older then: 0.175.3.19.0.1.0
-#2.2.31
-#Version:	2.2.30.1
-Version:	2.2.29
-%else
-#every else osdistro has new openssl with ec.h
-Version:	2.3.0
-%endif
+Version:	2.3.1
+%define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
 Source:		http://dovecot.org/releases/%{downloadversion}/%{src_name}-%{version}.tar.gz
@@ -113,7 +111,7 @@ See the wiki page for SFEdovecot.spec for installation guidance:
   http://pkgbuild.wiki.sourceforge.net/SFEdovecot.spec
 
 %prep
-%setup -q -n %{src_name}-%version
+%setup -q -n %{src_name}-%{version}
 cp -p %{SOURCE2} dovecot.xml
 
 %patch1 -p1
@@ -128,9 +126,10 @@ fi
 %if %{cc_is_gcc}
 export CC=gcc
 export CXX=g++
+export LD=gcc
 %endif
 
-export CFLAGS="%optflags -I/usr/gnu/include -I/usr/include/kerberosv5 -D__EXTENSIONS__"
+export CFLAGS="-I/usr/include/openssl/fips-140 %optflags -I/usr/gnu/include -I/usr/include/kerberosv5 -D__EXTENSIONS__"
 #find SFE openldap in /usr/gnu/include/ldap
 export CXXFLAGS="%cxx_optflags-I/usr/gnu/include -I/usr/include/kerberosv5 "
 #gnu_lib_path to find SFE openldap
@@ -151,7 +150,8 @@ bash ./configure --prefix=%{_prefix}		\
             --sysconfdir=%{_sysconfdir} \
             --enable-shared		\
             --with-rundir=%{_localstatedir}/run/%{src_name} \
-            --with-ioloop=best \
+            --localstatedir=%{_localstatedir} \
+            --with-ioloop=poll \
 	    --with-ssl=openssl \
 	    --with-gssapi=plugin  \
 %if %{with_clucene}
@@ -159,11 +159,13 @@ bash ./configure --prefix=%{_prefix}		\
             --with-stemmer \
 %endif
             --with-solr \
---with-zlib \
---with-bzlib \
---with-ldap=plugin  \
---with-libwrap \
-	    --disable-static		
+	    --with-zlib \
+	    --with-bzlib \
+	    --with-ldap=plugin  \
+	    --with-libwrap \
+	    --disable-static \
+	    --with-notify=none \
+            --enable-hardening=no \
 
 #--with-gssapi=plugin
  #--with-ldap=plugin
@@ -174,6 +176,7 @@ bash ./configure --prefix=%{_prefix}		\
 #--with-libwrap
 #--with-ssl=openssl
 
+##TODO## try on omnios with 2.3.1 if the following is still necessary:
 #error in detection of inotify, so we need to patch it off again
 ##define HAVE_INOTIFY_INIT 1
 #possibly other OS Distro might as well get stuck here
@@ -185,6 +188,11 @@ gsed -i.bak -e '/^#define HAVE_INOTIFY_INIT 1/ s?^?// we do not have this ?' con
 gmake -j$CPUS
 
 %install
+%if %{cc_is_gcc}
+export CC=gcc
+export CXX=g++
+export LD=gcc
+%endif
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 #rm -rf $RPM_BUILD_ROOT/usr/include
@@ -203,7 +211,11 @@ rm -rf $RPM_BUILD_ROOT
 #IPS
 ##TODO## is is possible to predefine the numeric GID and UID?
 %actions
-#no more then one package may deliver this: group groupname="%{daemongroup}" gid="%{daemongid}"
+%if %( expr '0' '+' 0'%{daemongid}' '>' 0 )
+group groupname="%{daemongroup}" gid="%{daemongid}"
+%else
+group groupname="%{daemongroup}"
+%endif
 user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=%{daemonuid} password=NP group="%{daemongroup}"
 #not needed _if_ group is nogroup  (65534)
 # group groupname="%{daemonlogingroup}" gid="%{daemonlogingid}"
@@ -267,8 +279,19 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Tue Apr 17 2018 - Thomas Wagner
+- bump to 2.3.1 for all OS!
+- SFEpigeonhole 0.5.1 needs function call to array_idx_get_space -> 2.3.1 provides
+- needs default group created (group=dovecot, create with next free group-ID or you set daemongid in this spec file)
+- use gcc only for all OS
+- set --localstatedir=%{_localstatedir} (or get wrong /usr/var/lib/dovecot)
+- --with-ioloop=poll  (was: best)
+- remove HAVE_INOTIFY_INIT - wrong detected on OmniOS (OM)
+* Fri Mar  2 2018 - Thomas Wagner
+- bump to 2.2.34 for older Solaris 11.3 GA (S11)
 * Tue Jan  2 2018 - Thomas Wagner
-- bump to 2.3.0
+- bump to 2.3.0 (if new OSDISTRO with openssl EC), S11.3 GA w/o SRU gets version 2.2.33.2
+- switch to gcc on OmniOS, --disble-hardening (or get -fstack-protector-strong lib call __stack_chk_fail_local not found)
 * Wed Nov  8 2017 - Thomas Wagner
 - fix compilation, false detection of HAVE_INOTIFY_INIT 1 on OmniOS (OM)
 * Mon Oct 23 2017 - Thomas Wagner
