@@ -8,7 +8,12 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 %include usr-gnu.inc
+%define cc_is_gcc 1
 %include base.inc
+%if %{omnios}
+#perl is 64-bit
+%include arch64.inc
+%endif
 
 Name:                SFEirssi-gnu
 IPS_Package_Name:    network/chat/gnu/irssi
@@ -34,6 +39,9 @@ CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
+
+export CC=gcc
+export CXX=g++
 
 export CFLAGS="%optflags"
 export LDFLAGS="%{_ldflags}"
@@ -108,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 # package required (which in this case would contain one file)?
 
 %changelog
+* Sat May 12 2018 - Thomas Wagner
+- irssi with perl support on OmniOSce (OM), compiles in 64-bit for perl-64
+- compile with cc_is_gcc 1 (all)
 * Fri Feb 16 2018 - Thomas Wagner
 - bump to 1.1.1 IRSSI-SA-2018-02 Irssi Security Advisory: CVE-2018-7054, CVE-2018-7053, CVE-2018-7050, CVE-2018-7052, CVE-2018-7051
 * Mon Jan 16 2018 - Thomas Wagner
