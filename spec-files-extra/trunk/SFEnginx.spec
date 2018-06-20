@@ -4,8 +4,6 @@
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
-# Modified: ianj 2013-2015
-#
 
 # NOTE: This package will include all normally-optional modules which do not
 #       require dependencies. GeoIP, image-filter, xslt have dependencies and
@@ -37,7 +35,7 @@
 
 Name:		SFEnginx
 IPS_Package_Name:	web/server/nginx
-Version:	1.13.8
+Version:	1.14.0
 Summary:	Free, open-source, high-performance HTTP server and reverse proxy
 Source:		http://nginx.org/download/%{sname}-%{version}.tar.gz
 Source1:	http-nginx
@@ -227,6 +225,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 30 2018 - Ian Johnson
+- bump to 1.14.0
 * Sun Dec 31 2017 - Thomas Wagner
 - bump to 1.13.8
 * Fri Nov 03 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
