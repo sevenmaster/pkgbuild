@@ -23,9 +23,10 @@ URL:                     https://www.ansible.com/
 #2.4.1.0 .1. 0  release 2.4.1.0 if we have a previous a beta2
 #
 
-IPS_Component_version:   2.4.2.0.0.0
+IPS_Component_version:   2.5.5.0.0.0
 #Version:                 2.4.0.0-0.2.beta2
-Version:                 2.4.2.0
+#Version:                 2.4.2.0
+Version:                 2.5.5.0
 
 #Source:			http://releases.ansible.com/ansible/ansible-2.4.1.0-0.2.beta2.tar.gz
 Source:			http://releases.ansible.com/ansible/ansible-%{version}.tar.gz
@@ -63,6 +64,9 @@ BuildRequires:		library/python/six-27
 Requires:		library/python/six-27
 BuildRequires:		library/python/pycparser-27
 Requires:		library/python/pycparser-27
+
+#only fun BuildRequires:		text/cowsay
+#only fun Requires:		text/cowsay
 
 #BuildRequires:		library/python/setuptools
 #Requires:		library/python/setuptools
@@ -152,6 +156,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(-, root, sys) %{_sysconfdir}/ansible/
 
 %changelog
+* Fri Jun 22 2018 - Thomas Wagner
+- bump to 2.5.5
 * Fri Dec  8 2017 - Thomas Wagner
 - add empty %{_sysconfdir}/ansible (check if that directory gets removed on pkg uninstall ansible if files are in it)
 - rename (Build)Requires from python-crypto to python/pycryptro
