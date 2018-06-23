@@ -26,7 +26,7 @@ URL:                     https://www.ansible.com/
 IPS_Component_version:   2.5.5.0.0.0
 #Version:                 2.4.0.0-0.2.beta2
 #Version:                 2.4.2.0
-Version:                 2.5.5.0
+Version:                 2.5.5
 
 #Source:			http://releases.ansible.com/ansible/ansible-2.4.1.0-0.2.beta2.tar.gz
 Source:			http://releases.ansible.com/ansible/ansible-%{version}.tar.gz
