@@ -71,6 +71,10 @@ cd talloc-%{version}
 
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
+%if %{solaris11}
+mv  ${RPM_BUILD_ROOT}%{_mandir}/man3/talloc.3 ${RPM_BUILD_ROOT}%{_mandir}/man3/talloc.sfesamba.3
+%endif
+
 find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name "*.a" -exec rm -f {} ';'
 
@@ -99,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat May 26 2018 - Thomas Wagner
+- rename manpage to no conflict with Solaris samba 4 delivered talloc.3 manpage
 * Thu Mar 15 2018 - Thomas Wagner
 - add (Build)Requires pnm_buildrequires_data_docbook for manpages (OIH)
 * Fri Jan  5 2018 - Thomas Wagner
