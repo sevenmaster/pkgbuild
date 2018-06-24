@@ -11,12 +11,12 @@
 
 
 
-
-bug in illumos aufmachen
-
-fehlt! OmniOS
-kommandant tom ~ grep smtps /etc/services 
-smtps           465/tcp         mail
+#
+#bug in illumos aufmachen
+#
+#fehlt! OmniOS
+#kommandant tom ~ grep smtps /etc/services 
+#smtps           465/tcp         mail
 
 
 
@@ -212,7 +212,7 @@ IPS_Package_Name:	 sfe/service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.2.5
+Version:                 3.3.1
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1148,6 +1148,10 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sun Jun 24 2018 - Thomas Wagner
+- bump to 3.3.1
+* Fri Mar  2 2018 - Thomas Wagner
+- bump to 3.3.0
 * Sun Jan 28 2018 - Thomas Wagner
 - bump to 3.2.5
 * Wed Nov  8 2017 - Thomas Wagner
