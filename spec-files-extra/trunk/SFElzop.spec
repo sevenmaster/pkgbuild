@@ -4,12 +4,13 @@
 # package are under the same license as the package itself.
 
 %include Solaris.inc
-%define tarball_version 1.02rc1
 
 Name:                SFElzop
+IPS_Package_Name:    compress/lzop
 Summary:             File compressor -- similar to, but faster than gzip
-Version:             1.2
-Source:              http://www.lzop.org/download/lzop-%{tarball_version}.tar.gz
+IPS_Component_version: 1.4
+Version:             1.04
+Source:              http://www.lzop.org/download/lzop-%{version}.tar.gz
 
 SUNW_BaseDir:        %{_basedir}
 BuildRoot:           %{_tmppath}/%{name}-%{version}-build
@@ -18,7 +19,7 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 Requires: SFElzo
 
 %prep
-%setup -q -n lzop-%{tarball_version}
+%setup -q -n lzop-%{version}
 
 %build
 
@@ -49,9 +50,18 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr (0755, root, bin) %{_bindir}
 %{_bindir}/*
 %dir %attr (0755, root, sys) %{_datadir}
-%{_datadir}/*
+%dir %attr (0755, root, other) %{_docdir}
+%{_docdir}/*
+
+%dir %attr (0755, root, bin) %{_mandir}
+%dir %attr (0755, root, bin) %{_mandir}/man1
+%{_mandir}/man1/*.1
+
+
 
 %changelog
+* Sun 24 2018 - Thomas Wagner
+- bump to 1.04 (IPS 1.4)
 * Mars 25 2010 - Gilles dauphin
 - compat IPS versioning
 * Wed Sep 27 2006 - Eric Boutilier
