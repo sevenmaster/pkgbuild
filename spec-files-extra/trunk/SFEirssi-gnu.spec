@@ -10,7 +10,7 @@
 %include usr-gnu.inc
 %define cc_is_gcc 1
 %include base.inc
-%if %{omnios}
+%if %( expr %{omnios} '|' %{s110400} )
 #perl is 64-bit
 %include arch64.inc
 %endif
@@ -52,10 +52,11 @@ export LDFLAGS="%{_ldflags}"
              --includedir=%{_includedir}         \
              --mandir=%{_mandir}                 \
              --libdir=%{_libdir}                 \
-             --with-perl=module                  \
-             --with-perl-lib=%{_basedir}/%{perl_path_vendor_perl_version}
+             --with-perl=no \
+     #        --with-perl=module                  \
+     #        --with-perl-lib=%{_basedir}/%{perl_path_vendor_perl_version}
 
-make -j$CPUS
+make V=2 -j$CPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -71,6 +72,10 @@ rm -rf ${RPM_BUILD_ROOT}%{_docdir} \
         ${RPM_BUILD_ROOT}%{_includedir}
 rmdir $RPM_BUILD_ROOT/etc
 
+%if %{omnios}
+ln -s %{_arch64}/irssi ${RPM_BUILD_ROOT}%{_prefix}/bin
+%endif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -78,9 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-, root, bin)
-%{_bindir}/*
-%{_libdir}/irssi/
-%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/*
+%{_prefix}/bin/*
+#%{_libdir}/irssi/
+#%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/*
 %{_mandir}
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/irssi/
@@ -116,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 # package required (which in this case would contain one file)?
 
 %changelog
+* Mon Jun 25 2018 - Thomas Wagner
+- irssi with perl support on Solaris 11.4 (S11.4), compiles in 64-bit for perl-64
 * Sat May 12 2018 - Thomas Wagner
 - irssi with perl support on OmniOSce (OM), compiles in 64-bit for perl-64
 - compile with cc_is_gcc 1 (all)
