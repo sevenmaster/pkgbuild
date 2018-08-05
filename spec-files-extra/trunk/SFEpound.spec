@@ -1,3 +1,5 @@
+##TODO## OpenSSL 1.1.x ... http://www.apsis.ch/pound/pound_list/archive/2018/2018-01/1515081171000#1515091575000
+
 ##
 # spec file for package: pound
 #
@@ -15,7 +17,8 @@ Name:           SFEpound
 IPS_Package_Name: web/proxy/pound
 Group:		WebServices/ApplicationandWebServers
 Summary:        The Pound program is a reverse proxy, load balancer and HTTPS front-end for Web server(s)
-Version:        2.6
+Version:        2.8
+IPS_Component_Version: 2.8.0.1.0
 License:        GPLv3
 URL:            http://www.apsis.ch/pound/
 Source:         http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -41,14 +44,14 @@ SUNW_Copyright: %{name}.copyright
 #####################################
 
 %include default-depend.inc
-BuildRequires: SUNWbtool
-BuildRequires: SUNWggrp
+#BuildRequires: SUNWbtool
+#BuildRequires: SUNWggrp
 BuildRequires: %{pnm_buildrequires_SUNWopenssl}
-Requires: %{pnm_requires_SUNWopenssl}
-Requires: SUNWlibms
-Requires: SUNWpcre
-Requires: SUNWzlib
-Requires: SUNWbzip
+Requires:      %{pnm_requires_SUNWopenssl}
+Requires:      %{pnm_requires_SUNWlibms}
+Requires:      %{pnm_requires_SUNWpcre}
+Requires:      %{pnm_requires_SUNWzlib}
+Requires:      %{pnm_requires_SUNWbzip}
 BuildRequires: %{pnm_buildrequires_SUNWzlib}
 Requires:      %{pnm_requires_SUNWzlib}
 BuildRequires: %{pnm_buildrequires_SUNWbzip}
@@ -129,6 +132,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Aug  5 2018 - Thomas Wagner
+- bump to 2.8 release, IPS_Component_Version: 2.8.0.1.0
+* Tue Feb 14 2017 - Thomas Wagner
+- bump to 2.8a, add IPS_Component_Version 2.8.0.0.1 (once released, this gets 2.8.0.1.0 for a moment)
+- refresh (Build)Requires to use pnm_macros. Not finished for old SVR4-only build environments.
 * Mon Aug 11 2014 - Thomas Wagner
 - add IPS_Package_Name
 * Fri Aug  1 2014 - Thomas Wagner
