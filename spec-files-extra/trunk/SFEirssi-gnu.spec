@@ -30,6 +30,23 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 BuildRequires: %{pnm_buildrequires_perl_default}
 Requires:      %{pnm_requires_perl_default}
 
+BuildRequires: SFEperl-try-tiny
+Requires:      SFEperl-try-tiny
+BuildRequires: SFEperl-lwp
+Requires:      SFEperl-lwp
+
+%description
+irssi is a terminal based IRC client and installs into /usr/gnu/bin/irssi path.
+Please remmeber this if you have the OSDISTRO provided /usr/bin/irssi installed as well.
+
+You can extend the client by perl scripts. To show perl support run this:
+/load perl   
+/load   
+/help script    
+Examples for scripts: Auto-Identify your nich at your irc network with with "nickserv.pl".
+Several hundreds of scripts to be found here: https://scripts.irssi.org . 
+Place your scripts from the above link into $HOME/.irssi/scripts/ directory, then run /load perl, then run /script load name_of_script.pl .
+
 
 %prep
 %setup -q -n irssi-%version
@@ -46,15 +63,25 @@ export CXX=g++
 export CFLAGS="%optflags"
 export LDFLAGS="%{_ldflags}"
 
+
 ./configure --prefix=%{_prefix}                 \
              --bindir=%{_bindir}                 \
              --sysconfdir=%{_sysconfdir}         \
              --includedir=%{_includedir}         \
              --mandir=%{_mandir}                 \
              --libdir=%{_libdir}                 \
-             --with-perl=no \
-     #        --with-perl=module                  \
-     #        --with-perl-lib=%{_basedir}/%{perl_path_vendor_perl_version}
+             --with-perl=module                  \
+             --with-perl-lib=%{_basedir}/%{perl_path_vendor_perl_version} \
+             --with-gnu-ld=no \
+
+
+%if %( echo ${_libdir} | grep "%{_arch64}" >/dev/null && echo 1 || echo 0 )
+#well, calculation of GLIB_CFLAGS fails badly as it doesn't take into account the %{_arch64} directory offset.
+#this ends in wrong type of variable, ending in core dumps as it tries to allocate 2^32 = 4294967296 bytes of memory in g_logv:
+#wrong:   -I/usr/lib/glib-2.0/include (glibconfig.h)
+#correct: -I/usr/lib/%{_arch64}/glib-2.0/include (glibconfig.h)
+sed -i.bak.glib.arch64 -e 's?I/usr/lib/glib-2.0/include?I/usr/lib/%{_arch64}/glib-2.0/include?' `find . -name Makefile`
+%endif
 
 make V=2 -j$CPUS
 
@@ -64,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/irssi/modules/*.la \
+         ${RPM_BUILD_ROOT}%{_libdir}/irssi/modules/*.a \
          ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto/Irssi/.packlist \
          ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/auto/Irssi/*/.packlist \
          ${RPM_BUILD_ROOT}%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/perllocal.pod \
@@ -84,8 +112,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %{_prefix}/bin/*
-#%{_libdir}/irssi/
-#%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/*
+%{_libdir}/irssi/
+%{_basedir}/perl5/vendor_perl/%{perl_version}/%{perl_dir}/*
 %{_mandir}
 %dir %attr (0755, root, sys) %{_datadir}
 %{_datadir}/irssi/
@@ -121,6 +149,11 @@ rm -rf $RPM_BUILD_ROOT
 # package required (which in this case would contain one file)?
 
 %changelog
+* Sun Aug  5 2018 - Thomas Wagner
+- fix wrong %{_arch64} include of glib glibconfig.h, resulting in allocating 2^32 bytes memory causing a core dump (OM)
+  open: is Solaris 11.4 affected as well?
+- --with-gnu-ld=no or run into "--export-dynamic" not available in SunOS ld
+- make /run scriptassist work, add (Build)Requires: SFEperl-try-tiny SFEperl-lwp
 * Mon Jun 25 2018 - Thomas Wagner
 - irssi with perl support on Solaris 11.4 (S11.4), compiles in 64-bit for perl-64
 * Sat May 12 2018 - Thomas Wagner
