@@ -1,28 +1,22 @@
---- bitlbee-3.0.5/ipc.c	2012-02-18 02:55:09.000000000 -0800
-+++ bitlbee-3.0.5-patched/ipc.c	2012-03-01 19:48:26.981226601 -0800
-@@ -186,8 +186,10 @@
- 		return;
- 	
- 	if( child->to_child == NULL ||
--	    g_slist_find( child_list, child->to_child ) == NULL )
--		return ipc_master_takeover_fail( child, FALSE );
-+	    g_slist_find( child_list, child->to_child ) == NULL ) {
-+		ipc_master_takeover_fail( child, FALSE );
+--- bitlbee-3.5.1/ipc.c.orig	Mo. Jan 30 21:44:32 2017
++++ bitlbee-3.5.1/ipc.c	Sa. Aug 18 20:56:04 2018
+@@ -181,7 +181,8 @@
+ 
+ 	if (child->to_child == NULL ||
+ 	    g_slist_find(child_list, child->to_child) == NULL) {
+-		return ipc_master_takeover_fail(child, FALSE);
++		ipc_master_takeover_fail(child, FALSE);
 +		return;
-+	}
- 	
- 	if( strcmp( cmd[1], "AUTH" ) == 0 )
- 	{
-@@ -207,8 +209,10 @@
- 				ipc_master_free_one( child );
- 			g_free( fwd );
- 		}
--		else
--			return ipc_master_takeover_fail( child, TRUE );
-+		else {
-+			ipc_master_takeover_fail( child, TRUE );
-+			return;
-+		}
  	}
- 	else if( strcmp( cmd[1], "DONE" ) == 0 || strcmp( cmd[1], "FAIL" ) == 0 )
- 	{
+ 
+ 	if (strcmp(cmd[1], "AUTH") == 0) {
+@@ -201,7 +202,8 @@
+ 			}
+ 			g_free(fwd);
+ 		} else {
+-			return ipc_master_takeover_fail(child, TRUE);
++			ipc_master_takeover_fail(child, TRUE);
++			return;
+ 		}
+ 	} else if (strcmp(cmd[1], "DONE") == 0 || strcmp(cmd[1], "FAIL") == 0) {
+ 		/* Old connection -> Master */

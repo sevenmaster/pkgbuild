@@ -1,3 +1,6 @@
+####bitlbee says: The OTR plugin now uses libotr 4.0 (AKA libotr5 in debian based distros)
+
+
 ##TODO## remove remainings to "bzr" downloads, code is now on https://github.com/bitlbee/bitlbee
 
 
@@ -32,7 +35,7 @@ Group:                   Utility
 #%define download_version %{bzr_revision}
 #Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
 #use release this time %define bzr_revision	1064
-Version:                 3.5.2
+Version:                 3.5.1
 #use release this time %define download_version %{bzr_revision}
 %define download_version %{version}
 #use release this time Summary:                 BitlBee - An IRC to other chat networks gateway (bzr_revision %{bzr_revision})
@@ -40,14 +43,14 @@ Summary:                 BitlBee - An IRC to other chat networks gateway (releas
 URL:		         http://www.bitlbee.org
 #Source:		         http://get.bitlbee.org/src/bitlbee-%{download_version}.tar.gz
 #Source:		         http://code.bitlbee.org/lh/bitlbee/tarball/%{download_version}/bitlbee-develsnapshot-%{download_version}.tar.gz
-Source:                  http://github.com/bitlbee/bitlbee/archive/3.5.1.tar.gz?%{srcname}-%{version}.tar.gz
+Source:                  http://github.com/bitlbee/bitlbee/archive/%{version}.tar.gz?%{srcname}-%{version}.tar.gz
 Source2:                 bitlbee.xml
 License: 		 GPLv2
 Patch1:                  bitlbee-01-ipc.diff
 Patch2:                  bitlbee-02-irc_im.diff
 Patch3:                  bitlbee-03-irc_commands.diff
 Patch4:                  bitlbee-04-irc_user.diff
-Patch6:                  bitlbee-06-configure-find-libotr-in-usr-gnu.diff 
+#Patch6:                  bitlbee-06-configure-find-libotr-in-usr-gnu.diff 
 ##TODO## check which osbuild brought us strcasestr
 %if %{os2nnn}
 #Solaris 11 has strcasestr
@@ -63,10 +66,10 @@ BuildRequires:          %{pnm_buildrequires_SUNWopenssl_include}
 Requires:               %{pnm_requires_SUNWopenssl_libraries}
 BuildRequires:		%{pnm_buildrequires_SUNWglib2_devel}
 Requires:		%{pnm_requires_SUNWglib2}
-BuildRequires:		SFElibotr
-Requires:		SFElibotr
+BuildRequires:		SFElibotr4
+Requires:		SFElibotr4
 #build docs
-BuildRequires:		SFExmlto
+#BuildRequires:		%{pnm_buildrequires_developer_documentation_tool_xmlto}
 
 #%config %class(preserve)
 %if %{os2nnn}
@@ -106,12 +109,12 @@ rm -rf %name-%version
 #don't unpack please
 %setup -q -c -T -n %srcname-%version
 gzip -d < %SOURCE0 | (cd ${RPM_BUILD_DIR}/%srcname-%version; tar xf -)
-cd bitlbee
+cd bitlbee-*
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch6 -p1
+#%patch6 -p1
 ##TODO## check which osbuild brought us strcasestr
 %if %{os2nnn}
 #Solaris 11 has strcasestr
@@ -124,7 +127,7 @@ cd bitlbee
 cp -p %{SOURCE2} bitlbee.xml
 
 %build
-cd bitlbee
+cd bitlbee-*
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
 if test "x$CPUS" = "x" -o $CPUS = 0; then
     CPUS=1
@@ -132,23 +135,29 @@ fi
 
 #below: search first in /usr/gnu: e.g. /usr/gnu/lib/pkgconfig:/usr/lib/pkgconfig
 export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig:$PKG_CONFIG_PATH
-export CFLAGS="%optflags -I%{gnu_inc} %{gnu_lib_path} -L/usr/lib -R/usr/lib"
-export LDFLAGS="/usr/lib/0@0.so.1 %_ldflags %{gnu_lib_path} -L/usr/lib -R/usr/lib `pkg-config --libs glib-2.0` -lgcrypt"
+export CFLAGS="%optflags -I%{gnu_inc} %{gnu_lib_path}"
+#export LDFLAGS=  ### don't set LDFLAGS
+
+%if %{solaris11}
+export LD=/usr/bin/ld
+%endif
+
 bash ./configure --prefix=%{_prefix}		\
             --etcdir=%{_sysconfdir}/%{srcname}  \
 	    --mandir=%{_mandir}                 \
             --ssl=openssl                       \
-            --otr=1
+            --otr=auto
 
 #doc is only built if the source looks like a b zr checkout
 mkdir .bzr
-make -j$CPUS LDFLAGS_BITLBEE="/usr/lib/0@0.so.1 %_ldflags %{gnu_lib_path} -L/usr/lib -R/usr/lib -lgcrypt"
+
+gmake V=2 -j$CPUS LDFLAGS_BITLBEE="%_ldflags %{gnu_lib_path} -lgcrypt"
 
 %install
-cd bitlbee
+cd bitlbee-*
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-make install-etc DESTDIR=$RPM_BUILD_ROOT
+gmake install DESTDIR=$RPM_BUILD_ROOT
+gmake install-etc DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/var/lib/bitlbee/
 
 #mkdir -p $RPM_BUILD_ROOT/%{_docdir}/%{srcname}
@@ -221,8 +230,9 @@ user ftpuser=false gcos-field="%{daemongcosfield}" username="%{daemonuser}" uid=
 
 %changelog
 * Thu Dec 21 2017 - Thomas Wagner
-- bump to 3.5.2
+- bump to 3.5.1, update patches, don't set LD_FLAGS (breaks reloatable objects like twitter_mod)
 - new Download URL (github)
+- switch to SFElibotr4
 * Sun Jul 31 2016 - Thomas Wagner
 - bump to 3.4.2 release version, keep the bzr_revision variables in the spec file for later
 * Sun Nov 30 2014 - Thomas Wagner
