@@ -996,7 +996,11 @@ exit 1
 %define pnm_requires_SFEgnupg2			SFEgnupg2
 %define pnm_buildrequires_sfe_crypto_gnupg	SFEgnupg2
 %define pnm_requires_sfe_crypto_gnupg		SFEgnupg2
-##TODO## is libgcrypt needed?
+#sfe, omnios doesn't have it
+%define pnm_buildrequires_SUNWlibgcrypt_devel	SFElibgcrypt-gnu
+%define pnm_buildrequires_SUNWlibgcrypt		SFElibgcrypt-gnu
+%define pnm_requires_SUNWlibgcrypt 		SFElibgcrypt-gnu
+
 ##TODO## is libgpg-error needed?
 #sunw
 %define pnm_buildrequires_SUNWlibgpg_error_devel	SFElibgpg-error-gnu
@@ -1701,9 +1705,13 @@ exit 1
 
 ##TODO## check if this is the case as well for S11 (!)
 #S12 lost the legacy name SUNWslang
-%define pnm_buildrequires_SUNWslang_devel library/slang
-%define pnm_buildrequires_SUNWslang library/slang
-%define pnm_requires_SUNWslang library/slang
+#S12 is ignored now, S11.4 lost the entire package, use SFEslang again (see elsewhere)
+#%define pnm_buildrequires_SUNWslang_devel library/slang
+#%define pnm_buildrequires_SUNWslang library/slang
+#%define pnm_requires_SUNWslang library/slang
+%define pnm_buildrequires_SUNWslang_devel	SFEslang
+%define pnm_buildrequires_SUNWslang		SFEslang
+%define pnm_requires_SUNWslang			SFEslang
 
 #Added to S11.2, S12 but all others might not have it and go for sfe/shell/gnu-getopt
 %define pnm_buildrequires_SFEgnugetopt			pkg://solaris/shell/gnu-getopt
@@ -1818,7 +1826,25 @@ exit 1
 #END solaris12 special build version 87 and newer
 
 
-#START solaris 12 - special build versions below >= 108
+# S11.4 switched to libsasl2
+#system/library/security/libsasl                   5.12.2.1.26-5.12.0.0.0.93.0 --r
+#system/library/security/libsasl2                  2.1.26-11.4.0.0.1.3.0      ---
+#system/library/security/libsasl2                  2.1.26-11.4.0.0.0.12.0     i--
+
+#from build 5.12 .93. on, simplified by using %{s110400}
+%if %{s110400}
+%define pnm_buildrequires_system_library_security_libsasl system/library/security/libsasl2
+%define pnm_requires_system_library_security_libsasl system/library/security/libsasl2
+%define pnm_buildrequires_SUNWlibsasl_devel system/library/security/libsasl2
+%define pnm_buildrequires_SUNWlibsasl system/library/security/libsasl2
+%define pnm_requires_SUNWlibsasl system/library/security/libsasl2
+%define pnm_buildrequires_libsasl system/library/security/libsasl2
+%define pnm_requires_libsasl system/library/security/libsasl2
+%endif
+#END s110400 (solaris12)
+
+
+#START solaris 12 - special build versions >= 108
 %if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osdistro_entire_padded_number4}.1 '>=' 0005001200000000000001080000.1 )
 #Package codec/ogg-vorbis was renamed to pkg:/codec/libvorbis pkg:/codec/libogg  (NOTE: these are *two* packages!)
 #pkg://solaris/codec/libogg@1.2.2-5.12.0.0.0.108.1:20160919T062323Z           ---
@@ -2041,6 +2067,10 @@ exit 1
 # 9632 1370 -r-xr-xr-x   1 root     bin       2342992 Aug 13 19:16 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64/CORE/libperl.so
 #/usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so: ELF 32-bit LSB dynamic lib 80386 Version 1, dynamically linked, not stripped, no debugging information available
 #81673 1358 -r-xr-xr-x   1 root     bin       2179640 Jul 17 20:56 /usr/perl5/5.24.1/lib/i86pc-solaris-thread-multi-64int/CORE/libperl.so
+
+##TODO##  [omniosorg/omnios-build] perl: update to 5.24.4 (r151024) (#696)
+##TODO##  [omniosorg/omnios-build] perl: update to 5.26.2 (r151026) (#698)
+
 
 
 ##OmniTI - not OmniOSce
@@ -2328,7 +2358,7 @@ exit 1
 
 #OmniOSce
 ##TOODO## check which osdistro version starts with the new default python version
-%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000025000000000000.0 )
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102200000000000000000000.0 )
 #r151022y
 #pkg://omnios/runtime/python-27@2.7.14-0.151022:20170917T151402Z
 %define python_version 2.7
@@ -3510,6 +3540,12 @@ exit 1
 
 
 %changelog
+* Sun Aug 19 2018 - Thomas Wagner
+- add replacement SFElibgcrypt-gnu for OS libgcrypt on OmniOS (OM)
+* Mon Jun 25 2018 - Thomas Wagner
+- switched pnm_macros SUNWlibsasl to system/library/security/libsasl2 on (S110400) (build >=93 5.12)
+* Sun Jan 28 2018 - Thomas Wagner
+- change pnm_buildrequires_SUNWslang_devel to SFEslang (S11.4, breaks old S12 builds)
 * Sat Jan 20 2018 - Thomas Wagner
 - handle SFEeditline / library/libedit, use OSDISTRO's package (OIH '>=' 20170000000016250000000000000.0 )
 - add %{s110400} for transition for s12 to s11.4 versioning (S11.4)
