@@ -8,7 +8,9 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 %include usr-gnu.inc
-%define cc_is_gcc 1
+
+#perl -V:cc -> gcc? then set cc_is_gcc 1
+%define cc_is_gcc %( %{_basedir}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cc | egrep "cc='gcc';|cc='.*/gcc';" >/dev/null && echo 1 || echo 0 )
 %include base.inc
 %if %( expr %{omnios} '|' %{s110400} )
 #perl is 64-bit
@@ -30,6 +32,8 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 BuildRequires: %{pnm_buildrequires_perl_default}
 Requires:      %{pnm_requires_perl_default}
 
+BuildRequires: SFEperl-encode-locale
+Requires:      SFEperl-encode-locale
 BuildRequires: SFEperl-try-tiny
 Requires:      SFEperl-try-tiny
 BuildRequires: SFEperl-lwp
@@ -57,8 +61,10 @@ if test "x$CPUS" = "x" -o $CPUS = 0; then
      CPUS=1
 fi
 
+%if %{cc_is_gcc}
 export CC=gcc
 export CXX=g++
+%endif
 
 export CFLAGS="%optflags"
 export LDFLAGS="%{_ldflags}"
@@ -75,7 +81,7 @@ export LDFLAGS="%{_ldflags}"
              --with-gnu-ld=no \
 
 
-%if %( echo ${_libdir} | grep "%{_arch64}" >/dev/null && echo 1 || echo 0 )
+%if %( echo %{_libdir} | grep "%{_arch64}" >/dev/null && echo 1 || echo 0 )
 #well, calculation of GLIB_CFLAGS fails badly as it doesn't take into account the %{_arch64} directory offset.
 #this ends in wrong type of variable, ending in core dumps as it tries to allocate 2^32 = 4294967296 bytes of memory in g_logv:
 #wrong:   -I/usr/lib/glib-2.0/include (glibconfig.h)
@@ -149,6 +155,9 @@ rm -rf $RPM_BUILD_ROOT
 # package required (which in this case would contain one file)?
 
 %changelog
+* Sun Aug 19 2018 - Thomas Wagner
+- add test on what compiler is used in perl -V:cc ... if gcc then set cc_is_gcc 1 else 0 - compiler options from gcc to irssi perl module would make StudioCC complain (S11.3)
+- use build-env default compiler Studio (S11.3) or gcc, but fix compile on Studio based build environments
 * Sun Aug  5 2018 - Thomas Wagner
 - fix wrong %{_arch64} include of glib glibconfig.h, resulting in allocating 2^32 bytes memory causing a core dump (OM)
   open: is Solaris 11.4 affected as well?
