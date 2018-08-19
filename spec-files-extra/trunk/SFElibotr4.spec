@@ -1,7 +1,7 @@
 #
-# spec file for package SFElibotr
+# spec file for package SFElibotr4
 #
-# includes module(s): libotr
+# includes module(s): libotr4 (named libotr5 on debian linux)
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -10,12 +10,13 @@
 %include packagenamemacros.inc
 %include usr-gnu.inc
 %include base.inc
+%include pkg-renamed.inc
 
 %define srcname libotr
 
 Name:                    SFElibotr4
 IPS_Package_Name:	 library/security/gnu/libotr4
-Summary:                 libotr - Off-the-Record Messaging Library and Toolkit (/usr/gnu)
+Summary:                 libotr4 (libotr5 on debian) - Off-the-Record Messaging Library and Toolkit (/usr/gnu)
 Group:                   Utility
 Version:                 4.1.1
 URL:		         http://www.cypherpunks.ca/otr/
@@ -46,6 +47,18 @@ OTR allows you to have private conversations over IM by providing:
  - Perfect forward secrecy
    - If you lose control of your private keys, no previous conversation
      is compromised.
+
+Debian names this library packages libotr5
+
+%package -n %{name}-noinst-1
+Summary:                %{summay} - automatic renamed-to-package to uninstall old package and install new %{name}
+IPS_Package_Name:	library/security/gnu/libotr
+%define renamed_from_oldname      library/security/gnu/libotr
+%define renamed_to_newnameversion library/security/gnu/libotr4 = *
+%include pkg-renamed-package.inc
+
+%actions
+depend fmri=library/security/gnu/libotr@%{ips_version_release_renamedbranch} type=optional
 
 %prep
 rm -rf %name-%version
@@ -96,6 +109,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 19 2018 - Thomas Wagner
+- add renamed-to (libotr -> libotr4)
 * Sat Aug 18 2018 - Thomas Wagner
 - bump to 4.1.1
 * Sun Aug 16 2015 - Thomas Wagner
