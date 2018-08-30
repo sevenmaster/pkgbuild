@@ -1,3 +1,26 @@
+##TODO## update auf samba 4.7 !!!
+
+#
+#     Planung: Aktionen werden zusammengeführt ... Fertig (0.051s)
+#     Planung: Es wird auf widersprüchliche Aktionen geprüft ... Fertig (9.301s)
+#
+#pkg update: Folgende Pakete stellen Aktionen des Typs file für etc/samba/smb.conf.default bereit:
+#
+#  pkg://solaris/service/network/samba@4.7.6,5.11-0.175.3.32.0.4.0:20180426T185303Z
+#  pkg://localhosts11/sfe/service/network/samba46@4.6.14,5.11-0.0.175.3.1.0.5.0:20180316T233648Z
+#
+#Diese Pakete dürfen nicht zusammen installiert werden. Sofern die Pakete nicht widersprüchlich sind, dürfen
+#sie gemeinsam installiert werden. Andernfalls müssen die Pakete vor der Installation berichtigt werden.
+#
+#Folgende Pakete stellen Aktionen des Typs file für usr/share/man/man3/talloc.3 bereit:
+#
+#  pkg://localhosts11/library/libtalloc@2.1.10,5.11-0.0.175.3.1.0.5.0:20180315T215352Z
+#  pkg://solaris/service/network/samba@4.7.6,5.11-0.175.3.32.0.4.0:20180426T185303Z
+#
+#Diese Pakete dürfen nicht zusammen installiert werden. Sofern die Pakete nicht widersprüchlich sind, dürfen
+#
+
+
 ##TODO## enable builds without internet connection. load docbook.xsl from local disk
 ##TODO2## omnos doesn't have it in the public repo as of 201803xx (only in extra)
 
@@ -274,7 +297,7 @@ Name:                    SFEsamba46
 IPS_package_name:	 sfe/service/network/samba46
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.6.14
+Version:                 4.6.16
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -447,7 +470,7 @@ gsed -i.bak -e '/XSLTPROC.*xinclude.*stringparam.*noreference.*nonet.*SAMBA_EXPA
 
 perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}:'  `ggrep -r -l "env python"`
 
-%if %{hipster}
+%if %{oihipster}
 #or get 
 # ../source4/heimdal/lib/gssapi/gssapi/gssapi_krb5.h:64:29: error: expected identifier or '(' before '&' token
 # #define GSS_KRB5_MECHANISM (&__gss_krb5_mechanism_oid_desc)
@@ -958,8 +981,7 @@ $PYTHON buildtools/bin/waf -v install --destdir=$RPM_BUILD_ROOT
 
   	
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/samba/private
-##REMOVETHIS##cp -p ../examples/smb.conf.default $RPM_BUILD_ROOT%{_sysconfdir}/samba/
-cp -p examples/smb.conf.default $RPM_BUILD_ROOT%{_sysconfdir}/samba/
+cp -p examples/smb.conf.default $RPM_BUILD_ROOT%{_sysconfdir}/samba/smb.conf.default.sfe
 
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log
 
@@ -1044,7 +1066,7 @@ rm -rf $RPM_BUILD_ROOT
 %files root
 %defattr (-, root, bin)
 %attr (0755, root, sys) %dir %{_sysconfdir}
-%{_sysconfdir}/samba/smb.conf.default
+%{_sysconfdir}/samba/smb.conf.default.sfe
 %defattr (-, root, bin)
 %attr (0755, root, bin) %dir %{_sysconfdir}/%{src_name}
 %attr (0500, root, bin) %dir %{_sysconfdir}/%{src_name}/private
@@ -1058,6 +1080,12 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Sun Aug 26 2018 - Thomas Wagner
+- bump to 4.6.16 - security fixes (CVE)
+* Sun May 27 2018 - Thomas Wagner
+- bump to 4.6.15
+* Sat May 26 2018 - Thomas Wagner
+- rename to etc/samba/smb.conf.default.sfe to not conflict with Solaris delivered samba 4
 * Fri Mar 16 2018 - Thomas Wagner
 - enable patch31 samba44-31-gss_mech_krb5.diff for Hipster (OIH)
 * Tue Mar 13 2018 - Thomas Wagner
