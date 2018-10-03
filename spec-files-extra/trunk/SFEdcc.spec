@@ -14,7 +14,7 @@
 Name:                SFEdcc
 IPS_Package_Name:    service/network/snmp/dcc
 Summary:             Distributed Checksum Clearinghouse
-Version:             1.3.162
+Version:             1.3.163
 #Source:              http://www.rhyolite.com/anti-spam/dcc/source/dcc-%{version}.tar.Z
 Source:              http://www.dcc-servers.net/src/dcc/old/dcc-%{version}.tar.Z
 #SUNW_BaseDir:        %{_basedir}
@@ -99,6 +99,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(preserve) %{_localstatedir}/dcc/dcc_conf
 
 %changelog
+* Wed Oct  3 2018 - Thomas Wagner
+- bump to 1.3.163
 * Tue Jan  2 2018 - Thomas Wagner
 - bump to 1.3.162
 * Tue Aug 15 2017 - Thomas Wagner
