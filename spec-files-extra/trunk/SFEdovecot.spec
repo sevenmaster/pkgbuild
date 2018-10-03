@@ -57,7 +57,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.1
+Version:	2.3.3
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -279,6 +279,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Wed Oct  3 2018 - Thomas Wagner
+- bump to 2.3.3 - https://dovecot.org/list/dovecot-news/2018-October/000389.html
 * Tue Apr 17 2018 - Thomas Wagner
 - bump to 2.3.1 for all OS!
 - SFEpigeonhole 0.5.1 needs function call to array_idx_get_space -> 2.3.1 provides
