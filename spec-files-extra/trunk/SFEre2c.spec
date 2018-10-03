@@ -1,3 +1,4 @@
+#- note: Sun compiler might work with the patch from: https://sourceforge.net/tracker/?func=detail&atid=616200&aid=2535084&group_id=96864
 #
 # spec file for package SFEre2c
 #
@@ -10,11 +11,11 @@
 
 Name:		SFEre2c
 IPS_Package_Name:	developer/lexer/re2c
-Summary:	A tool for writing very fast and very flexible scanners
+Summary:	re2c - lexer generator for C and C++
 Group:		Development/Other Languages
 URL:		http://re2c.org/
-Version:	0.13.5
-Source:		%{sf_download}/re2c/re2c-%{version}.tar.gz
+Version:	1.1.1
+Source:		http://github.com/skvadrik/re2c/releases/download/%{version}/re2c-%{version}.tar.gz
 
 SUNW_Copyright:		 re2c.copyright
 SUNW_BaseDir:            %{_basedir}
@@ -66,6 +67,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct  3 2018 - Thomas Wagner
+- bump to 1.1.1
+* Tue Aug  2 2011 - Thomas Wagner
+- note: Sun compiler might work with the patch from: https://sourceforge.net/tracker/?func=detail&atid=616200&aid=2535084&group_id=96864
 * Mon Jan  7 2013 - TAKI,Yasushi <taki@justplayer.com>
 - revert about using gcc-45 when Solaris 11
 * Sun Jan  6 2013 - TAKI,Yasushi <taki@justplayer.com>
