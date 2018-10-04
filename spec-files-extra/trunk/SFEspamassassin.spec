@@ -8,7 +8,7 @@
 #TODO# re-work perl specific prerequisites...
 
 %define src_name spamassassin
-%define module_version 3.4.1
+%define module_version 3.4.2
 #http://mirror.yannic-bonenberger.com/apache//spamassassin/source/Mail-SpamAssassin-rules-3.4.1.r1675274.tgz
 %define rules_version 3.4.1.r1675274
 %define rules_version_IPS $( echo %{rules_version} | sed -e 's/-r/./' )
@@ -319,6 +319,8 @@ user ftpuser=false gcos-field="%{runusergcosfield}" username="%{runuser}"       
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
+* Thu Oct  4 2018 - Thomas Wagner
+- bump to 3.4.2 - 4 new plugins and fixes CVE-2017-15705 CVE-2016-1238 CVE-2018-11780 CVE-2018-11781
 * Thu Jan  4 2018 - Thomas Wagner
 - change (Build)Requires to conditional / only for old perl version < 5.24.0 for SFEperl-io-compress SFEperl-archive-tar SFEperl-encode-detect (OM)
 - change (Build)Requires to SFEperl-razor2-client-agent, pnm_buildrequires_SUNWgnupg_devel
