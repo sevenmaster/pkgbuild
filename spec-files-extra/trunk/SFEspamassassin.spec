@@ -8,9 +8,10 @@
 #TODO# re-work perl specific prerequisites...
 
 %define src_name spamassassin
+####MIND TO UPDATE RULES FILE AS WELL!
 %define module_version 3.4.2
 #http://mirror.yannic-bonenberger.com/apache//spamassassin/source/Mail-SpamAssassin-rules-3.4.1.r1675274.tgz
-%define rules_version 3.4.1.r1675274
+%define rules_version 3.4.2.r1840640
 %define rules_version_IPS $( echo %{rules_version} | sed -e 's/-r/./' )
 %define module_name Mail-Spamassassin
 %define module_name_major Mail
@@ -319,6 +320,8 @@ user ftpuser=false gcos-field="%{runusergcosfield}" username="%{runuser}"       
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
+* Thu Oct  4 2018 - Thomas Wagner
+- bump rules_version 3.4.2.r1840640 - this was missing in last commit
 * Thu Oct  4 2018 - Thomas Wagner
 - bump to 3.4.2 - 4 new plugins and fixes CVE-2017-15705 CVE-2016-1238 CVE-2018-11780 CVE-2018-11781
 * Thu Jan  4 2018 - Thomas Wagner
