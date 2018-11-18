@@ -11,7 +11,7 @@
 %define dovecot_version_major_minor 2.3
 
 Name:		SFEpigeonhole
-Version:	0.5.1
+Version:	0.5.3
 IPS_Package_Name:	 service/network/imap/dovecot/plugin/pigeonhole
 Summary:	Dovecot Pigeonhole Plugin
 URL:		http://pigeonhole.dovecot.org/
@@ -86,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 18 2018 - Thomas Wagner
+- bump to 0.5.3
 * Mon Apr 16 2018 - Thomas Wagner
 - bump to 0.5.1 for dovecot 2.3, use gcc only
 * Thu Oct 26 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
