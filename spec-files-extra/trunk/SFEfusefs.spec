@@ -146,7 +146,7 @@ dmake install
 
 cp -r proto/ $RPM_BUILD_ROOT
 
-%actions -n %{name}-noinst-1
+%actions
 depend fmri=system/file-system/fusefs@%{ips_version_release_renamedbranch} type=optional
 
 %clean
@@ -182,6 +182,8 @@ driver name=fuse devlink=type=ddi_pseudo;name=fuse\t\D perms="* 0666 root sys"
 %endif
 
 %changelog
+* Sun Nov 18 2018 - Thomas Wagner
+- fix automatic uninstall of pkg://publisher/system/file-system/fusefs by assigning %actions depend oldname type=optional
 * Sat Jan 21 2018 - Thomas Wagner
 - bump to 1.3.2, obsoleted patch1 fusefs-01-remove-ADDR_VACALIGN-choose_addr-fuse_vnops.c.diff, 
 - rename to IPS_Package_Name sfe/system/file-system/fusefs
