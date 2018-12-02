@@ -1,3 +1,6 @@
+# Omnios: needs libnotify, in the meantime, switch off
+
+
 #
 # Copyright (c) 2006 Sun Microsystems, Inc.
 # This file and all modifications and additions to the pristine
@@ -12,7 +15,7 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.11.0
+Version:             1.11.1
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
@@ -125,9 +128,17 @@ export CPPFLAGS="$EXTRAINCLUDES -I/usr/sfw/include"
             --without-qdbm \
             --enable-debug \
             --with-gdbm \
+%if %{omnios}
+            --disable-filemonitor \
+%endif
             --with-gss
 
 #  --without-wc-funcs      Do not use the system's wchar_t functions
+
+###switch off INOTIFY on Omnios
+##%if %{omnios}
+##gsed -i.bak -e '/define .*INOTIFY/ s?1$?0?' config.h
+##%endif
 
 make -j$CPUS
 
@@ -139,6 +150,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/
 touch $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 make install DESTDIR=$RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
+
+rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -155,6 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/*.5
 %dir %attr (0755, root, other) %{_datadir}/doc
 %{_datadir}/doc/*
+%attr (0755, root, bin) %{_infodir}
 
 %files root
 %defattr (-, root, sys)
@@ -162,6 +176,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sun Dec  2 2018 - Thomas Wagner
+- bump to 1.11.1
+- fix packaging for new file mutt.info
+- only on OmniOS: switch off INOTIFY on Omnios until we have libnotify --disable-filemonitor (OM)
 * Tue Nov 27 2018 - Thomas Wagner
 - bump to 1.11.0
 * Tue Jul 17 2018 - Thomas Wagner
