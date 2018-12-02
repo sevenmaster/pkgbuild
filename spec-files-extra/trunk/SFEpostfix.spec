@@ -3,6 +3,9 @@
 
 
 
+#generate your own very local keys for forward secrecy after package installation by start method script / at first start
+# https://www.heinlein-support.de/blog/security/perfect-forward-secrecy-pfs-fur-postfix-und-dovecot
+# https://kofler.info/postfix-tls-optionen/
 
 
 
@@ -212,7 +215,7 @@ IPS_Package_Name:	 sfe/service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.3.1
+Version:                 3.3.2
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1148,6 +1151,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sun Dec  2 2018 - Thomas Wagner
+- bump to 3.3.2
 * Sun Jun 24 2018 - Thomas Wagner
 - bump to 3.3.1
 * Fri Mar  2 2018 - Thomas Wagner

@@ -1,3 +1,22 @@
+##TODO## Hinweis einbauen!
+#dovecot auth - postfix wenn Versionen unterschiedlich sind, lieber setzen: version_ignore=yes in dovecot.conf
+#Sonst der Effekt, dass ein neues smtp diesen Fehler zeigt, bei SSL Verbindung bricht es ab mit:
+#250 8BITMIME
+#read:errno=0
+#(then connection closes)
+#
+#log:
+#Oct  5 23:45:10 mailrouter postfix/smtpd[14020]: [ID 197553 mail.info] connect from unknown[46.182.137.63]
+#Oct  5 23:45:10 mailrouter postfix/smtpd[14020]: [ID 197553 mail.info] Anonymous TLS connection established from unknown[46.182.137.63]: TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits)
+#Oct  5 23:45:10 mailrouter dovecot: [ID 583609 mail.crit] auth: Fatal: Dovecot version mismatch: Master is v2.3.1, auth is v2.3.3 (if you don't care, set version_ignore=yes)
+#Oct  5 23:45:10 mailrouter dovecot: [ID 583609 mail.error] master: Error: service(auth): command startup failed, throttling for 8 secs
+#Oct  5 23:45:10 mailrouter postfix/smtpd[14020]: [ID 947731 mail.crit] fatal: no SASL authentication mechanisms
+#Oct  5 23:45:11 mailrouter postfix/master[657]: [ID 947731 mail.warning] warning: process /usr/lib/postfix/smtpd pid 14020 exit status 1
+#Oct  5 23:45:11 mailrouter postfix/master[657]: [ID 947731 mail.warning] warning: /usr/lib/postfix/smtpd: bad command startup -- throttling
+
+
+
+
 ##TODO## check --with-ioloop=poll if apropriate for Solaris
 
 ##TODO## set better location (w/o /usr in it)
@@ -57,7 +76,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.3
+Version:	2.3.4
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -89,6 +108,8 @@ BuildRequires: %{pnm_buildrequires_SUNWcurl}
 Requires:      %{pnm_requires_SUNWcurl}
 BuildRequires: %{pnm_buildrequires_SUNWopenssl_include}
 Requires:      %{pnm_requires_SUNWopenssl_libraries}
+BuildRequires: SFElibsodium
+Requires:      SFElibsodium
 %if %{with_clucene}
 BuildRequires: SFElibstemmer-devel
 Requires: SFElibstemmer
@@ -279,6 +300,9 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Sun Dec  2 2018 - Thomas Wagner
+- add missing package dependency on libsodium (would make auth process fail)
+- bump to 2.3.4 - https://www.dovecot.org/list/dovecot-news/2018-November/000391.html
 * Wed Oct  3 2018 - Thomas Wagner
 - bump to 2.3.3 - https://dovecot.org/list/dovecot-news/2018-October/000389.html
 * Tue Apr 17 2018 - Thomas Wagner
