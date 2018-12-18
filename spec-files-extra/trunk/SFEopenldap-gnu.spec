@@ -1,3 +1,32 @@
+#siehe https://www.illumos.org/issues/10069
+#--enable-bdb=mod
+#--enable-hdb=mod
+
+# Date: Mon, 17 Dec 2018 21:54:30 +0100
+# From: D      K       <d     @d        .  >
+# Reply-To: Discussion list for OpenIndiana <openindiana-discuss@openindiana.org>
+# Subject: [OpenIndiana-discuss] OpenLDAP and BerkeleyDB
+# To: Openindiana <openindiana-discuss@openindiana.org>
+# 
+# Hi,
+# I'm trying to get OpenLDAP running, but a BDB library mismatch prevents it :-(
+# 
+# bdb_back_initialize: BDB library version mismatch: expected Berkeley DB
+# 5.3.21: (May 11, 2012), got Berkeley DB 5.3.28: (September  9, 2013
+# 
+# OpenLDAP: slapd 2.4.44 (Feb 11 2018 07:52:01) $
+# @hipster.openindiana.org:/jenkins/jobs/oi-userland/workspace/components/network/openldap/build/amd64/servers/slapd
+# 
+# Whoever built this package,  PLEASE either stick to library conformance or,                                                        h
+# even better, refrain from building slapd with BerkeleyDB, as this is
+# deprecated, the announcement has been made at LDAPCon 2007.
+# If you have to stick to BerkeleyDB build back_bdb and back_hdb as modules.
+# 
+# -Dxxxxx
+ 
+ 
+ 
+
 %define _use_internal_dependency_generator 0
 
 #
@@ -138,6 +167,9 @@ export RUNDIR="%{_std_localstatedir}/run/%{src_name}"
             --sysconfdir=%{_sysconfdir}			\
             --localstatedir=%{_localstatedir}/%{src_name}\
             --enable-wrappers		\
+            --enable-modules \
+            --enable-bdb=mod \
+            --enable-hdb=mod \
             --disable-static
 
 ##TODO## choose options, add (Build)Requires and then remove the comments below
@@ -325,6 +357,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Tue Dec 18 2018 - Thomas Wagner
+- Testing with: --enable-modules --enable-bdb=mod --enable-hdb=mod as suggested in https://www.illumos.org/issues/10069
 * Sun Dec 10 2017 - Thomas Wagner
 - bump to 2.4.45
 - add -D_POSIX_PTHREAD_SEMANTICS or get error wrong number of arguments to sigwait
