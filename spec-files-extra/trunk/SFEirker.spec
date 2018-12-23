@@ -19,6 +19,7 @@ Source:                  http://www.catb.org/~esr/irker/irker-%{version}.tar.gz
 Source2:                 irker.xml
 ##TODO## temporary patch
 #Patch1:			 irker-1.12-urlparse.diff
+Patch2:                  irker-02-2.18-use-syslog-stream-not-dev.diff
 URL:                     http://www.catb.org/esr/irker
 SUNW_BaseDir:            /
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -50,6 +51,7 @@ perl -pi -e 's:^#! */usr/bin/python.*:#!/usr/bin/python%{python_major_minor_vers
 perl -pi -e 's:^#! */usr/bin/env *python:#!/usr/bin/python%{python_major_minor_version}:' `find . -type f -print`
 
 #%patch1 -p1
+%patch2 -p1
 
 %build
 
@@ -99,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 23 2018 - Thomas Wagner
+- add patch2 irker-02-2.18-use-syslog-stream-not-dev.diff to always use on SunOS the StreamHandler for syslog
 * Mon Feb 27 2018 - Thomas Wagner
 - bump to 2.18
 - remove support for python26 (remove (Build)Requires SFEpython26-argparse)
