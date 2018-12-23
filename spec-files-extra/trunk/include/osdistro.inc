@@ -169,7 +169,7 @@
 %define s120000 0
 #12.0 build 24
 %define s120024 0
-#superseeded by: s110400 see below
+#superceded by: s110400 see below
 
 #Solaris 11
 #always defined on 11.0 and all subsequent 11.xx versions.
@@ -515,6 +515,16 @@
 %define osdistrelnumber 201103
 %else
 %endif
+#11.4 build ??
+%if %( uname -v | egrep '^11\.4$' > /dev/null && echo 1 || echo 0 )
+#additive
+%define s110100 1
+%define s110200 1
+%define s110300 1
+%define s110400 1
+%define osdistrelnumber 201104
+%else
+%endif
 %define osdistrelname   "Solaris 11"
 #this was the last check, skip all others
 %define osdet299999 0
@@ -697,6 +707,8 @@
 
 
 %changelog
+* Sun Dec 23 2018 - <me@tsundoku.ne.jp>
+- add defines for Solaris 11.4
 * Fri Mar  2 2018 - Thomas Wagner
 - support two letter OS revisions for OmniOSce (OM)
 * Fri Dec 15 2017 - Thomas Wagner
