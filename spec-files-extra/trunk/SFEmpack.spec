@@ -11,6 +11,7 @@
 %define src_name mpack
 
 Name:            SFEmpack
+IPS_Package_Name: mail/mpack
 Summary:         tools for encoding/decoding MIME messages - mpack munpack
 Version:         1.6
 Source:          http://ftp.andrew.cmu.edu/pub/mpack/mpack-%{version}.tar.gz
@@ -31,9 +32,9 @@ SUNW_BaseDir:    %{_basedir}
 SUNW_Copyright:  %{name}.copyright
 BuildRequires:	%{pnm_buildrequires_python_default}
 Requires:	%{pnm_requires_python_default}
-BuildRequires:	%{pnm_buildrequires_python_default}-extra
-Requires:	%{pnm_requires_python_default}-extra
-BuildRequires:	SUNWbash
+#BuildRequires:	%{pnm_buildrequires_python_default}-extra
+#Requires:	%{pnm_requires_python_default}-extra
+#BuildRequires:	SUNWbash
 
 ##TODO## sort out BuildRequires
 #BuildRequires:	%{pnm_buildrequires_python_default}-cherrypy
@@ -104,6 +105,8 @@ make install  DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan  1 2019 - Thomas Wagner
+- add IPS_Package_Name mail/mpack
 * Wed Jul 20 2011 - Thomas Wagner
 - migrated over from spec-files-jucr
 - make use of pnm_macros for e.g. Python26 packages
