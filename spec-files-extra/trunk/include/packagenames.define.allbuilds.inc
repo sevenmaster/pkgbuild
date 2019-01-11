@@ -1994,7 +1994,7 @@ exit 1
 #runtime/perl-522@5.22.0,5.11-2015.0.1.0:20151027T072513Z
 #runtime/perl-522@5.22.0,5.11-2015.0.2.1:20151102T181230Z
 
-##TODO## monitor closely when OIHipster changes chipped perl-versions or adds perl-modules
+##TODO## monitor closely when OIHipster changes shipped perl-versions or adds perl-modules
 #ignore older perl-516@5.16.3,5.11-2014.1.2.3:20151027T072451Z
 #use runtime/perl-522@5.22.0,5.11-2015.0.1.0:20150727T054604Z
 #set perl5 for OIHipster
@@ -2008,8 +2008,28 @@ exit 1
 %define pnm_buildrequires_perl_default runtime/perl-522
 %define pnm_requires_perl_default	runtime/perl-522
 %endif
-#END oihipster
+#END oihipster >= 2015
 
+#use pkg://openindiana.org/runtime/perl-524@5.24.3-2017.0.0.0:20171113T184255Z    i--
+#set perl5 for OIHipster
+#20170000000016925000000000000
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 20170000000016925000000000000.0 )
+#paths changed to
+%define perl_version 5.24
+%define perl_major_minor_version 5.24
+##TODO## determine correct version %define perl_major_minor_micro_version 5.16.x
+%define perl_major_minor_micro_version 5.24.3
+#runtime/perl-524
+%define pnm_buildrequires_perl_default runtime/perl-524
+%define pnm_requires_perl_default	runtime/perl-524
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
+%endif
+#END oihipster >= 2017
+
+
+##Block below: move to better suiting section (outside of perl block)
 #pnm: osdistro_entire_padded_number4 20170000000016925000000000000
 #hipster sfe ~ pkg contents -r -m pkg://openindiana.org/library/libedit | grep -i quire
 #depend fmri=pkg:/system/library@0.5.11-2017.0.0.16250 type=require
@@ -2202,10 +2222,10 @@ exit 1
 %endif 
 #END omnios
 
-%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osbuild} '>=' 95 )
+%if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osbuild} '>=' 95 '|' %{oihipster} )
 %define perl_dir i86pc-solaris-thread-multi-64
 %endif
-#END solaris 12 osbuild >= 95
+#END Solaris 11.4 / Solaris 12
 
 %endif
 #END sparc else i86pc
@@ -3540,6 +3560,8 @@ exit 1
 
 
 %changelog
+* Fri Jan 11 2019 - Thomas Wagner
+- add perl-524@5.24.3-2017 in 64-bit (OIH '>=' 20170000000016250000000000000.0 )
 * Sun Aug 19 2018 - Thomas Wagner
 - add replacement SFElibgcrypt-gnu for OS libgcrypt on OmniOS (OM)
 * Mon Jun 25 2018 - Thomas Wagner
