@@ -63,6 +63,9 @@ Requires: SFEperl-lwp
 BuildRequires: SFEperl-mail-spf
 Requires: SFEperl-mail-spf
 
+BuildRequires: SFEperl-dbfile
+Requires: SFEperl-dbfile
+
 #old package name Requires: SFEperl-razor-agents
 BuildRequires: SFEperl-razor2-client-agent
 Requires:      SFEperl-razor2-client-agent
@@ -180,8 +183,7 @@ mail.
 #we have gpg2 in requirements, but sa-update only knows the gpg binary
 perl -w -pi.bak -e "s,GPGPath = \'gpg\' ,GPGPath = \'gpg2\' ," sa-update.raw
 
-#use ENV{CC} since we not necessarily have "cc" in $PATH
-#
+%define %( echo '%{_patch_options}' | sed -e 's?fuzz=0?fuzz=1?' )
 %patch1 -p1
 
 # below: not rock solid detection of missing perl modules because manually installed perl modules would not"
@@ -320,8 +322,13 @@ user ftpuser=false gcos-field="%{runusergcosfield}" username="%{runuser}"       
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/spamassassin.xml
 
 %changelog
+* Thu Jan 10 2019 - Thomas Wagner
+- add missing (Build)Requires SFEperl-dbfile (sa-learn -> bayes DB_File missing)
+* Fri Oct  5 2018 - Thomas Wagner
+- let patch use fuzz=1, gpatch is a bit picky on (OM)
 * Thu Oct  4 2018 - Thomas Wagner
 - bump rules_version 3.4.2.r1840640 - this was missing in last commit
+- update patch spamassassin-sa-compile-env-cc.diff
 * Thu Oct  4 2018 - Thomas Wagner
 - bump to 3.4.2 - 4 new plugins and fixes CVE-2017-15705 CVE-2016-1238 CVE-2018-11780 CVE-2018-11781
 * Thu Jan  4 2018 - Thomas Wagner
