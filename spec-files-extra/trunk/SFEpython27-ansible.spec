@@ -1,3 +1,11 @@
+
+
+##TODO##
+
+
+# make /etc/ansible a  editable place, no file deletion, no move to /va/pkg/lost+found on _uninstall_
+
+
 #
 # spec file for package SFEpython27-ansible
 #
@@ -23,10 +31,10 @@ URL:                     https://www.ansible.com/
 #2.4.1.0 .1. 0  release 2.4.1.0 if we have a previous a beta2
 #
 
-IPS_Component_version:   2.5.5.0.0.0
+IPS_Component_version:   2.7.6.0.0.0
 #Version:                 2.4.0.0-0.2.beta2
 #Version:                 2.4.2.0
-Version:                 2.5.5
+Version:                 2.7.6
 
 #Source:			http://releases.ansible.com/ansible/ansible-2.4.1.0-0.2.beta2.tar.gz
 Source:			http://releases.ansible.com/ansible/ansible-%{version}.tar.gz
@@ -54,8 +62,14 @@ BuildRequires:		library/python/jinja2-27
 Requires:		library/python/jinja2-27
 BuildRequires:		library/python/pyyaml-27
 Requires:		library/python/pyyaml-27
+%if %{solaris11}
+#11.3 only has paramiko 2.0.8, need a more fresh version
+BuildRequires:		SFEpython27-paramiko
+Requires:		SFEpython27-paramiko
+%else
 BuildRequires:		library/python/paramiko-27
 Requires:		library/python/paramiko-27
+%endif
 BuildRequires:		library/python/pyasn1-27
 Requires:		library/python/pyasn1-27
 BuildRequires:		library/python/cryptography-27
@@ -156,11 +170,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(-, root, sys) %{_sysconfdir}/ansible/
 
 %changelog
+* Wed Jan 23 2019 - Thomas Wagner
+- bump to 2.7.6
+* Sat Jun 30 2018 - Thomas Wagner
+- require SFEpython27-paramiko to get more fresh version (e.g. 2.4.0) instead of Solaris 11.3 version 2.0.8 (S11.3)
 * Fri Jun 22 2018 - Thomas Wagner
 - bump to 2.5.5
 * Fri Dec  8 2017 - Thomas Wagner
 - add empty %{_sysconfdir}/ansible (check if that directory gets removed on pkg uninstall ansible if files are in it)
-- rename (Build)Requires from python-crypto to python/pycryptro
+- rename (Build)Requires from python-crypto to python/pycrypto
 - add helper package to pull in modules (Build)Requires SFEpython27-omnios-bundle (OM only).
 * Tue Dec  5 2017 - Thomas Wagner
 - bump to 2.4.2
