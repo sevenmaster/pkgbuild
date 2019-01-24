@@ -36,7 +36,7 @@ SUNW_BaseDir:	%{_basedir}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %include default-depend.inc
-Requires: SUNWlexpt
+Requires: %{pnm_requires_library_expat}
 BuildRequires: %{pnm_buildrequires_SUNWlibC}
 Requires: %{pnm_buildrequires_SUNWlibC}
 BuildRequires: SUNWlibms
@@ -52,7 +52,7 @@ Requires:      %{pnm_requires_SUNWncurses}
 %if %with_hal
 Requires: SUNWhal
 %endif
-BuildRequires:	SUNWlexpt
+BuildRequires:	%{pnm_buildrequires_library_expat library/expat}
 BuildRequires:	%{pnm_buildrequires_SUNWdbus_devel}
 BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 BuildRequires:	SFElibcddb-devel
@@ -121,6 +121,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/cdio
 
 %changelog
+* Thu Jan 24 2018 - Thomas Wagner
+- change (Build)Requires to %{pnm_buildrequires_SUNWncurses_devel} (S11.4 S12)
+* Mon Mar 26 2018 - Thomas Wagner
+- bump to 2.0.0
 * Wed Feb  1 2017 - Thomas Wagner
 - bump to 0.92
 - change to cc_is_gcc 1
