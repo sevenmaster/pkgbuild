@@ -56,6 +56,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-%{tarball_
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:	SFEperl-module-install
+Requires:       SFEperl-module-install
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Florian Ragwitz <rafl@debian.org>
@@ -151,6 +153,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Jan 26 2019 - Thomas Wagner
+- add (Build)Requires SFEperl-module-install
 * Tue Apr  5 2016 - Thomas Wagner
 - rework/new version 1.63 -> 1.72
 #- keep the changed package name sfe/
