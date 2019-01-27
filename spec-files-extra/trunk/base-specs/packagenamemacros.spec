@@ -110,7 +110,8 @@ pnm: SXCE 		%{SXCE}
 pnm: os2nnn 		%{os2nnn}
 pnm: osdistro_entire    %{osdistro_entire}
 pnm: osdistro_entire_padded_number4 %{osdistro_entire_padded_number4}
-pnm: solaris12       	%{solaris12} Solaris 12
+pnm: solaris12       	%{solaris12} Solaris 11.4, former Solaris 12 (deprecated variable)
+pnm: s110400         	%{s110400} Solaris 11.4 and up - note: aka solaris12 in development
 pnm: s110300         	%{s110300} Solaris 11.3 and up
 pnm: s110200         	%{s110200} Solaris 11.2 and up
 pnm: s110100         	%{s110100} Solaris 11.1 and up
@@ -157,10 +158,15 @@ pnm: perl_version number is:       		%{perl_version}
 pnm: perl_major_version number is: 		%{perl_major_version}
 pnm: perl_major_minor_version number is: 		%{perl_major_minor_version}
 pnm: perl_major_minor_micro_version number is: 	%{perl_major_minor_micro_version}
+pnm: perl_version_padded (add string .0):	%{perl_version_padded}
 pnm: _prefix/perl_path_vendor_perl	 	%{_prefix}/%{perl_path_vendor_perl}
 pnm: _prefix/perl_path_vendor_perl_version 	%{_prefix}/%{perl_path_vendor_perl_version}
 pnm: _prefix/perl_path_site_perl 			%{_prefix}/%{perl_path_site_perl}
 pnm: _prefix/perl_path_site_perl_version 		%{_prefix}/%{perl_path_site_perl_version}
+
+pnm: perl_bitness		%{perl_bitness}
+pnm: perl_bitness_32		%{perl_bitness_32}
+pnm: perl_bitness_64		%{perl_bitness_64}
 
 pnm: pnm_buildrequires_python_default: 		%{pnm_buildrequires_python_default}
 pnm: pnm_requires_python_default: 		%{pnm_requires_python_default}
@@ -333,13 +339,15 @@ pnm_buildrequires_library_nspr_header_nspr                       -> %{pnm_buildr
 pnm_requires_library_nspr                                        -> %{pnm_requires_library_nspr}
 
 pnm_buildrequires_SUNWlibgcrypt                                  -> %{pnm_buildrequires_SUNWlibgcrypt}
-pnm_buildrequires_SFElibgpg_error                                -> %{pnm_buildrequires_SFElibgpg_error}
+pnm_buildrequires_SFElibgpg_error_gnu                            -> %{pnm_buildrequires_SFElibgpg_error_gnu}
  
 
 " >/dev/null
 
 
 %changelog
+* Sat Jan 20 2018 - Thomas Wagner
+- add s110400 aka solaris12
 * Thu Nov 10 2016 - Thomas Wagner
 - add uname -v uname -n to the output
 * Mon Oct 31 2016 - Thomas Wagner
