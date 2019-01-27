@@ -52,7 +52,7 @@ Requires:      %{pnm_requires_SUNWncurses}
 %if %with_hal
 Requires: SUNWhal
 %endif
-BuildRequires:	%{pnm_buildrequires_library_expat library/expat}
+BuildRequires:	%{pnm_buildrequires_library_expat}
 BuildRequires:	%{pnm_buildrequires_SUNWdbus_devel}
 BuildRequires:	%{pnm_buildrequires_SUNWgnome_common_devel}
 BuildRequires:	SFElibcddb-devel
