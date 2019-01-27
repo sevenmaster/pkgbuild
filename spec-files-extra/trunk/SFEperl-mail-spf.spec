@@ -32,6 +32,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/J/JM/JMEHNLE/mail-spf/Mail-SPF-%
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:	SFEperl-module-build
+Requires:	SFEperl-module-build
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Julian Mehnle <julian@mehnle.net>
@@ -124,6 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Jan 26 2019 - Thomas Wagner
+- add (Build)Requires:  SFEperl-module-build
 * Sat Aug 12 2017 - Thomas Wagner
 - reworked, bump version 2.8.0 -> 2.9.0 
 * Fri Sep 27 2013 - Thomas Wagner
