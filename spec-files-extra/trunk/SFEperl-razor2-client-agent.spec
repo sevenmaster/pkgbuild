@@ -49,6 +49,8 @@ Razor2::Client::Agent
 
 %build
 
+%include perl-bittness.inc
+
 #fix quoting for MAN5 in Makefile
 [ -f Makefile ] && rm Makefile
 
@@ -69,29 +71,8 @@ if test -f Makefile.PL
     INSTALLMAN5DIR=$RPM_BUILD_ROOT%{_mandir}/man5 \
 
 
+%include perl-bittness-make.inc
 
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
-  make
-%else
-  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
-%endif
-
-else
-  # style "Build.PL"
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
-    --installdirs vendor --makefile_env_macros 1 \
-    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
-    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    --install_path bin=%{_bindir} \
-    --install_path bindoc=%{_mandir}/man1 \
-    --install_path libdoc=%{_mandir}/man3 \
-    --install_path libdoc=%{_mandir}/man5 \
-    --destdir $RPM_BUILD_ROOT \
-
-
-
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
-fi
 
 #correct (seen with MakeMaker 6.56 on S11.3 GA perl 5.12)
 #   $(INST_MAN5DIR) $(DESTINSTALLMAN5DIR) \
@@ -135,6 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Mon Jan 28 2019 - Thomas Wagner
+- fix compile with 64-bit perl  (%include perl-bittness.inc)
 * Sat Jan  6 2017 - Thomas Wagner
 - add patch1 fix quoting in Makefile for MAN5 path
 * Sun Aug 13 2017 - Thomas Wagner

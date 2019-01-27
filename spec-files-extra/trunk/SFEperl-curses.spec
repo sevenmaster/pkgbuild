@@ -47,6 +47,8 @@ Curses
 
 %build
 
+%include perl-bittness.inc
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -59,28 +61,10 @@ if test -f Makefile.PL
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
 
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
-  make
-%else
-  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
-%endif
-
-else
-  # style "Build.PL"
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
-    --installdirs vendor --makefile_env_macros 1 \
-    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
-    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    --install_path bin=%{_bindir} \
-    --install_path bindoc=%{_mandir}/man1 \
-    --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
-
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
-fi
+%include perl-bittness-make.inc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -113,5 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Mon Jan 28 2019 - Thomas Wagner
+- fix compile with 64-bit perl  (%include perl-bittness.inc)
 * Thu Nov 23 2017 - Thomas Wagner
 - initial spec (not recovering old spec from perl/ subdir)
