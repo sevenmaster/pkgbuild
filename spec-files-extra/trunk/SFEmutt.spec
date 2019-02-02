@@ -15,7 +15,7 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.11.2
+Version:             1.11.3
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
@@ -176,6 +176,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sat Feb  2 2019 - Thomas Wagner
+- bump to 1.11.3 - bug fixes
 * Tue Jan  8 2019 - Thomas Wagner
 - bump to 1.11.2 - bug fixes and builds with latest openssl
 * Sun Dec  2 2018 - Thomas Wagner
