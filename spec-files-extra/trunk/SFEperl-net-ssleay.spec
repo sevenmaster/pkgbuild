@@ -82,6 +82,11 @@ Attention: Instead of vendor_perl, this package installs into
 
 %build
 
+%include perl-bittness.inc
+
+#fix quoting for MAN5 in Makefile
+[ -f Makefile ] && rm Makefile
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -99,28 +104,10 @@ if test -f Makefile.PL
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
 
 
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
-  make
-%else
-  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC 
-##TODO## find a propper way to not ask about testing
-#workaround testing question (no / do not test)
-#make CC=$CC CCCDLFLAGS="%picflags  -DSTRLEN=site_t" OPTIMIZE="%optflags" LD=$CC
-%endif
 
-else
-  # style "Build.PL"
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
-    --installdirs site --makefile_env_macros 1 \
-    --install_path lib=%{_prefix}/%{perl_path_site_perl_version} \
-    --install_path arch=%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
-    --install_path bin=%{_bindir} \
-    --install_path bindoc=%{_mandir}/man1 \
-    --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
+%include perl-bittness-make.inc
 
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
-fi
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -153,6 +140,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Feb  9 2019 - Thomas Wagner
+- fix compile with 64-bit perl  (%include perl-bittness.inc)
 * Sat Jan 26 2019 - Thomas Wagner
 - add (Build)Requires SFEperl-module-install
 * Tue Apr  5 2016 - Thomas Wagner
