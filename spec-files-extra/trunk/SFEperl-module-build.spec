@@ -1,4 +1,3 @@
-
 #
 # spec file for package: SFEperl-module-build
 #
@@ -12,21 +11,21 @@
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
-%define _use_internal_dependency_generator 0
+#%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.4216
+%define tarball_version 0.4224
 %define tarball_name    Module-Build
 
 Name:		SFEperl-module-build
 IPS_package_name: library/perl-5/module-build
-Version:	0.4216
-IPS_component_version: 0.4216
+Version:	0.4224
+IPS_component_version: 0.4224
 Group:          Development/Libraries                    
-Summary:	Module::Build - Build, test, and install Perl modules
+Summary:	Module::Build - Module::Build
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~kwilliams/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~leont/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-%{tarball_version}.tar.gz
@@ -72,6 +71,7 @@ Build, test, and install Perl modules
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -84,9 +84,16 @@ if test -f Makefile.PL
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
+
+
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
   make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
 else
   # style "Build.PL"
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
@@ -96,7 +103,9 @@ else
     --install_path bin=%{_bindir} \
     --install_path bindoc=%{_mandir}/man1 \
     --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
+    --destdir $RPM_BUILD_ROOT \
+
+
 
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
 fi
@@ -132,10 +141,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
+#%dir %attr(0755, root, bin) %{_mandir}/man1
+#%{_mandir}/man1/*
 %{_mandir}/*/*
-
+#%dir %attr(0755, root, bin) %{_mandir}/man3
+#%{_mandir}/man3/*
 
 %changelog
+* Sat Feb  9 2019 - Thomas Wagner
+- reworked, bump from 0.4216 to 0.4224 
 * Sun Dec  3 2017 - Thomas Wagner
 - fix expr in perl_version_padded for dependency calulation
 * Sat Dec  2 2017 - Thomas Wagner
