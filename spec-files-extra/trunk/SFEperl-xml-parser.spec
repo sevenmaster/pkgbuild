@@ -66,7 +66,7 @@ if test -f Makefile.PL
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3sfe \
 
 
-%include perl-bittness.inc
+%include perl-bittness-make.inc
 
 
 %install
@@ -100,6 +100,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Feb 10 2019 - Thomas Wagner
+- fix wrong include, needs perl-bittness-make.inc
 * Mon Jan 28 2019 - Thomas Wagner
 - fix compile with 64-bit perl  (%include perl-bittness.inc)
 * Thu Sep 28 2017 - Thomas Wagner
