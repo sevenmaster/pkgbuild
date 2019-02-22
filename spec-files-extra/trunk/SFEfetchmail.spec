@@ -10,9 +10,10 @@ Name:                    SFEfetchmail
 IPS_Package_Name:	 sfe/mail/fetchmail
 Summary:                 Fetchmail
 Group:                   utilities/email
-Version:                 6.3.24
-Source:                  http://download.berlios.de/fetchmail/fetchmail-%{version}.tar.bz2
-URL:                     http://fetchmail.berlios.de/
+Version:                 6.3.26
+%define major_minor_version %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
+Source:                  https://sourceforge.net/projects/fetchmail/files/branch_%{major_minor_version}/fetchmail-%{version}.tar.xz
+URL:                     http://www.fetchmail.info/
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -28,7 +29,10 @@ Requires:                %{name}
 %endif
 
 %prep
-%setup -q -n fetchmail-%version
+#%setup -q -n fetchmail-%version
+#don't unpack please
+%setup -q -c -T -n fetchmail-%version
+xz -dc %SOURCE0 | (cd ${RPM_BUILD_DIR}; tar xf -)
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -87,6 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 22 2019 - Thomas Wagner
+- bump to 6.3.26
+- new URL, new Source
 * Sat Jan 12 2013 - Logan Bruns <logan@gedanken.org>
 - bump to 6.3.24
 - added IPS name
