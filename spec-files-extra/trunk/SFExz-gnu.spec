@@ -148,6 +148,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %endif
 
 %changelog
+* Mon Apr 30 2016 - Thomas Wagner
+- bump to 5.2.4
 * Sun Jan 13 2013 - Thomas Wagner
 - fix isaexec
 * Sat Jan 12 2013 - Thomas Wagner
