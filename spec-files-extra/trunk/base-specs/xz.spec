@@ -2,7 +2,7 @@
 
 
 Name:		SFExz-gnu
-Version:	5.0.4
+Version:	5.2.4
 Summary:	LZMA utils
 URL:		http://tukaani.org/xz
 Source:		http://tukaani.org/xz/xz-%{version}.tar.bz2
@@ -46,6 +46,8 @@ rm -rf ${RPM_BUILD_ROOT}
 
 
 %changelog
+* Mon Apr 30 2016 - Thomas Wagner
+- bump to 5.2.4
 * Sun Jan 13 2013 - Thomas Wagner
 - fix isaexec
 * Sat Jan 12 2013 - Thomas Wagner
