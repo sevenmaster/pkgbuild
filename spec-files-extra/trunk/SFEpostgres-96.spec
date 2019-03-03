@@ -12,7 +12,7 @@
 %define _prefix /usr/postgres
 %define _var_prefix /var/postgres
 %define tarball_name     postgresql
-%define tarball_version  9.6.6
+%define tarball_version  9.6.12
 %define major_version	 9.6
 #e.g.                    96
 %define major_version_no_dot	 %( echo %{major_version} | sed -e 's?\.??g' )
@@ -133,9 +133,10 @@ cp -rp %{tarball_name}-%{tarball_version} %{tarball_name}-%{tarball_version}-64
 
 %build
 
+#get 2048MB mem per CPU
 #get 768MB mem per CPU
 #get 1536 mem per CPU to try lower /tmp/ usage by the compiler (trick)
-CPUS=%{_cpus_memory_1536}
+CPUS=%{_cpus_memory_2048}
 
 cd %{tarball_name}-%{tarball_version}
 %ifarch sparc
@@ -1284,8 +1285,13 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/%{_arch64}/vacuumlo
 
 %changelog
+* Sun Mar  3 2019 - Thomas Wagner
+- bump to version 9.6.12
+* Tue Mar  6 2018 - Thomas Wagner
+- bump to version 9.6.8
 * Fri Jan  5 2018 - Thomas Wagner
 - bump to version 9.6.6
+- use CPUS=%{_cpus_memory_2048} - got OOM in S11.3 with 4GB RAM (example:   1950M 1607M sleep    60    1   0:00:09 0,2% iropt/1)
 * Mon Jul 10 2017 - Thomas Wagner
 - add missing Requires: libedit openssl
 - add -temp=%{_builddir} to CFLAGS to have compiler interim files of size 1GB not live in size-limited /tmp on swap (seen with Sun CC 5.12 aka 12.3)
