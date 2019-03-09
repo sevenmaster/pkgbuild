@@ -1,8 +1,3 @@
-
-
-
-
-
 #generate your own very local keys for forward secrecy after package installation by start method script / at first start
 # https://www.heinlein-support.de/blog/security/perfect-forward-secrecy-pfs-fur-postfix-und-dovecot
 # https://kofler.info/postfix-tls-optionen/
@@ -379,8 +374,7 @@ perl -w -pi -e "s,(-Wformat|-Wno-comment|-Wmissing-prototypes),,g" Makefile Make
 #fix unlucky selection of name for struct (introduced in some 3.4.x version)
 grep "struct sockaddr_un sun;" src/util/unix_dgram_connect.c \
    && gsed -i.bak_undef_sun -e '/struct sockaddr_un sun;/ i\
-struct sockaddr_un sun;\
-' src/util/unix_dgram_connect.c
+#undef sun' src/util/unix_dgram_connect.c
 
 
 %build
@@ -674,7 +668,7 @@ bin/postconf -c ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix -e \
 %if %{omnios}
         "smtp_tls_CAfile=/etc/ssl/email-ca-bundle.crt"
 %endif #omnios
-%if  %( expr %{solaris11} '|' %{s1104} '|' %{oihipster} )
+%if  %( expr %{solaris11} '|' %{s110400} '|' %{oihipster} )
         "smtp_tls_CAfile=/etc/certs/ca-certificates.crt"
 %endif #solaris
 %endif #with_tls
@@ -1150,7 +1144,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 - bump to 3.4.1
 - set smtp_tls_CAfile=/etc/ssl/email-ca-bundle.crt (OM) to get Certificated of target smtp server verified (Trusted / Untrusted)
 - set smtp_tls_CAfile=/etc/certs/smtp_tls_CAfile= (S11.3 S11.4 OIH) to get Certificated of target smtp server verified (Trusted / Untrusted)
-- fix compilation in unix_dgram_connect.c (struct sockaddr_un sun;)
+- fix compilation in unix_dgram_connect.c (struct sockaddr_un sun;), again
 * Wed Feb 27 2019 - Thomas Wagner
 - bump to 3.3.3
 * Sun Dec  2 2018 - Thomas Wagner
