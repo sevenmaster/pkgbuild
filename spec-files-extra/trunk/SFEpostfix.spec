@@ -376,6 +376,12 @@ perl -w -pi -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -
 #remove  -Wformat -Wno-comment -Wmissing-prototypes in Makefile Makefile.in
 perl -w -pi -e "s,(-Wformat|-Wno-comment|-Wmissing-prototypes),,g" Makefile Makefile.in
 
+#fix unlucky selection of name for struct (introduced in some 3.4.x version)
+grep "struct sockaddr_un sun;" src/util/unix_dgram_connect.c \
+   && gsed -i.bak_undef_sun -e '/struct sockaddr_un sun;/ i\
+struct sockaddr_un sun;\
+' src/util/unix_dgram_connect.c
+
 
 %build
 CPUS=`/usr/sbin/psrinfo | grep on-line | wc -l | tr -d ' '`
@@ -656,6 +662,23 @@ bin/postconf -c ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix -e \
     || exit 1
   fi
 %endif
+
+
+#want outgoing email checked against root certificates
+#this stops printing "Untrusted......" every time, instead it prints now in log: "Trusted TLS connection established" or "Untrusted TLS connection established"
+#omnios /etc/ssl/email-ca-bundle.crt
+#solaris ???bundlefile
+#openindiana ???bundlefile
+%if %{with_tls}
+    bin/postconf -c ${RPM_BUILD_ROOT}%{_sysconfdir}/postfix -e \
+%if %{omnios}
+        "smtp_tls_CAfile=/etc/ssl/email-ca-bundle.crt"
+%endif #omnios
+%if  %( expr %{solaris11} '|' %{s1104} '|' %{oihipster} )
+        "smtp_tls_CAfile=/etc/certs/ca-certificates.crt"
+%endif #solaris
+%endif #with_tls
+
 # Fix a typo in some of the documentation.
 perl -pi -e "s/DEF_SASL_SERVER_TYPE/DEF_SERVER_SASL_TYPE/g" */SASL_README*
 
@@ -1125,6 +1148,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %changelog
 * Sat Mar  9 2019 - Thomas Wagner
 - bump to 3.4.1
+- set smtp_tls_CAfile=/etc/ssl/email-ca-bundle.crt (OM) to get Certificated of target smtp server verified (Trusted / Untrusted)
+- set smtp_tls_CAfile=/etc/certs/smtp_tls_CAfile= (S11.3 S11.4 OIH) to get Certificated of target smtp server verified (Trusted / Untrusted)
+- fix compilation in unix_dgram_connect.c (struct sockaddr_un sun;)
 * Wed Feb 27 2019 - Thomas Wagner
 - bump to 3.3.3
 * Sun Dec  2 2018 - Thomas Wagner
