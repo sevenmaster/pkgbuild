@@ -13,7 +13,7 @@
      args = parser.parse_args()
  
 -    if not args.log_file and in_background():
-+    if not args.log_file and in_background() and platform.system != 'SunOS':
++    if in_background() and not args.log_file and not platform.system() == "SunOS":
          # The Linux, Mac, and FreeBSD values of the logging device.
          logdev = [x for x in ('/dev/log', '/var/run/syslog', '/var/run/log')
                    if os.path.exists(x) and not os.path.isdir(x)]
