@@ -1,0 +1,82 @@
+-
+Date: Sun, 10 Mar 2019 14:34:02 +0000
+From: Scott Kitterman <postfix@kitterman.com>
+Subject: Fwd: Bug#924183: postfix: Trust anchor files (tafile=) in TLS policy break secure level email delivery
+To: Postfix users <postfix-users@postfix.org>
+
+Package: postfix
+Version: 3.4.1-1
+Severity: important
+Tags: patch
+
+Hi,
+
+I have entries like this:
+
+  [domain.tld]:587    secure tafile=/etc/ssl/certs/Lets-Encrypt-Authority-X3.pem
+
+… in the file referenced by:
+
+  smtp_tls_policy_maps = hash:/etc/postfix/tls_policy
+
+This worked just fine until 3.3.2-4 inclusive but since I've upgraded
+my sid system yesterday and Postfix was upgraded to 3.4.1-1 I see:
+
+  postfix/smtp[15202]: warning: Trust anchor files not supported
+  postfix/smtp[15202]: warning: TLS policy lookup error for [domain.tld]:587/domain.tld: client TLS configuration problem
+  postfix/smtp[15202]: warning: TLS policy lookup for [domain.tld]:587/domain.tld: client TLS configuration problem
+  postfix/smtp[15202]: 8B30018835E3: to=<someone@example.com>, relay=none, delay=1197, delays=1196/0.82/0.36/0, dsn=4.7.5, status=de
++ferred (client TLS configuration problem)
+
+This seems to come from src/tls/tls_dane.c. I see that 3.4.0 has
+modified this file quite a bit, e.g. these lines were removed:
+
+  #if OPENSSL_VERSION_NUMBER >= 0x1000000fL && \
+         (defined(X509_V_FLAG_PARTIAL_CHAIN) || !defined(OPENSSL_NO_ECDH))
+  #define TRUST_ANCHOR_SUPPORT
+
+… and there's only one "#ifdef TRUST_ANCHOR_SUPPORT" left, that guards
+the warning I'm seeing. This feels like a leftover of an incomplete
+cleanup of the TLS support code that happened in this release, such as
+dropping support for OpenSSL 1.0.1.
+
+FWIW the attached patch fixes this problem for me. I don't know if it
+can cause any trouble.
+
+
+
+
+From 4d98d0aa5aeb4fbb9941a4239251edfb1537a0e9 Mon Sep 17 00:00:00 2001
+From: intrigeri <intrigeri@debian.org>
+Date: Sun, 10 Mar 2019 06:29:25 +0000
+Subject: [PATCH] Drop leftover of obsolete check for trust anchor support.
+
+---
+ src/tls/tls_dane.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/src/tls/tls_dane.c b/src/tls/tls_dane.c
+index 93f8e2a5..013426b1 100644
+--- a/src/tls/tls_dane.c
++++ b/src/tls/tls_dane.c
+@@ -1125,7 +1125,6 @@ TLS_DANE *tls_dane_resolve(unsigned port, const char *proto, DNS_RR *hostrr,
+ 
+ int     tls_dane_load_trustfile(TLS_DANE *dane, const char *tafile)
+ {
+-#ifdef TRUST_ANCHOR_SUPPORT
+     BIO    *bp;
+     char   *name = 0;
+     char   *header = 0;
+@@ -1217,9 +1216,6 @@ int     tls_dane_load_trustfile(TLS_DANE *dane, const char *tafile)
+     }
+     /* Some other PEM read error */
+     tls_print_errors();
+-#else
+-    msg_warn("Trust anchor files not supported");
+-#endif
+     return (0);
+ }
+ 
+-- 
+2.20.1
+
