@@ -619,6 +619,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/pltclu--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pltclu--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pltclu.control
+%{_prefix}/%{major_version}/share/extension/adminpack--1.1.sql
+%{_prefix}/%{major_version}/share/extension/adminpack--1.0--1.1.sql
 %endif
 
 
@@ -1285,6 +1287,8 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/%{_arch64}/vacuumlo
 
 %changelog
+* Sun Mar 10 2019 - Thomas Wagner
+- fix packaging for extension/adminpack--1.1*
 * Sun Mar  3 2019 - Thomas Wagner
 - bump to version 9.6.12
 * Tue Mar  6 2018 - Thomas Wagner
