@@ -101,6 +101,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 10 2019 - Thomas Wager
+- fix patch2 to really detect SunOS
 * Sun Dec 23 2018 - Thomas Wagner
 - add patch2 irker-02-2.18-use-syslog-stream-not-dev.diff to always use on SunOS the StreamHandler for syslog
 * Mon Feb 27 2018 - Thomas Wagner
