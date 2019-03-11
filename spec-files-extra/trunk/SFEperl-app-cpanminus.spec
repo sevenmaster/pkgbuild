@@ -105,8 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-#%dir %attr(0755,root,bin) %{_bindir}
-#%{_bindir}/*
+%dir %attr(0755,root,bin) %{_bindir}
+%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -116,4 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- fix %files %{_bindir}/*
+* Wed Oct  3 2018 - Thomas Wagner
+- initial spec version 1.7044

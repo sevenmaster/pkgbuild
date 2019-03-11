@@ -32,6 +32,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/Crypt-OpenSSL-RSA-%{t
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:  SFEperl-crypt-openssl-guess
+Requires:       SFEperl-crypt-openssl-guess
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Moritz Onken <onken@netcubed.de>
@@ -116,4 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- add (Build)Requires SFEperl-crypt-openssl-guess
+* Wed Oct  3 2018 - Thomas Wagner
+- initial spec version 0.31
