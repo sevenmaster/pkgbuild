@@ -136,6 +136,10 @@ cp -rp %{tarball_name}-%{tarball_version} %{tarball_name}-%{tarball_version}-64
 #get 2048MB mem per CPU
 #get 768MB mem per CPU
 #get 1536 mem per CPU to try lower /tmp/ usage by the compiler (trick)
+#set TMPDIR to place large compiler tempfiles to /var/tmp/ instead of smallish /tmp
+#and to not steal valuable memory from the compiler running in memory
+export TMPDIR=%{_builddir}/compilertmpdir-%{name}
+mkdir -p ${TMPDIR}
 CPUS=%{_cpus_memory_2048}
 
 cd %{tarball_name}-%{tarball_version}
@@ -155,7 +159,7 @@ export CC=cc
 #-rw-r--r--   1 sfe staff   9115153 Jul 11 17:01 acomp.1499784967.15585.02.sd
 #-rw-r--r--   1 sfe staff 315490504 Jul 11 17:03 iropt.1499784967.15585.03.ir
 #-rw-r--r--   1 sfe staff 742051468 Jul 11 17:01 acomp.1499784967.15585.01.ir
-export CFLAGS="-i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=%{_builddir}"
+export CFLAGS="-i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=${TMPDIR}"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib -R/usr/gnu/lib -lncurses"
 export LD_OPTIONS="-R/usr/gnu/lib -L/usr/gnu/lib"
 
@@ -199,14 +203,14 @@ PERLCONFIG=""
             --with-libs=/usr/gnu/lib:/usr/lib \
 
 
-gmake -j$CPUS world
+gmake -j$CPUS world || { echo "Probably out of memory. Re-try with CPUS=1."; gmake V=2 -j1; }
 
 %ifarch amd64 sparcv9
 cd ../%{tarball_name}-%{tarball_version}-64
 
 #export CFLAGS="%optflags64"
 ##TODO## -xO5 testen
-export CFLAGS="-m64 -i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=%{_builddir}"
+export CFLAGS="-m64 -i -xO3 -xspace -xstrconst -Kpic -xregs=no%frameptr -xCC -temp=${TMPDIR}"
 export LDFLAGS="%_ldflags -L/usr/gnu/lib/%{_arch64} -R/usr/gnu/lib/%{_arch64} -lncurses"
 #we aren't using the normal include schemas to get 32-/64-bit dual builds, so fix it here
 export LDFLAGS=$( echo ${LDFLAGS}  | sed -e 's/-m32/-m64/g' )
@@ -254,7 +258,7 @@ PERLCONFIG=""
             --with-libs=/usr/gnu/lib/%{_arch64}:/usr/lib/%{_arch64} \
 
 
-gmake -j$CPUS world
+gmake -j$CPUS world || { echo "Probably out of memory. Re-try with CPUS=1."; gmake V=2 -j1; }
 
 %endif
 
@@ -619,8 +623,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/share/extension/pltclu--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pltclu--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/pltclu.control
-%{_prefix}/%{major_version}/share/extension/adminpack--1.1.sql
-%{_prefix}/%{major_version}/share/extension/adminpack--1.0--1.1.sql
 %endif
 
 
@@ -1077,6 +1079,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{major_version}/lib/%{_arch64}/hstore_plpython2.so
 %{_prefix}/%{major_version}/share/extension/adminpack--1.0.sql
 %{_prefix}/%{major_version}/share/extension/adminpack.control
+%{_prefix}/%{major_version}/share/extension/adminpack--1.1.sql
+%{_prefix}/%{major_version}/share/extension/adminpack--1.0--1.1.sql
 %{_prefix}/%{major_version}/share/extension/autoinc--1.0.sql
 %{_prefix}/%{major_version}/share/extension/autoinc--unpackaged--1.0.sql
 %{_prefix}/%{major_version}/share/extension/autoinc.control
@@ -1287,8 +1291,13 @@ rm -rf $RPM_BUILD_ROOT
 %ips_tag (mediator=postgres mediator-version=%{major_version}) /usr/bin/%{_arch64}/vacuumlo
 
 %changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- set TMPDIR to %{_builddir} assuming this is a fast (local) filesystem and use this as CFLAGS -temp=${TMPDIR}
+- make one re-try with gmake -j1 if first compile attempt fails.
+- fix packaging again for extension/adminpack--*
 * Sun Mar 10 2019 - Thomas Wagner
 - fix packaging for extension/adminpack--1.1*
+- set TMPDIR to avoid filling up /tmp/ and steal memory
 * Sun Mar  3 2019 - Thomas Wagner
 - bump to version 9.6.12
 * Tue Mar  6 2018 - Thomas Wagner
