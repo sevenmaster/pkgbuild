@@ -14,7 +14,9 @@
 #%define _use_internal_dependency_generator 0
 
 %define tarball_version 1.09
-%define tarball_name    Authen-NTLM
+#%define tarball_name    Authen-NTLM
+#tar file and extratex dir is named only NTLM-***
+%define tarball_name    NTLM
 
 Name:		SFEperl-authen-ntlm
 IPS_package_name: library/perl-5/authen-ntlm
@@ -116,4 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- fix unpacking / cd to source directory (named NTML-%{version} and not Authen-NTLM-%{version} )
+* Wed Oct  3 2018 - Thomas Wagner
+- initial spec version 1.09 (IPS: 1.9)

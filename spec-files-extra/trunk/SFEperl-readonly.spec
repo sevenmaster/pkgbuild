@@ -32,6 +32,8 @@ Source0:	http://search.cpan.org/CPAN/authors/id/S/SA/SANKO/Readonly-%{tarball_ve
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
+BuildRequires:  SFEperl-module-build-tiny
+Requires:       SFEperl-module-build-tiny
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Sanko Robinson <sanko@cpan.org>
@@ -116,4 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- add (Build)Requires:  SFEperl-module-build-tiny
+* Wed Oct  3 2018 - Thomas Wagner
+- initial spec version 2.05

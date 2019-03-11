@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-module-scandeps
+# spec file for package: SFEperl-module-build-tiny
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -13,34 +13,34 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 1.25
-%define tarball_name    Module-ScanDeps
+%define tarball_version 0.039
+%define tarball_name    Module-Build-Tiny
 
-Name:		SFEperl-module-scandeps
-IPS_package_name: library/perl-5/module-scandeps
-Version:	1.25
-IPS_component_version: 1.25
+Name:		SFEperl-module-build-tiny
+IPS_package_name: library/perl-5/module-build-tiny
+Version:	0.039
+IPS_component_version: 0.39
 Group:          Development/Libraries                    
-Summary:	Module::ScanDeps - Module::ScanDeps
-License:	Artistic
+Summary:	Module::Build::Tiny - Module::Build::Tiny
+License:	GPLv1
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~rschupp/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~leont/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
-SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/Module-ScanDeps-%{tarball_version}.tar.gz
+SUNW_Copyright: %{name}.copyright
+Source0:	http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-Tiny-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Roderich Schupp <rschupp@cpan.org>
-Meta(info.upstream_url):        http://search.cpan.org/~rschupp/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Leon Timmermans <fawaka@gmail.com>
+Meta(info.upstream_url):        http://search.cpan.org/~leont/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-Module::ScanDeps
-Module::ScanDeps
+Module::Build::Tiny
+Module::Build::Tiny
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
@@ -105,8 +105,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,bin)
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
 %{_prefix}/%{perl_path_vendor_perl_version}/*
-%dir %attr(0755,root,bin) %{_bindir}
-%{_bindir}/*
+#%dir %attr(0755,root,bin) %{_bindir}
+#%{_bindir}/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -117,6 +117,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Mar 11 2019 - Thomas Wagner
-- fix %files %{_bindir}/*
-* Wed Oct  3 2018 - Thomas Wagner
-- initial spec version 1.25
+- initial spec version 0.39
