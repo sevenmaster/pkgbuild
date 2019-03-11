@@ -297,11 +297,27 @@ exit 1
 %define pnm_buildrequires_apch22m_php52		web/server/apache-22/module/apache-php5
 %define pnm_requires_apch22m_php52		web/server/apache-22/module/apache-php5
 
+#pkg://solaris/library/jansson@2.10,5.11-11.4.0.0.1.14.0:20180814T164738Z     ---
+#pkg://solaris/library/jansson@2.7,5.11-0.175.3.0.0.30.0:20150821T165455Z     i--
+#other OSDISTRO uses the SFE package
+%define pnm_buildrequires_SFElibjansson		library/jansson
+%define pnm_requires_SFElibjansson		library/jansson
+
 #>=133
 %endif
 #os2nnn
 %endif
 #END >=133 AND os2nnn    note: two closing endif
+
+
+##TODO##
+#platform standard locations for paths and files
+#openssl
+#omnios          CA bundle:
+#solaris11 S11.3 CA bundle:
+#s1104     S11.4 CA bundle:
+#hipster         CA bundle:
+#%define pnm_openssl_CAbundle_file 
 
 #separate packages for the various openssl pieces (libs, incclude, commands, ...)
 #note: for running the build on SXCE we do *not* have the big bang package
@@ -1697,6 +1713,13 @@ exit 1
 %define pnm_buildrequires_SFEautomake_115             developer/build/automake-115
 %define pnm_requires_SFEautomake_115                  developer/build/automake-115
 
+
+#pkg://solaris/library/libedit@3.1-11.4.0.0.0.12.0:20180103T031218Z
+%define pnm_buildrequires_library_libedit		library/libedit
+%define pnm_requires_library_libedit			library/libedit
+%define pnm_buildrequires_SFEeditline			library/libedit
+%define pnm_requires_SFEeditline			library/libedit
+
 #S12 lost the legacy name SUNWgnu-dbm
 %define pnm_buildrequires_SFEgdbm		library/database/gdbm
 %define pnm_requires_SFEgdbm		 	library/database/gdbm
@@ -1706,6 +1729,8 @@ exit 1
 ##TODO## check if this is the case as well for S11 (!)
 #S12 lost the legacy name SUNWslang
 #S12 is ignored now, S11.4 lost the entire package, use SFEslang again (see elsewhere)
+#pkg://solaris/library/slang@2.2.4-11.4.0.0.1.9.0:20180618T181210Z            --o
+#pkg://solaris/library/slang@2.2.4-5.12.0.0.0.114.0:20161212T034553Z          --o
 #%define pnm_buildrequires_SUNWslang_devel library/slang
 #%define pnm_buildrequires_SUNWslang library/slang
 #%define pnm_requires_SUNWslang library/slang
@@ -3560,6 +3585,10 @@ exit 1
 
 
 %changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- resolve pnm_macro for SFEeditline to pkg://solaris/library/libedit@3.1-11.4 (S1104)
+* Sun Mar  3 2019 - Thomas Wagner
+- add pnm_buildrequires_SFElibjansson library/jansson (on S11 S1104/S12. OIH OM use SFE package)
 * Fri Jan 11 2019 - Thomas Wagner
 - add perl-524@5.24.3-2017 in 64-bit (OIH '>=' 20170000000016250000000000000.0 )
 * Sun Aug 19 2018 - Thomas Wagner
