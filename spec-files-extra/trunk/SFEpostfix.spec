@@ -196,8 +196,6 @@ Source9:	postfix-saslauthd.conf
 #HAS_NISPLUS is defined for the Solaris Release
 #replaced by sed
 #Patch3:		postfix-03-remove-nisplus-build130.diff
-#temporary fix for 3.4.1
-Patch4:                 postfix-04-temporary-fix-0001-Drop-leftover-of-obsolete-check-for-trust-anchor-sup.patch
 
 SUNW_BaseDir:            %{_basedir}
 SUNW_Copyright:		 postfix.copyright
@@ -335,9 +333,6 @@ mkdir tmp
 #replaced by sed
 #%patch3 -p1
 sed -i -e '/^#define HAS_NISPLUS/ s,^,//,'    src/util/sys_defs.h
-
-#temporary fix for 3.4.1
-%patch4 -p1
 
 #postfix manifest
 cp -p %{SOURCE3} postfix.xml
@@ -1145,6 +1140,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon Mar 11 2019 - Thomas Wagner
+- really remove patch4 (fixed in 3.4.3)
 * Sun Mar 10 2019 - Thomas Wagner
 - bump to 3.4.3
 - remove patch4 (fixed in 3.4.3)
