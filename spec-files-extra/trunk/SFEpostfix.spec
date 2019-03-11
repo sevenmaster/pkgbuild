@@ -182,7 +182,7 @@ IPS_Package_Name:	 sfe/service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
-Version:                 3.4.1
+Version:                 3.4.3
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1145,6 +1145,9 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Sun Mar 10 2019 - Thomas Wagner
+- bump to 3.4.3
+- remove patch4 (fixed in 3.4.3)
 * Sun Mar 10 2019 - Thomas Wagner
 - temporary fix for 3.4.1 postfix-04-temporary-fix-0001-Drop-leftover-of-obsolete-check-for-trust-anchor-sup.patch
 * Sat Mar  9 2019 - Thomas Wagner
