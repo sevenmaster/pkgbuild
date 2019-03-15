@@ -32,6 +32,11 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %{omnios}
+%define cc_is_gcc 1
+%endif
+%include base.inc
+
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
@@ -81,6 +86,11 @@ Attention: Instead of vendor_perl, this package installs into
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
+%if %{cc_is_gcc}
+export CC=gcc
+export CXX=g++
+%endif
 
 %include perl-bittness.inc
 
