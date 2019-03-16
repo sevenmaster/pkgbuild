@@ -1,13 +1,3 @@
-
-
-# Note spec file differs from Perl Module name and download tarball name
-
-# the upstream tarball and Perl module name do not match ... we try to make something useful out of this
-
-
-
-
-
 #
 # spec file for package: SFEperl-io-compress-base
 #
@@ -19,6 +9,9 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %{omnios}
+exit 1
+%endif
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
 %define _use_internal_dependency_generator 0
@@ -168,7 +161,3 @@ rm -rf $RPM_BUILD_ROOT
 - make version number IPS capable
 * Tue Nov 13 2007 - trisk@acm.jhu.edu
 - Initial spec
-consider adding these modules to the "(Build)Requires section:  
-consider adding these modules to the "(Build)Requires section:  
-consider adding these modules to the "(Build)Requires section:  
-consider adding these modules to the "(Build)Requires section:  

@@ -33,6 +33,13 @@ Source0:	http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-Tiny-%{t
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:   SFEperl-extutils-config
+Requires:        SFEperl-extutils-config
+BuildRequires:   SFEperl-extutils-helpers
+Requires:        SFEperl-extutils-helpers
+BuildRequires:   SFEperl-extutils-installpaths
+Requires:        SFEperl-extutils-installpaths
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Leon Timmermans <fawaka@gmail.com>
 Meta(info.upstream_url):        http://search.cpan.org/~leont/%{tarball_name}-%{tarball_version}
