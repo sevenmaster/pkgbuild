@@ -8,6 +8,8 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
+#may again include base.inc for OS where perl is comiled by gcc and therefor we need cc_is_gcc 1 and correct compiler flags
+%include perlcompilerflags.inc
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
@@ -49,6 +51,8 @@ Crypt::OpenSSL::RSA
 
 %build
 
+%include perl-bittness.inc
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -64,28 +68,8 @@ if test -f Makefile.PL
     INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
 
-
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
-  make
-%else
-  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
-%endif
-
-else
-  # style "Build.PL"
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
-    --installdirs vendor --makefile_env_macros 1 \
-    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
-    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    --install_path bin=%{_bindir} \
-    --install_path bindoc=%{_mandir}/man1 \
-    --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT \
-
-
-
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
-fi
+#contains "make"
+%include perl-bittness-make.inc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -118,6 +102,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Fri Apr  5 2019 - Thomas Wagner
+- fix compile with 64-bit perl
 * Mon Mar 11 2019 - Thomas Wagner
 - add (Build)Requires SFEperl-crypt-openssl-guess
 * Wed Oct  3 2018 - Thomas Wagner
