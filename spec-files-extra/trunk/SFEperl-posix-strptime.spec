@@ -8,6 +8,8 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
+#may again include base.inc for OS where perl is comiled by gcc and therefor we need cc_is_gcc 1 and correct compiler flags
+%include perlcompilerflags.inc
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
@@ -47,6 +49,8 @@ POSIX::strptime
 
 %build
 
+%include perl-bittness.inc
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -59,28 +63,11 @@ if test -f Makefile.PL
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
 
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
-  make
-%else
-  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
-%endif
-
-else
-  # style "Build.PL"
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
-    --installdirs vendor --makefile_env_macros 1 \
-    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
-    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    --install_path bin=%{_bindir} \
-    --install_path bindoc=%{_mandir}/man1 \
-    --install_path libdoc=%{_mandir}/man3 \
-    --destdir $RPM_BUILD_ROOT
-
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
-fi
+#contains "make"
+%include perl-bittness-make.inc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -113,5 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Sun Jun 05 2016 - Thomas Wagner
+* Thu Apr  4 2019 - Thomas Wagner
+- fix compile with 64-bit perl
+* Jun  5 2016 - Thomas Wagner
+- reworked
+* Aug 16 2013 - Thomas Wagner
 - initial spec
