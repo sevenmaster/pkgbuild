@@ -33,7 +33,7 @@ Name:                    SFEsamba49
 IPS_package_name:	 sfe/service/network/samba49
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.9.5
+Version:                 4.9.6
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -828,6 +828,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Thu Apr 11 2019 - Thomas Wagner
+- bump to 4.9.6
 * Wed Mar 13 2019 - Thomas Wagner
 - bump to 4.9.5
 * Sun Mar  3 2019 - Thomas Wagner
