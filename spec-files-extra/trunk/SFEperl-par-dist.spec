@@ -1,5 +1,5 @@
 #
-# spec file for package: SFEperl-par-packer
+# spec file for package: SFEperl-par-dist
 #
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
@@ -8,38 +8,30 @@
 #
 %include Solaris.inc
 %include packagenamemacros.inc
-#may again include base.inc for OS where perl is comiled by gcc and therefor we need cc_is_gcc 1 and correct compiler flags
-%include perlcompilerflags.inc
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 1.047
-%define tarball_name    PAR-Packer
+%define tarball_version 0.49
+%define tarball_name    PAR-Dist
 
-Name:		SFEperl-par-packer
-IPS_package_name: library/perl-5/par-packer
-Version:	1.047
-IPS_component_version: 1.47
+Name:		SFEperl-par-dist
+IPS_package_name: library/perl-5/par-dist
+Version:	0.49
+IPS_component_version: 0.49
 Group:          Development/Libraries                    
-Summary:	PAR::Packer - PAR::Packer
+Summary:	PAR::Dist - PAR::Dist
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
 Url:		http://search.cpan.org/~rschupp/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
-Source0:	http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/PAR-Packer-%{tarball_version}.tar.gz
+Source0:	http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/PAR-Dist-%{tarball_version}.tar.gz
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
-BuildRequires:  SFEperl-compress-raw-zlib
-Requires:       SFEperl-compress-raw-zlib
-BuildRequires:  SFEperl-par-dist
-Requires:       SFEperl-par-dist
-BuildRequires:  SFEperl-par
-Requires:       SFEperl-par
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Roderich Schupp <rschupp@cpan.org>
@@ -47,15 +39,13 @@ Meta(info.upstream_url):        http://search.cpan.org/~rschupp/%{tarball_name}-
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
-PAR::Packer
-PAR::Packer
+PAR::Dist
+PAR::Dist
 
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
-
-%include perl-bittness.inc
 
 if test -f Makefile.PL
   then
@@ -73,8 +63,27 @@ if test -f Makefile.PL
 
 
 
-#contains "make"
-%include perl-bittness-make.inc
+%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+  make
+%else
+  make CC=$CC CCCDLFLAGS="%picflags" OPTIMIZE="%optflags" LD=$CC
+%endif
+
+else
+  # style "Build.PL"
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build.PL \
+    --installdirs vendor --makefile_env_macros 1 \
+    --install_path lib=%{_prefix}/%{perl_path_vendor_perl_version} \
+    --install_path arch=%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    --install_path bin=%{_bindir} \
+    --install_path bindoc=%{_mandir}/man1 \
+    --install_path libdoc=%{_mandir}/man3 \
+    --destdir $RPM_BUILD_ROOT \
+
+
+
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -98,8 +107,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/%{perl_path_vendor_perl_version}/*
 #%dir %attr(0755,root,bin) %{_bindir}
 #%{_bindir}/*
-%dir %attr(0755,root,bin) %{_prefix}/bin
-%{_prefix}/bin/*
 %dir %attr(0755,root,sys) %{_datadir}
 %dir %attr(0755, root, bin) %{_mandir}
 #%dir %attr(0755, root, bin) %{_mandir}/man1
@@ -109,11 +116,5 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-* Wed Apr 10 2019 - Thomas Wagner
-- add (Build)Requires SFEperl-par-dist.spec
-* Fri Apr  5 2019 - Thomas Wagner
-- add (Build)Requires SFEperl-compress-raw-zlib (S11), SFEperl-par
-* Mon Jan 28 2019 - Thomas Wagner
-- fix compile with 64-bit perl
-* Wed Oct  3 2018 - Thomas Wagner
-- initial spec version 0.37
+* Wed 10 Apr 2019 - Thomas Wagner
+- initial spec for PAR::Packer SFEpelr-par-packer.spec
