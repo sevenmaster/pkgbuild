@@ -297,11 +297,6 @@ exit 1
 %define pnm_buildrequires_apch22m_php52		web/server/apache-22/module/apache-php5
 %define pnm_requires_apch22m_php52		web/server/apache-22/module/apache-php5
 
-#pkg://solaris/library/jansson@2.10,5.11-11.4.0.0.1.14.0:20180814T164738Z     ---
-#pkg://solaris/library/jansson@2.7,5.11-0.175.3.0.0.30.0:20150821T165455Z     i--
-#other OSDISTRO uses the SFE package
-%define pnm_buildrequires_SFElibjansson		library/jansson
-%define pnm_requires_SFElibjansson		library/jansson
 
 #>=133
 %endif
@@ -1030,6 +1025,17 @@ exit 1
 %define pnm_requires_SFElibgpg_error_gnu			SFElibgpg-error-gnu
 %define pnm_buildrequires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu
 %define pnm_requires_library_security_libgpg_error_gnu	SFElibgpg-error-gnu
+
+
+%define pnm_buildrequires_SFElibarchive		SFElibarchive
+%define pnm_requires_SFElibarchive		SFElibarchive
+
+%define pnm_buildrequires_SFElibjansson		SFElibjansson
+%define pnm_requires_SFElibjansson		SFElibjansson
+
+%define pnm_buildrequires_SFEgpgme		SFEgpgme
+%define pnm_requires_SFEgpgme			SFEgpgme
+
 %endif
 #END omnios
 

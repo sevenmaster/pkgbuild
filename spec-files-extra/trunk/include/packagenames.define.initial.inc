@@ -97,6 +97,23 @@
 %endif
 #END <=90
 
+#set default to libjansson, only Solaris has it
+#pkg://solaris/library/jansson@2.10,5.11-11.4.0.0.1.14.0:20180814T164738Z
+#pkg://solaris/library/jansson@2.7,5.11-0.175.3.0.0.30.0:20150821T165455Z
+#other OSDISTRO uses the SFE package
+%define pnm_buildrequires_SFElibjansson		library/jansson
+%define pnm_requires_SFElibjansson		library/jansson
+
+#pkg://solaris/library/libarchive@3.3.1,5.11-0.175.3.20.0.4.0:20170516T234612Z
+#set default to libarchive, OmniOSce need our SFElibarchive package
+%define pnm_buildrequires_SFElibarchive		library/archive
+%define pnm_requires_SFElibarchive		library/archive
+
+#pkg://solaris/library/security/gpgme@1.6.0,5.11-0.175.3.34.0.3.0:20180621T211314Z
+#set default to gpgme, OmniOSce need our SFEgpgme package
+%define pnm_buildrequires_SFEgpgme		library/security/gpgme
+%define pnm_requires_SFEgpgme			library/security/gpgme
+
 
 %changelog
 * Mon May 23 2016 - Thomas Wagner
