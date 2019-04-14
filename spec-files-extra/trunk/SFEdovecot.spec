@@ -76,7 +76,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.4
+Version:	2.3.5.1
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -300,6 +300,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Sun Apr 14 2019 - Thomas Wagner
+- bump to 2.3.5.1 - https://dovecot.org/list/dovecot-news/2019-March/000401.html
 * Sun Dec  2 2018 - Thomas Wagner
 - add missing package dependency on libsodium (would make auth process fail)
 - bump to 2.3.4 - https://www.dovecot.org/list/dovecot-news/2018-November/000391.html
