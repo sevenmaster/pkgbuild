@@ -104,9 +104,9 @@
 		timeout_seconds='60' />
 
 	<exec_method type='method' name='restart'
-		<!-- exec='/usr/sbin/postfix reload' -->
 		exec='/usr/sbin/postfix restart'
 		timeout_seconds='60' />
+		<!-- exec='/usr/sbin/postfix reload' -->
 
 <!--
 	<property_group name='general' type='framework'>
