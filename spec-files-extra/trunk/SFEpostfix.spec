@@ -182,7 +182,11 @@ IPS_Package_Name:	 sfe/service/network/smtp/postfix
 Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
+%if %( pkg info openssl | grep "Version: 1.0.1" >/dev/null && echo 1 || echo 0 )
+Version:                 3.3.4
+%else
 Version:                 3.4.5
+%endif
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
 Source3:                 postfix.xml
@@ -1020,7 +1024,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr (0755, root, bin) %{_libdir}
 %{_libdir}/sendmail.postfix
 %dir %attr (0711, root, bin) %{_libdir}/%{src_name}
-%{_libdir}/%{src_name}/*
+%ips_tag(restart_fmri="svc:/network/smtp:postfix") %{_libdir}/%{src_name}/*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_docdir}
 %{_docdir}/%{name}/*
@@ -1095,7 +1099,7 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 %dir %attr (0700, %{runuser}, root) %{_localstatedir}/lib/postfix
 %dir %attr (0755, root, bin) %{_localstatedir}/spool
 #%dir %attr (0755, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}
-%dir %attr (0755, root, bin) %{_localstatedir}/spool/%{src_name}
+%ghost %dir %attr (0755, root, bin) %{_localstatedir}/spool/%{src_name}
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/active
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/bounce
 %dir %attr (0700, %{runuser}, bin) %{_localstatedir}/spool/%{src_name}/corrupt
@@ -1140,6 +1144,11 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Apr 17 2019 - Thomas Wagner
+- set %ips_tag(restart_fmri="svc:/network/smtp:postfix") - to get binaries reloaded of they change on pkg update
+- use /usr/sbin/postfix restart instead of /usr/sbin/postfix reload - to get all binaries reloaded 8e.g. on upgrade)
+- note changes in SFEdovecot.spec that no sends restart to postfix if dovecot gets reloaded - to get auth_pipe for SMTP_AUTH refreshed propperly
+- make bump to 3.4.5 conditional, if openssl is 1.0.1 then use version 3.3.4 (S11) (at the moment only works for IPS based systems)
 * Mon Apr  1 2019 - Thomas Wagner
 - bump to 3.4.5
 * Fri Mar 15 2019 - Thomas Wagner
