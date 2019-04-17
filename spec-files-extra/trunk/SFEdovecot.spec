@@ -119,6 +119,14 @@ BuildRequires: SFEclucene-gpp-devel
 Requires: SFEclucene-gpp
 %endif
 
+#with newer solr and dovecot-plugin there is no need for SFEclucene* and SFElibstemmer
+#needs libexpat installed to enable the --with-solr plugin
+BuildRequires: %{pnm_buildrequires_library_expat}
+Requires:      %{pnm_requires_library_expat}
+#later 
+#BuildRequires: SFEsolr
+#Requires:      SFEsolr
+
 %include default-depend.inc
 
 Requires: %name-root
@@ -264,6 +272,11 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 #  echo 'getent group %{daemonlogingroup} && groupdel %{daemonlogingroup}';
 #  echo 'exit 0' ) | $PKG_INSTALL_ROOT/usr/lib/postrun -c SFE
 
+%post
+%restart_fmri dovecot
+%restart_fmri postfix
+
+
 #the script is found automaticly in ext-sources w/o a Source<n> keyword
 %iclass renamenew -f i.renamenew
 
@@ -271,11 +284,11 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %defattr(-, root, bin)
 %doc README ChangeLog COPYING INSTALL NEWS AUTHORS TODO 
 %dir %attr (0755,root,bin) %{_bindir}
-%{_bindir}/*
+%ips_tag(restart_fmri="svc:/site/dovecot") %{_bindir}/*
 %dir %attr (0755,root,bin) %{_sbindir}
-%{_sbindir}/*
+%ips_tag(restart_fmri="svc:/site/dovecot") %{_sbindir}/*
 %dir %attr (0755,root,bin) %{_libdir}
-%{_libdir}/%{src_name}/*
+%ips_tag(restart_fmri="svc:/site/dovecot") %{_libdir}/%{src_name}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
@@ -288,6 +301,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %{_datadir}/aclocal/*
 
 
+# %ips_tag(restart_fmri="svc:/foo/bar") %{_libdir}/fred
+
 
 %files root
 %defattr (-, root, sys)
@@ -296,10 +311,14 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %config %{_sysconfdir}/%{src_name}/*
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_localstatedir}
-%config %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
+%ips_tag(restart_fmri="svc:/site/dovecot") %config %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
 
 
 %changelog
+* Weg Arp 17 2019 - Thomas Wagner
+- set %ips_tag(restart_fmri="svc:/site/dovecot") - to get binaries reloaded of they change on pkg update
+- now send restart to postfix if dovecot gets reloaded - to get auth_pipe for SMTP_AUTH refreshed propperly,
+  see dovecot.xml postfix_multi-user-server
 * Sun Apr 14 2019 - Thomas Wagner
 - bump to 2.3.5.1 - https://dovecot.org/list/dovecot-news/2019-March/000401.html
 * Sun Dec  2 2018 - Thomas Wagner
