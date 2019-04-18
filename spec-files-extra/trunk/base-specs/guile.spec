@@ -16,12 +16,14 @@ BuildRoot:           %{_tmppath}/%{name}-%{version}-build
 %setup -q -n guile-%version
 %patch1 -p1
 
+
 #do we have d_fd or dd_fd?
 #was needed one day for OpenIndiana or OmniOS
+#note: [tab blank]
+#note2: this grep doesn't help on S11.4, needs __USE_LEGACY_PROTOTYPES__ be defined in CDFLAGS
 grep "int.*[	 ]dd_fd" /usr/include/dirent.h || {
 %patch2 -p1
 }
-
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -29,6 +31,11 @@ CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 export CFLAGS="%optflags -I%{gnu_inc}"
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 export ACLOCAL_FLAGS="-I . -I m4"
+%if %{s110400}
+# we get dd_fd defined with __USE_LEGACY_PROTOTYPES__
+export CFLAGS="${CFLAGS} -D__USE_LEGACY_PROTOTYPES__"
+%endif
+
 ./configure --prefix=%{_prefix}  \
             --bindir=%{_bindir}  \
             --libdir=%{_libdir}  \
@@ -58,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 12 2019 - Thomas Wagner
+- need __USE_LEGACY_PROTOTYPES__ to get dd_fd defined on (S11.4 / S12)
 * Sun Jul 31 2016 - Thomas Wagner
 - make it 32/64-bit
 - apply patch2 guile-02-1.8.8-dd_fd-d_fd.diff only, if the OS doesn't have dd_fd (d_fd instead)

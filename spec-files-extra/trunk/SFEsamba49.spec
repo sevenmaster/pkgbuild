@@ -524,6 +524,15 @@ gsed -i.bak.docbook.xsl \
    docs-xml/xslt/html.xsl
 %endif
 
+
+##TODO## scheint nicht zu klappen
+#aus http://midnight-commander.org/attachment/ticket/1943/01_namelen.patch
+#ABER:
+##TODO## kontrollieren ob das ein geegneter Wert ist (kann z.B. 512 statt 255 sein)
+%if %( expr %{solaris11} '+' %{s110400} '>=' 1 )
+gsed -i.bak -e 's?NAME_MAX?MAXNAMLEN?' source3/modules/vfs_glusterfs.c source3/modules/vfs_glusterfs_fuse.c
+%endif
+
             # --enable-debug \
 #CC=/usr/gnu/bin/gcc CXX=/usr/gnu/bin/g++ CPP=/usr/gnu/bin/cpp \
 PERL_ARCH_INSTALL_DIR=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
