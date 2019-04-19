@@ -1,0 +1,21 @@
+--- samba-4.9.6/python/samba/provision/__init__.py.orig2	2019-04-19 01:10:50.666615120 +0200
++++ samba-4.9.6/python/samba/provision/__init__.py	2019-04-19 21:42:09.237079317 +0200
+@@ -1638,18 +1638,6 @@
+         file = tempfile.NamedTemporaryFile(dir=os.path.abspath(sysvol))
+         try:
+             try:
+-                smbd.set_simple_acl(file.name, 0o755, gid)
+-            except OSError:
+-                if not smbd.have_posix_acls():
+-                    # This clue is only strictly correct for RPM and
+-                    # Debian-like Linux systems, but hopefully other users
+-                    # will get enough clue from it.
+-                    raise ProvisioningError("Samba was compiled without the posix ACL support that s3fs requires.  "
+-                                            "Try installing libacl1-dev or libacl-devel, then re-run configure and make.")
+-
+-                raise ProvisioningError("Your filesystem or build does not support posix ACLs, which s3fs requires.  "
+-                                        "Try the mounting the filesystem with the 'acl' option.")
+-            try:
+                 smbd.chown(file.name, uid, gid)
+             except OSError:
+                 raise ProvisioningError("Unable to chown a file on your filesystem.  "
