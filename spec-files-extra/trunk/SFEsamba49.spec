@@ -1,3 +1,231 @@
+##TODO##
+#ld.so.1: smbd: fatal: relocation error: file /usr/gnu/lib/samba/samba/libsmbd-base-samba4.so: symbol FamErrlist: referenced symbol not found
+#[ Nov 10 12:05:20 Method "start" failed due to signal KILL. ]
+#root@mailrouter:/etc/samba# ls -l /usr/gnu/lib/samba/samba/libsmbd-base-samba4.so:
+#/usr/gnu/lib/samba/samba/libsmbd-base-samba4.so:: No such file or directory
+#root@mailrouter:/etc/samba# ls -l /usr/gnu/lib/samba/samba/libsmbd-base-samba4.so 
+#-rwxr-xr-x   1 root     bin      4251684 Nov 10 11:58 /usr/gnu/lib/samba/samba/libsmbd-base-samba4.so
+#root@mailrouter:/etc/samba# pkg search libfam.so.0
+#INDEX      ACTION VALUE                     PACKAGE
+#basename   link   usr/lib/libfam.so.0       pkg:/library/file-monitor/gamin@0.1.10-0.0.151022
+#basename   link   usr/lib/amd64/libfam.so.0 pkg:/library/file-monitor/gamin@0.1.10-0.0.151022
+#basename   link   usr/lib/libfam.so.0       pkg:/library/file-monitor/gamin@0.1.10-0.0.151022
+#basename   link   usr/lib/amd64/libfam.so.0 pkg:/library/file-monitor/gamin@0.1.10-0.0.151022
+
+
+##TODO## Pfad in Muster smb.conf anpassen:
+# solaris-11.3-0.175.3.35.0.6.0
+
+##TODO## update auf samba 4.7 !!!
+
+#
+#     Planung: Aktionen werden zusammengeführt ... Fertig (0.051s)
+#     Planung: Es wird auf widersprüchliche Aktionen geprüft ... Fertig (9.301s)
+#
+#pkg update: Folgende Pakete stellen Aktionen des Typs file für etc/samba/smb.conf.default bereit:
+#
+#  pkg://solaris/service/network/samba@4.7.6,5.11-0.175.3.32.0.4.0:20180426T185303Z
+#  pkg://localhosts11/sfe/service/network/samba46@4.6.14,5.11-0.0.175.3.1.0.5.0:20180316T233648Z
+#
+#Diese Pakete dürfen nicht zusammen installiert werden. Sofern die Pakete nicht widersprüchlich sind, dürfen
+#sie gemeinsam installiert werden. Andernfalls müssen die Pakete vor der Installation berichtigt werden.
+#
+#Folgende Pakete stellen Aktionen des Typs file für usr/share/man/man3/talloc.3 bereit:
+#
+#  pkg://localhosts11/library/libtalloc@2.1.10,5.11-0.0.175.3.1.0.5.0:20180315T215352Z
+#  pkg://solaris/service/network/samba@4.7.6,5.11-0.175.3.32.0.4.0:20180426T185303Z
+#
+#Diese Pakete dürfen nicht zusammen installiert werden. Sofern die Pakete nicht widersprüchlich sind, dürfen
+#
+
+
+##TODO## enable builds without internet connection. load docbook.xsl from local disk
+##TODO2## omnos doesn't have it in the public repo as of 201803xx (only in extra)
+
+# https://github.com/omniosorg/omnios-build/pull/597/commits/c4bb8a1ecc4b724cdcee979bbaf341b3cf336d12
+# 
+#  16 build/ntpsec/patches/nonet.patch
+# @@ -0,0 +1,16 @@
+# +
+# +Always pass --nonet to xsltproc to avoid it checking for updated
+# +stylesheets.
+# +
+# +diff -pruN '--exclude=*.orig' ntpsec-1.0.0~/wscript ntpsec-1.0.0/wscript
+# +--- ntpsec-1.0.0~/wscript	2017-10-10 03:54:39.000000000 +0000
+# ++++ ntpsec-1.0.0/wscript	2017-12-27 14:20:06.985213252 +0000
+# +@@ -207,6 +207,8 @@
+# +     if not ctx.options.enable_a2x_xmllint:
+# +         ctx.env.A2X_FLAGS += ["--no-xmllint"]
+# + 
+# ++    ctx.env.A2X_FLAGS += ["--xsltproc-opts=--nonet"]
+# ++
+# +     # Disable manpages within build()
+# +     if ctx.options.disable_manpage:
+# +         ctx.env.DISABLE_MANPAGE = True
+
+
+
+##TODO## just in case we have none, provide a copy of docbook.xsl in ext-sources and copy it over in the %prep section
+##       location for the copy is to be determined. e.g. could make gsed pattern use packages/BUILD/samba-4.6.13/ for the local copy - set the replace pattern accordingly
+# s11175 sfe ~/packages/BUILD/samba-4.6.13 ggrep -r ".http://docbook.sourceforge.net.*docbook.xsl"                                                                                                                                                
+# 
+# lib/ldb/docs/builddocs.sh:MANXSL="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"
+# lib/ldb/docs/builddocs.sh:HTMLXSL="http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl"
+# .pkgbuild.build.sh:#bld.env.MAN_XSL = 'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl'
+# .pkgbuild.build.sh:   -e '/bld.env.MAN_XSL = / s?http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl?file:///usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl?' \
+# buildtools/wafsamba/samba_conftests.py:    s='http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl'
+# Binary file buildtools/wafsamba/samba_conftests.pyc matches
+# buildtools/wafsamba/wafsamba.py.bak:    bld.env.MAN_XSL = 'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl'
+# buildtools/wafsamba/wafsamba.py.bak.docbook.xsl:    bld.env.MAN_XSL = 'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl'
+# bin/config.log:Checking for stylesheet http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+# bin/config.log:Checking for stylesheet http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl
+# docs-xml/xslt/man.xsl:<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"/>
+# docs-xml/xslt/html.xsl:<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl"/>
+# 
+
+
+
+
+
+
+
+
+#plain omnios
+
+#
+#Paketcache wird aktualisiert                     2/2
+#root@drsnt05:/lib/svc/manifest/system# /usr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
+#ld.so.1: smbclient: fatal: libpopt.so.0: open failed: No such file or directory
+#ld.so.1: smbclient: fatal: relocation error: file /usr/gnu/bin/smbclient: symbol poptHelpOptions: referenced symbol not found
+#Killed
+#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/^Csr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
+#root@drsnt05:/lib/svc/manifest/system# pkg list | grep popt
+#root@drsnt05:/lib/svc/manifest/system# pkg install -v libpopt
+#
+#
+#-rwxr-xr-x   1 root     bin       438336 Aug 20 18:05 /usr/lib/libncurses.so.6.0
+#-rw-r--r--   1 root     bin       183892 Aug 20 18:05 /usr/lib/libncurses++.a
+#root@drsnt05:/lib/svc/manifest/system# LD_PRELOAD=/usr/lib/libncurses.so.6.0 /usr/gnu/bin/smbclient \\\\servername\\renodat -U Administrator
+#Enter WORKGROUP\Administrator's password: 
+#Domain=[SERVERNAME] OS=[Windows Server 2012 R2 Standard Evaluation 9600] Server=[Windows Server 2012 R2 Standard Evaluation 6.3]
+#smb: \> 
+#
+#
+#
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#This might be a default smb.conf to be used when provisioning a AD domain!
+#contains the ZFS acl settings.
+#/localhomes/sfe/smb.conf_sysvolshare-samba-domain
+#     
+#     # start with no smb.conf. Important: compiled --without-ntvfs (or just not specify --with-ntvfs ... this module core dumps!)
+#     
+#     # samba-tool domain provision --realm="youradname.yourdomainname" --use-rfc2307 --interactive
+#     # this first run will fail with ACL errors, but then add the parameters from below:
+#     # the block sysvol -> merge the whole block, you may erase the path given by the samba-tool and use the example
+#     # re-run the same provision command again and it will happily create the ACLs
+#     
+#     # start the samba server in foreground for more details:
+#     # /usr/gnu/sbin/samba -i -d 5 
+#     
+#     # set your client PC to use the DNS of the AD Server Machine
+#     # set your client IPv4 / IPv6 config to have DHCP deliver
+#     # or have manually set: DNS-Server "the AD Server Machine IP" and  This connection DNS suffix: "youradname.yourdomainname"
+#     # join the domain with the user: Administrator and the password you gave at provisioning with samba-tool
+#     
+#     
+#     
+#     
+#     
+#     # zfs create rpool/sysvol
+#     # zfs set mountpoint=/var/tmp/sysvol rpool/sysvol
+#     # 
+#     # zfs set aclmode=passthrough rpool/sysvol
+#     # zfs set aclinherit=passthrough rpool/sysvol
+#     
+#     [sysvol]
+#        path = /var/tmp/sysvol
+#        vfs objects = zfsacl
+#        nfs4:mode = special
+#        nfs4:acedup = merge
+#        nfs4:chown = yes
+#        zfsacl: acesort = dontcare
+#        
+#     [homes]
+#        comment = Home Directories
+#        browseable = no
+#        writable = yes
+#        guest ok = no
+#     ##(1) initial
+#       wide links = yes
+#       hide files = /outlook*.lnk/*Briefcase*/
+#        vfs objects = zfsacl
+#        nfs4:mode = special
+#        nfs4:acedup = merge
+#        nfs4:chown = yes
+#        zfsacl: acesort = dontcare
+#     
+#       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#https://github.com/OpenIndiana/oi-userland/pull/3758
+
+
+
+
+
+#Upgrade-path:
+# within a series upgrade is with the same package name
+# e.g. samba46 in version 4.6.2 upgrades to 4.6.3
+#
+# if support ends, then the last released package in sfe
+# has a renamed-to action and the target package name
+# obsletes the old package name
+#
+# e.g. samba46 version 4.6.3-plus has renamed-to once
+# the upgrade is mandatory and redirects resolver to
+# samba 49 version x.y.z
+
 %define _use_internal_dependency_generator 0
 
 ##TODO## try winbind separately in 32/64 bit
@@ -75,6 +303,7 @@ patch17:		samba44-17-source3-winbind-krb5-build.patch
 patch31:		samba44-31-gss_mech_krb5.diff
 patch32:		samba49-32-remove-libiconv.diff
 patch33:		samba46-33-provision-add-smb.conf-extra-defaults.diff
+patch34:		samba49-34-provision-remove-check-have_posix_acls.diff
 
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -261,6 +490,7 @@ gsed -i.bak -e '/#include <popt.h>/ a\
 %patch32 -p1
 
 %patch33 -p1
+%patch34 -p1
 
 %build
 #export PYTHON="/usr/bin/python%{python_major_minor_version}"
@@ -270,6 +500,9 @@ gsed -i.bak -e '/#include <popt.h>/ a\
 export PYTHON="/usr/bin/i386/python%{python_major_minor_version}"
 %else
 export PYTHON="/usr/bin/i86/python%{python_major_minor_version}"
+%endif
+%if %{s110400}
+export PYTHON="/usr/bin/python%{python_major_minor_version}"
 %endif
 
 #parked ifeq ($(MACH), sparc)
@@ -837,6 +1070,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Fri Apr 19 2019 - Thomas Wagner
+- add patch patches/samba49-34-provision-remove-check-have_posix_acls.diff to get AD Domain provision work
+  run /usr/gnu/bin/samba-tool domain provision (and enter realm mytestdom.mydomain and domain mytestdom and a Admin password, then svcadm enable samba49
 * Thu Apr 11 2019 - Thomas Wagner
 - bump to 4.9.6
 * Wed Mar 13 2019 - Thomas Wagner
