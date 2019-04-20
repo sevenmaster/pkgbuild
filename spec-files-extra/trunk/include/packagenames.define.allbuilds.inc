@@ -1039,6 +1039,14 @@ exit 1
 %endif
 #END omnios
 
+#jansson appeared after version /osnet-incorporation@0.5.11-2017.0.0.16925
+##TODO## retire the package SFELibjansson when upgrading hipster past this version
+##TODO## *or* move the whole SFElibjansson over to /usr/gnu/
+%if %( expr %{oihipster} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 20170000000016925000000000000.0 )
+%define pnm_buildrequires_SFElibjansson		SFElibjansson
+%define pnm_requires_SFElibjansson		SFElibjansson
+%endif
+#END hipster 20170000000016925000000000000
 
 #SUNWfftw3 was added with build 107
 #http://wikis.sun.com/display/OSOLInstall/Build+107
