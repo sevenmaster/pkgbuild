@@ -63,6 +63,8 @@ BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 BuildRequires:	SFEperl-module-install
 Requires:       SFEperl-module-install
+BuildRequires:	SFEperl-extutils-cbuilder
+Requires:       SFEperl-extutils-cbuilder
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Florian Ragwitz <rafl@debian.org>
@@ -150,6 +152,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sat Apr 20 2019 - Thomas Wagner
+- add (Build)Requires:  SFEperl-extutils-cbuilder (OIH)
 * Sat Feb  9 2019 - Thomas Wagner
 - fix compile with 64-bit perl  (%include perl-bittness.inc)
 * Sat Jan 26 2019 - Thomas Wagner
