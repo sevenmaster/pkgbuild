@@ -32,6 +32,11 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
+%if %{omnios}
+%define cc_is_gcc 1
+%endif
+%include base.inc
+
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
@@ -88,6 +93,11 @@ Attention: Instead of vendor_perl, this package installs into
 %patch1 -p1
 
 %build
+
+%if %{cc_is_gcc}
+export CC=gcc
+export CXX=g++
+%endif
 
 %include perl-bittness.inc
 if test -f Makefile.PL
@@ -150,6 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 - fix build on hipster where perl -V:cc prints cc='/usr/gcc/4.9/bin/gcc -m64'; and this is not installed 
   by using ENV{CC} if defined - patch1 perl-01-net-ssleay-ask-ENV_CC-for-compiler-if-CC-defined.diff
 - fix install path to store in site_perl
+- add back cc_is_gcc on OmniOS sfe build environment (OM)
 * Sat Apr 20 2019 - Thomas Wagner
 - add (Build)Requires:  SFEperl-extutils-cbuilder (OIH)
 * Sat Feb  9 2019 - Thomas Wagner
