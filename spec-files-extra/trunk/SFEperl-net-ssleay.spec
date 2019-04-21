@@ -32,32 +32,29 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%if %{omnios}
-%define cc_is_gcc 1
-%endif
-%include base.inc
-
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 1.72
+%define tarball_version 1.85
 %define tarball_name    Net-SSLeay
 
 Name:		SFEperl-net-ssleay
 #do not interfere with Solaris userland/userland-incorporation! Keep the "sfe/" in IPS_Package_Name
 IPS_package_name: sfe/library/perl-5/net-ssleay
-Version:	1.72
-IPS_component_version: 1.72
+Version:	1.85
+IPS_component_version: 1.85
 Group:          Development/Libraries                    
-Summary:	Net::SSLeay - Secure Socket Layer (based on OpenSSL) (site_perl)
+Summary:	Net::SSLeay - Net::SSLeay (site_perl)
 License:	Artistic
 #Distribution:   OpenSolaris
 #Vendor:         OpenSolaris Community
-Url:		http://search.cpan.org/~flora/%{tarball_name}-%{tarball_version}
+Url:		http://search.cpan.org/~mikem/%{tarball_name}-%{tarball_version}
 SUNW_Basedir:	%{_basedir}
 SUNW_Copyright: %{license}.copyright
 Source0:	http://search.cpan.org/CPAN/authors/id/M/MI/MIKEM/Net-SSLeay-%{tarball_version}.tar.gz
+
+Patch1:         perl-01-net-ssleay-ask-ENV_CC-for-compiler-if-CC-defined.diff
 
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
@@ -67,11 +64,12 @@ BuildRequires:	SFEperl-extutils-cbuilder
 Requires:       SFEperl-extutils-cbuilder
 
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
-Meta(info.upstream):            Florian Ragwitz <rafl@debian.org>
-Meta(info.upstream_url):        http://search.cpan.org/~flora/%{tarball_name}-%{tarball_version}
+Meta(info.upstream):            Mike McCauley <mikem@airspayce.com>
+Meta(info.upstream_url):        http://search.cpan.org/~mikem/%{tarball_name}-%{tarball_version}
 Meta(info.classification):	org.opensolaris.category.2008:Development/Perl
 
 %description
+Net::SSLeay
 Net::SSLeay
 Secure Socket Layer (based on OpenSSL)
 
@@ -87,18 +85,11 @@ Attention: Instead of vendor_perl, this package installs into
 %prep
 %setup -q -n %{tarball_name}-%{tarball_version}
 
+%patch1 -p1
+
 %build
 
-%if %{cc_is_gcc}
-export CC=gcc
-export CXX=g++
-%endif
-
 %include perl-bittness.inc
-
-#fix quoting for MAN5 in Makefile
-[ -f Makefile ] && rm Makefile
-
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -106,14 +97,14 @@ if test -f Makefile.PL
   echo "n" | \
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
-    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version} \
-    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version} \
-    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
-    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
+    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
-    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3
+    INSTALLMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
 
 
 
@@ -139,6 +130,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,bin)
+#%dir %attr(0755, root, bin) %{_prefix}/%{perl_path_vendor_perl_version}
+#%{_prefix}/%{perl_path_vendor_perl_version}/*
 %dir %attr(0755, root, bin) %{_prefix}/%{perl_path_site_perl_version}
 %{_prefix}/%{perl_path_site_perl_version}/*
 #%dir %attr(0755,root,bin) %{_bindir}
@@ -152,6 +145,10 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Sun Apr 21 2019 - Thomas Wagner
+- rework spec 1.72 -> 1.85
+- fix build on hipster where perl -V:cc prints cc='/usr/gcc/4.9/bin/gcc -m64'; and this is not installed 
+  by using ENV{CC} if defined - patch1 perl-01-net-ssleay-ask-ENV_CC-for-compiler-if-CC-defined.diff
 * Sat Apr 20 2019 - Thomas Wagner
 - add (Build)Requires:  SFEperl-extutils-cbuilder (OIH)
 * Sat Feb  9 2019 - Thomas Wagner
