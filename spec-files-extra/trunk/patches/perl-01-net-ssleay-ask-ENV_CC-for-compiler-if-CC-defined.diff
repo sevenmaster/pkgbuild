@@ -1,0 +1,11 @@
+--- Net-SSLeay-1.85/inc/Module/Install/Can.pm.orig	2019-04-21 22:14:27.168826816 +0000
++++ Net-SSLeay-1.85/inc/Module/Install/Can.pm	2019-04-21 22:06:09.341254616 +0000
+@@ -122,6 +122,8 @@
+ sub can_cc {
+ 	my $self   = shift;
+ 	my @chunks = split(/ /, $Config::Config{cc}) or return;
++#Base.pm:  $self->{config}{cc} = $ENV{CC} if defined $ENV{CC};
++	   @chunks = split(/ /, $ENV{CC}) if defined $ENV{CC};
+ 
+ 
+ 	# $Config{cc} may contain args; try to find out the program part
