@@ -26,32 +26,51 @@ if [ ! -x "${PERL_CC}" ]; then
    PERL_LD=$( echo "${PERL_LD}" | sed -e 's?.*/??' )
    echo "PERL CC:  >>>${PERL_CC}<<<"
    echo "PERL LD:  >>>${PERL_LD}<<<"
+#   echo "PERL EXTRA FLAGS: >>--config cc=${PERL_CC}<<"
 fi
+
+#fetch default values, then modify them if needed in the %if %{perl_bitness_64} section
+export OPTFLAGS_LOCAL="%{optflags}"
+
+#fetch default values, then modify them if needed in the %if %{perl_bitness_64} section
+# omnios  -  perl -V:lddlflags
+# 64-bit, missing /amd64:  lddlflags='-G -64 -shared -m64 -L/usr/gnu/lib ';
+# solaris 11.3
+# 32-bit                :  lddlflags='-G -L/usr/lib -L/usr/ccs/lib  -L/lib -L/usr/gnu/lib';
+export LDDLFLAGS=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:lddlflags | sed -e 's?lddlflags=.??' -e 's?.;$??' )
+
+#fetch default values, then modify them if needed in the %if %{perl_bitness_64} section
+# omnios  -  perl -V:cccdlflags
+# cccdlflags='-fPIC';
+export CCCDLFLAGS=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cccdlflags | sed -e 's?cccdlflags=.??' -e 's?.;$??' )
+
 
 %if %{perl_bitness_64}
 echo "perl_bitness is %{perl_bitness}"
-%define gnu_lib_path %( echo -L%{gnu_lib} -R%{gnu_lib} | sed -e 's?/lib?/lib/%{_arch64}?g' )
-#omnios  -  perl -V:lddlflags
-#64-bit, missing /amd64:  lddlflags='-G -64 -shared -m64 -L/usr/gnu/lib ';
-#solaris 11.3
-#32-bit                :  lddlflags='-G -L/usr/lib -L/usr/ccs/lib  -L/lib -L/usr/gnu/lib';
-LDDLFLAGS=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:lddlflags | sed -e 's?lddlflags=.??' -e 's?.;$??' )
-#omnios  -  perl -V:cccdlflags
-# cccdlflags='-fPIC';
-CCCDLFLAGS=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cccdlflags | sed -e 's?cccdlflags=.??' -e 's?.;$??' )
+%include arch64.inc
 
-#(echo "-L/usr/gnu/lib"; echo "-L/lib/64"; echo "-L/usr/lib/amd64"; echo "-L/usr/lib/sparcv9"); echo ; (echo "-L/usr/gnu/lib"; echo "-L/lib/64"; echo "-L/usr/lib/amd64"; echo "-L/usr/lib/sparcv9") | gsed -e "/\/64\|\/%{_arch64}/! s?/lib?/lib/%{_arch64}?g"
-#echo " -G -m64 -L/lib/64" ; echo "-G -64 -shared -m64 -L/usr/gnu/lib " )| gegrep -- "-L/.*(/64|/%{_arch64})"
+#obsolete %define gnu_lib_path %( echo -L%{gnu_lib} -R%{gnu_lib} | sed -e 's?/lib?/lib/%{_arch64}?g' )
 
+
+#if sfe sets 32-bit in FLAGS, then we need to change it to 64-bit
+#obsolete export OPTFLAGS_LOCAL=$( echo '%{optflags}' | sed -e 's?-m32?-m64?g' -e 's?-32?-64?g' -e 's?-mincoming-stack-boundary=2??' )
+export OPTFLAGS_LOCAL="%{optflags64}"
+
+#we need to use the 64-bit subdirectory paths for libraries
 if echo ${LDDLFLAGS} | egrep -- "-L/.*(/64|/%{_arch64})" >/dev/null; then
-LDDLFLAGS=$(  echo "${LDDLFLAGS}"  | gsed -e "/\/64\|\/%{_arch64}/! s?/lib?/lib/%{_arch64}?g" )
-CCCDLFLAGS=$( echo "${CCCDLFLAGS}" | gsed -e "/\/64\|\/%{_arch64}/! s?/lib?/lib/%{_arch64}?g" )
+export LDDLFLAGS=$(  echo "${LDDLFLAGS}"  | gsed -e "/\/64\|\/%{_arch64}/! s?/lib?/lib/%{_arch64}?g" )
+export CCCDLFLAGS=$( echo "${CCCDLFLAGS}" | gsed -e "/\/64\|\/%{_arch64}/! s?/lib?/lib/%{_arch64}?g" )
 echo "Modified LDDLFLAGS and CCCDLFLAGS to print libdir for 64-bit)"
-echo "LDDLFLAGS:  >>>${LDDLFLAGS}<<<"
-echo "CCCDLFLAGS: >>>${CCCDLFLAGS}<<<"
 fi
 %endif
 
+echo "LDDLFLAGS:  >>>${LDDLFLAGS}<<<"
+echo "CCCDLFLAGS: >>>${CCCDLFLAGS}<<<"
+echo "OPTFLAGS_LOCAL: >>>${OPTFLAGS_LOCAL}<<<"
+
 %changelog
+* Thu Feb 28 2019 - Thomas Wagner
+- add OPTFLAGS_LOCAL to make, to get back some extra flags from before bittness include files have been introduced, improve 64-bit flags
+- new ordering and setting default values for OPTFLAGS_LOCAL, LDDLFLAGS, CCCDLFLAGS
 * Mon Jan 28 2019 - Thomas Wagner
 - cut out from SFEperl-dbfile.spec, to be included in SFEperl-module-module.spec if binary objects are involved, then perl-interpreter bittness (32 or 64-bit) is important
