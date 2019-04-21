@@ -97,10 +97,10 @@ if test -f Makefile.PL
   echo "n" | \
   %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Makefile.PL \
     PREFIX=$RPM_BUILD_ROOT%{_prefix} \
-    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
-    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version} \
-    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
-    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_vendor_perl_version}/%{perl_dir} \
+    LIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version} \
+    INSTALLSITELIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version} \
+    INSTALLSITEARCH=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
+    INSTALLARCHLIB=$RPM_BUILD_ROOT%{_prefix}/%{perl_path_site_perl_version}/%{perl_dir} \
     INSTALLSITEMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
     INSTALLSITEMAN3DIR=$RPM_BUILD_ROOT%{_mandir}/man3 \
     INSTALLMAN1DIR=$RPM_BUILD_ROOT%{_mandir}/man1 \
@@ -149,6 +149,7 @@ rm -rf $RPM_BUILD_ROOT
 - rework spec 1.72 -> 1.85
 - fix build on hipster where perl -V:cc prints cc='/usr/gcc/4.9/bin/gcc -m64'; and this is not installed 
   by using ENV{CC} if defined - patch1 perl-01-net-ssleay-ask-ENV_CC-for-compiler-if-CC-defined.diff
+- fix install path to store in site_perl
 * Sat Apr 20 2019 - Thomas Wagner
 - add (Build)Requires:  SFEperl-extutils-cbuilder (OIH)
 * Sat Feb  9 2019 - Thomas Wagner
