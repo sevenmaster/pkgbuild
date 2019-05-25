@@ -261,7 +261,7 @@ Name:                    SFEsamba49
 IPS_package_name:	 sfe/service/network/samba49
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.9.6
+Version:                 4.9.8
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -1070,6 +1070,8 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Sat May 25 2019 - Thomas Wagner
+- bump to 4.9.8
 * Fri Apr 19 2019 - Thomas Wagner
 - add patch patches/samba49-34-provision-remove-check-have_posix_acls.diff to get AD Domain provision work
   run /usr/gnu/bin/samba-tool domain provision (and enter realm mytestdom.mydomain and domain mytestdom and a Admin password, then svcadm enable samba49
