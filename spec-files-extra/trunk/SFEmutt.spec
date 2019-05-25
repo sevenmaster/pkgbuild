@@ -15,7 +15,7 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.11.4
+Version:             1.12.0
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
@@ -176,6 +176,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sat May 25 2019 - Thomas Wagner
+- bump to 1.12.0 - add towel
 * Wed Mar 13 2019 - Thomas Wagner
 - bump to 1.11.4 - fix imap bug with google $trash folder
 * Sat Feb  2 2019 - Thomas Wagner
