@@ -763,7 +763,8 @@ gsed -i.bak.docbook.xsl \
 #ABER:
 ##TODO## kontrollieren ob das ein geegneter Wert ist (kann z.B. 512 statt 255 sein)
 %if %( expr %{solaris11} '+' %{s110400} '>=' 1 )
-gsed -i.bak -e 's?NAME_MAX?MAXNAMLEN?' source3/modules/vfs_glusterfs.c source3/modules/vfs_glusterfs_fuse.c
+#gsed -i.bak -e 's?NAME_MAX?MAXNAMLEN?' source3/modules/vfs_glusterfs.c source3/modules/vfs_glusterfs_fuse.c
+gsed -i.bak -e 's?[^_]NAME_MAX?MAXNAMLEN?' source3/modules/vfs_glusterfs.c source3/modules/vfs_glusterfs_fuse.c
 %endif
 
             # --enable-debug \
@@ -800,6 +801,7 @@ LINKFLAGS=$LINKFLAGS \
 --with-pam \
 --with-acl-support   \
 --without-systemd    \
+--disable-glusterfs  \
 --with-static-modules=vfs_default,vfs_zfsacl,auth_builtin,auth_sam,auth_winbind,vfs_solarisacl,pdb_smbpasswd,pdb_tdbsam,auth_unix,pdb_samba_dsdb,auth_samba4,vfs_dfs_samba4,pdb_ldapsam \
 --with-shared-modules=vfs_prealloc,vfs_cacheprime,vfs_commit,idmap_ldap,idmap_tdb2,idmap_rid,idmap_ad,idmap_hash,idmap_adex,idmap_passdb,vfs_fruit \
 --with-pie \
@@ -1071,7 +1073,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sat May 25 2019 - Thomas Wagner
-- bump to 4.9.8
+- bump to 4.9.8 - CVE-2018-16860 Samba AD DC S4U2Self/S4U2Proxy unkeyed checksum
+- add --disable-glusterfs, fix sed regex for MAXNAMLEN
 * Fri Apr 19 2019 - Thomas Wagner
 - add patch patches/samba49-34-provision-remove-check-have_posix_acls.diff to get AD Domain provision work
   run /usr/gnu/bin/samba-tool domain provision (and enter realm mytestdom.mydomain and domain mytestdom and a Admin password, then svcadm enable samba49
