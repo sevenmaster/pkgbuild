@@ -176,6 +176,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/*
 
 %changelog
+* Sat Jun 15 2019 - Thomas Wagner
+- bump to 1.12.1
 * Sat May 25 2019 - Thomas Wagner
 - bump to 1.12.0 - add towel
 * Wed Mar 13 2019 - Thomas Wagner
