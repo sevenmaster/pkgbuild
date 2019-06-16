@@ -1,3 +1,4 @@
+##TODO## auf OmniOSce 151030 direkt nach dem Upgrade von 151022 beobachtet: crt1.so fehlt.  LC_ALL=en_US.UTF-8 pfexec pkg install system/library/c-runtime
 
 ##TODO## manuell rausgenommen aus wbuild :  resolvconftest
 
@@ -311,6 +312,11 @@ patch33:		samba410-33-provision-add-smb.conf-extra-defaults.diff
 patch34:		samba49-34-provision-remove-check-have_posix_acls.diff
 
 patch35:		samba410-35-remove-resolvconf.diff
+#pause patch36:		samba410-36-pthread_mutexattr_t_set_to_0.diff
+
+#https://illumos.topicbox.com/groups/developer/T38b7c9b3f92fa699
+#https://www.illumos.org/issues/9959
+patch37:		samba410-37-bzero-before-pthread_mutex_init.diff
 
 SUNW_BaseDir:            %{_basedir}
 BuildRoot:               %{_tmppath}/%{name}-%{version}-build
@@ -381,11 +387,13 @@ See CVE notes here: https://www.samba.org/samba/history/security.html
 See Samba Release notes here: https://www.samba.org/samba/history/
 . 
 Configure an AD:  (Attention: more instructions to get a ZFS dataset with pass-through for ACLs will follow. See SFE website)
-samba-tool domain provision ;
+samba-tool domain provision --use-rfc2307 --interactive ;
 svcadm enable samba%{major_version}%{minor_version} ;
 . 
 (more options: /usr/gnu/bin/samba-tool domain provision --help )
-If you want shorter minimum passwordlenght, consider using  samba-tool domain passwordsettings set --min-pwd-length=6 (less secure!)
+If you want shorter minimum passwordlenght, consider using  samba-tool domain passwordsettings set --min-pwd-length=6 ; (less secure!)
+.
+If you want less complex passwords, consider using  samba-tool domain passwordsettings set --complexity=off ; (less secure!)
 .
 Notes:
   use for AD domains use SMF service: samba410
@@ -503,6 +511,8 @@ gsed -i.bak -e '/#include <popt.h>/ a\
 %patch33 -p1
 %patch34 -p1
 %patch35 -p1
+#pause %patch36 -p1
+%patch37 -p1
 
 %build
 #export PYTHON="/usr/bin/python%{python_major_minor_version}"
@@ -1085,7 +1095,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
-* Sat May 25 2019 - Thomas Wagner
+* Sun Jun 16 2019 - Thomas Wagner
+- add patch37 samba410-37-bzero-before-pthread_mutex_init.diff until OS has fix https://www.illumos.org/issues/9959 (OS)
+* Sat Jun 16 2019 - Thomas Wagner
 - bump to 4.9.8 - CVE-2018-16860 Samba AD DC S4U2Self/S4U2Proxy unkeyed checksum
 - add --disable-glusterfs, fix sed regex for MAXNAMLEN
 * Fri Apr 19 2019 - Thomas Wagner
