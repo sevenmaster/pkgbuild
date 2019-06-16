@@ -1,0 +1,42 @@
+
+https://illumos.topicbox.com/groups/developer/T38b7c9b3f92fa699-Mb08e44fea4413b22c1c78d1e/samba-gencache-tdb-device-busy
+
+this patch is not longer needed once _all_ OS have fix  https://www.illumos.org/issues/9959
+
+maybe better to keep this pach for a while
+
+
+--- samba-4.10.4/lib/tdb/common/mutex.c.orig	2019-06-16 21:49:57.166946787 +0000
++++ samba-4.10.4/lib/tdb/common/mutex.c	2019-06-16 23:00:27.938099727 +0000
+@@ -587,6 +587,7 @@
+ 	for (i=0; i<tdb->hash_size+1; i++) {
+ 		pthread_mutex_t *chain = &m->hashchains[i];
+ 
++ 		bzero(chain, sizeof(pthread_mutex_t)); 
+ 		ret = pthread_mutex_init(chain, &ma);
+ 		if (ret != 0) {
+ 			goto fail;
+@@ -595,6 +596,7 @@
+ 
+ 	m->allrecord_lock = F_UNLCK;
+ 
++	bzero(&m->allrecord_mutex, sizeof(pthread_mutex_t));
+ 	ret = pthread_mutex_init(&m->allrecord_mutex, &ma);
+ 	if (ret != 0) {
+ 		goto fail;
+@@ -688,6 +690,7 @@
+ 	if (ret != 0) {
+ 		goto cleanup_ma;
+ 	}
++	bzero(&m, sizeof(pthread_mutex_t));
+ 	ret = pthread_mutex_init(&m, &ma);
+ 	if (ret != 0) {
+ 		goto cleanup_ma;
+@@ -885,6 +888,7 @@
+ 	if (ret != 0) {
+ 		goto cleanup;
+ 	}
++	bzero(ptr, sizeof(pthread_mutex_t));
+ 	ret = pthread_mutex_init(ptr, &ma);
+ 	if (ret != 0) {
+ 		goto cleanup;
