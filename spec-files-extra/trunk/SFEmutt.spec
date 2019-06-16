@@ -15,7 +15,7 @@
 Name:                SFEmutt
 IPS_Package_Name:    sfe/mail/mutt
 Summary:             The mutt e-mail client
-Version:             1.12.0
+Version:             1.12.1
 #Source:              ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
 Source:              ftp://ftp.mutt.org/pub/mutt/mutt-%{version}.tar.gz
 #Source:              %{sf_download}/mutt/mutt-%{version}.tar.gz  
