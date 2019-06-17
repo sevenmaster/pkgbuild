@@ -1039,6 +1039,19 @@ exit 1
 %endif
 #END omnios
 
+
+#OmniOSce r151028
+#libedit appeared before build 151028
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015102800000000000000000000.0 )
+%define pnm_buildrequires_library_libedit		library/libedit
+%define pnm_requires_library_libedit			library/libedit
+%define pnm_buildrequires_SFEeditline			library/libedit
+%define pnm_requires_SFEeditline			library/libedit
+%endif
+#END omnios r151028
+
+
+
 #jansson appeared after version /osnet-incorporation@0.5.11-2017.0.0.16925
 ##TODO## retire the package SFELibjansson when upgrading hipster past this version
 ##TODO## *or* move the whole SFElibjansson over to /usr/gnu/
@@ -3599,6 +3612,8 @@ exit 1
 
 
 %changelog
+* Sat Apr 27 2019 - Thomas Wagner
+- handle SFEeditline / library/libedit, use OSDISTRO's package (OM '>=' 000015102800000000000000000000.0 )
 * Mon Mar 11 2019 - Thomas Wagner
 - resolve pnm_macro for SFEeditline to pkg://solaris/library/libedit@3.1-11.4 (S1104)
 * Sun Mar  3 2019 - Thomas Wagner
