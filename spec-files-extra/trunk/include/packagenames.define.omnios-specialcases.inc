@@ -3,8 +3,10 @@
 
 
 #not defined on OmniOS, so we must go without it
-%define pnm_buildrequires_SUNWpostrun	system/core-os
-%define pnm_requires_SUNWpostrun	system/core-os
+%define pnm_buildrequires_SUNWpostrun	SUNWcs
+%define pnm_requires_SUNWpostrun	SUNWcs
+%define pnm_buildrequires_SUNWbash	SUNWcs
+%define pnm_requires_SUNWbash		SUNWcs
 
 #OmniOS has no package (below), so use the SFE replacement
 %define pnm_buildrequires_image_library_libexif	SFElibexif-gnu
@@ -77,6 +79,8 @@
 
 
 %changelog
+* Sun Jun 16 2019 - Thomas Wagner
+- add pnm_buildrequires_SUNWbash and map to SUNWcs (OM)
 * Sat Nov 18 2017 - Thomas Wagner
 - add pnm_buildrequires_SUNWgamin (OM)
 * Tue Sep  5 2017 - Thomas Wagner
