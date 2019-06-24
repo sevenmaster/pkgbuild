@@ -266,7 +266,7 @@ Name:                    SFEsamba410
 IPS_package_name:	 sfe/service/network/samba410
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.10.4
+Version:                 4.10.5
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -355,6 +355,9 @@ Requires:      %{pnm_requires_SFElibarchive}
 #change to read ..../gpgme here and in include/packagename*inc
 BuildRequires: %{pnm_buildrequires_SFEgpgme}
 Requires:      %{pnm_requires_SFEgpgme}
+
+BuildRequires: %{pnm_buildrequires_library_file_monitor_gamin}
+Requires:      %{pnm_requires_library_file_monitor_gamin}
 
 %include default-depend.inc
 
@@ -1095,6 +1098,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Mon Jul 24 2019 - Thomas Wagner
+- add missing (Build)Requires pnm_buildrequires_library_file_monitor_gamin (OM)
+- bump to 4.10.5 -  CVE-2019-12435 Samba AD DC Denial of Service in DNS management server (dnsserver) - CVE-2019-12436 (Samba AD DC LDAP server crash (paged searches) 
 * Sun Jun 16 2019 - Thomas Wagner
 - add patch37 samba410-37-bzero-before-pthread_mutex_init.diff until OS has fix https://www.illumos.org/issues/9959 (OS)
 * Sat Jun 16 2019 - Thomas Wagner
