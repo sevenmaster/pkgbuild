@@ -261,7 +261,7 @@ Name:                    SFEsamba49
 IPS_package_name:	 sfe/service/network/samba49
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.9.8
+Version:                 4.9.9
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -342,6 +342,9 @@ Requires:      %{pnm_requires_SFElibarchive}
 #change to read ..../gpgme here and in include/packagename*inc
 BuildRequires: %{pnm_buildrequires_SFEgpgme}
 Requires:      %{pnm_requires_SFEgpgme}
+
+BuildRequires: %{pnm_buildrequires_library_file_monitor_gamin}
+Requires:      %{pnm_requires_library_file_monitor_gamin}
 
 %include default-depend.inc
 
@@ -1072,6 +1075,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Mon Jul 24 2019 - Thomas Wagner
+- add missing (Build)Requires pnm_buildrequires_library_file_monitor_gamin (OM)
+- bump to version 4.9.9 -  CVE-2019-12435 Samba AD DC Denial of Service in DNS management server (dnsserver) - 
 * Sat May 25 2019 - Thomas Wagner
 - bump to 4.9.8 - CVE-2018-16860 Samba AD DC S4U2Self/S4U2Proxy unkeyed checksum
 - add --disable-glusterfs, fix sed regex for MAXNAMLEN
