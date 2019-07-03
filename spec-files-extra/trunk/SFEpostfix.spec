@@ -1,3 +1,48 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# beste quell-site finden
+# https://github.com/vdukhovni/postfix/tree/master/postfix/src/posttls-finger
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #generate your own very local keys for forward secrecy after package installation by start method script / at first start
 # https://www.heinlein-support.de/blog/security/perfect-forward-secrecy-pfs-fur-postfix-und-dovecot
 # https://kofler.info/postfix-tls-optionen/
@@ -183,9 +228,9 @@ Summary:                 Mailer System
 Group:			 System/Services
 URL:                     http://www.postfix.org/
 %if %( pkg info openssl | grep "Version: 1.0.1" >/dev/null && echo 1 || echo 0 )
-Version:                 3.3.4
+Version:                 3.3.5
 %else
-Version:                 3.4.5
+Version:                 3.4.6
 %endif
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
@@ -376,9 +421,9 @@ perl -w -pi -e "s,^#\!\s*/bin/sh,#\!/usr/bin/bash," `find . -type f -exec grep -
 perl -w -pi -e "s,(-Wformat|-Wno-comment|-Wmissing-prototypes),,g" Makefile Makefile.in
 
 #fix unlucky selection of name for struct (introduced in some 3.4.x version)
-grep "struct sockaddr_un sun;" src/util/unix_dgram_connect.c \
-   && gsed -i.bak_undef_sun -e '/struct sockaddr_un sun;/ i\
-#undef sun' src/util/unix_dgram_connect.c
+#obsolete 3.4.6 / 3.3.5 grep "struct sockaddr_un sun;" src/util/unix_dgram_connect.c \
+   #obsolete 3.4.6 / 3.3.5 && gsed -i.bak_undef_sun -e '/struct sockaddr_un sun;/ i\
+#obsolete 3.4.6 / 3.3.5 #undef sun' src/util/unix_dgram_connect.c
 
 
 %build
@@ -1144,6 +1189,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Wed Jul  3 2019 - Thomas Wagner
+- bump version to 3.4.6 (3.3.5 if openssl is 1.0.1)
 * Wed Apr 17 2019 - Thomas Wagner
 - set %ips_tag(restart_fmri="svc:/network/smtp:postfix") - to get binaries reloaded of they change on pkg update
 - use /usr/sbin/postfix restart instead of /usr/sbin/postfix reload - to get all binaries reloaded 8e.g. on upgrade)
