@@ -76,7 +76,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.5.1
+Version:	2.3.6
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -284,11 +284,11 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %defattr(-, root, bin)
 %doc README ChangeLog COPYING INSTALL NEWS AUTHORS TODO 
 %dir %attr (0755,root,bin) %{_bindir}
-%ips_tag(restart_fmri="svc:/site/dovecot") %{_bindir}/*
+%ips_tag(restart_fmri="svc:/site/dovecot:*") %{_bindir}/*
 %dir %attr (0755,root,bin) %{_sbindir}
-%ips_tag(restart_fmri="svc:/site/dovecot") %{_sbindir}/*
+%ips_tag(restart_fmri="svc:/site/dovecot:*") %{_sbindir}/*
 %dir %attr (0755,root,bin) %{_libdir}
-%ips_tag(restart_fmri="svc:/site/dovecot") %{_libdir}/%{src_name}/*
+%ips_tag(restart_fmri="svc:/site/dovecot:*") %{_libdir}/%{src_name}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
 %dir %attr (0755, root, sys) %{_datadir}
@@ -301,8 +301,6 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %{_datadir}/aclocal/*
 
 
-# %ips_tag(restart_fmri="svc:/foo/bar") %{_libdir}/fred
-
 
 %files root
 %defattr (-, root, sys)
@@ -311,11 +309,18 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %config %{_sysconfdir}/%{src_name}/*
 %defattr (-, root, sys)
 %dir %attr (0755, root, sys) %{_localstatedir}
-%ips_tag(restart_fmri="svc:/site/dovecot") %config %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
+%ips_tag(restart_fmri="svc:/site/dovecot:*") %config %attr(0444, root, sys)/var/svc/manifest/site/dovecot.xml
 
 
 %changelog
-* Weg Arp 17 2019 - Thomas Wagner
+* Fri Jul  5 2019 - Thomas Wagner
+- bump to 2.3.6 - https://dovecot.org/doc/NEWS-2.3
+* Thu Apr 18 2019 - Thomas Wagner
+- S11 complains about 
+     FMRI-Muster entspricht eventuell implizit mehreren Serviceinstanzen.
+     Aktuatoren für restart_fmri werden nicht für svc:/site/dovecot ausgeführt.
+  set %ips_tag(restart_fmri="svc:/site/dovecot/*") - use :*
+* Wed Apr 17 2019 - Thomas Wagner
 - set %ips_tag(restart_fmri="svc:/site/dovecot") - to get binaries reloaded of they change on pkg update
 - now send restart to postfix if dovecot gets reloaded - to get auth_pipe for SMTP_AUTH refreshed propperly,
   see dovecot.xml postfix_multi-user-server
