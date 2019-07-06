@@ -98,6 +98,11 @@
 %define osbuild 151
 %endif
 
+#new for 151030 or so,
+#https://github.com/omniosorg/omnios-build/blob/master/build/release/build.sh#L33
+#calculation to get from two letter to one digit.
+##TODO## use the above if it is available
+#r151028ef would be 5*26 + 6
 #quick and dirty hack, only works on OmniOS - uname -v prints on 151008j: omnios-6de5e81
 #quick and dirty hack, only works on OmniOS - uname -v prints on 151022y: omnios-r151022-eb9d5cb557
 %if %( uname -v | egrep '^omnios-[0-9a-f]' > /dev/null && echo 1 || echo 0 )
@@ -685,7 +690,12 @@
 #0000151022 0000 0008 000000000000   is r151022h
 #0000151022 0000 0025 000000000000   is r151022y
 #0000151022 0001 0020 000000000000   is r151022at
-%if %{omnios}
+#
+#pnm: osdistro_entire    151030.3
+#pnm: osdistro_entire_padded_number4 1510300003-0096-0096000000000000 (wrong!)
+#pnm: osdistro_entire_padded_number4 1510300003-0000-0003000000000000 (correct!)
+
+%if %( expr %{omnios} '=' 1 '&' %{osdistro_entire} '<' 151028  )
 #get char if any
 #shift to the right in case of one letter release - test:  (echo a; echo yz) | /usr/gnu/bin/sed -e 's?^[a-z]$? &?'
 %define osdistrelnumber_letterrelease_char_all %( /usr/gnu/bin/egrep "OmniOS v[0-9]* r[0-9]*[a-z]{0,2}$" /etc/release | /usr/gnu/bin/sed -e 's?^.*[0-9][0-9][0-9][0-9][0-9][0-9]??' | /usr/gnu/bin/egrep "^[a-z][a-z]*$" | /usr/gnu/bin/sed -e 's?^[a-z]$? &?' )
@@ -698,6 +708,26 @@
 %endif
 
 
+#OmniOSce from 151028 on has the number extention xxxxxx.<n>
+%if %( expr %{omnios} '=' 1 '&' %{osdistro_entire} '>=' 151028  )
+#add calc to make .3 -> 0000.0003
+#add calc to make .55 -> 0002.0003
+# expr 52 '/' 26
+#2
+# expr 51 '/' 26
+#1
+# expr 51 '%' 26
+#25
+%define osdistrelnumber_letterrelease_number_full %( echo %{osdistro_entire} | awk -F'.' '{print $2}' )
+%define osdistrelnumber_letterrelease_number_1 %( expr %{osdistrelnumber_letterrelease_number_full} '/' 26 )
+%define osdistrelnumber_letterrelease_number_2 %( expr %{osdistrelnumber_letterrelease_number_full} '%%' 26 )
+%define osdistro_entire_padded_number4 %( echo %{osdistro_entire} | awk -F'.' '{printf "%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d%%.4d", 0, $1, %{osdistrelnumber_letterrelease_number_1}, %{osdistrelnumber_letterrelease_number_2}, $5, $6, $7}' )
+# 151030             .3
+# 151030 0000 0000 0003 000000000000
+#        ^reserved
+#             ^modulo 26
+#                  ^div 26
+%endif
 
 ### bail out, detection of the os2... distribution failed!
 ###%if %{osdet299999}
@@ -707,6 +737,9 @@
 
 
 %changelog
+* Tue Jun 25 2019 - Thomas Wagner
+- OmniOSce has changed version numbers of entire package, release/name shows 0.5.11-151030.3, entire shows 0.5.11-151030.0, affects osdistro_entire_padded_number4
+  rewrite detection of sub-releases formerly represented by one or two letters (OM >= 151028, 151030 LTS)
 * Sun Dec 23 2018 - <me@tsundoku.ne.jp>
 - add defines for Solaris 11.4
 * Fri Mar  2 2018 - Thomas Wagner
@@ -791,4 +824,4 @@
 * May  5 2010 - Thomas Wagner
 - fix ifs to give echo 0 | echo 1 and not strings or exitcodes
 - lot's of fixes over time, especially %if logic is non standard in spec files...
-- initial - drafting the idea, bugs are the only feature of this include file
+-i initial - drafting the idea, bugs are the only feature of this include file
