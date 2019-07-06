@@ -1,4 +1,17 @@
+#gcc-8 https://github.com/omniosorg/omnios-build/pull/1240/commits/04ad46b96012daa7404d33f55f200e28f905720e
+#  Change the gcc startfile spec to match what we had in gcc7
+#  values-xpg6.o 
+#  https://github.com/illumos/gcc/commit/d5e28d05a9f21a927da854f112928fe6ee88cd60
+#  https://github.com/gcc-mirror/gcc/blob/master/gcc/config/sol2.h#L199
+#  
+
+
 ##TODO##
+##TODO## Patch???: gcc-71-xxxxxxxx-OI-userland-import-1001-new-opa-ifdef.patch
+
+
+##TODO## version 7.3.0 ... import *some* of the OI userland patches!
+#        https://github.com/OpenIndiana/oi-userland/tree/oi/hipster/components/developer/gcc-7/patches
 
 
 ##TODO## from publlic channel #illumos on irc.freenode.org
@@ -316,9 +329,20 @@
 %if %( expr %{major_minor} '>=' 5.0 )
 #NEW with gcc 5.x the only remaining version strong in directory path is: major (e.g. "5")
 %define _prefix_usr_gcc_version %{_prefix_usr_gcc}/%{major_version}
+#5 or 6 or 7                   _______
+%define gccdir_version %{major_version}
+#                              ^^^^^^^
+#5 or 6 or 7
+%define gcc_pkgname_version %{major_version}
 %else
-#OLD with gcc 4.x have longer version numbers in in directory path: major_minor (e.g. "4.9")
+#OLD with gcc 4.x have longer version numbers in in directory path: major_minor (e.g. "gcc-sfe/4.9")
+#and double digit numbers in package name (e.g. gcc-49)
 %define _prefix_usr_gcc_version %{_prefix_usr_gcc}/%{major_minor}
+#4.8 or 4.9                    _____ 
+%define gccdir_version %{major_minor}
+#                              ^^^^^
+#49 or 73
+%define gcc_pkgname_version %{majorminornumber}
 %endif
 #END
 
@@ -396,7 +420,7 @@
 # This "Name:" SFEgcc and SFEgccruntime is a compatibility layer,
 # and delivering only symbolic links to corresponding versioned
 # directories with real files delivered in sub packages like 
-# SFEgcc-%majorminornumber and SFEgccruntime-%majorminornumber
+# SFEgcc-%gcc_pkgname_version and SFEgccruntime-%gcc_pkgname_version
 
 ##TODO## make symlinks mediated symlinks for machine-local configured,
 #preferred versions. Not as flexible as we want (want: user selectable
@@ -438,7 +462,7 @@ Patch3:              gcc-03-gnulib.diff
 #gcc-05 in reworked version now supports both, AMD64 and SPARC from the same patch
 #NOTE: once sol2.h changes too much, we might need to rework the patch
 Patch5:              gcc-05-LINK_LIBGCC_SPEC-%{majorminornumber}.diff
-#                                                   ^^^^^^^^^^^ e.g. 49
+#                                                   ^^^^^^^^^^^ e.g. 49 or 73
 %endif
 #END %{major_minor} >= 4.8 & %{major_minor} < 5.0 
 
@@ -486,7 +510,7 @@ Patch110: 010-userlandgate-studio-as-comdat.patch
 
 
 #patches thanks to solaris userland gate
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '=' 4.9 )
+%if %( expr %{solaris11} '+' %{solaris12} '+' %{omnios} '+' %{hipster} '>=' 1 '&' %{major_minor} '=' 4.9 )
 #Careful please when updating patch, we've removed the runpath part in gcc49-000-sol2.h.patch! (this is in our own gcc-05-LINK_LIBGCC_SPEC-**)
 #This time we apply patch5 for gcc 4.9 *after* using the userland gate patch. This should make maintenance a bit easier as gcc49-000-sol2.h.patch stays unmodified.
 Patch200: gcc49-000-sol2.h.patch
@@ -523,7 +547,7 @@ Patch227: gcc49-027-cmath_c99.patch
 %endif
 
 #patches thanks to solaris userland gate
-%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '>=' 5.3 )
+%if %( expr %{solaris11} '+' %{solaris12} '>=' 1 '&' %{major_minor} '>=' 5.3 '&' %{major_minor} '<' 6  )
 Patch301: gcc53-001-multilib-sparc.patch
 Patch302: gcc53-002-libc-values.patch
 Patch303: gcc53-003-cilk-sparc.patch
@@ -545,6 +569,46 @@ Patch501: gcc49-501-boehmm-gc-os_dep.c-dirty-fix-for-procfs-large-file-env.diff
 #s1104 stopped providing old_procfs.h, need to use new interface
 Patch502: gcc49-502-boehm-gc-os_dep.c-avoid-procfs-ioctl.diff
 
+#############
+
+
+###GCC 7 ###
+%if %( expr %{major_minor} '>=' 7 '&' %{major_minor} '<' 8 )
+#Thanks to Solaris 11.4 (12) Userland
+Patch701:     gcc7-001-multilib-sparc.patch
+#Patch702: replaced by gcc https://gcc.gnu.org/bugzilla/show_bug.cgi?id=40411  -  gcc7-002-libc-values.patch
+
+##TODO## check if this does the right thing! Please read the bug.
+#from gcc bug tracker - replaces gcc7-002-libc-values.patch and gcc7-0010-sol2-Use-appropriate-values-objects-for-the-various-.patch
+Patch750: gcc7-050-Bug-40411-std_c99_does_not_enable_c99_mode_in_Solaris_C_library.diff
+
+#Thanks to OI Userland / Illumos
+#first we try this as well on Solaris 11 and 11.4 (12)
+Patch7002: gcc7-0002-compare_tests-Use-nawk-on-Solaris-since-awk-is-crap.patch
+Patch7003: gcc7-0003-gcc-enable-the-.eh_frame-based-unwinder.patch
+Patch7004: gcc7-0004-intl-Don-t-use-UTF-8-quotes.-Ever.patch
+Patch7005: gcc7-0005-Implement-fstrict-calling-conventions.patch
+Patch7006: gcc7-0006-allow-the-global-disabling-of-function-cloning.patch
+Patch7007: gcc7-0007-strict-cc2-check-that-disabling-function-cloning-pre.patch
+Patch7008: gcc7-0008-sol2-enable-full-__cxa_atexit-support.patch
+Patch7009: gcc7-0009-symtab-disable-non-interposable-alias-generation-if-.patch
+#Patch7010: replaced by  gcc https://gcc.gnu.org/bugzilla/show_bug.cgi?id=40411  -   gcc7-0010-sol2-Use-appropriate-values-objects-for-the-various-.patch
+Patch7011: gcc7-0011-i386-Save-integer-passed-arguments-to-the-stack-to-a.patch
+Patch7012: gcc7-0012-16-update-cmn_err-format-specifier.patch
+Patch7013: gcc7-0013-19-cmn_err-b-conversion-should-accept-0-flag.patch
+
+#Thanks to OI Userland / Illumos
+%if !%{solaris12}
+Patch7101: gcc71-1001-new-opa-ifdef.patch
+%endif
+Patch7102: gcc7-1002-fixinc.in.patch
+Patch7103: gcc7-1003-libgo_runtime_proc.c.patch
+Patch7104: gcc7-1004-libstdc++-no-rt.patch
+#Patchxxxx: _dont_gcc7-1000-ld-flags.patch - we have LINK_LIBGCC_SPEC
+#gcc >= 7 & < 8
+%endif
+
+#############
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 %include default-depend.inc
@@ -560,7 +624,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 # today we want exactly 4.6. later on if we can ask a minimum revision,
 # then a "Requires:" can be changed to request the minimum version which
 # is needed to e.g. >= 4.6
-Requires:      SFEgcc-%{majorminornumber},SFEgccruntime-%{majorminornumber}
+Requires:      SFEgcc-%{gcc_pkgname_version},SFEgccruntime-%{gcc_pkgname_version}
 #cosmetic:
 Requires:      SFEgccruntime
 
@@ -585,7 +649,8 @@ BuildRequires: developer/gcc-5
 #as a replacement and in %build, point the CC and CXX variable to this compiler
 %if %{omnios}
 #mind the modification of the CC and CXX variables in %build
-BuildRequires: developer/gcc48
+##TODO## see if 151030 has other gcc package name or a non-verisoned gcc package or if a gcc binary is around
+#BuildRequires: developer/gcc48
 BuildRequires: developer/gnu-binutils
 %endif
 
@@ -597,14 +662,6 @@ Requires: SFEgmp
 %else
 BuildRequires: SUNWgnu-mp
 Requires: SUNWgnu-mp
-%endif
-
-#OmniOS R151012 has no gcc-3 any more, request OmniOS's gcc-48
-#as a replacement and in %build, point the CC and CXX variable to this compiler
-%if %{omnios}
-#mind the modification of the CC and CXX variables in %build
-BuildRequires: developer/gcc48
-BuildRequires: developer/gnu-binutils
 %endif
 
 %if %SFEgmp
@@ -661,13 +718,14 @@ BuildRequires: SUNWpostrun
 Requires: SUNWpostrun
 %endif
 
-%package -n SFEgcc-%{majorminornumber}
-IPS_package_name:        sfe/developer/gcc-%{majorminornumber}
+%package -n SFEgcc-%{gcc_pkgname_version}
+#IPS_package_name:        sfe/developer/gcc-%{majorminornumber}
+IPS_package_name:        sfe/developer/gcc-%{gcc_pkgname_version}
 Summary:                 GNU gcc compiler (%{_prefix}) - version %{major_minor} compiler files
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
-Requires: %{name}runtime-%{majorminornumber}
+Requires: %{name}runtime-%{gcc_pkgname_version}
 
 %package -n SFEgccruntime
 IPS_package_name:        sfe/system/library/gcc-runtime
@@ -675,10 +733,11 @@ Summary:                 GNU gcc runtime libraries for applications (%{_prefix})
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
-Requires: %{name}runtime-%{majorminornumber}
+Requires: %{name}runtime-%{gcc_pkgname_version}
 
-%package -n SFEgccruntime-%{majorminornumber}
-IPS_package_name:        sfe/system/library/gcc-%{majorminornumber}-runtime        
+%package -n SFEgccruntime-%{gcc_pkgname_version}
+#IPS_package_name:        sfe/system/library/gcc-%{majorminornumber}-runtime        
+IPS_package_name:        sfe/system/library/gcc-%{gcc_pkgname_version}-runtime        
 Summary:                 GNU gcc runtime libraries for applications (%{_prefix}) - version %{version} runtime library files
 Version:                 %{version}
 SUNW_BaseDir:            %{_basedir}
@@ -711,7 +770,8 @@ Requires: SFElibmpc
 
 %if %build_l10n
 %package -n SFEgcc-l10n
-IPS_package_name: sfe/developer/gcc-%{majorminornumber}/locale
+#IPS_package_name: sfe/developer/gcc-%{majorminornumber}/locale
+IPS_package_name: sfe/developer/gcc-%{gcc_pkgname_version}/locale
 Summary:                 %{summary} (%{_prefix}) - l10n files
 SUNW_BaseDir:            %{_basedir}
 %include default-depend.inc
@@ -776,14 +836,11 @@ exit 1
 
 
 mkdir gcc
-#cp -p %{SOURCE2}            gcc/ecj-%{version_ecj}.jar 
-#cp -p %{SOURCE2} gcc-%{version}/ecj.jar 
-cp -p %{SOURCE2} ecj.jar 
 
-#with 4.3.3 in new directory libjava/classpath/
-cd gcc-%{version}/libjava/classpath/
-#%patch1 -p1
-cd ../../..
+%if %{gcj}
+cp -p %{SOURCE2} ecj.jar 
+%endif
+
 cd gcc-%{version}
 %if %with_handle_pragma_pack_push_pop
 %patch2 -p1
@@ -919,11 +976,36 @@ cd gcc-%{version}
 #END KKKFFJJSSLL
 
 
-#ABABABSGSGSGSHSH
 %if %( expr %{major_minor} '>=' 4.8 )
 #4.8, 4.9, 5.x has now patch5 reworked to new patching method. 
 #we have one patch for AMD64 and SPARC and which adds prepared placeholders for LINK_LIBGCC_SPEC. This is now replaced with locations with gccruntime libdirs.
 %patch5 -p1
+%endif
+
+###GCC 7 ###
+%if %( expr %{major_minor} '>=' 7 '&' %{major_minor} '<' 8 )
+%patch701 -p1
+%patch750 -p1
+%patch7002 -p1
+%patch7003 -p1
+%patch7004 -p1
+%patch7005 -p1
+%patch7006 -p1
+%patch7007 -p1
+%patch7008 -p1
+%patch7009 -p1
+#%patch7010 -p1
+%patch7011 -p1
+%patch7012 -p1
+%patch7013 -p1
+%if !%{solaris12}
+%patch7101 -p1
+%endif
+%patch7102 -p1
+%patch7103 -p1
+%patch7104 -p1
+#gcc >= 7 & < 8
+%endif
 
 #                                                         /usr/gcc-sfe /5                /lib/ARCH64_SUBDIR    :/usr/gcc-sfe /lib/ARCH64_SUBDIR    :/usr/gcc/lib            /ARCH64_SUBDIR
 #                                                         /usr/gcc-sfe /5                /lib:/usr/gcc-sfe/lib :/usr/gcc/lib
@@ -963,12 +1045,11 @@ diff -u gcc/config/sol2.h.bak.LINK_LIBGCC_SPEC gcc/config/sol2.h || true
 echo "==="
 
 
-%endif
-#END ABABABSGSGSGSHSH
 
 
 %build
-CPUS=%{_cpus_memory}
+#5Gbyte = 5 CPUS
+CPUS=%{_cpus_memory_1536}
 
 echo "debug _totalmemory: %{_totalmemory}"
 echo "debug CPUS: $CPUS"
@@ -1123,6 +1204,13 @@ export LD_FOR_TARGET=/usr/bin/ld
 # For pod2man
 export PATH="$PATH:/usr/perl5/bin"
 
+# For use solaris "ln" as gnu "ln -s" can't run: "ln -s source ." on (OM)
+export PATH="${RPM_BUILD_DIR}/%{name}-%{version}/bin:${PATH}"
+mkdir -p ${RPM_BUILD_DIR}/%{name}-%{version}/bin/
+cp -p /usr/bin/ln ${RPM_BUILD_DIR}/%{name}-%{version}/bin/
+echo "\"ln\" is this binary:"
+which ln
+
 echo "cleanup **CFLAGS/GXXFLAGS/LDFLAGS from -m32 and -m64 switches"
 #this came in with include/base.inc changed in case a compiler defaults to creating 64-bit objects
 #to fix 32-bit builds, we've added to regular optflags and ldflags "-m32"
@@ -1256,10 +1344,14 @@ echo "
 
 # %if %(expr %{omnios} )
 %if %(expr %{omnios} '|'  %{major_minor} '>=' 5.0 )
+
 #libgfortran accidentially detects mkostemp and this doesn't exist - gcc 5.4.x
 #####mkostemp muss auf gcc/i**/libgfortran/config.h auf 0 gesetzt werden
 #####alternativ heruaspatchen aus unix.c
-export       CFLAGS_FOR_TARGET="-DHAVE_MKOSTEMP=0 $CFLAGS_FOR_TARGET"
+##TODO##replace-with-path gcc-xx-libgfortran__unix.c_fix_HAVE_MKOSTEMP.diff
+#export       CFLAGS_FOR_TARGET="-DHAVE_MKOSTEMP=0 $CFLAGS_FOR_TARGET"
+##TODO## check of mis-detection is gone with gcc-7.3 (remove -DHAVE_MKOSTEMP=0 and/or patch gcc-xx-libgfortran__unix.c_fix_HAVE_MKOSTEMP.diff in that case)
+
 gmake -j$CPUS           \
 %else
 gmake -j$CPUS bootstrap \
@@ -1317,7 +1409,7 @@ do
   do
   DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
   [ -d ${DIR} ] || mkdir -p ${DIR}
-  [ -r ${DIR}/$OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath $filepath
+  [ -r ${DIR}/$OFFSET/%{gccdir}/%{gccdir_version}/$filepath ] && ln -s $OFFSET/%{gccdir}/%{gccdir_version}/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -1338,7 +1430,7 @@ do
   DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
   [ -d ${DIR} ] || mkdir -p ${DIR}
   #note add one ../ for %{_arch64}
-  [ -r ${DIR}/$OFFSET/../%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/../%{gccdir}/%major_minor/$filepath $filepath
+  [ -r ${DIR}/$OFFSET/../%{gccdir}/%{gccdir_version}/$filepath ] && ln -s $OFFSET/../%{gccdir}/%{gccdir_version}/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 %endif
@@ -1357,7 +1449,7 @@ do
   do
   DIR=$( dirname $RPM_BUILD_ROOT/$SYMLINKTARGET/$filepath )
   [ -d ${DIR} ] || mkdir -p ${DIR}
-  [ -r ${DIR}/$OFFSET/%{gccdir}/%major_minor/$filepath ] && ln -s $OFFSET/%{gccdir}/%major_minor/$filepath $filepath
+  [ -r ${DIR}/$OFFSET/%{gccdir}/%{gccdir_version}/$filepath ] && ln -s $OFFSET/%{gccdir}/%{gccdir_version}/$filepath $filepath
   done #for file
 done #for SYMLINKTARGET
 
@@ -1383,10 +1475,11 @@ cp -p $RPM_BUILD_ROOT%{_libdir}/libgcc-unwind.map $RPM_BUILD_ROOT%{_libdir}/%{_a
 #Libs: -L${libdir} -lgcj
 #Cflags: -I${includedir}
 
-ls -1 $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc && \
+if [ -f $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-%{major_minor}.pc ]; then
   gsed -i -e '/^libdir=/ s?$?/%{_arch64}?' \
           -e '/^Description/ s?$? %{_arch64}?' \
-          $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc && \
+          $RPM_BUILD_ROOT%{_libdir}/%{_arch64}/pkgconfig/libgcj-%{major_minor}.pc 
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -1414,9 +1507,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 
-#SFEgcc-%{majorminornumber}, other packages see below
+#SFEgcc-%{gcc_pkgname_version}, other packages see below
 
-%files -n SFEgcc-%{majorminornumber}
+%files -n SFEgcc-%{gcc_pkgname_version}
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_prefix}
 %{_prefix}/man
@@ -1448,7 +1541,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 
-%files -n SFEgccruntime-%{majorminornumber}
+%files -n SFEgccruntime-%{gcc_pkgname_version}
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_prefix}
 %dir %attr (0755, root, bin) %{_libdir}
@@ -1463,9 +1556,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/security/classpath.security
 %{_libdir}/logging.properties
 %{_libdir}/pkgconfig/libgcj-*.pc
-%{_libdir}/gcj-*/libjvm.so
+#%{_libdir}/gcj-*/libjvm.so
+#libjavamath.so (S12, S11), libjvm.so (S11)
+%{_libdir}/gcj-*/libj*.so
 %{_libdir}/gcj-*/classmap.db
-%{_libdir}/gcj-*/libjvm.la
+#%{_libdir}/gcj-*/libjvm.la
+%{_libdir}/gcj-*/libj*.la
 %dir %attr (0755, root, sys) %{_datadir}
 #%{_datadir}/java/libgcj-4.9.3.jar
 #%{_datadir}/java/libgcj-tools-4.9.3.jar
@@ -1491,8 +1587,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{_arch64}/pkgconfig/libgcj-*.pc
 %{_libdir}/%{_arch64}/security/classpath.security
 %{_libdir}/%{_arch64}/logging.properties
-%{_libdir}/%{_arch64}/gcj-*/libjvm.la
-%{_libdir}/%{_arch64}/gcj-*/libjvm.so
+#libjavamath.so (S12, S11), libjvm.so (S11)
+#%{_libdir}/%{_arch64}/gcj-*/libjvm.la
+%{_libdir}/%{_arch64}/gcj-*/libj*.la
+#%{_libdir}/%{_arch64}/gcj-*/libjvm.so
+%{_libdir}/%{_arch64}/gcj-*/libj*.so
 %{_libdir}/%{_arch64}/gcj-*/classmap.db
 %endif
 %endif
@@ -1505,11 +1604,15 @@ rm -rf $RPM_BUILD_ROOT
 %files -n SFEgccruntime
 %defattr (-, root, bin)
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget1path}/lib/security
+%endif
 %{symlinktarget1path}/lib/lib*so*
 %ifarch amd64 sparcv9
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget1path}/lib/%{_arch64}/security
+%endif
 %{symlinktarget1path}/lib/%{_arch64}/lib*so*
 %endif
 # amd64 sparcv9
@@ -1556,11 +1659,15 @@ rm -rf $RPM_BUILD_ROOT
 %files -n SFEgccruntime
 %defattr (-, root, bin)
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget2path}/lib/security
+%endif
 %{symlinktarget2path}/lib/lib*so*
 %ifarch amd64 sparcv9
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget2path}/lib/%{_arch64}/security
+%endif
 %{symlinktarget2path}/lib/%{_arch64}/lib*so*
 %endif
 # amd64 sparcv9
@@ -1608,11 +1715,15 @@ rm -rf $RPM_BUILD_ROOT
 %files -n SFEgccruntime
 %defattr (-, root, bin)
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget3path}/lib/security
+%endif
 %{symlinktarget3path}/lib/lib*so*
 %ifarch amd64 sparcv9
 #avoid catching pkgconfig directory
+%if %{gcj}
 %{symlinktarget3path}/lib/%{_arch64}/security
+%endif
 %{symlinktarget3path}/lib/%{_arch64}/lib*so*
 %endif
 # amd64 sparcv9
@@ -1662,6 +1773,14 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jul  6 2019 - Thomas Wagner
+- apply set of gcc49 patches to omnios and hipster as well (OM, OIH)
+  especially stop fix includes (dovecot, openssl 1.1.1, gcc's fixed openssl.h from 1.0.x / 151022 doesn't work on 1.1.1 / 151030)
+- use solaris "ln" as gnu ln can't run "ln -s source ." (OM)
+* Sat Apr 28 2018 - Thomas Wagner
+- prepare for gcc-7 (7.3.0)
+- if version >=5 then pkg name to contains only major number, same for gccdir /usr/gcc-sfe/7/
+- if version >=5 then there is no ecj / gcj, switch it off, fix $files
 * Tue Apr 17 2018 - Thomas Wagner
 - remove (Build)Requires SFElibiconv (especially good for gcj gcjh libgcj-tools.so.15.0.0)
 - set CC CXX without full path (now found by $PATH) (S11, OIH, OI)
