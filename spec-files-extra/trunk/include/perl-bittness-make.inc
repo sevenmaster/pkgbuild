@@ -26,11 +26,13 @@ else
 
 
 
-  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl Build build
+  %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl --config cc=${CC} Build build
 fi
 
 %changelog
-* Thu Feb 28 2019 - Thomas Wagner
+* Sun Thu Feb 28 2019 - Thomas Wagner
 - add OPTFLAGS_LOCAL to make, to get back some extra flags from before bittness include files have been introduced
 * Mon Jan 28 2019 - Thomas Wagner
 - cut out from SFEperl-dbfile.spec, to be included in SFEperl-module-module.spec if binary objects are involved, then perl-interpreter bittness (32 or 64-bit) is important
+* Apr 21 2019 - Thomas Wagner
+- initial - get correct initialization for compiler
