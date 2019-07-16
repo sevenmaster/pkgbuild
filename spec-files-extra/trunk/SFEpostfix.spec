@@ -460,6 +460,9 @@ export CPP="gcc -E"
 CCARGS=
 AUXLIBS=
 
+#in 32-bit we can't run on filesystems with large quantities of free space
+CCARGS="-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+
 %ifarch s390 s390x ppc
 CCARGS="${CCARGS} -fsigned-char"
 %endif
@@ -1189,6 +1192,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Tue Jul 19 2019 - Thomas Wagner
+- fix postfix smtpd for large filesystems by CCARGS="-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
 * Wed Jul  3 2019 - Thomas Wagner
 - bump version to 3.4.6 (3.3.5 if openssl is 1.0.1)
 * Wed Apr 17 2019 - Thomas Wagner
