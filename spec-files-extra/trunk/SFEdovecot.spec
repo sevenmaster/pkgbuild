@@ -76,7 +76,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.6
+Version:	2.3.7
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -313,6 +313,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Tue Jul 16 2019 - Thomas Wagner
+- bump to 2.3.7 - https://dovecot.org/doc/NEWS-2.3
 * Fri Jul  5 2019 - Thomas Wagner
 - bump to 2.3.6 - https://dovecot.org/doc/NEWS-2.3
 * Thu Apr 18 2019 - Thomas Wagner
