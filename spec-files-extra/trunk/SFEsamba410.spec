@@ -266,7 +266,7 @@ Name:                    SFEsamba410
 IPS_package_name:	 sfe/service/network/samba410
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.10.5
+Version:                 4.10.6
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -1098,7 +1098,9 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
-* Mon Jul 24 2019 - Thomas Wagner
+* Tue Jul 16 2019 - Thomas Wagner
+- bump to 4.10.6 
+* Mon Jun 24 2019 - Thomas Wagner
 - add missing (Build)Requires pnm_buildrequires_library_file_monitor_gamin (OM)
 - bump to 4.10.5 -  CVE-2019-12435 Samba AD DC Denial of Service in DNS management server (dnsserver) - CVE-2019-12436 (Samba AD DC LDAP server crash (paged searches) 
 * Sun Jun 16 2019 - Thomas Wagner
