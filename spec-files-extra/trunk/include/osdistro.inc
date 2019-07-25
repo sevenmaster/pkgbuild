@@ -69,7 +69,11 @@
 ### end of examples
 ### rules below need extensions with every major distro release
 
-#osdistro.inc is included --- NOTE: this variable is primarily for internal use by osdistro.inc
+##overall the include file - we are already included
+%if %{?osdistro:%{osdistro}}%{?!osdistro:0}
+#osdistro.inc is ALREADY included
+%else
+#osdistro.inc is NOT YET included --- NOTE: this variable is primarily for internal use by osdistro.inc
 %define osdistro 1
 
 %define osbuild %(uname -v | sed -e 's/^[A-z_]*//' -e 's/[A-z_].*//')
@@ -330,6 +334,7 @@
 # Not sure how this will go with pre-iso snapshot updated to post-iso packages
 ##TODO## check if this can hardened against situation with same content but (re-)packaged at a newer date, that would more secure detection
 ##       the price of supporting a development OS, being a moving target.
+#DEBUG %define marker1 %( echo marker1 >> /tmp/pkg_wrapper_log )
 %define osbuilddate %(pkg info osnet-incorporation | grep 'Packaging Date' | cut -d' ' -f 3,4,5 | date +%Y%m%d )
 
 # Post 20140701
@@ -655,8 +660,15 @@
 
 %if %{os2nnn}
 #entire might be uninstalled, so use release/name instead. You don't uninstall it! If you do, then don't blame us if pnm_macros get confused.
-#%define osdistro_entire %( pkg info release/name | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' )
-%define osdistro_entire %( pkg info release/name entire consolidation/osnet/osnet-incorporation | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
+#DEBUG %define marker2_not_defined_osdistro_entire %( echo marker2 >> /tmp/pkg_wrapper_log )
+
+#could be made a bit better atomic stile!
+#works %define osdistro_entire_cache_helper %( test -f /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation || pkg info release/name entire consolidation/osnet/osnet-incorporation > /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation )
+%define osdistro_entire_cache_helper %( test -f /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation -a /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation -nt %{buildroot} || pkg info release/name entire consolidation/osnet/osnet-incorporation > /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation )
+
+%define osdistro_entire %( cat /tmp/pkg_info_release_name_entire_consolidation_osnet_osnet_incorporation | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
+
+#original %define osdistro_entire %( pkg info release/name entire consolidation/osnet/osnet-incorporation | grep "FMRI:" | sed -e 's?FMRI:.*release/name@??' -e s'/.*-//' -e s'/:.*//' | sort -n -t'.' | tail -1 )
 %endif
 
 #older hipster doesn't match entire and release/name version packages. People! Don't uninstall entire on a OIHipster machine please!
@@ -671,6 +683,7 @@
 #           FMRI: pkg://openindiana.org/release/name@0.5.11-2017.0.0.5:20171030T214925Z
 %if %{oihipster}
 #%define osdistro_entire %( pkg info entire | grep "FMRI:" | sed -e 's/FMRI:.*entire@//' -e s'/.*-//' -e s'/:.*//' )
+#DEBUG %define marker3 %( echo marker3 >> /tmp/pkg_wrapper_log )
 %define osdistro_entire %( pkg info osnet-incorporation | grep "FMRI:" | sed -e 's/FMRI:.*osnet-incorporation@//' -e s'/.*-//' -e s'/:.*//' )
 %endif
 
@@ -735,8 +748,13 @@
 ###exit 1
 ###%endif
 
+##overall the include file - we are already included
+%endif 
+
 
 %changelog
+* Thr Jul 25 2019 - Thomas Wagner
+- cache the output of "pkg info entire ...osnet-incorp..." to speed up overly re-processed osdistro.inc (annoying pkgbuild oddity)
 * Tue Jun 25 2019 - Thomas Wagner
 - OmniOSce has changed version numbers of entire package, release/name shows 0.5.11-151030.3, entire shows 0.5.11-151030.0, affects osdistro_entire_padded_number4
   rewrite detection of sub-releases formerly represented by one or two letters (OM >= 151028, 151030 LTS)
