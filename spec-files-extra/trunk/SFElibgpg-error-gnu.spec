@@ -15,7 +15,7 @@
 Name:		SFElibgpg-error-gnu
 IPS_Package_Name: library/security/gnu/libgpg-error
 Summary:	common error codes and error handling functions used by GnuPG (/usr/gnu)
-Version:	1.31
+Version:	1.36
 Source:		ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-%{version}.tar.bz2
 Patch1:         libgpg-error-01-10_gen-posix-lock-obj.patch
 URL:		http://www.gnupg.org/
@@ -58,6 +58,9 @@ export LDFLAGS="%_ldflags -lsocket -lnsl"
             --enable-shared \
             --disable-static
 
+#fix reserved variable namespace in gawk
+#gawk: fatal: cannot use gawk builtin `namespace' as variable name
+gsed -i.bak -e 's?namespace?Cnamespace?g' src/mkstrtable.awk src/Makefile
 
 make -j$CPUS
 
@@ -66,6 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm ${RPM_BUILD_ROOT}%{_libdir}/*.la
 rm -rf $RPM_BUILD_ROOT/usr/share/info/dir
+rm -rf $RPM_BUILD_ROOT/usr/gnu/share/info/dir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -74,7 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_libdir}
-%{_libdir}/*
+%{_libdir}/lib*.so*
 
 %files devel
 %defattr (-, root, bin)
@@ -82,6 +86,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*.h
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
 %dir %attr (0755, root, sys) %{_datadir}
 %dir %attr (0755, root, other) %{_datadir}/aclocal
 %{_datadir}/aclocal/*
@@ -97,9 +103,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0755, root, bin) %{_mandir}
 %{_mandir}/*/*
 
-
+#   1 package delivers 'dir group=bin mode=0755 owner=root path=usr/gnu/lib/pkgconfig':
+     
 
 %changelog
+* Thu Jul 25 2019 - Thomas Wagner
+- bump to version 1.36
+- fix %files for pkgconfig
+* Thu Apr 18 2019 - Thomas Wagner
+- remove $RPM_BUILD_ROOT/usr/gnu/share/info/dir
 * Wed Mar 13 2019 - Thomas Wagner
 - use gcc for all platforms
 - import patch libgpg-error-01-10_gen-posix-lock-obj.patch from solaris userland
