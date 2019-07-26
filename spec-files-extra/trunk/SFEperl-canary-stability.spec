@@ -13,13 +13,13 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 2012
+%define tarball_version 2013
 %define tarball_name    Canary-Stability
 
 Name:		SFEperl-canary-stability
 IPS_package_name: library/perl-5/canary-stability
-Version:	2012
-IPS_component_version: 2012
+Version:	2013
+IPS_component_version: 2013
 Group:          Development/Libraries                    
 Summary:	Canary::Stability - Canary::Stability
 License:	Artistic
@@ -46,6 +46,7 @@ Canary::Stability
 %setup -q -n %{tarball_name}-%{tarball_version}
 
 %build
+
 if test -f Makefile.PL
   then
   # style "Makefile.PL"
@@ -115,5 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Thu Jul 26 2019 - Thomas Wagner
+- rework, bump version to 2013
 * Sun Dec  3 2017 - Thomas Wagner
 - initial spec version 2012 to support SFEperl-json-xs
