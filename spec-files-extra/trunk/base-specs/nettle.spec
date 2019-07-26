@@ -1,7 +1,7 @@
 
 #
 Name:     	nettle
-Version: 	3.1.1
+Version: 	3.5.1
 ##TODO##License:	LGPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Source:         http://ftp.gnu.org/gnu/nettle/nettle-%{version}.tar.gz
@@ -50,6 +50,9 @@ echo "CXX=$CXX"
             --enable-shared
 
 
+#we have htobe64 but bswap64 is only in libs, missing headers
+#could define the function though
+gsed -i.bak -e '/#define HAVE_BUILTIN_BSWAP64 1/ s?^?// disabled, missing header ?' config.h
 
 make -j$CPUS
 
@@ -60,6 +63,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Jul 26 2019 - Thomas Wagner
+- bump to 3.5.1
+- in libs but not in headers. bswap64. might be htobe64 a possible replacement? Impacts, compatible in edge-cases?
 * Sat Okt 10 2015 - Thomas Wagner
 - bump to 3.1.1 for new gnutls 3.4.4
 * Mon Jun 15 2015 - Thomas Wagner
