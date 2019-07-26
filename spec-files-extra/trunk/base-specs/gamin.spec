@@ -24,6 +24,12 @@ Patch3: gamin-03-const.patch
 %patch2 -p1
 %patch3 -p1
 
+#OmniOS 151030 says FIONREAD not defined. Look not be included by ioctl.h...
+gsed -i.bak -e '/#include <sys\/inotify.h>/ a\
+#include <sys/filio.h>' \
+server/inotify-kernel.c
+
+
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
 
@@ -85,6 +91,8 @@ rm -f /tmp/fam-$$LOGNAME/fam-test
 
 
 %changelog
-* 
+* Fri Jul 26 2019 - Thomas Wagner
+- fix FIONREAD not found (root cause not identified) (OM 151030)
+* Fri Nov 17 2017 - Thomas Wagner
 - initial spec
 /var/tmp/pkgbuild-sfe/SFEgamin-0.1.10-build/usr/lib/amd64/python2.7/site-packages/_gamin.so
