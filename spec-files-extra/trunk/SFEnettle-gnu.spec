@@ -104,6 +104,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 26 2019 - Thomas Wagner
+- bump to 3.5.1
+- in libs but not in headers. bswap64. might be htobe64 a possible replacement? Impacts, compatible in edge-cases?
+* Thu Jul 24 2019 - Thomas Wagner
+- bump to 3.5.1
 * Sat Okt 10 2015 - Thomas Wagner
 - bump to 3.1.1 for new gnutls 3.4.4
 * Tue Aug  4 2015 - Thomas Wagner
