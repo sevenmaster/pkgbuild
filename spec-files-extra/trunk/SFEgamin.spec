@@ -1,3 +1,6 @@
+
+#problem with OmniOSce 151030, FIONREAD not found, even if all include files are there. Try with gcc now.
+
 ##TODO## use pnm_macros for OSDISTRO default python version
 ##TODO## check (Build)Requires (python, others)
 ##TODO## use pnm_macros for OSDISTRO python_default version
@@ -8,6 +11,8 @@
 # package are under the same license as the package itself.
 #
 %include Solaris.inc
+#%define cc_is_gcc 1
+#%include base.inc
 
 %include osdistro.inc
 %if %{omnios}
@@ -122,5 +127,7 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul 26 2019 - Thomas Wagner
+- fix FIONREAD not found (root cause not identified) (OM 151030)
 * Fri Nov 17 2017 - Thomas Wagner
 - Initial spec for OmniOS only
