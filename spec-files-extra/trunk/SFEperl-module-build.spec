@@ -13,13 +13,13 @@
 #if there are no binary objects in the package which link to external binaries
 #%define _use_internal_dependency_generator 0
 
-%define tarball_version 0.4224
+%define tarball_version 0.4229
 %define tarball_name    Module-Build
 
 Name:		SFEperl-module-build
 IPS_package_name: library/perl-5/module-build
-Version:	0.4224
-IPS_component_version: 0.4224
+Version:	0.4229
+IPS_component_version: 0.4229
 Group:          Development/Libraries                    
 Summary:	Module::Build - Module::Build
 License:	Artistic
@@ -148,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
+* Fri Jul  9 2019 - Thomas Wagner
+- bump from 0.4224 to 0.4229
 * Sat Feb  9 2019 - Thomas Wagner
 - reworked, bump from 0.4216 to 0.4224 
 * Sun Dec  3 2017 - Thomas Wagner
