@@ -47,6 +47,8 @@ echo "CXX=$CXX"
             --mandir=%{_mandir}         \
             --infodir=%{_infodir}       \
             --disable-assembler         \
+            --enable-public-key         \
+            --enable-mini-gmp           \
             --enable-shared
 
 
@@ -66,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Jul 26 2019 - Thomas Wagner
 - bump to 3.5.1
 - in libs but not in headers. bswap64. might be htobe64 a possible replacement? Impacts, compatible in edge-cases?
+- for gnutls --enable-public-key --enable-mini-gmp
 * Sat Okt 10 2015 - Thomas Wagner
 - bump to 3.1.1 for new gnutls 3.4.4
 * Mon Jun 15 2015 - Thomas Wagner
