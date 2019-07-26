@@ -48,28 +48,27 @@ It is a portable, cross-compilable, installable, packageable fork of NaCl, with 
 %prep
 rm -rf %{name}-%{version}
 %ifarch amd64 sparcv9
-mkdir -p %{name}-%{version}/%_arch64
-%libsodium_64.prep -d %{name}-%{version}/%_arch64
+mkdir -p %{name}-%{version}/%{_arch64}
+%libsodium_64.prep -d %{name}-%{version}/%{_arch64}
 %endif
 
-#mkdir -p %{name}-%{version}/%base_isa
-%libsodium.prep -d %{name}-%{version}/%base_isa
+%libsodium.prep -d %{name}-%{version}/%{base_arch}
 
 
 %build
 %ifarch amd64 sparcv9
-%libsodium_64.build -d %{name}-%{version}/%_arch64
+%libsodium_64.build -d %{name}-%{version}/%{_arch64}
 %endif
 
-%libsodium.build -d %{name}-%{version}/%{base_isa}
+%libsodium.build -d %{name}-%{version}/%{base_arch}}
 
 %install
 rm -rf %{buildroot}
 %ifarch amd64 sparcv9
-%libsodium_64.install -d %{name}-%{version}/%_arch64
+%libsodium_64.install -d %{name}-%{version}/%{_arch64}
 %endif
 
-%libsodium.install -d %{name}-%{version}/%{base_isa}
+%libsodium.install -d %{name}-%{version}/%{base_arch}
 
 find $RPM_BUILD_ROOT%{_libdir}/ -name "*.a" -exec rm {} \; -print -o -name  "*.la" -exec rm {} \; -print
 
@@ -107,5 +106,7 @@ rm -rf ${RPM_BUILD_ROOT}
 #%{_datadir}/doc/*
 
 %changelog
+* Fri Jul 26 2019 - Thomas Wagner
+- fix i386 compile with bash_arch
 * Mon Jul  2 2018 - Thomas Wagner
 - initial spec 1.0.13
