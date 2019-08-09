@@ -121,6 +121,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Fri Aug  9 2019 - Thomas Wagner
+- bump to 6.1.2
 * Mon Apr 21 2014 - Thomas Wagner
 - add EXTRACONFIGURE="--build=pentium4-pc-solaris2.11" for running on virtual systems (or get ABI=64 invalid)
 * Sat Jan 10 2015 - Thomas Wagner
