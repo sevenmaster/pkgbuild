@@ -1,4 +1,3 @@
-
 #
 # spec file for package SFEnettle-gnu
 #
@@ -72,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 #[ -d  ${RPM_BUILD_ROOT}%{_datadir}/info ] && rm -r ${RPM_BUILD_ROOT}%{_datadir}/info
 [ -d  ${RPM_BUILD_ROOT}%{_std_datadir} ] && rm -r ${RPM_BUILD_ROOT}%{_std_datadir}
 
-find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \;
+find $RPM_BUILD_ROOT -name '*.la' -exec rm {} \; -o -name '*.a'  -exec rm {} \; || true
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -104,10 +103,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug  8 2019 - Thomas Wagner
+- bump to 3.5.1, patches from OI and pkgsrv
 * Fri Jul 26 2019 - Thomas Wagner
-- bump to 3.5.1
-- in libs but not in headers. bswap64. might be htobe64 a possible replacement? Impacts, compatible in edge-cases?
-- for gnutls --enable-public-key --enable-mini-gmp
+- bump to 3.4.1
+- for gnutls --enable-public-key
 * Thu Jul 24 2019 - Thomas Wagner
 - bump to 3.5.1
 * Sat Okt 10 2015 - Thomas Wagner
