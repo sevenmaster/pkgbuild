@@ -55,9 +55,6 @@ echo "CXX=$CXX"
             --enable-shared             \
             --enable-public-key         \
             --disable-openssl           \
-%if %{omnios}
-            --enable-mini-gmp           \
-%endif
 
 ##PAUSE##            --enable-public-key         \
 ##PAUSE##            --enable-mini-gmp           \
@@ -77,6 +74,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Aug  9 2019 - Thomas Wagner
+- remove mini-gmp (collides with gmp)
 * Thu Aug  8 2019 - Thomas Wagner
 - bump to 3.5.1, patches from OI and pkgsrv
 * Fri Jul 26 2019 - Thomas Wagner

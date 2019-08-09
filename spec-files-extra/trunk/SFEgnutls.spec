@@ -34,8 +34,8 @@
 # gnutls
 #
 %include Solaris.inc
-# %define cc_is_gcc 1
-# %include base.inc
+#%define cc_is_gcc 1
+#%include base.inc
 
 %include packagenamemacros.inc
 %include usr-gnu.inc
@@ -127,8 +127,8 @@ mkdir -p %name-%version/%base_arch
 %gnutls.prep -d %name-%version/%base_arch
 
 %build
-# export CC=gcc
-# export CXX=g++
+#export CC=gcc
+#export CXX=g++
 
 %ifarch amd64 sparcv9
 %gnutls64.build -d %name-%version/%_arch64
@@ -200,6 +200,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug  9 2019 - Thomas Wagner
+- new nettle has changed function name s/nettle_secp_..../nettle_get_secp_..../ in pk.c
+* Fri Aug  9 2019 - Thomas Wagner
+- enhance fix guile-config_remove_compiler_defines_pthreads
+* Thu Jul 25 2019 - Thomas Wagner
+- bump to 3.6.9
+* Wed Mar 13 2019 - Thomas Wagner
+- bump to 3.6.6
+* Wed Mar 14 2018 - Thomas Wagner
+- use --without-libidn2 to get idn.h instead of idn2.h
 * Wed Nov  1 2017 - Thomas Wagner
 - bump to 3.5.16
 * Sun Aug 20 2017 - Thomas Wagner
