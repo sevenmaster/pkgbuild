@@ -103,6 +103,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug  9 2019 - Thomas Wagner
+- remove mini-gmp (collides with gmp)
 * Thu Aug  8 2019 - Thomas Wagner
 - bump to 3.5.1, patches from OI and pkgsrv
 * Fri Jul 26 2019 - Thomas Wagner

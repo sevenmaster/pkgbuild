@@ -1,6 +1,7 @@
 #
 #
 Name:     	gnutls
+#Version: 	3.6.9
 Version: 	3.5.16
 Copyright:	LGPL/GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -22,10 +23,18 @@ xz -dc %SOURCE0 | (cd ..; tar xf -)
 %patch1 -p1 
 #%endif
 
+echo '#ifndef GNUTLS_LIB_GTHREADS_H'  > lib/gthreads.h
+echo '#define GNUTLS_LIB_GTHREADS_H' >> lib/gthreads.h
+echo '#endif'                        >> lib/gthreads.h
+
+
 mkdir bin
 cp %{SOURCE2} bin/guile-config
 chmod 0755 bin/guile-config
 #note: %{_arch64} is edited into the path by the mail spec file
+
+##TODO## revisit if this is correct
+grep nettle_get_secp_ /usr/gnu/include/nettle/ecc-curve.h && gsed -i.bak 's/nettle_secp_/nettle_get_secp_/' lib/nettle/pk.c
 
 %build
 CPUS=$(psrinfo | gawk '$2=="on-line"{cpus++}END{print (cpus==0)?1:cpus}')
@@ -71,6 +80,18 @@ gsed -i.bak_-z_defs -e '/no_undefined_flag=. -z defs./ s?^?# removed by SFE spec
     --without-p11-kit \
     --disable-cxx \
     --enable-guile \
+    --with-included-unistring \
+    --without-nettle-mini \
+
+
+#    --with-nettle-mini \
+#not longer an option    --without-libidn2 \
+
+
+##HACK!!!!
+gsed -i.bak -e '/LDFLAGS = / s?-liconv??' Makefile
+
+#is experimental! --without-libiconv-prefix
 
 gmake V=2 -j$CPUS
 
@@ -84,6 +105,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug  9 2019 - Thomas Wagner
+- new nettle has changed function name s/nettle_secp_..../nettle_get_secp_..../ in pk.c
+* Fri Aug  9 2019 - Thomas Wagner
+- enhance fix guile-config_remove_compiler_defines_pthreads
+* Thu Jul 25 2019 - Thomas Wagner
+- bump to 3.6.9
+- use gcc for now, studio runs into gthreads.h saying unsupported platform
+* Wed Mar 13 2019 - Thomas Wagner
+- bump to 3.6.6
+* Wed Mar 14 2018 - Thomas Wagner
+- use --without-libidn2 to get idn.h instead of idn2.h
 * Wed Nov  1 2017 - Thomas Wagner
 - bump to 3.5.16
 * Sun Aug 20 2017 - Thomas Wagner
