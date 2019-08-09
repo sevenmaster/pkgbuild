@@ -119,6 +119,8 @@ rm -rf %{buildroot}
 %{_includedir}/*
 
 %changelog
+* Fri Aug  9 2019 - Thomas Wagner
+- bump to 6.1.2
 * Sat Jan 10 2015 - Thomas Wagner
 - remove conflicting file share/info/dir
 * Mon Oct 21 2013 - Thomas Wagner
