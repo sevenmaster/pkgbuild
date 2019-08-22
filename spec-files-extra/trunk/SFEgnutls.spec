@@ -200,6 +200,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 21 2019 - Thomas Wagner
+- find idn2.h for oihipster
 * Sat Aug  9 2019 - Thomas Wagner
 - new nettle has changed function name s/nettle_secp_..../nettle_get_secp_..../ in pk.c
 * Fri Aug  9 2019 - Thomas Wagner
