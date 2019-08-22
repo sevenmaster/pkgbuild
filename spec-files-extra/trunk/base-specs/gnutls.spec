@@ -45,8 +45,13 @@ export CPP="${CC} -E"
 export CXX="${CXX} -norunpath"
 %endif
 
+%if %{oihipster}
+export CFLAGS="%optflags -I/usr/include/idn2 -I%{gnu_inc} -D__EXTENSIONS__"
+export CXXFLAGS="%cxx_optflags -I/usr/include/idn2 -I%{gnu_inc}"
+%else
 export CFLAGS="%optflags -I/usr/include/idn -I%{gnu_inc} -D__EXTENSIONS__"
 export CXXFLAGS="%cxx_optflags -I/usr/include/idn -I%{gnu_inc}"
+%endif
 export LDFLAGS="%{_ldflags} %{gpp_lib_path} %{gnu_lib_path} -liconv"
 
 export PKG_CONFIG_PATH=%{_pkg_config_path}
@@ -105,6 +110,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 21 2019 - Thomas Wagner
+- find idn2.h for oihipster
 * Sat Aug  9 2019 - Thomas Wagner
 - new nettle has changed function name s/nettle_secp_..../nettle_get_secp_..../ in pk.c
 * Fri Aug  9 2019 - Thomas Wagner
