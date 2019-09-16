@@ -266,7 +266,7 @@ Name:                    SFEsamba410
 IPS_package_name:	 sfe/service/network/samba410
 Summary:                 samba - CIFS Server, AD and Domain Controller
 URL:                     http://samba.org/
-Version:                 4.10.6
+Version:                 4.10.8
 %define major_version %( echo %{version} | awk -F'.' '{print $1}' )
 %define minor_version %( echo %{version} | awk -F'.' '{print $2}' )
 Copyright:               GPLv3
@@ -519,16 +519,29 @@ gsed -i.bak -e '/#include <popt.h>/ a\
 
 %build
 #export PYTHON="/usr/bin/python%{python_major_minor_version}"
+export PYTHON="/usr/bin/i86/python%{python_major_minor_version}"
+
 #if it can't find param, then is effectively looks for param.so and that is 32 or 64 bit.
 #Omnios by default uses 64-bit python, so no param.so object in 64-bit is available by samba
 %if %{omnios}
 export PYTHON="/usr/bin/i386/python%{python_major_minor_version}"
-%else
-export PYTHON="/usr/bin/i86/python%{python_major_minor_version}"
 %endif
+
+#S11.3 GA has /usr/bin/i86/python%{python_major_minor_version}
+#BUT
+#S11.3 with SRU no longer has it, use same path as for S110400
+#pkg://solaris/runtime/python-27@2.7.14,5.11-0.175.3.32.0.3.0:20180420T193920Z
+#%if %( expr %{solaris11} '&' %{osdistro_entire_padded_number4}.0 '>=' 0000017500030032000000030000.0 )
+#should work an GA as well if just using /usr/bin/python27 (=32-bit)
+%if %{solaris11}
+export PYTHON="/usr/bin/python%{python_major_minor_version}"
+%endif
+
 %if %{s110400}
 export PYTHON="/usr/bin/python%{python_major_minor_version}"
 %endif
+
+##TODO## check for hipster where 32-bit python<nn> resides
 
 #parked ifeq ($(MACH), sparc)
 #parked WAFOPT1	= -j64 
@@ -834,6 +847,7 @@ LINKFLAGS=$LINKFLAGS \
 --enable-gccdeps \
 --symbol-check \
 --gdbtest \
+--without-fam \
 
 
 #--nocache \
@@ -1098,6 +1112,10 @@ rm -rf $RPM_BUILD_ROOT
 %class(manifest) %attr(0444, root, sys)/var/svc/manifest/site/sambagnu-winbindd.xml
 
 %changelog
+* Mon Sep 16 2019 - Thomas Wagner
+- bump to 4.10.8 
+* Sun Aug 11 2019 - Thomas Wagner
+- --without-fam (spills log files)
 * Tue Jul 16 2019 - Thomas Wagner
 - bump to 4.10.6 
 * Mon Jun 24 2019 - Thomas Wagner
