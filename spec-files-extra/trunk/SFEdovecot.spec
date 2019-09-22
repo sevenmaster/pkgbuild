@@ -315,8 +315,7 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 %changelog
 * Sun Sep 22 2019 - Thomas Wagner
 - bump to 2.3.7.2 - https://dovecot.org/doc/NEWS-2.3 CVE-2019-11500: IMAP protocol parser does not properly handle NUL byte
-  when scanning data in quoted strings, leading to out of bounds heap
-  memory writes. Found by Nick Roessler and Rafi Rubin.
+  when scanning data in quoted strings, leading to out of bounds heap memory writes. Found by Nick Roessler and Rafi Rubin.
 * Tue Jul 16 2019 - Thomas Wagner
 - bump to 2.3.7 - https://dovecot.org/doc/NEWS-2.3
 * Fri Jul  5 2019 - Thomas Wagner
