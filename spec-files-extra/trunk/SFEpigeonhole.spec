@@ -11,7 +11,7 @@
 %define dovecot_version_major_minor 2.3
 
 Name:		SFEpigeonhole
-Version:	0.5.3
+Version:	0.5.7.2
 IPS_Package_Name:	 service/network/imap/dovecot/plugin/pigeonhole
 Summary:	Dovecot Pigeonhole Plugin
 URL:		http://pigeonhole.dovecot.org/
@@ -86,13 +86,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 28 2019 - tsundoku
+- bump to 0.5.7.2
 * Sun Nov 18 2018 - Thomas Wagner
 - bump to 0.5.3
 * Mon Apr 16 2018 - Thomas Wagner
 - bump to 0.5.1 for dovecot 2.3, use gcc only
-* Thu Oct 26 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+* Thu Oct 26 2017 - tsundoku
 - bump to 0.4.21
-* Tue Jun 13 2017 - Ian Johnson <ianj@tsundoku.ne.jp>
+* Tue Jun 13 2017 - tsundoku
 - bump to 0.4.18
 * Wed Jan  4 2017 - Thomas Wagner
 - bump to 0.4.16
@@ -101,7 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Jan  7 2015 - Thomas Wagner
 - bump to 0.4.6
 - add (Build)Requires SFEdovecot
-* Sun Feb 09 2014 - Ian Johnson <ianj@tsundoku.ne.jp>
+* Sun Feb 09 2014 - tsundoku
 - Add copyright file
-* Mon Oct 14 2013 - Ian Johnson <ianj@tsundoku.ne.jp>
+* Mon Oct 14 2013 - tsundoku
 - Initial package version 0.4.2
