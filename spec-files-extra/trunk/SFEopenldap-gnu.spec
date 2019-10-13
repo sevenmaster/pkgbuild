@@ -1,3 +1,45 @@
+#From: Dieter Klünter <dieter@dkluenter.de>
+#Reply-To: Discussion list for OpenIndiana <openindiana-discuss@openindiana.org>
+#Subject: [OpenIndiana-discuss] Problem with openldap_24 package
+#To: OpenIndiana Discuss <openindiana-discuss@openindiana.org>
+#
+#Hi,
+#I face some problems with the existing openldap_24 package.
+#The file '/lib/svc/method/ldap-olslapd' contains information that
+#obsolete. Thus I modified this file to be in accordance with slapd(8).
+#The databases back-bdb and back-hdb are obsolete, thus BerkleyDB-Tools
+#(db_recover etc.) are not required anymore.
+#
+#These are my modifications of ldap-olslapd
+#
+#
+#typeset -r CONFDIR=/etc/openldap/slapd.d
+#typeset -r LDAP_URL=ldap:///
+#typeset -r LDAPS_URL=ldaps:///
+#typeset -r LDAPI_URL=ldapi:///
+#typeset -r SLAPD="/usr/lib/64/slapd -h "${LDAP_URL} ${LDAPI_URL}" -u
+#${LDAPUSR} -g ${LDAPGRP} -f ${CONF_FILE} -F ${CONFDIR}"
+#
+#As I mentioned in an earlier mail, I face some property problems with
+#IPC socket.
+#
+#Some instance, unknown to me, is checking the file ldap-olslapd as the
+#flag '-h' is ignored, according to the logs.
+#
+#lib/svc/method/ldap-olslapd[21]: typeset: ldapi:/// -u openldap -g
+#openldap -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d: invalid
+#variable name
+#[ Juli 16 15:16:29 Method "stop" exited with status 1. ]
+#
+#Is there somebody who may have a look at this issues?
+#
+#-Dieter
+#
+#--
+#Dieter Klünter | Directory Service
+#http://sys4.de
+#
+#
 #siehe https://www.illumos.org/issues/10069
 #--enable-bdb=mod
 #--enable-hdb=mod
@@ -59,7 +101,7 @@ IPS_package_name:	sfe/library/gnu/openldap
 Group:			System/Services
 Summary:                 OpenLDAP - LDAP Server, Tools and Libraries (/usr/gnu)
 URL:                     http://www.openldap.org
-Version:                 2.4.45
+Version:                 2.4.48
 Source:                  http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-%{version}.tgz
 Source2:		ldap-olslapd.xml
 Source3:		openldap-exec_attr
@@ -159,6 +201,11 @@ export CPPFLAGS=${CXXFLAGS}
 export LDFLAGS="%_ldflags %{gnu_lib_path}"
 
 export RUNDIR="%{_std_localstatedir}/run/%{src_name}"
+
+#if gcc defauls to 64-bit but we need a 3-2bit build, then we workaround
+#building slapdS.c where the Makefile leaves out the CFLAGS, result is ELF bittness error
+echo "${CFLAGS}" | grep -- "-m32" && export CC="${CC} -m32"
+echo "${CFLAGS}" | grep -- "-m64" && export CC="${CC} -m64"
 
 #note: at the moment %install section moves binaries from %{_bindir} over to %{gnu_bin}
 #note: at the moment %install section moves one library from %{_libdir} over to %{gnu_lib}
@@ -357,6 +404,9 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Sun Sep 22 2019 - Thomas Wagner
+- bump to 2.4.48
+- add workaround to build slapdS.c if compiler defaults to 64-bit but we want 32-bit openldap
 * Tue Dec 18 2018 - Thomas Wagner
 - Testing with: --enable-modules --enable-bdb=mod --enable-hdb=mod as suggested in https://www.illumos.org/issues/10069
 * Sun Dec 10 2017 - Thomas Wagner
