@@ -76,7 +76,7 @@ IPS_Package_Name:	service/network/imap/dovecot
 Group:		System/Services
 Summary:	A Maildir based pop3/imap email daemon
 URL:		http://www.dovecot.org
-Version:	2.3.7.2
+Version:	2.3.8
 %define downloadversion	  %( echo %{version} |  awk -F'.' '{print $1 "." $2}' )
 License:	LGPLv2.1+ and MIT
 SUNW_Copyright:	dovecot.copyright
@@ -313,6 +313,8 @@ user ftpuser=false gcos-field="%{daemonloginusergcosfield}" username="%{daemonlo
 
 
 %changelog
+* Thu Oct 31 2019 - Thomas Wagner
+- bump to 2.3.8 - https://dovecot.org/doc/NEWS-2.3
 * Sun Sep 22 2019 - Thomas Wagner
 - bump to 2.3.7.2 - https://dovecot.org/doc/NEWS-2.3 CVE-2019-11500: IMAP protocol parser does not properly handle NUL byte
   when scanning data in quoted strings, leading to out of bounds heap memory writes. Found by Nick Roessler and Rafi Rubin.
