@@ -16,10 +16,11 @@ Name:			SFEsubversion
 IPS_package_name:	developer/versioning/gnu/subversion
 License:		Apache,LGPL,BSD
 Group:			Development/Source Code Management
-Version:		1.8.15
+Version:		1.13.0
 #note: older S11 has sqlite3.h too old, then use svn version 1.7.19
 Summary:		The Subversion Source Control Management System (/usr/gnu)
-Source:			http://mirror.serversupportforum.de/apache/subversion/subversion-%{version}.tar.bz2
+Source:			ftp://ftp.fau.de/apache/subversion/subversion-%{version}.tar.bz2
+#Source:			http://mirror.serversupportforum.de/apache/subversion/subversion-%{version}.tar.bz2
 
 # Home-grown svn-config needed by kdesdk
 Source1:                svn-config
@@ -130,7 +131,6 @@ export LDFLAGS="%{_ldflags} %{gnu_lib_path} -L%{_basedir}/%{apr_default_libdir}:
     --disable-static               \
     --with-pic                     \
     --disable-mod-activation       \
-    --with-openssl                 \
     --with-serf=/usr/gnu           \
     --with-apr=%{_basedir}/%{apr_default_basedir}   \
     --with-apr-util=%{_basedir}/%{apr_util_default_basedir} \
@@ -142,6 +142,8 @@ export LDFLAGS="%{_ldflags} %{gnu_lib_path} -L%{_basedir}/%{apr_default_libdir}:
     --disable-libtool-lock         \
     --disable-experimental-libtool \
     --enable-nls                   \
+    --with-lz4=internal            \
+    --with-utf8proc=internal       \
 
   # optional: --with-libmagic=PREFIX  libmagic filetype detection library
   # why should we disable?
@@ -166,6 +168,8 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}
 cat $RPM_BUILD_ROOT%{_bindir}/svn-config | sed s/SVN_VERSION/%{version}/ > $RPM_BUILD_ROOT%{_bindir}/svn-config.new
 mv $RPM_BUILD_ROOT%{_bindir}/svn-config.new $RPM_BUILD_ROOT%{_bindir}/svn-config
 chmod 0755 $RPM_BUILD_ROOT%{_bindir}/svn-config
+
+mv $RPM_BUILD_ROOT%{_prefix}/share/pkgconfig $RPM_BUILD_ROOT%{_libdir}/
 
 find  $RPM_BUILD_ROOT%{_libdir}/svn -type f -name "*.la" -exec rm -f {} ';'
 
@@ -202,6 +206,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-, root, bin)
 %dir %attr (0755, root, bin) %{_includedir}
 %{_includedir}/*
+%dir %attr (0755, root, other) %{_libdir}/pkgconfig
+%{_libdir}/pkgconfig/*
+
 
 %if %build_l10n
 %files l10n
@@ -211,6 +218,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- Update to 1.13.0, --with-lz4=internal --with-utf8proc=internal
+* Fri Nov  1 2019 - Thomas Wagner
+- move pkgconfig files to /usr/gnu/lib/pkgconfig
+* Mon May 28 2018 - Thomas Wagner
+- Update to 1.10.0
 * Tue Jan 19 2016 - Thomas Wagner
 - Update to 1.8.15
 * Sun Jan 25 2015 - Thomas Wagner
