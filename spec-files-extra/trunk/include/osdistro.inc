@@ -307,7 +307,7 @@
 %define osdistrelnumber %( egrep "OmniOS v[0-9]* r[0-9a-z]" /etc/release | sed -e 's?^.*OmniOS v[0-9]* *r??' -e 's?[a-z]*$??' )
 #                                below: subject to change!
 #Please note: if you need a fine grained relese, use osdistro_entire_padded_number4
-%define osdistrelname   "OmniOS"
+%define osdistrelname   OmniOS
 #this was the last check, skip all others
 %define osdet299999 0
 %else
@@ -448,10 +448,11 @@
 #11.4.0.12.0
 
 #NOTE: development s12 is now s11.4 - old references to "s12" will eventually go away on some day
-#NOTE: s121200 <- 1200 - 12.00 - nothing is released, all is speculative. Later Updates, e.g. 12.1 -> 1201
+#NOTE: Use for new develeoped spec files the variable s110400 to identify Solaris 11.4 (former Solaris 12 in development)
 %if %{osdet299999}
 #%if %( expr %{osbuild} '>=' 24 )
-%if %( egrep 'Oracle Solaris Trunk' /etc/release > /dev/null && echo 1 || echo 0 )
+#%if %( egrep 'Oracle Solaris Trunk' /etc/release > /dev/null && echo 1 || echo 0 )
+%if %( egrep 'Oracle Solaris 11\.4|Oracle Solaris Trunk' /etc/release > /dev/null && echo 1 || echo 0 )
 #we are on an IPS based OS distro
 %define os2nnn   1
 #below: subject to change!
@@ -482,6 +483,20 @@
 #                            Assembled 17 January 2018
 #uname -v
 #11.4.0.12.0
+
+#s12 sfe ~  cat /etc/release
+#                             Oracle Solaris 11.4 X86
+#  Copyright (c) 1983, 2018, Oracle and/or its affiliates.  All rights reserved.
+#                            Assembled 16 August 2018
+#uname -v
+#11.4.0.15.0
+#pkg info entire osnet-incorporation
+#s12 sfe ~ pkg info entire osnet-incorporation name | grep FMRI
+#             FMRI: pkg://solaris/consolidation/osnet/osnet-incorporation@11.4-11.4.0.0.1.15.0:20180817T002336Z
+#             FMRI: pkg://solaris/entire@11.4-11.4.0.0.1.15.0:20180817T004203Z
+#             FMRI: pkg://solaris/release/name@11.4-11.4.0.0.1.15.0:20180817T003543Z
+
+
 
 
 ##START build *greater then* 151, this is 152 and up, detect "Oracle Solaris 11 snv_166 X86" aka 2011.00 as s11ex201100
@@ -753,6 +768,8 @@
 
 
 %changelog
+* Tue Sep 17 2019 - Thomas Wagner
+- enhance defines for Solaris 11.4 to propperly detect GA release (S11.4 S12)
 * Thr Jul 25 2019 - Thomas Wagner
 - cache the output of "pkg info entire ...osnet-incorp..." to speed up overly re-processed osdistro.inc (annoying pkgbuild oddity)
 * Tue Jun 25 2019 - Thomas Wagner

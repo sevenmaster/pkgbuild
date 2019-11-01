@@ -1140,18 +1140,21 @@ exit 1
 #END <99
 
 #defaults for all builds >= 116 - let pkg do the names translation if needed
+#exclude from omnios
+%if %( expr %{omnios} '=' 0 )
 %define pnm_buildrequires_library_database_gdbm	SUNWgnu-dbm
 %define pnm_requires_library_database_gdbm	SUNWgnu-dbm
 %define pnm_buildrequires_SFEgdbm		SUNWgnu-dbm
 %define pnm_requires_SFEgdbm			SUNWgnu-dbm
 %define pnm_buildrequires_SUNWgnu_dbm		SUNWgnu-dbm
 %define pnm_requires_SUNWgnu_dbm		SUNWgnu-dbm
+%endif
+#END exclude from omnios
 
-%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 '|' %{omnios} '|' %{oihipster} )
+%if %( expr %{osbuild} '<' 116 '&' %{solaris12} '=' 0 )
 #running an old build or Solaris 10, old OpenSolaris or OmniOS - and not on Solaris 12 or Solaris 11
 #library/database/gdbm@1.8.3,5.11-0.175.3.0.0.18.0 >= use from osdistro
 #library/database/gdbm@1.8.3,5.12-5.12.0.0.0.70.0  >= use from osdistro
-#omnios? oihipster? oi151a8?
 %define pnm_buildrequires_library_database_gdbm	SFEgdbm
 %define pnm_requires_library_database_gdbm	SFEgdbm
 %define pnm_buildrequires_SFEgdbm		SFEgdbm
@@ -1160,7 +1163,6 @@ exit 1
 %define pnm_requires_SUNWgnu_dbm	 	SFEgdbm
 %endif
 #END <116
-
 
 
 #special case, pkgtool/pkgbuild can't see if packages are installed if
@@ -1603,11 +1605,11 @@ exit 1
 %define pnm_buildrequires_shell_gnugetopt		SFEgnugetopt
 %define pnm_requires_shell_gnugetopt			SFEgnugetopt
 
-#doesn't autoinstall by resolveipspackages, to try this way
-%define pnm_buildrequires_SFEgdbm		library/database/gdbm
-%define pnm_requires_SFEgdbm		 	library/database/gdbm
-%define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
-%define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
+##TODO## remove it is redundant and wrong for OmniOS #doesn't autoinstall by resolveipspackages, to try this way
+##TODO## remove it is redundant and wrong for OmniOS %define pnm_buildrequires_SFEgdbm		library/database/gdbm
+##TODO## remove it is redundant and wrong for OmniOS %define pnm_requires_SFEgdbm		 	library/database/gdbm
+##TODO## remove it is redundant and wrong for OmniOS %define pnm_buildrequires_SUNWgnu_dbm		library/database/gdbm
+##TODO## remove it is redundant and wrong for OmniOS %define pnm_requires_SUNWgnu_dbm	 	library/database/gdbm
 
 
 
@@ -2185,6 +2187,35 @@ exit 1
 #END omnios
 
 
+##TODO## 151030.3
+#    /usr/perl5/site_perl/5.28/i86pc-solaris-thread-multi-64
+#    /usr/perl5/site_perl/5.28
+#    /usr/perl5/vendor_perl/5.28/i86pc-solaris-thread-multi-64
+#    /usr/perl5/vendor_perl/5.28
+#    /usr/perl5/5.28/lib/i86pc-solaris-thread-multi-64
+#    /usr/perl5/5.28/lib
+#
+
+#    OmniOS v11 r151030c -> pkg://omnios/runtime/perl@5.28.2-151030.0:20190426T231121Z
+%if %( expr %{omnios} '>=' 1 '&' %{osdistro_entire_padded_number4}.0 '>=' 000015103000000000000000000000.0 )
+##TODO## monitor closely when OmniOS changes chipped perl-versions or adds perl-modules
+#set perl5 for OmniOS
+%define perl_version 5.28
+%define perl_major_minor_version 5.28
+#well, paths are set to 5.28 and not to 5.28.2 on this OmniOSce version....
+#%define perl_major_minor_micro_version 5.28.2
+%define perl_major_minor_micro_version 5.28
+#perl is 64-bit
+%define perl_bitness    64
+%define perl_bitness_32 0
+%define perl_bitness_64 1
+#runtime/perl-64
+%define pnm_buildrequires_perl_default runtime/perl-64
+%define pnm_requires_perl_default	runtime/perl-64
+%endif
+#END omnios
+
+
 # determine perl bittness by looking at libperl.so loaded by the perl binary
 #
 # perl -e 'foreach $inc ( @INC) { print $inc."\n" if -f "$inc/CORE/libperl.so"; }'
@@ -2248,6 +2279,7 @@ exit 1
 #NOTE: escape for % is %%
 %define perl_version_padded %( /usr/bin/printf "%%.4i%%.4i%%.4i%%.4i" `echo %{perl_major_minor_micro_version} |  awk -F'.' '{print $1" "$2" "$3" "$4}'` )
 
+##TODO##151030 braucht das nicht mehr
 %if %{omnios}
 #Exception! OmniOS uses different directory 5.16 -> 5.16.1
 #overwrite the above settings now
@@ -2274,6 +2306,8 @@ exit 1
 %endif 
 #END omnios
 
+
+##SPARC## sun4-solaris-thread-multi-64
 %if %( expr %{s110400} '>=' 1 '|' %{solaris12} '&' %{osbuild} '>=' 95 '|' %{oihipster} )
 %define perl_dir i86pc-solaris-thread-multi-64
 %endif
@@ -3612,6 +3646,10 @@ exit 1
 
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- use SFEgdbm on (OM) - excluded here, but pkg nacme is defined in packagenames.define.omnios-specialcases.inc
+* Fri Jul 26 2019 - Thomas Wagner
+- add pkg://omnios/runtime/perl@5.28.2-151030.0:20190426T231121Z for OmniOSce r151030 (OM)
 * Sat Apr 27 2019 - Thomas Wagner
 - handle SFEeditline / library/libedit, use OSDISTRO's package (OM '>=' 000015102800000000000000000000.0 )
 * Mon Mar 11 2019 - Thomas Wagner
