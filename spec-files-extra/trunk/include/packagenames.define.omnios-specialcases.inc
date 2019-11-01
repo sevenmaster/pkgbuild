@@ -77,8 +77,17 @@
 %define pnm_buildrequires_gamin			SFEgamin
 %define pnm_requires_gamin			SFEgamin
 
+%define pnm_buildrequires_library_database_gdbm SFEgdbm
+%define pnm_requires_library_database_gdbm      SFEgdbm
+%define pnm_buildrequires_SFEgdbm               SFEgdbm
+%define pnm_requires_SFEgdbm                    SFEgdbm
+%define pnm_buildrequires_SUNWgnu_dbm           SFEgdbm
+%define pnm_requires_SUNWgnu_dbm                SFEgdbm
+
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- add pnm_buildrequires_library_database_gdbm SFEgdbm on (OM)
 * Sun Jun 16 2019 - Thomas Wagner
 - add pnm_buildrequires_SUNWbash and map to SUNWcs (OM)
 * Sat Nov 18 2017 - Thomas Wagner
