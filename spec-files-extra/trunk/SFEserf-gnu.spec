@@ -48,7 +48,7 @@ Requires:                %{name}
 
 ##TODO## verify -mt
 %if %{omnios}
--mt for OmniOS
+#-mt for OmniOS
 export CFLAGS="%{optflags} -mt"
 export LDFLAGS="%{_ldflags}"
 %endif
@@ -97,6 +97,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- # the comment
 * Thu Jun 18 2015 - Thomas Wagner
 - swap %include lines usr-gnu.inc base.inc
 - add -mt to CFLAGS if OmniOS

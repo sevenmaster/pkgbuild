@@ -315,7 +315,7 @@ export LD_LIBRARY_PATH=/usr/gcc-sfe/lib:/usr/gcc/lib
 gmake install DESTDIR=$RPM_BUILD_ROOT
 
 [ -d $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name} ] || mkdir -p $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}
-cp [A-Z][A-Z]* $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}
+cp -p ANNOUNCEMENT CHANGES COPYRIGHT INSTALL LICENSE README $RPM_BUILD_ROOT%{_datadir}/doc/%{src_name}/
 
 mkdir -p ${RPM_BUILD_ROOT}/var/svc/manifest/network/ldap/
 cp ldap-olslapd.xml ${RPM_BUILD_ROOT}/var/svc/manifest/network/ldap/
@@ -404,6 +404,8 @@ depend fmri=SFEopenldap@%{ips_version_release_renamedbranch} type=optional
 %class(manifest) %attr(0444, root, sys)%{_std_localstatedir}/svc/manifest/network/ldap/ldap-olslapd.xml
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- fix %install copying COPYRIGHT, INSTALL, LICENSE, ...
 * Sun Sep 22 2019 - Thomas Wagner
 - bump to 2.4.48
 - add workaround to build slapdS.c if compiler defaults to 64-bit but we want 32-bit openldap
