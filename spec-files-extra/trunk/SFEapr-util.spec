@@ -101,8 +101,9 @@ autoconf
     --with-expat=/usr           \
     --with-sqlite3=/usr         \
     --without-odbc              \
-    --enable-layout=Solaris	\
-    CFLAGS="$(CFLAGS)"     \
+    --enable-layout=Solaris     \
+    CFLAGS="${CFLAGS}"     \
+
 
 #    --enable-debug \
 #    CFLAGS="${CFLAGS}"     \
@@ -170,6 +171,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*
 
 %changelog
+* Fri Nov  1 2019 - Thomas Wagner
+- fix setting CFLAGS
 * Fri Apr 29 2016 - Thomas Wagner
 - make spec file exit 1 on Solaris 11 and 12
 * Mon Feb 16 2015 - Thomas Wagner
