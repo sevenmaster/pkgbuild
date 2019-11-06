@@ -33,6 +33,9 @@ Source0:	http://search.cpan.org/CPAN/authors/id/R/RS/RSCHUPP/PAR-%{tarball_versi
 BuildRequires:	%{pnm_buildrequires_perl_default}
 Requires:	%{pnm_requires_perl_default}
 
+BuildRequires:  SFEperl-archive-zip
+Requires:       SFEperl-archive-zip
+
 Meta(info.maintainer):          roboporter by pkglabo.justplayer.com <pkgadmin@justplayer.com>
 Meta(info.upstream):            Roderich Schupp <rschupp@cpan.org>
 Meta(info.upstream_url):        http://search.cpan.org/~rschupp/%{tarball_name}-%{tarball_version}
@@ -116,4 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_mandir}/man3/*
 
 %changelog
-##TODO## add changelog
+Wed Nov  6  2019 SFEperl-par.spec
+- add BuildRequires SFEperl-archive-zip
+Fri Apr  5  2019 SFEperl-par.spec
+- initial spec version 1.015 (1.15)
