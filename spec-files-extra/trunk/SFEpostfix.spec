@@ -230,7 +230,7 @@ URL:                     http://www.postfix.org/
 %if %( pkg info openssl | grep "Version: 1.0.1" >/dev/null && echo 1 || echo 0 )
 Version:                 3.3.6
 %else
-Version:                 3.4.7
+Version:                 3.4.8
 %endif
 Source:                  ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-%{version}.tar.gz
 License:		 IBM Public License v1.0
@@ -1192,6 +1192,8 @@ test -x $BASEDIR/var/lib/postrun/postrun || exit 0
 
 
 %changelog
+* Mon Nov 25 2019 - Thomas Wagner
+- bump version to 3.4.8 (3.3.6 if openssl is 1.0.1) http://www.porcupine.org/postfix-mirror/announcements/postfix-3.4.8.html
 * Sun Sep 22 2019 - Thomas Wagner
 - bump version to 3.4.7 (3.3.6 if openssl is 1.0.1)
 * Tue Jul 16 2019 - Thomas Wagner
