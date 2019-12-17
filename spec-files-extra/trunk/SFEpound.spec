@@ -25,6 +25,7 @@ Source:         http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}-manifest.xml
 Source2:	%{name}.cfg
 Patch1:		pound-01-Makefile.in.diff
+Patch2:		pound-02-BIO_read-cpu-load.diff
 Distribution:	OpenSolaris
 Vendor:		OpenSolaris Community
 
@@ -69,6 +70,7 @@ servers that do not offer it natively.
 %prep
 %setup -q -n Pound-%{version}
 %patch1 -p0
+%patch2 -p1
 
 
 %build
@@ -132,6 +134,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Dec 17 2019 - Thomas Wagner
+- add patch2 pound-02-BIO_read-cpu-load.diff - avoid indefinite loop with BIO_read if connections die, may cause high cpu load
 * Sun Aug  5 2018 - Thomas Wagner
 - bump to 2.8 release, IPS_Component_Version: 2.8.0.1.0
 * Tue Feb 14 2017 - Thomas Wagner
