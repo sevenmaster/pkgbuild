@@ -12,7 +12,7 @@
 #fix hipster used /usr/gcc/4.9/bin/gcc and we in SFE have different path
 #solution 1) remove path compoment from cc and ld
 
-PERL_CC=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cc | sed -e 's?cc=.??' -e 's?.;$??' )
+export PERL_CC=$( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cc | sed -e 's?cc=.??' -e 's?.;$??' )
 if [ ! -x "${PERL_CC}" ]; then
   echo "ALARM es ist nicht vorhanden/ausfuehrbar  >>>${PERL_CC}<<<"
    #hipster '/usr/gcc/4.9/bin/gcc -m64'
@@ -27,7 +27,15 @@ if [ ! -x "${PERL_CC}" ]; then
    echo "PERL CC:  >>>${PERL_CC}<<<"
    echo "PERL LD:  >>>${PERL_LD}<<<"
 #   echo "PERL EXTRA FLAGS: >>--config cc=${PERL_CC}<<"
+
 fi
+
+%if %( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+echo "Setting cc_is_gcc to 1 and re-include base.inc >%{perl_cc}<"
+%define cc_is_gcc 1
+%include base.inc
+%endif
+ 
 
 #fetch default values, then modify them if needed in the %if %{perl_bitness_64} section
 export OPTFLAGS_LOCAL="%{optflags}"
@@ -69,6 +77,8 @@ echo "CCCDLFLAGS: >>>${CCCDLFLAGS}<<<"
 echo "OPTFLAGS_LOCAL: >>>${OPTFLAGS_LOCAL}<<<"
 
 %changelog
+* Tue Dec 17 2019 - Thomas Wagner
+- set cc_is_gcc if PERL_CC is gcc and then re-include base.inc to get correct optflags (OM)
 * Thu Feb 28 2019 - Thomas Wagner
 - add OPTFLAGS_LOCAL to make, to get back some extra flags from before bittness include files have been introduced, improve 64-bit flags
 - new ordering and setting default values for OPTFLAGS_LOCAL, LDDLFLAGS, CCCDLFLAGS

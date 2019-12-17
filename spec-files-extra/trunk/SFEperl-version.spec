@@ -9,11 +9,6 @@
 %include Solaris.inc
 %include packagenamemacros.inc
 
-%if %omnios
-#perl built with gcc / g++
-%define cc_is_gcc 1
-%include base.inc
-%endif
 
 #consider switching off dependency_generator to speed up packaging step
 #if there are no binary objects in the package which link to external binaries
