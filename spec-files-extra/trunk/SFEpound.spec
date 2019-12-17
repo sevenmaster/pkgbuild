@@ -83,9 +83,10 @@ export CFLAGS="%{optflags} -I/usr/sfw/include -I/usr/include/pcre"
 # libc version works properly with pound
 #perl -pi -e 's/-lpcreposix//g' Makefile
 #change hard-coded "gcc" binary to the  
-perl -pi -e 's/gcc/\${CC}/g' Makefile
+#perl -pi -e 's/gcc/\${CC}/g' Makefile
+gsed -i.bak -e '/^CC=/ d' Makefile
 
-make
+gmake V=2
 
 
 %install
@@ -134,8 +135,9 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Dec 17 2019 - Thomas Wagner
+* Tue Dec 17 2019 - Thomas Wagner
 - add patch2 pound-02-BIO_read-cpu-load.diff - avoid indefinite loop with BIO_read if connections die, may cause high cpu load
+- fix Makefile CC=
 * Sun Aug  5 2018 - Thomas Wagner
 - bump to 2.8 release, IPS_Component_Version: 2.8.0.1.0
 * Tue Feb 14 2017 - Thomas Wagner
