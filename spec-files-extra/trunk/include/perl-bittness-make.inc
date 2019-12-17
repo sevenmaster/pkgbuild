@@ -5,7 +5,7 @@
 
 
 #note: %{gnu_lib_path} is modified above to match the %{_arch} corresponding to perl's bitness
-%if %( perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
+%if %( %{_prefix}/perl%{perl_major_version}/%{perl_version}/bin/perl -V:cc | grep -w "cc='.*/*gcc *" >/dev/null && echo 1 || echo 0 )
   make CCCDLFLAGS="${CCCDLFLAGS} -I%{gnu_inc} %{gnu_lib_path}" OPTIMIZE="${OPTFLAGS_LOCAL}" LDDLFLAGS="${LDDLFLAGS} %{gnu_lib_path}" CC="${PERL_CC}" LD="${PERL_LD}" 
 
 %else
@@ -30,6 +30,8 @@ else
 fi
 
 %changelog
+* Tue Dec 17 2019 - Thomas Wagner
+- use pnm_macro defined path to perl interpreter to fetch compiler
 * Sun Thu Feb 28 2019 - Thomas Wagner
 - add OPTFLAGS_LOCAL to make, to get back some extra flags from before bittness include files have been introduced
 * Mon Jan 28 2019 - Thomas Wagner
