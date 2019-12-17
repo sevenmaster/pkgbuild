@@ -18,7 +18,7 @@ IPS_Package_Name: web/proxy/pound
 Group:		WebServices/ApplicationandWebServers
 Summary:        The Pound program is a reverse proxy, load balancer and HTTPS front-end for Web server(s)
 Version:        2.8
-IPS_Component_Version: 2.8.0.1.0
+IPS_Component_Version: 2.8.0.1.1
 License:        GPLv3
 URL:            http://www.apsis.ch/pound/
 Source:         http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -138,6 +138,7 @@ rm -rf %{buildroot}
 * Tue Dec 17 2019 - Thomas Wagner
 - add patch2 pound-02-BIO_read-cpu-load.diff - avoid indefinite loop with BIO_read if connections die, may cause high cpu load
 - fix Makefile CC=
+- help upgrading to patch2 version by setting IPS_Component_Version: 2.8.0.1.1
 * Sun Aug  5 2018 - Thomas Wagner
 - bump to 2.8 release, IPS_Component_Version: 2.8.0.1.0
 * Tue Feb 14 2017 - Thomas Wagner
